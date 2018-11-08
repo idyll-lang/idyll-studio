@@ -3,7 +3,6 @@ import './App.css';
 import IdyllEditor from './IdyllEditor';
 import exampleMarkup from './initial';
 import { hashCode } from './components/editor/utils';
-import EditorArea from './edit-area';
 
 
 class App extends React.PureComponent {
@@ -20,20 +19,21 @@ class App extends React.PureComponent {
 
   handleChange = (markup) => {
     this.currentMarkup = markup;
-    if (hashCode(markup) !== hashCode(this.props.initialMarkup)) {
+    console.log(exampleMarkup);
+    if (hashCode(this.currentMarkup) !== hashCode(exampleMarkup)) {
       this.setState({ edited: true });
     }
   }
 
   render() {
     if (!this.currentMarkup) {
-      this.currentMarkup = this.props.initialMarkup;
+      this.currentMarkup = exampleMarkup;
     }
 
     return (
       <div className="App">
         {/* <EditorArea /> */}
-        <IdyllEditor markup={this.props.initialMarkup} onChange={this.handleChange} />
+        <IdyllEditor markup={exampleMarkup} onChange={this.handleChange} />
       </div>
     );
   }
