@@ -16,7 +16,7 @@ class EditArea extends React.Component {
 
   constructor(props) {
     super(props);
-    const content = ContentState.createFromText("[var name:'hello' value: 3 /] hi");
+    const content = ContentState.createFromText(this.props.initialContent);
     this.state = {
       editorState: EditorState.createWithContent(content),
       shouldRenderEditor: false,
