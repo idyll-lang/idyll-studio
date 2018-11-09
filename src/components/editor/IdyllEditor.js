@@ -1,6 +1,6 @@
-import React from 'react';
-import EditArea from './edit-area';
-import Renderer from './renderer';
+import React from "react";
+import EditArea from "./edit-area";
+import Renderer from "./renderer";
 
 class IdyllEditor extends React.PureComponent {
   constructor(props) {
@@ -10,7 +10,7 @@ class IdyllEditor extends React.PureComponent {
       error: null,
       initialMarkup: markup,
       currentMarkup: markup
-    }
+    };
   }
 
   setContent(value) {
@@ -22,22 +22,25 @@ class IdyllEditor extends React.PureComponent {
     this.setState({ error: error.message });
   }
 
-  handleChange = (newContent) => {
-    this.setContent(newContent)
-    const { onChange } = this.props
+  handleChange = newContent => {
+    this.setContent(newContent);
+    const { onChange } = this.props;
     if (onChange) {
-      onChange(newContent)
+      onChange(newContent);
     }
-  }
+  };
 
   render() {
     const { fullscreen } = this.props;
     const { initialMarkup, currentMarkup, error, idyllHash } = this.state;
     return (
-      <div className='container'>
-        {
-          fullscreen ? null : <EditArea initialContent={initialMarkup} onChange={this.handleChange} />
-        }
+      <div className="container">
+        {fullscreen ? null : (
+          <EditArea
+            initialContent={initialMarkup}
+            onChange={this.handleChange}
+          />
+        )}
         <Renderer markup={currentMarkup} />
         {error && this.renderError()}
         <style jsx>{`
@@ -49,14 +52,12 @@ class IdyllEditor extends React.PureComponent {
           }
         `}</style>
       </div>
-    )
+    );
   }
 
   renderError = () => (
-    <div className='error-display'>
-      <pre>
-        {this.state.error}
-      </pre>
+    <div className="error-display">
+      <pre>{this.state.error}</pre>
       <style jsx>{`
         .error-display {
           background: rgba(0, 0, 0, 0.8);
@@ -70,7 +71,7 @@ class IdyllEditor extends React.PureComponent {
         }
       `}</style>
     </div>
-  )
+  );
 }
 
 export default IdyllEditor;

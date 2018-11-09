@@ -1,8 +1,7 @@
-import React from 'react';
-import { Editor, EditorState, ContentState } from 'draft-js';
+import React from "react";
+import { Editor, EditorState, ContentState } from "draft-js";
 
 class EditArea extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -10,8 +9,8 @@ class EditArea extends React.Component {
     const content = ContentState.createFromText(this.props.initialContent);
     this.state = {
       editorState: EditorState.createWithContent(content),
-      shouldRenderEditor: false,
-    }
+      shouldRenderEditor: false
+    };
   }
 
   componentDidMount() {
@@ -19,28 +18,28 @@ class EditArea extends React.Component {
   }
 
   createEditorChange(text) {
-    return EditorState.createWithContent(ContentState.createFromText(text))
+    return EditorState.createWithContent(ContentState.createFromText(text));
   }
 
-  onEditorChange = (editorState) => {
-    this.setState({ editorState })
-    const { onChange } = this.props
+  onEditorChange = editorState => {
+    this.setState({ editorState });
+    const { onChange } = this.props;
     if (onChange) {
-      onChange(editorState.getCurrentContent().getPlainText()) // gets current state of editor
+      onChange(editorState.getCurrentContent().getPlainText()); // gets current state of editor
     }
-  }
+  };
 
   render() {
-    const { editorState, shouldRenderEditor } = this.state
+    const { editorState, shouldRenderEditor } = this.state;
     return (
-      <div className='editor'>
-        {shouldRenderEditor &&
+      <div className="editor">
+        {shouldRenderEditor && (
           <Editor
             editorState={editorState}
             onChange={this.onEditorChange}
-            editorKey='idyll-editor'
+            editorKey="idyll-editor"
           />
-        }
+        )}
 
         <style jsx>{`
           .editor {
@@ -54,9 +53,8 @@ class EditArea extends React.Component {
           }
         `}</style>
       </div>
-    )
+    );
   }
-
 }
 
 export default EditArea;
