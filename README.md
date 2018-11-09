@@ -2,7 +2,7 @@
 
 # Idyll Desktop
 
-Sketches towards an integrated dynamic publishing application. 
+Sketches towards an integrated dynamic publishing application. See https://github.com/idyll-lang/idyll-desktop/blob/master/mocks.png for current wireframes.
 
 # DEVELOPING
 
