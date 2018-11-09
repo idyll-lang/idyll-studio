@@ -32,7 +32,6 @@ class App extends React.PureComponent {
 
     return (
       <div className="App">
-        {/* <EditorArea /> */}
         <IdyllEditor markup={exampleMarkup} onChange={this.handleChange} />
       </div>
     );
