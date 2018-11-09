@@ -1,4 +1,10 @@
-# Work in Progress!
+[Work in Progress] 
+
+# Idyll Desktop
+
+Sketches towards an integrated dynamic publishing application. 
+
+# DEVELOPING
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
