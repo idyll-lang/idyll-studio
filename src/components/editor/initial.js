@@ -8,6 +8,7 @@ To include components, use the notation \`[Name prop:value /]\`. See the docs fo
 Increment counter
 [/button]
 You've clicked the button [display var:count format:"d" /] time[display value:\`count === 1 ? '' : 's' \` /].
+
 \`\`\`
 [var name:"count" value:0 /]
 [button onClick:\`count++\` style:\`/* JS object of styles */\`]

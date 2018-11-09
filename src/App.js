@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import IdyllEditor from './IdyllEditor';
-import exampleMarkup from './initial';
+import IdyllEditor from './components/editor/IdyllEditor';
+import exampleMarkup from './components/editor/initial';
 import { hashCode } from './components/editor/utils';
 
 
@@ -19,7 +19,7 @@ class App extends React.PureComponent {
 
   handleChange = (markup) => {
     this.currentMarkup = markup;
-    console.log(exampleMarkup);
+
     if (hashCode(this.currentMarkup) !== hashCode(exampleMarkup)) {
       this.setState({ edited: true });
     }
