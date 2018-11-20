@@ -1,5 +1,7 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, dialog, Menu, ipcMain } = require("electron");
+const fs = require("fs");
+// var Idyll = require("idyll");
 
 const path = require("path");
 const url = require("url");
@@ -18,14 +20,51 @@ let mainWindow;
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600
+  });
 
   // and load the index.html of the app.
   // mainWindow.loadFile('index.html')
   mainWindow.loadURL(startUrl);
 
+  const template = [
+    {
+      label: "File",
+      submenu: [
+        {
+          label: "Open File",
+          accelerator: "CmdOrCtrl+O",
+          click() {
+            openFile();
+          }
+        }
+      ]
+    },
+    {
+      label: "Developer",
+      submenu: [
+        {
+          label: "Toggle Developer Tools",
+          accelerator: process.platform === "darwin" ? "Cmd+I" : "Ctrl+I",
+          click() {
+            mainWindow.webContents.toggleDevTools();
+          }
+        }
+      ]
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu); // use menu we just created
+
+  // mainWindow.webContents.on("did-finish-load", () => {
+  //   mainWindow.webContents.send("ping", "HIII");
+  // });
+
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools();
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function() {
@@ -58,5 +97,33 @@ app.on("activate", function() {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+// Open File
+function openFile() {
+  // Returns absolute path of file
+  const files = dialog.showOpenDialog(mainWindow, {
+    properties: ["openFile"],
+    filters: [
+      {
+        // Give a specific filter on what
+        // type of files we are looking for
+        name: "Idyll",
+        extensions: ["idyll", "idl"]
+      }
+    ]
+  });
+
+  // If no files
+  if (!files) {
+    return;
+  }
+
+  // Gets full file path
+  const file = files[0];
+
+  // Accepts a file path
+  const fileContent = fs.readFileSync(file).toString();
+
+  console.log(fileContent);
+
+  mainWindow.webContents.send("ping", "testing");
+}

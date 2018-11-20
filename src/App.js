@@ -1,8 +1,11 @@
 import React from "react";
 import "./App.css";
 import IdyllEditor from "./components/editor/IdyllEditor";
-import exampleMarkup from "./components/editor/initial";
+import fileMarkup from "./components/editor/markdown";
 import { hashCode } from "./components/editor/utils";
+
+const electron = require("electron");
+const ipc = electron.ipcRenderer;
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -12,26 +15,30 @@ class App extends React.PureComponent {
     };
   }
 
+  componentDidMount() {
+    console.log(window);
+  }
+
   getInitialProps() {
-    return { initialMarkup: exampleMarkup };
+    return { initialMarkup: fileMarkup };
   }
 
   handleChange = markup => {
     this.currentMarkup = markup;
 
-    if (hashCode(this.currentMarkup) !== hashCode(exampleMarkup)) {
+    if (hashCode(this.currentMarkup) !== hashCode(fileMarkup)) {
       this.setState({ edited: true });
     }
   };
 
   render() {
     if (!this.currentMarkup) {
-      this.currentMarkup = exampleMarkup;
+      this.currentMarkup = fileMarkup;
     }
 
     return (
       <div className="App">
-        <IdyllEditor markup={exampleMarkup} onChange={this.handleChange} />
+        <IdyllEditor markup={fileMarkup} onChange={this.handleChange} />
       </div>
     );
   }
