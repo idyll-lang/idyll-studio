@@ -7,7 +7,7 @@ import { insertTeXBlock } from './modifiers/insertTeXBlock';
 import { removeTeXBlock } from './modifiers/removeTeXBlock';
 
 import * as components from "idyll-components";
-import IdyllDocument from "idyll-document";
+import IdyllDocument from "../idyll-document/src";
 import compile from 'idyll-compiler';
 
 var { Editor, EditorState, RichUtils } = Draft;
