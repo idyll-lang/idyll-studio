@@ -1,0 +1,63 @@
+{
+  "name": "idyll-document",
+  "version": "2.14.0",
+  "license": "MIT",
+  "authors": [
+    "Matthew Conlen",
+    "Ben Clinkinbeard"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build:cjs": "cross-env BABEL_ENV=cjs babel src -d dist/cjs",
+    "build:es": "cross-env BABEL_ENV=es babel src -d dist/es",
+    "build": "npm run build:cjs && npm run build:es",
+    "dev": "yarn run build:es --watch",
+    "prepublishOnly": "npm run build",
+    "test": "jest",
+    "update-fixtures": "npm run build && node scripts/idl2ast",
+    "update-snapshot": " jest --updateSnapshot"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/setupJest.js"
+    ],
+    "testMatch": [
+      "**/test/**/*.js"
+    ]
+  },
+  "dependencies": {
+    "change-case": "^3.0.1",
+    "cross-env": "^5.2.0",
+    "falafel": "^2.1.0",
+    "html-tags": "^2.0.0",
+    "idyll-compiler": "^3.3.1",
+    "idyll-layouts": "^2.6.1",
+    "idyll-themes": "^2.3.4",
+    "object.entries": "^1.0.4",
+    "object.values": "^1.0.4",
+    "react-dom-factories": "^1.0.1",
+    "react-tooltip": "^3.8.4",
+    "scrollmonitor": "^1.2.3",
+    "scrollparent": "^2.0.1",
+    "styled-jsx": "^2.2.4"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-16": "^1.0.0",
+    "jest": "^20.0.4",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-test-renderer": "^16.0.0",
+    "rimraf": "^2.6.2"
+  },
+  "peerDependencies": {
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  }
+}
