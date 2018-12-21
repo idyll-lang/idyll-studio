@@ -33,8 +33,6 @@ class Main {
 
     // Accepts a file path
     const fileContent = fs.readFileSync(file).toString();
-    console.log(fileContent);
-
     this.mainWindow.webContents.send("idyll:markup", fileContent);
   }
 }
