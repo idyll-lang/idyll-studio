@@ -1,14 +1,13 @@
 const { dialog, ipcMain } = require("electron");
-const Menu = require('./menu');
-const fs = require('fs');
+const Menu = require("./menu");
+const fs = require("fs");
 
 class Main {
   constructor(electronObjects) {
     this.mainWindow = electronObjects.win;
     const menu = new Menu(electronObjects);
-    menu.on('file:open', this.handleFileOpen)
+    menu.on("file:open", this.handleFileOpen);
   }
-
 
   handleFileOpen() {
     // Returns absolute path of file
@@ -36,9 +35,8 @@ class Main {
     const fileContent = fs.readFileSync(file).toString();
     console.log(fileContent);
 
-    this.mainWindow.webContents.send('idyll:markup', fileContent);
+    this.mainWindow.webContents.send("idyll:markup", fileContent);
   }
-
 }
 
 module.exports = Main;
