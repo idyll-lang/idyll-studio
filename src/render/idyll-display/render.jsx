@@ -1,39 +1,35 @@
-
-import React from 'react';
-import * as components from 'idyll-components';
-import IdyllDocument from 'idyll-document';
+import React from "react";
+import * as components from "idyll-components";
+import IdyllDocument from "idyll-document";
 
 class Renderer extends React.PureComponent {
-
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {};
   }
 
   componentDidCatch(e) {
     this.setState({
       error: e
-    })
+    });
   }
 
   render() {
     const { markup } = this.props;
     return (
-      <div>
+      <div className="renderer" style={{ width: "50%" }}>
         <IdyllDocument
-          markup={ markup }
-          components={ components }
-          layout={ 'centered' }
-          context={(context) => {
+          markup={markup}
+          components={components}
+          layout={"centered"}
+          context={context => {
             window.IDYLL_CONTEXT = context;
           }}
-          datasets={ {} }
+          datasets={{}}
         />
       </div>
-    )
+    );
   }
 }
 
-
-
-export default Renderer
+export default Renderer;
