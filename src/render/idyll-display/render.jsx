@@ -18,15 +18,18 @@ class Renderer extends React.PureComponent {
     const { markup } = this.props;
     return (
       <div className="renderer" style={{ width: "50%" }}>
-        <IdyllDocument
-          markup={markup}
-          components={components}
-          layout={"centered"}
-          context={context => {
-            window.IDYLL_CONTEXT = context;
-          }}
-          datasets={{}}
-        />
+        <div className="renderer-container">
+          {/* <IdyllDocument
+            markup={markup}
+            components={components}
+            layout={"centered"}
+            context={context => {
+              window.IDYLL_CONTEXT = context;
+            }}
+            datasets={{}}
+          /> */}
+          {markup}
+        </div>
       </div>
     );
   }

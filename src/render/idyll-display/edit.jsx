@@ -11,7 +11,22 @@ class Edit extends React.PureComponent {
     this.state = {
       editorState: EditorState.createWithContent(content)
     };
-    this.onChange = editorState => this.setState({ editorState });
+    // this.onChange = editorState => this.setState({ editorState });
+
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  // When user types or editor area is changed, updates
+  // current editing state to new one
+  handleChange(newEditorState) {
+    this.setState({ editorState: newEditorState });
+
+    // update index.jsx to reflect new markup changes
+    // based on its handleChange function
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(newEditorState.getCurrentContent().getPlainText());
+    }
   }
 
   // Receives previous props and checks to see if
@@ -28,7 +43,10 @@ class Edit extends React.PureComponent {
 
     return (
       <div className="editor" style={{ width: "50%" }}>
-        <Editor editorState={this.state.editorState} onChange={this.onChange} />
+        <Editor
+          editorState={this.state.editorState}
+          onChange={this.handleChange}
+        />
       </div>
     );
   }
