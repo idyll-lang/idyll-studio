@@ -15,7 +15,6 @@ class IdyllDisplay extends React.PureComponent {
   // When editor detects changes, updates current markup
   // to the newMarkup passed in
   handleChange(newMarkup) {
-    // Note: newMarkup is an EditorState object
     this.setState({ currentMarkup: newMarkup });
   }
 
