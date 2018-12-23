@@ -7,11 +7,9 @@ class Edit extends React.PureComponent {
 
     // Create content state based on markup prop
     var content = ContentState.createFromText(this.props.markup);
-
     this.state = {
       editorState: EditorState.createWithContent(content)
     };
-    // this.onChange = editorState => this.setState({ editorState });
 
     this.handleChange = this.handleChange.bind(this);
   }
