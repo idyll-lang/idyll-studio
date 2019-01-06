@@ -19,7 +19,7 @@ class Renderer extends React.PureComponent {
     return (
       <div className="renderer" style={{ width: "50%" }}>
         <div className="renderer-container">
-          {/* <IdyllDocument
+          <IdyllDocument
             markup={markup}
             components={components}
             layout={"centered"}
@@ -27,8 +27,7 @@ class Renderer extends React.PureComponent {
               window.IDYLL_CONTEXT = context;
             }}
             datasets={{}}
-          /> */}
-          {markup}
+          />
         </div>
       </div>
     );
