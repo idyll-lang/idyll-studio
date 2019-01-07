@@ -16,6 +16,10 @@ class IdyllDisplay extends React.PureComponent {
   // to the newMarkup passed in
   handleChange(newMarkup) {
     this.setState({ currentMarkup: newMarkup });
+    const { onChange } = this.props;
+    if (onChange) {
+      onChange(newMarkup);
+    }
   }
 
   // Update renderer to reflect newly uploaded file
