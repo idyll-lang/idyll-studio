@@ -45,7 +45,6 @@ class Main {
 
   handleFileSave() {
     if (this.filePath === undefined) {
-      // const savePath = dialog.showSaveDialog(null);
       const options = {
         defaultPath: app.getPath("documents") + "/my-idyll-post.idyll"
       };
