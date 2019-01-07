@@ -56,11 +56,14 @@ class Main {
 
     // Writes to file given path
     console.log(this.filePath);
-    ipcMain.on("save", (event, content) => {
-      fs.writeFile(this.filePath, content, err => {
-        if (err) throw err;
+    if (this.filePath !== undefined) {
+      // must check if actually saved
+      ipcMain.on("save", (event, content) => {
+        fs.writeFile(this.filePath, content, err => {
+          if (err) throw err;
+        });
       });
-    });
+    }
   }
 }
 
