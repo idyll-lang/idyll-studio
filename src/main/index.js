@@ -1,4 +1,4 @@
-const { dialog, ipcMain } = require("electron");
+const { dialog, ipcMain, app } = require("electron");
 const Menu = require("./menu");
 const fs = require("fs");
 
@@ -44,6 +44,19 @@ class Main {
   }
 
   handleFileSave() {
+    if (this.filePath === undefined) {
+      // const savePath = dialog.showSaveDialog(null);
+      const options = {
+        defaultPath: app.getPath("documents") + "/my-idyll-post.idyll"
+      };
+
+      dialog.showSaveDialog(null, options, path => {
+        this.filePath = path;
+      });
+    }
+
+    // Writes to file given path
+    console.log(this.filePath);
     ipcMain.on("save", (event, content) => {
       fs.writeFile(this.filePath, content, err => {
         if (err) throw err;
