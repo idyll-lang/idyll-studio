@@ -1,6 +1,7 @@
 const { dialog, ipcMain, app } = require("electron");
 const Menu = require("./menu");
 const fs = require("fs");
+// const Idyll = require("idyll");
 
 class Main {
   constructor(electronObjects) {
@@ -38,9 +39,26 @@ class Main {
 
     this.filePath = file;
 
+    var slash = "\\";
+    if (process.platform === "darwin") {
+      slash = "/";
+    }
+    var workingDir = this.filePath.substring(
+      0,
+      this.filePath.lastIndexOf(slash)
+    );
+    console.log(workingDir);
+
+    // // Instantiate an Idyll instance
+    // var idyll = Idyll({
+    //   inputFile: this.filePath,
+    //   output: this.file
+    // })
+
     // Accepts a file path
     const fileContent = fs.readFileSync(file).toString();
     this.mainWindow.webContents.send("idyll:markup", fileContent);
+    this.mainWindow.webContents.send("idyll:path", this.filePath);
   }
 
   handleFileSave() {

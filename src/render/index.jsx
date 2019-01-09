@@ -9,13 +9,15 @@ class App extends React.PureComponent {
     super(props);
 
     this.state = {
-      markup: ""
+      markup: "",
+      pathKey: ""
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(newMarkup) {
+    console.log(newMarkup);
     ipcRenderer.send("save", newMarkup);
   }
 
@@ -25,12 +27,22 @@ class App extends React.PureComponent {
         markup: markup
       });
     });
+
+    ipcRenderer.on("idyll:path", (event, path) => {
+      this.setState({
+        pathKey: path
+      });
+    });
   }
 
   render() {
     return (
       <div>
-        <IdyllDisplay markup={this.state.markup} onChange={this.handleChange} />
+        <IdyllDisplay
+          key={this.state.pathKey}
+          markup={this.state.markup}
+          onChange={this.handleChange}
+        />
       </div>
     );
   }
