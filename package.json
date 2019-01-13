@@ -9,7 +9,9 @@
   "dependencies": {
     "babel": "^6.5.2",
     "draft-js": "^0.10.5",
+    "electron": "^4.0.1",
     "electron-prebuilt-compile": "^1.4.14",
+    "idyll": "^3.12.1",
     "idyll-components": "^3.4.1",
     "idyll-document": "^2.14.0",
     "react": "^16.0.0",

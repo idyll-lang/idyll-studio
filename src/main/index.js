@@ -1,7 +1,7 @@
 const { dialog, ipcMain, app } = require("electron");
 const Menu = require("./menu");
 const fs = require("fs");
-// const Idyll = require("idyll");
+const Idyll = require("idyll");
 
 class Main {
   constructor(electronObjects) {
@@ -13,6 +13,7 @@ class Main {
     // Menu commands
     menu.on("file:open", this.handleFileOpen);
     menu.on("file:save", this.handleFileSave);
+    console.log(process.versions);
   }
 
   handleFileOpen() {
