@@ -62,17 +62,17 @@ class Main {
   }
 
   handleFileSave() {
-    if (this.filePath === undefined) {
-      const options = {
-        defaultPath: app.getPath("documents") + "/my-idyll-post.idyll"
-      };
+    // TODO: Allow saving for newly created projects
+    // if (this.filePath === undefined) {
+    //   const options = {
+    //     defaultPath: app.getPath("documents") + "/my-idyll-post.idyll"
+    //   };
 
-      dialog.showSaveDialog(null, options, path => {
-        this.filePath = path;
-      });
-    }
+    //   dialog.showSaveDialog(null, options, path => {
+    //     this.filePath = path;
+    //   });
+    // }
 
-    // Writes to file given path
     console.log(this.filePath);
     if (this.filePath !== undefined) {
       // must check if actually saved
