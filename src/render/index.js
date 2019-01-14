@@ -1,7 +1,6 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import IdyllDisplay from "./render/idyll-display/index.jsx";
-
+import React from 'react';
+import ReactDOM from 'react-dom';
+import IdyllDisplay from './idyll-display';
 const { ipcRenderer } = require("electron");
 
 class App extends React.PureComponent {

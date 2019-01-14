@@ -1,6 +1,6 @@
 import React from "react";
-import Edit from "./edit.jsx";
-import Render from "./render.jsx";
+import Edit from "./edit.js";
+import Render from "./render.js";
 
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
