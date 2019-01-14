@@ -2,7 +2,6 @@
   "name": "react-test",
   "version": "0.1.0",
   "private": true,
-  "main": "./src/main/index.js",
   "scripts": {
     "start": "cross-env NODE_ENV=development electron ./src/",
     "test": "echo \"Error: no test specified\" && exit 1"
