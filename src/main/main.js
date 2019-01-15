@@ -13,7 +13,6 @@ class Main {
     // Menu commands
     menu.on("file:open", this.handleFileOpen);
     menu.on("file:save", this.handleFileSave);
-    console.log(process.versions);
   }
 
   handleFileOpen() {
@@ -48,18 +47,24 @@ class Main {
       0,
       this.filePath.lastIndexOf(slash)
     );
-    console.log(workingDir);
 
-    // // Instantiate an Idyll instance
-    // var idyll = Idyll({
-    //   inputFile: this.filePath,
-    //   output: this.file
-    // })
+    // Instantiate an Idyll instance
+    var idyll = Idyll({
+      inputFile: this.filePath,
+      output: workingDir + "/build/",
+      componentFolder: workingDir + "/components/",
+      dataFolder: workingDir + "/data",
+      layout: "centered",
+      theme: "github"
+    });
+
+    console.log(idyll.getPaths());
 
     // Accepts a file path
     const fileContent = fs.readFileSync(file).toString();
     this.mainWindow.webContents.send("idyll:markup", fileContent);
     this.mainWindow.webContents.send("idyll:path", this.filePath);
+    this.mainWindow.webContents.send("idyll:idyll", idyll);
   }
 
   handleFileSave() {

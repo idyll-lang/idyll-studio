@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import IdyllDisplay from './idyll-display';
+import React from "react";
+import ReactDOM from "react-dom";
+import IdyllDisplay from "./idyll-display";
 const { ipcRenderer } = require("electron");
 
 class App extends React.PureComponent {
@@ -31,6 +31,10 @@ class App extends React.PureComponent {
       this.setState({
         pathKey: path
       });
+    });
+
+    ipcRenderer.on("idyll:idyll", (event, idyll) => {
+      console.log(idyll.getComponents());
     });
   }
 
