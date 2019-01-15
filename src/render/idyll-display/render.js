@@ -21,7 +21,7 @@ class Renderer extends React.PureComponent {
         <div className="renderer-container">
           <IdyllDocument
             markup={markup}
-            components={components}
+            components={this.props.components}
             layout={"centered"}
             context={context => {
               window.IDYLL_CONTEXT = context;

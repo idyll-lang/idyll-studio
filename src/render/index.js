@@ -9,14 +9,14 @@ class App extends React.PureComponent {
 
     this.state = {
       markup: "",
-      pathKey: ""
+      pathKey: "",
+      components: []
     };
 
     this.handleChange = this.handleChange.bind(this);
   }
 
   handleChange(newMarkup) {
-    console.log(newMarkup);
     ipcRenderer.send("save", newMarkup);
   }
 
@@ -33,8 +33,10 @@ class App extends React.PureComponent {
       });
     });
 
-    ipcRenderer.on("idyll:idyll", (event, idyll) => {
-      console.log(idyll.getComponents());
+    ipcRenderer.on("idyll:components", (event, components) => {
+      this.setState({
+        components: components
+      });
     });
   }
 
@@ -45,6 +47,7 @@ class App extends React.PureComponent {
           key={this.state.pathKey}
           markup={this.state.markup}
           onChange={this.handleChange}
+          components={this.state.components}
         />
       </div>
     );

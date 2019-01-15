@@ -8,7 +8,6 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       currentMarkup: this.props.markup
     };
-
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -31,13 +30,13 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { markup } = this.props;
+    const { markup, components } = this.props;
     const { currentMarkup } = this.state;
 
     return (
       <div style={{ display: "flex", flexDirection: "row" }}>
         <Edit markup={markup} onChange={this.handleChange} />
-        <Render markup={currentMarkup} />
+        <Render markup={currentMarkup} components={components} />
       </div>
     );
   }

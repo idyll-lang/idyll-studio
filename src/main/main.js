@@ -64,7 +64,7 @@ class Main {
     const fileContent = fs.readFileSync(file).toString();
     this.mainWindow.webContents.send("idyll:markup", fileContent);
     this.mainWindow.webContents.send("idyll:path", this.filePath);
-    this.mainWindow.webContents.send("idyll:idyll", idyll);
+    this.mainWindow.webContents.send("idyll:components", idyll.getComponents());
   }
 
   handleFileSave() {
