@@ -10,9 +10,10 @@ class Main {
 
     this.filePath = "";
 
+    this.electronWorkingDir = require('path').dirname(require.main.filename);
     // Menu commands
-    menu.on("file:open", this.handleFileOpen);
-    menu.on("file:save", this.handleFileSave);
+    menu.on("file:open", this.handleFileOpen.bind(this));
+    menu.on("file:save", this.handleFileSave.bind(this));
   }
 
   handleFileOpen() {
@@ -48,6 +49,8 @@ class Main {
       this.filePath.lastIndexOf(slash)
     );
 
+    console.log(this.electronWorkingDir);
+
     // Instantiate an Idyll instance
     var idyll = Idyll({
       inputFile: this.filePath,
@@ -57,6 +60,24 @@ class Main {
       layout: "centered",
       theme: "github"
     });
+
+    // filter to catch all requests to static folder
+    const staticContentFilter = { urls: [ 'static/*' ] };
+    this.mainWindow.webContents.session.webRequest.onBeforeRequest(staticContentFilter, (details, callback) => {
+      const { url } = details;
+      if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
+        const localURL = url.replace(this.electronWorkingDir, workingDir);
+        callback({
+          cancel: false,
+          redirectURL: ( encodeURI(localURL ) )
+        });
+      } else {
+        callback({
+          cancel: false
+        });
+      }
+    });
+
 
     console.log(idyll.getPaths());
 

@@ -7,7 +7,10 @@
 	<div id="app"></div>
 	<script>
 		// install babel hooks in the renderer process
-		require('@babel/register');
+		require('@babel/register')({
+			presets: [ "@babel/preset-env", "@babel/preset-react" ],
+			ignore: [(path) => path.indexOf('node_modules') > -1]
+		});
 		require('./render/index.js');
 	</script>
 </body>
