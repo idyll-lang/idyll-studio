@@ -10,7 +10,7 @@ class Main {
 
     this.filePath = "";
 
-    this.electronWorkingDir = require('path').dirname(require.main.filename);
+    this.electronWorkingDir = require("path").dirname(require.main.filename);
     // Menu commands
     menu.on("file:open", this.handleFileOpen.bind(this));
     menu.on("file:save", this.handleFileSave.bind(this));
@@ -62,22 +62,24 @@ class Main {
     });
 
     // filter to catch all requests to static folder
-    const staticContentFilter = { urls: [ 'static/*' ] };
-    this.mainWindow.webContents.session.webRequest.onBeforeRequest(staticContentFilter, (details, callback) => {
-      const { url } = details;
-      if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
-        const localURL = url.replace(this.electronWorkingDir, workingDir);
-        callback({
-          cancel: false,
-          redirectURL: ( encodeURI(localURL ) )
-        });
-      } else {
-        callback({
-          cancel: false
-        });
+    const staticContentFilter = { urls: ["static/*"] };
+    this.mainWindow.webContents.session.webRequest.onBeforeRequest(
+      staticContentFilter,
+      (details, callback) => {
+        const { url } = details;
+        if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
+          const localURL = url.replace(this.electronWorkingDir, workingDir);
+          callback({
+            cancel: false,
+            redirectURL: encodeURI(localURL)
+          });
+        } else {
+          callback({
+            cancel: false
+          });
+        }
       }
-    });
-
+    );
 
     console.log(idyll.getPaths());
 
@@ -100,7 +102,7 @@ class Main {
     //   });
     // }
 
-    console.log(this.filePath);
+    this.mainWindow.webContents.send("idyll:save", "Saved!");
     if (this.filePath !== undefined) {
       // must check if actually saved
       ipcMain.on("save", (event, content) => {

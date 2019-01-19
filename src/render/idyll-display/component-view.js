@@ -52,8 +52,8 @@ class ComponentView extends React.PureComponent {
   insertComponent(name) {
     if (name === "range") {
       var tag = "[Range min:0 max:10 value:5 /]";
-      const { insertNewComponent } = this.props;
-      insertNewComponent(tag);
+      const { insertComponent } = this.props;
+      insertComponent(tag);
     }
   }
 

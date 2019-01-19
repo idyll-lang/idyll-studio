@@ -37,8 +37,6 @@ class Edit extends React.PureComponent {
   }
 
   render() {
-    // const { markup } = this.props;
-
     return (
       <div className="editor" style={{ width: "50%" }}>
         <Editor

@@ -10,20 +10,32 @@ class App extends React.PureComponent {
     this.state = {
       markup: "",
       pathKey: "",
+      savedMarkup: "",
       components: []
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.insertComponent = this.insertComponent.bind(this);
   }
 
+  // Accepts the updated markup from the editor
+  // for saving
   handleChange(newMarkup) {
-    ipcRenderer.send("save", newMarkup);
+    this.setState({
+      savedMarkup: newMarkup
+    });
+  }
+
+  insertComponent(componentMarkup) {
+    console.log(componentMarkup);
+    this.setState({ markup: componentMarkup });
   }
 
   componentDidMount() {
     ipcRenderer.on("idyll:markup", (event, markup) => {
       this.setState({
-        markup: markup
+        markup: markup,
+        savedMarkup: markup
       });
     });
 
@@ -38,6 +50,11 @@ class App extends React.PureComponent {
         components: components
       });
     });
+
+    ipcRenderer.on("idyll:save", (event, message) => {
+      console.log(message);
+      ipcRenderer.send("save", this.state.savedMarkup);
+    });
   }
 
   render() {
@@ -47,6 +64,7 @@ class App extends React.PureComponent {
           key={this.state.pathKey}
           markup={this.state.markup}
           onChange={this.handleChange}
+          insertComponent={this.insertComponent}
           components={this.state.components}
         />
       </div>

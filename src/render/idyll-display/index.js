@@ -7,11 +7,10 @@ class IdyllDisplay extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentMarkup: this.props.markup,
-      newMarkup: ""
+      currentMarkup: this.props.markup
     };
     this.handleChange = this.handleChange.bind(this);
-    this.insertNewComponent = this.insertNewComponent.bind(this);
+    this.insertComponent = this.insertComponent.bind(this);
   }
 
   // When editor detects changes, updates current markup
@@ -34,26 +33,26 @@ class IdyllDisplay extends React.PureComponent {
 
   // Insert a new component into editor and renderer given
   // component tag
-  insertNewComponent(componentTag) {
+  insertComponent(componentTag) {
     var markup = this.state.currentMarkup + "\n" + componentTag;
     this.setState({ currentMarkup: markup });
-    // this.setState({ newMarkup: "\n" + componentTag });
 
-    // TODO: find working way to update editor state
+    const { insertComponent } = this.props;
+    insertComponent(markup);
   }
 
   render() {
     const { markup, components } = this.props;
-    const { currentMarkup, newMarkup } = this.state;
+    const { currentMarkup } = this.state;
 
     return (
       <div>
         <ComponentView
           components={components}
-          insertNewComponent={this.insertNewComponent}
+          insertComponent={this.insertComponent}
         />
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <Edit markup={markup + newMarkup} onChange={this.handleChange} />
+          <Edit markup={markup} onChange={this.handleChange} />
           <Render markup={currentMarkup} components={components} />
         </div>
       </div>
