@@ -14,7 +14,14 @@ const ComponentContainer = {
   flexDirection: "row",
   flexWrap: "wrap",
   width: "70%",
-  overflow: "scroll"
+  overflow: "scroll",
+
+  // Placeholder styling for now
+  position: "relative",
+  top: "10%",
+  transform: "translateX(30%)",
+  background: "beige",
+  marginRight: "5%"
 };
 
 const Component = {
@@ -22,6 +29,18 @@ const Component = {
   height: "50px",
   padding: "15px",
   cursor: "pointer"
+};
+
+const Label = {
+  backgroundColor: "beige",
+  position: "relative",
+  top: "30%",
+  transform: "translateX(30%)",
+  display: "flex",
+  alignItems: "center",
+  height: "8vh",
+  padding: "3px",
+  maxWidth: "15vw"
 };
 
 class ComponentView extends React.PureComponent {
@@ -61,7 +80,9 @@ class ComponentView extends React.PureComponent {
     const { components } = this.props;
     return (
       <div id="component-view" style={ViewContainer}>
-        <div className="label">Components</div>
+        <div className="label" style={Label}>
+          Components
+        </div>
         <div id="component-container" style={ComponentContainer}>
           {components.map(component => this.displayComponents(component))}
         </div>

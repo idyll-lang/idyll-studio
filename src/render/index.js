@@ -26,8 +26,9 @@ class App extends React.PureComponent {
     });
   }
 
+  // Updates markup to incorporate inserted component markup
+  // to send back down to editor
   insertComponent(componentMarkup) {
-    console.log(componentMarkup);
     this.setState({ markup: componentMarkup });
   }
 
