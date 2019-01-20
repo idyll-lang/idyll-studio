@@ -2,32 +2,31 @@
   "name": "react-test",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "cross-env NODE_ENV=development electron ./src/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "draft-js": "^0.10.5",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
-    "react-scripts": "2.1.1"
+    "electron": "^4.0.1",
+    "idyll": "^3.12.1",
+    "idyll-components": "^3.4.1",
+    "idyll-document": "^2.14.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "electron": "electron .",
-    "electron-dev": "ELECTRON_START_URL=http://localhost:3000 electron ."
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ],
   "devDependencies": {
-    "electron": "^3.0.7"
-  },
-  "main": "src/electron-starter.js",
-  "homepage": "./"
+    "acorn": "^6.0.5",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/preset-stage-2": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "cross-env": "^3.1.4",
+    "electron-connect": "*",
+    "electron-devtools-installer": "^2.0.1",
+    "electron-packager": "*",
+    "electron-react-devtools": "^0.3.1",
+    "electron-reload": "^1.3.0"
+  }
 }
