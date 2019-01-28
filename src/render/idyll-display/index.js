@@ -3,13 +3,6 @@ import Edit from "./edit.js";
 import Render from "./render.js";
 import ComponentView from "./component-view.js";
 
-const UpperContainer = {
-  width: "100vw",
-  backgroundColor: "black",
-  display: "flex",
-  flexDirection: "row"
-};
-
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -53,15 +46,17 @@ class IdyllDisplay extends React.PureComponent {
     const { currentMarkup } = this.state;
 
     return (
-      <div>
-        <div id="upper-container" style={UpperContainer}>
+      <div className="grid">
+        <div className="header">
           <ComponentView
             components={components}
             insertComponent={this.insertComponent}
           />
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div className="edit-container">
           <Edit markup={markup} onChange={this.handleChange} />
+        </div>
+        <div className="output-container">
           <Render markup={currentMarkup} components={components} />
         </div>
       </div>

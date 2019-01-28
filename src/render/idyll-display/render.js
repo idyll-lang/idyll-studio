@@ -17,6 +17,9 @@ class Renderer extends React.PureComponent {
   render() {
     const { markup, components } = this.props;
 
+    if (!markup) {
+      return 'Please load an Idyll project...';
+    }
     if (!components || !components.length) {
       return 'Loading components...';
     }

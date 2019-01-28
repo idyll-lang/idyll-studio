@@ -7,13 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "create-react-class": "^15.6.3",
     "draft-js": "^0.10.5",
     "electron": "^4.0.1",
     "idyll": "^3.12.1",
     "idyll-components": "^3.4.1",
     "idyll-document": "^2.14.0",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "react-select": "^2.3.0"
   },
   "devDependencies": {
     "acorn": "^6.0.5",
