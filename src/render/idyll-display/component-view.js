@@ -69,11 +69,24 @@ class ComponentView extends React.PureComponent {
 
   // Returns the text mapping between component and tag
   insertComponent(name) {
-    if (name === "range") {
-      var tag = "[Range min:0 max:10 value:5 /]";
-      const { insertComponent } = this.props;
-      insertComponent(tag);
+    var tagInfo = this.props.propsMap.get(name);
+    var tag = "[" + tagInfo.name + " ";
+    if (tagInfo.props != undefined) {
+      tagInfo.props.forEach(prop => {
+        tag += prop.name + ":" + prop.example + " ";
+      });
     }
+    if (tagInfo.tagType === "closed") {
+      tag += " /]";
+    } else {
+      tag += "]";
+      if (name === "equation") {
+        tag += "y = \\int x^2 dx";
+      }
+      tag += "[/" + tagInfo.name + "]";
+    }
+    const { insertComponent } = this.props;
+    insertComponent(tag);
   }
 
   render() {

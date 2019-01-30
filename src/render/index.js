@@ -11,7 +11,8 @@ class App extends React.PureComponent {
       markup: "",
       pathKey: "",
       savedMarkup: "",
-      components: []
+      components: [],
+      componentPropMap: new Map()
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -47,8 +48,28 @@ class App extends React.PureComponent {
     });
 
     ipcRenderer.on("idyll:components", (event, components) => {
+      var componentProps = new Map();
+
+      components.forEach(component => {
+        var path;
+        try {
+          path = require(component.path);
+        } catch (error) {
+          console.log(error);
+        }
+        // Stores {component name: props }
+        if (typeof path === "object" && path.default !== undefined) {
+          var props = path.default._idyll;
+
+          componentProps.set(component.name, props);
+        } else if (typeof path === "function") {
+          componentProps.set(component.name, { props: [] });
+        }
+      });
+
       this.setState({
-        components: components
+        components: components,
+        componentPropMap: componentProps
       });
     });
 
@@ -67,6 +88,7 @@ class App extends React.PureComponent {
           onChange={this.handleChange}
           insertComponent={this.insertComponent}
           components={this.state.components}
+          propsMap={this.state.componentPropMap}
         />
       </div>
     );

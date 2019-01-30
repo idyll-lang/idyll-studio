@@ -49,7 +49,7 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { markup, components } = this.props;
+    const { markup, components, propsMap } = this.props;
     const { currentMarkup } = this.state;
 
     return (
@@ -58,6 +58,7 @@ class IdyllDisplay extends React.PureComponent {
           <ComponentView
             components={components}
             insertComponent={this.insertComponent}
+            propsMap={propsMap}
           />
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
