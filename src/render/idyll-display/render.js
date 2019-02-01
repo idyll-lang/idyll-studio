@@ -1,5 +1,4 @@
 import React from "react";
-import * as components from "idyll-components";
 import IdyllDocument from "idyll-document";
 
 class Renderer extends React.PureComponent {
@@ -18,16 +17,16 @@ class Renderer extends React.PureComponent {
     const { markup, components } = this.props;
 
     if (!markup) {
-      return 'Please load an Idyll project...';
+      return "Please load an Idyll project...";
     }
     if (!components || !components.length) {
-      return 'Loading components...';
+      return "Loading components...";
     }
-    const loadedComponent = components.reduce((memo, {name, path}) => {
+    const loadedComponent = components.reduce((memo, { name, path }) => {
       try {
         memo[name] = require(path);
-      } catch(e){
-        console.log('Error loading component', name);
+      } catch (e) {
+        console.log("Error loading component", name);
       }
       return memo;
     }, {});
