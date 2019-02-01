@@ -60,10 +60,13 @@ class App extends React.PureComponent {
         // Stores {component name: props }
         if (typeof path === "object" && path.default !== undefined) {
           var props = path.default._idyll;
-
           componentProps.set(component.name, props);
         } else if (typeof path === "function") {
-          componentProps.set(component.name, { props: [] });
+          componentProps.set(component.name, {
+            name: component.name,
+            tagType: "closed",
+            props: []
+          });
         }
       });
 
