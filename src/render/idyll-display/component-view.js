@@ -8,7 +8,7 @@ class ComponentView extends React.PureComponent {
     this.insertComponent = this.insertComponent.bind(this);
   }
 
-  // Returns the text mapping between component and tag
+  // Inserts the tag associated with the given component name
   insertComponent(name) {
     var tagInfo = this.props.propsMap.get(name);
     var tag = "[" + tagInfo.name + " ";
@@ -24,7 +24,7 @@ class ComponentView extends React.PureComponent {
       tag += "]" + children + "[/" + tagInfo.name + "]";
     }
     const { insertComponent } = this.props;
-    insertComponent(tag);
+    insertComponent(tag); // must pass info up level
   }
 
   render() {

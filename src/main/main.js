@@ -11,6 +11,7 @@ class Main {
     this.filePath = "";
 
     this.electronWorkingDir = require("path").dirname(require.main.filename);
+
     // Menu commands
     menu.on("file:open", this.handleFileOpen.bind(this));
     menu.on("file:save", this.handleFileSave.bind(this));
@@ -30,7 +31,7 @@ class Main {
       ]
     });
 
-    // If no files
+    // If no files, don't open
     if (!files) {
       return;
     }
@@ -83,28 +84,20 @@ class Main {
 
     console.log(idyll.getPaths());
 
-    // Accepts a file path
+    // Sends contents to render process
     const fileContent = fs.readFileSync(file).toString();
     this.mainWindow.webContents.send("idyll:markup", fileContent);
     this.mainWindow.webContents.send("idyll:path", this.filePath);
     this.mainWindow.webContents.send("idyll:components", idyll.getComponents());
   }
 
+  // Saves current markup to open idyll project
   handleFileSave() {
-    // TODO: Allow saving for newly created projects
-    // if (this.filePath === undefined) {
-    //   const options = {
-    //     defaultPath: app.getPath("documents") + "/my-idyll-post.idyll"
-    //   };
-
-    //   dialog.showSaveDialog(null, options, path => {
-    //     this.filePath = path;
-    //   });
-    // }
-
+    // Let's render process know ready to receive markup to save
     this.mainWindow.webContents.send("idyll:save", "Saved!");
+
+    // Saves markup to file
     if (this.filePath !== undefined) {
-      // must check if actually saved
       ipcMain.on("save", (event, content) => {
         fs.writeFile(this.filePath, content, err => {
           if (err) throw err;

@@ -17,7 +17,7 @@ class IdyllDisplay extends React.PureComponent {
   // to the newMarkup passed in
   handleChange(newMarkup) {
     this.setState({ currentMarkup: newMarkup });
-    const { onChange } = this.props;
+    const { onChange } = this.props; // must pass info up one level
     if (onChange) {
       onChange(newMarkup);
     }
@@ -32,7 +32,7 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   // Insert a new component into editor and renderer given
-  // component tag
+  // component tag String
   insertComponent(componentTag) {
     var markup = this.state.currentMarkup + "\n" + componentTag;
     this.setState({ currentMarkup: markup });
