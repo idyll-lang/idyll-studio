@@ -1,47 +1,5 @@
 import React from "react";
-
-// Stylings
-const ViewContainer = {
-  display: "flex",
-  flexDirection: "row",
-  height: "15vh",
-  width: "50vw",
-  marginBottom: "20px"
-};
-
-const ComponentContainer = {
-  display: "flex",
-  flexDirection: "row",
-  flexWrap: "wrap",
-  width: "70%",
-  overflow: "scroll",
-
-  // Placeholder styling for now
-  position: "relative",
-  top: "10%",
-  transform: "translateX(30%)",
-  background: "beige",
-  marginRight: "5%"
-};
-
-const Component = {
-  width: "50px",
-  height: "50px",
-  padding: "15px",
-  cursor: "pointer"
-};
-
-const Label = {
-  backgroundColor: "beige",
-  position: "relative",
-  top: "30%",
-  transform: "translateX(30%)",
-  display: "flex",
-  alignItems: "center",
-  height: "8vh",
-  padding: "3px",
-  maxWidth: "15vw"
-};
+import Select from 'react-select'
 
 class ComponentView extends React.PureComponent {
   constructor(props) {
@@ -57,7 +15,6 @@ class ComponentView extends React.PureComponent {
       <div
         key={component.name}
         className="component"
-        style={Component}
         onClick={() => {
           this.insertComponent(component.name);
         }}
@@ -91,13 +48,30 @@ class ComponentView extends React.PureComponent {
 
   render() {
     const { components } = this.props;
+    console.log('components', components);
     return (
-      <div id="component-view" style={ViewContainer}>
-        <div className="label" style={Label}>
+      <div className="component-view">
+        <div className="label">
           Components
         </div>
-        <div id="component-container" style={ComponentContainer}>
-          {components.map(component => this.displayComponents(component))}
+        <div className="component-container">
+          {
+            components && components.length ?
+              <Select
+                  placeholder = "Select a component"
+                  ref = "select"
+                  // on change callback
+                  options={components.map((component) => {
+                    console.log({ value: component, label: component.name})
+                    return { value: component, label: component.name}
+                  })}
+                  onChange = {({ value }) => {
+                    const component = value;
+                    console.log("you selected", component);
+                    this.insertComponent(component.name)
+                  }} />
+              : null
+          }
         </div>
       </div>
     );
