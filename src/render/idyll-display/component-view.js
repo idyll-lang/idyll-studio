@@ -1,5 +1,5 @@
-import React from "react";
-import Select from "react-select";
+import React from 'react';
+import Select from 'react-select';
 
 class ComponentView extends React.PureComponent {
   constructor(props) {
@@ -11,17 +11,17 @@ class ComponentView extends React.PureComponent {
   // Inserts the tag associated with the given component name
   insertComponent(name) {
     var tagInfo = this.props.propsMap.get(name);
-    var tag = "[" + tagInfo.name + " ";
-    if (tagInfo.props != undefined) {
+    var tag = '[' + tagInfo.name + ' ';
+    if (tagInfo.props !== undefined) {
       tagInfo.props.forEach(prop => {
-        tag += prop.name + ":" + prop.example + " ";
+        tag += prop.name + ':' + prop.example + ' ';
       });
     }
-    if (tagInfo.tagType === "closed") {
-      tag += " /]";
+    if (tagInfo.tagType === 'closed') {
+      tag += ' /]';
     } else {
-      var children = tagInfo.children !== undefined ? tagInfo.children[0] : "";
-      tag += "]" + children + "[/" + tagInfo.name + "]";
+      var children = tagInfo.children !== undefined ? tagInfo.children[0] : '';
+      tag += ']' + children + '[/' + tagInfo.name + ']';
     }
     const { insertComponent } = this.props;
     insertComponent(tag); // must pass info up level
@@ -29,15 +29,15 @@ class ComponentView extends React.PureComponent {
 
   render() {
     const { components } = this.props;
-    console.log("components", components);
+    console.log('components', components);
     return (
-      <div className="component-view">
-        <div className="label">Components</div>
-        <div className="component-container">
+      <div className='component-view'>
+        <div className='label'>Components</div>
+        <div className='component-container'>
           {components && components.length ? (
             <Select
-              placeholder="Select a component"
-              ref="select"
+              placeholder='Select a component'
+              ref='select'
               // on change callback
               options={components.map(component => {
                 console.log({ value: component, label: component.name });
@@ -45,7 +45,7 @@ class ComponentView extends React.PureComponent {
               })}
               onChange={({ value }) => {
                 const component = value;
-                console.log("you selected", component);
+                console.log('you selected', component);
                 this.insertComponent(component.name);
               }}
             />

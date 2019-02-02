@@ -1,32 +1,32 @@
-const { dialog, ipcMain, app } = require("electron");
-const Menu = require("./menu");
-const fs = require("fs");
-const Idyll = require("idyll");
+const { dialog, ipcMain, app } = require('electron');
+const Menu = require('./menu');
+const fs = require('fs');
+const Idyll = require('idyll');
 
 class Main {
   constructor(electronObjects) {
     this.mainWindow = electronObjects.win;
     const menu = new Menu(electronObjects);
 
-    this.filePath = "";
+    this.filePath = '';
 
-    this.electronWorkingDir = require("path").dirname(require.main.filename);
+    this.electronWorkingDir = require('path').dirname(require.main.filename);
 
     // Menu commands
-    menu.on("file:open", this.handleFileOpen.bind(this));
-    menu.on("file:save", this.handleFileSave.bind(this));
+    menu.on('file:open', this.handleFileOpen.bind(this));
+    menu.on('file:save', this.handleFileSave.bind(this));
   }
 
   handleFileOpen() {
     // Returns absolute path of file
     const files = dialog.showOpenDialog(this.mainWindow, {
-      properties: ["openFile"],
+      properties: ['openFile'],
       filters: [
         {
           // Give a specific filter on what
           // type of files we are looking for
-          name: "Idyll",
-          extensions: ["idyll", "idl"]
+          name: 'Idyll',
+          extensions: ['idyll', 'idl']
         }
       ]
     });
@@ -41,9 +41,9 @@ class Main {
 
     this.filePath = file;
 
-    var slash = "\\";
-    if (process.platform === "darwin") {
-      slash = "/";
+    var slash = '\\';
+    if (process.platform === 'darwin') {
+      slash = '/';
     }
     var workingDir = this.filePath.substring(
       0,
@@ -55,15 +55,15 @@ class Main {
     // Instantiate an Idyll instance
     var idyll = Idyll({
       inputFile: this.filePath,
-      output: workingDir + "/build/",
-      componentFolder: workingDir + "/components/",
-      dataFolder: workingDir + "/data",
-      layout: "centered",
-      theme: "github"
+      output: workingDir + '/build/',
+      componentFolder: workingDir + '/components/',
+      dataFolder: workingDir + '/data',
+      layout: 'centered',
+      theme: 'github'
     });
 
     // filter to catch all requests to static folder
-    const staticContentFilter = { urls: ["static/*"] };
+    const staticContentFilter = { urls: ['static/*'] };
     this.mainWindow.webContents.session.webRequest.onBeforeRequest(
       staticContentFilter,
       (details, callback) => {
@@ -82,23 +82,21 @@ class Main {
       }
     );
 
-    console.log(idyll.getPaths());
-
     // Sends contents to render process
     const fileContent = fs.readFileSync(file).toString();
-    this.mainWindow.webContents.send("idyll:markup", fileContent);
-    this.mainWindow.webContents.send("idyll:path", this.filePath);
-    this.mainWindow.webContents.send("idyll:components", idyll.getComponents());
+    this.mainWindow.webContents.send('idyll:markup', fileContent);
+    this.mainWindow.webContents.send('idyll:path', this.filePath);
+    this.mainWindow.webContents.send('idyll:components', idyll.getComponents());
   }
 
   // Saves current markup to open idyll project
   handleFileSave() {
     // Let's render process know ready to receive markup to save
-    this.mainWindow.webContents.send("idyll:save", "Saved!");
+    this.mainWindow.webContents.send('idyll:save', 'Saved!');
 
     // Saves markup to file
     if (this.filePath !== undefined) {
-      ipcMain.on("save", (event, content) => {
+      ipcMain.on('save', (event, content) => {
         fs.writeFile(this.filePath, content, err => {
           if (err) throw err;
         });

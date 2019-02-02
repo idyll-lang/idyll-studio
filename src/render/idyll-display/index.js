@@ -1,7 +1,7 @@
-import React from "react";
-import Edit from "./edit.js";
-import Render from "./render.js";
-import ComponentView from "./component-view.js";
+import React from 'react';
+import Edit from './edit.js';
+import Render from './render.js';
+import ComponentView from './component-view.js';
 
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
@@ -34,7 +34,7 @@ class IdyllDisplay extends React.PureComponent {
   // Insert a new component into editor and renderer given
   // component tag String
   insertComponent(componentTag) {
-    var markup = this.state.currentMarkup + "\n" + componentTag;
+    var markup = this.state.currentMarkup + '\n' + componentTag;
     this.setState({ currentMarkup: markup });
 
     const { insertComponent } = this.props;
@@ -46,18 +46,18 @@ class IdyllDisplay extends React.PureComponent {
     const { currentMarkup } = this.state;
 
     return (
-      <div className="grid">
-        <div className="header">
+      <div className='grid'>
+        <div className='header'>
           <ComponentView
             components={components}
             insertComponent={this.insertComponent}
             propsMap={propsMap}
           />
         </div>
-        <div className="edit-container">
+        <div className='edit-container'>
           <Edit markup={markup} onChange={this.handleChange} />
         </div>
-        <div className="output-container">
+        <div className='output-container'>
           <Render markup={currentMarkup} components={components} />
         </div>
       </div>

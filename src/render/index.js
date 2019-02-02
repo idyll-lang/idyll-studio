@@ -1,16 +1,16 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import IdyllDisplay from "./idyll-display";
-const { ipcRenderer } = require("electron");
+import React from 'react';
+import ReactDOM from 'react-dom';
+import IdyllDisplay from './idyll-display';
+const { ipcRenderer } = require('electron');
 
 class App extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      markup: "",
-      pathKey: "",
-      savedMarkup: "",
+      markup: '',
+      pathKey: '',
+      savedMarkup: '',
       components: [],
       componentPropMap: new Map()
     };
@@ -35,7 +35,7 @@ class App extends React.PureComponent {
 
   componentDidMount() {
     // On a new file open, sets markup up to send to editor
-    ipcRenderer.on("idyll:markup", (event, markup) => {
+    ipcRenderer.on('idyll:markup', (event, markup) => {
       this.setState({
         markup: markup,
         savedMarkup: markup
@@ -43,14 +43,14 @@ class App extends React.PureComponent {
     });
 
     // Grabs file path to set as a key for renderer
-    ipcRenderer.on("idyll:path", (event, path) => {
+    ipcRenderer.on('idyll:path', (event, path) => {
       this.setState({
         pathKey: path
       });
     });
 
     // Grabs component information and components
-    ipcRenderer.on("idyll:components", (event, components) => {
+    ipcRenderer.on('idyll:components', (event, components) => {
       var componentProps = new Map();
 
       components.forEach(component => {
@@ -59,15 +59,16 @@ class App extends React.PureComponent {
           path = require(component.path);
         } catch (error) {
           console.log(error);
+          return; // skip next iteration
         }
         // Stores {component name: props }
-        if (typeof path === "object" && path.default !== undefined) {
+        if (typeof path === 'object' && path.default !== undefined) {
           var props = path.default._idyll;
           componentProps.set(component.name, props);
-        } else if (typeof path === "function") {
+        } else if (typeof path === 'function') {
           componentProps.set(component.name, {
             name: component.name,
-            tagType: "closed",
+            tagType: 'closed',
             props: []
           });
         }
@@ -81,9 +82,9 @@ class App extends React.PureComponent {
 
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
-    ipcRenderer.on("idyll:save", (event, message) => {
+    ipcRenderer.on('idyll:save', (event, message) => {
       console.log(message);
-      ipcRenderer.send("save", this.state.savedMarkup);
+      ipcRenderer.send('save', this.state.savedMarkup);
     });
   }
 
@@ -103,4 +104,4 @@ class App extends React.PureComponent {
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById('app'));
