@@ -1,21 +1,22 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import IdyllDisplay from "./idyll-display";
-const { ipcRenderer } = require("electron");
+import React from 'react';
+import ReactDOM from 'react-dom';
+import IdyllDisplay from './idyll-display';
+const { ipcRenderer } = require('electron');
 
 class App extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      markup: "",
-      pathKey: "",
-      savedMarkup: "",
+      markup: '',
+      pathKey: '',
+      savedMarkup: '',
       components: []
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
+    this.deploy = this.deploy.bind(this);
   }
 
   // Accepts the updated markup from the editor
@@ -33,29 +34,34 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
-    ipcRenderer.on("idyll:markup", (event, markup) => {
+    ipcRenderer.on('idyll:markup', (event, markup) => {
       this.setState({
         markup: markup,
         savedMarkup: markup
       });
     });
 
-    ipcRenderer.on("idyll:path", (event, path) => {
+    ipcRenderer.on('idyll:path', (event, path) => {
       this.setState({
         pathKey: path
       });
     });
 
-    ipcRenderer.on("idyll:components", (event, components) => {
+    ipcRenderer.on('idyll:components', (event, components) => {
       this.setState({
         components: components
       });
     });
 
-    ipcRenderer.on("idyll:save", (event, message) => {
+    ipcRenderer.on('idyll:save', (event, message) => {
       console.log(message);
-      ipcRenderer.send("save", this.state.savedMarkup);
+      ipcRenderer.send('save', this.state.savedMarkup);
     });
+  }
+
+  // Deploying logic
+  deploy() {
+    ipcRenderer.send('deploy', 'Deployed!');
   }
 
   render() {
@@ -67,10 +73,11 @@ class App extends React.PureComponent {
           onChange={this.handleChange}
           insertComponent={this.insertComponent}
           components={this.state.components}
+          deploy={this.deploy}
         />
       </div>
     );
   }
 }
 
-ReactDOM.render(<App />, document.getElementById("app"));
+ReactDOM.render(<App />, document.getElementById('app'));
