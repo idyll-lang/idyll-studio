@@ -136,7 +136,7 @@ class Main {
         return acc;
       }, {});
       formData.token = token;
-      console.log('hello');
+
       let { alias } = await request.post({
         url: urljoin(IDYLL_PUB_API, 'deploy'),
         formData: formData,
@@ -154,9 +154,11 @@ class Main {
    */
   async getProjectToken(tokenPath, config) {
     var token;
-    try {
-      token = await fs.readFile(tokenPath, { encoding: 'utf-8' });
-    } catch (err) {
+    if (fs.existsSync(tokenPath)) {
+      token = await fs.readFile(tokenPath, { encoding: 'utf-8' }, err => {
+        console.log('Deploying...');
+      });
+    } else {
       let deployment = await request.post({
         url: urljoin(IDYLL_PUB_API, 'create'),
         body: {
@@ -175,3 +177,21 @@ class Main {
 }
 
 module.exports = Main;
+
+// var token;
+// try {
+//   token = await fs.readFile(tokenPath, { encoding: 'utf-8' });
+// } catch (err) {
+//   let deployment = await request.post({
+//     url: urljoin(IDYLL_PUB_API, 'create'),
+//     body: {
+//       name: config.name
+//     },
+//     json: true
+//   });
+//   token = deployment.token;
+//   await fs.writeFile(tokenPath, token, { encoding: 'utf-8' }, err => {
+//     if (err) throw err;
+//     console.log('Getting new url...');
+//   });
+// }

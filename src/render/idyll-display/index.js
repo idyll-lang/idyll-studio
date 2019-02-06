@@ -67,7 +67,7 @@ class IdyllDisplay extends React.PureComponent {
           <Render markup={currentMarkup} components={components} />
         </div>
         <div className='sidebar'>
-          <button onClick={this.deploy}>Hi</button>
+          <button onClick={this.deploy}>Publish</button>
         </div>
       </div>
     );
