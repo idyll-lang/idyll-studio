@@ -11,7 +11,8 @@ class App extends React.PureComponent {
       markup: '',
       pathKey: '',
       savedMarkup: '',
-      components: []
+      components: [],
+      componentPropMap: new Map()
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -34,6 +35,7 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
+    // On a new file open, sets markup up to send to editor
     ipcRenderer.on('idyll:markup', (event, markup) => {
       this.setState({
         markup: markup,
@@ -41,18 +43,46 @@ class App extends React.PureComponent {
       });
     });
 
+    // Grabs file path to set as a key for renderer
     ipcRenderer.on('idyll:path', (event, path) => {
       this.setState({
         pathKey: path
       });
     });
 
+    // Grabs component information and components
     ipcRenderer.on('idyll:components', (event, components) => {
+      var componentProps = new Map();
+
+      components.forEach(component => {
+        var path;
+        try {
+          path = require(component.path);
+        } catch (error) {
+          console.log(error);
+          return; // skip next iteration
+        }
+        // Stores {component name: props }
+        if (typeof path === 'object' && path.default !== undefined) {
+          var props = path.default._idyll;
+          componentProps.set(component.name, props);
+        } else if (typeof path === 'function') {
+          componentProps.set(component.name, {
+            name: component.name,
+            tagType: 'closed',
+            props: []
+          });
+        }
+      });
+
       this.setState({
-        components: components
+        components: components,
+        componentPropMap: componentProps
       });
     });
 
+    // When main wants to save, print "Saved!" to console
+    // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
       console.log(message);
       ipcRenderer.send('save', this.state.savedMarkup);
@@ -74,6 +104,7 @@ class App extends React.PureComponent {
           insertComponent={this.insertComponent}
           components={this.state.components}
           deploy={this.deploy}
+          propsMap={this.state.componentPropMap}
         />
       </div>
     );

@@ -18,7 +18,7 @@ class IdyllDisplay extends React.PureComponent {
   // to the newMarkup passed in
   handleChange(newMarkup) {
     this.setState({ currentMarkup: newMarkup });
-    const { onChange } = this.props;
+    const { onChange } = this.props; // must pass info up one level
     if (onChange) {
       onChange(newMarkup);
     }
@@ -33,7 +33,7 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   // Insert a new component into editor and renderer given
-  // component tag
+  // component tag String
   insertComponent(componentTag) {
     var markup = this.state.currentMarkup + '\n' + componentTag;
     this.setState({ currentMarkup: markup });
@@ -49,7 +49,7 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { markup, components } = this.props;
+    const { markup, components, propsMap } = this.props;
     const { currentMarkup } = this.state;
 
     return (
@@ -58,6 +58,7 @@ class IdyllDisplay extends React.PureComponent {
           <ComponentView
             components={components}
             insertComponent={this.insertComponent}
+            propsMap={propsMap}
           />
         </div>
         <div className='edit-container'>

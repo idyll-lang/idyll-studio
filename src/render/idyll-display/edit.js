@@ -1,5 +1,5 @@
-import React from "react";
-import { Editor, EditorState, ContentState } from "draft-js";
+import React from 'react';
+import { Editor, EditorState, ContentState } from 'draft-js';
 
 class Edit extends React.PureComponent {
   constructor(props) {
@@ -38,7 +38,7 @@ class Edit extends React.PureComponent {
 
   render() {
     return (
-      <div className="editor" style={{ width: "50%" }}>
+      <div className='editor' style={{ width: '50%' }}>
         <Editor
           editorState={this.state.editorState}
           onChange={this.handleChange}

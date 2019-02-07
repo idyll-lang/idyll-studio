@@ -47,7 +47,7 @@ class Main {
       ]
     });
 
-    // If no files
+    // If no files, don't open
     if (!files) {
       return;
     }
@@ -109,6 +109,7 @@ class Main {
     );
   }
 
+  // Saves current markup to open idyll project
   handleFileSave() {
     this.mainWindow.webContents.send('idyll:save', 'Saved!');
     if (this.filePath !== undefined) {
