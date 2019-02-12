@@ -155,26 +155,8 @@ class Main {
    */
   async getProjectToken(tokenPath, config) {
     var token;
-    // if (fs.existsSync(tokenPath)) {
-    //   token = await fs.readFile(tokenPath, { encoding: 'utf-8' }, err => {
-    //     console.log('Deploying...');
-    //   });
-    // } else {
-    //   let deployment = await request.post({
-    //     url: urljoin(IDYLL_PUB_API, 'create'),
-    //     body: {
-    //       name: config.name
-    //     },
-    //     json: true
-    //   });
-    //   token = deployment.token;
-    //   await fs.writeFile(tokenPath, token, { encoding: 'utf-8' }, err => {
-    //     if (err) throw err;
-    //     console.log('Getting new url...');
-    //   });
-    // }
-    var token;
     try {
+      console.log('Deploying...');
       token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
     } catch (err) {
       let deployment = await request.post({
@@ -185,6 +167,7 @@ class Main {
         json: true
       });
       token = deployment.token;
+      console.log('Getting new url...');
       fs.writeFileSync(tokenPath, token, { encoding: 'utf-8' });
     }
     return token;
