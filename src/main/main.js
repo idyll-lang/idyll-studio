@@ -132,7 +132,7 @@ class Main {
       let token = await this.getProjectToken(tokenPath, config);
       let files = await readdir(buildDir);
 
-      let formData = files.reduce((acc, f) => {
+      let formData = await files.reduce((acc, f) => {
         acc[p.relative(buildDir, f)] = fs.createReadStream(f);
         return acc;
       }, {});
