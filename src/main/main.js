@@ -2,6 +2,7 @@ const { dialog, ipcMain, app } = require('electron');
 const Menu = require('./menu');
 const fs = require('fs');
 const Idyll = require('idyll');
+const compile = require('idyll-compiler');
 
 class Main {
   constructor(electronObjects) {
@@ -50,8 +51,6 @@ class Main {
       this.filePath.lastIndexOf(slash)
     );
 
-    console.log(this.electronWorkingDir);
-
     // Instantiate an Idyll instance
     var idyll = Idyll({
       inputFile: this.filePath,
@@ -84,6 +83,13 @@ class Main {
 
     // Sends contents to render process
     const fileContent = fs.readFileSync(file).toString();
+
+    // [ 'var', [ [ 'name', [Array] ], [ 'value', [Array] ] ], [] ]
+    compile(fileContent).then(ast => {
+      // console.log(ast[3][2][0]);
+      ast[3][2][1][1][0][1][1] = 'AHhhhh';
+      console.log(ast[3][2][1][1][0]);
+    });
     this.mainWindow.webContents.send('idyll:markup', fileContent);
     this.mainWindow.webContents.send('idyll:path', this.filePath);
     this.mainWindow.webContents.send('idyll:components', idyll.getComponents());
