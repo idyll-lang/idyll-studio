@@ -42,9 +42,8 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { markup, components, propsMap } = this.props;
+    const { markup, components, propsMap, ast } = this.props;
     const { currentMarkup } = this.state;
-
     return (
       <div className='grid'>
         <div className='header'>
@@ -58,7 +57,7 @@ class IdyllDisplay extends React.PureComponent {
           <Edit markup={markup} onChange={this.handleChange} />
         </div>
         <div className='output-container'>
-          <Render markup={currentMarkup} components={components} />
+          <Render markup={currentMarkup} components={components} ast={ast} />
         </div>
       </div>
     );

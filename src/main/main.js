@@ -13,6 +13,9 @@ class Main {
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
+    // ast
+    this.ast;
+
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
@@ -87,9 +90,12 @@ class Main {
     // [ 'var', [ [ 'name', [Array] ], [ 'value', [Array] ] ], [] ]
     compile(fileContent).then(ast => {
       // console.log(ast[3][2][0]);
-      ast[3][2][1][1][0][1][1] = 'AHhhhh';
-      console.log(ast[3][2][1][1][0]);
+      // ast[3][2][1][1][0][1][1] = 'AHhhhh';
+      // console.log(ast[3][2][1][1][0]);
+      this.ast = ast;
+      this.mainWindow.webContents.send('idyll:ast', this.ast);
     });
+
     this.mainWindow.webContents.send('idyll:markup', fileContent);
     this.mainWindow.webContents.send('idyll:path', this.filePath);
     this.mainWindow.webContents.send('idyll:components', idyll.getComponents());

@@ -12,7 +12,8 @@ class App extends React.PureComponent {
       pathKey: '',
       savedMarkup: '',
       components: [],
-      componentPropMap: new Map()
+      componentPropMap: new Map(),
+      ast: undefined
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -39,6 +40,12 @@ class App extends React.PureComponent {
       this.setState({
         markup: markup,
         savedMarkup: markup
+      });
+    });
+
+    ipcRenderer.on('idyll:ast', (event, ast) => {
+      this.setState({
+        ast: ast
       });
     });
 
@@ -98,6 +105,7 @@ class App extends React.PureComponent {
           insertComponent={this.insertComponent}
           components={this.state.components}
           propsMap={this.state.componentPropMap}
+          ast={this.state.ast}
         />
       </div>
     );
