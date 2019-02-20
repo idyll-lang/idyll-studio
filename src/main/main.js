@@ -89,9 +89,6 @@ class Main {
 
     // [ 'var', [ [ 'name', [Array] ], [ 'value', [Array] ] ], [] ]
     compile(fileContent, undefined).then(ast => {
-      // console.log(ast[3][2][0]);
-      // ast[3][2][1][1][0][1][1] = 'AHhhhh';
-      // console.log(ast[3][2][1][1][0]);
       this.ast = ast;
       this.mainWindow.webContents.send('idyll:ast', this.ast);
     });
