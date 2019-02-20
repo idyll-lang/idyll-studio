@@ -88,7 +88,7 @@ class Main {
     const fileContent = fs.readFileSync(file).toString();
 
     // [ 'var', [ [ 'name', [Array] ], [ 'value', [Array] ] ], [] ]
-    compile(fileContent).then(ast => {
+    compile(fileContent, undefined).then(ast => {
       // console.log(ast[3][2][0]);
       // ast[3][2][1][1][0][1][1] = 'AHhhhh';
       // console.log(ast[3][2][1][1][0]);

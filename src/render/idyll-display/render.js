@@ -15,7 +15,6 @@ class Renderer extends React.PureComponent {
 
   render() {
     const { markup, components, ast } = this.props;
-    console.log(ast);
     if (!markup) {
       return 'Please load an Idyll project...';
     }
@@ -34,8 +33,8 @@ class Renderer extends React.PureComponent {
       <div className='renderer' style={{ width: '50%' }}>
         <div className='renderer-container'>
           <IdyllDocument
-            // markup={markup}
-            ast={ast}
+            markup={markup}
+            //ast={ast}
             components={loadedComponent}
             layout={'centered'}
             context={context => {

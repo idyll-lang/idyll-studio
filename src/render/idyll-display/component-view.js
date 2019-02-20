@@ -29,7 +29,6 @@ class ComponentView extends React.PureComponent {
 
   render() {
     const { components } = this.props;
-    console.log('components', components);
     return (
       <div className='component-view'>
         <div className='label'>Components</div>
@@ -40,12 +39,11 @@ class ComponentView extends React.PureComponent {
               ref='select'
               // on change callback
               options={components.map(component => {
-                console.log({ value: component, label: component.name });
+                //console.log({ value: component, label: component.name });
                 return { value: component, label: component.name };
               })}
               onChange={({ value }) => {
                 const component = value;
-                console.log('you selected', component);
                 this.insertComponent(component.name);
               }}
             />
