@@ -87,15 +87,18 @@ class Main {
     // Sends contents to render process
     const fileContent = fs.readFileSync(file).toString();
 
-    // [ 'var', [ [ 'name', [Array] ], [ 'value', [Array] ] ], [] ]
+    // Compile contents
     compile(fileContent, undefined).then(ast => {
       this.ast = ast;
       this.mainWindow.webContents.send('idyll:ast', this.ast);
+      this.mainWindow.webContents.send('idyll:path', this.filePath);
+      this.mainWindow.webContents.send(
+        'idyll:components',
+        idyll.getComponents()
+      );
     });
 
-    this.mainWindow.webContents.send('idyll:markup', fileContent);
-    this.mainWindow.webContents.send('idyll:path', this.filePath);
-    this.mainWindow.webContents.send('idyll:components', idyll.getComponents());
+    // this.mainWindow.webContents.send('idyll:markup', fileContent);
   }
 
   // Saves current markup to open idyll project

@@ -2,15 +2,20 @@ import React from 'react';
 import Edit from './edit.js';
 import Render from './render.js';
 import ComponentView from './component-view.js';
+import { path } from 'change-case';
 
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentMarkup: this.props.markup
+      currentMarkup: this.props.markup,
+      currentAST: this.props.ast
     };
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
+
+    // handle change of ast
+    this.handleASTChange = this.handleASTChange.bind(this);
   }
 
   // When editor detects changes, updates current markup
@@ -23,11 +28,18 @@ class IdyllDisplay extends React.PureComponent {
     }
   }
 
+  handleASTChange(newAST) {
+    this.setState({ currentAST: newAST });
+  }
+
   // Update renderer to reflect newly uploaded file
   // if previous markup is any different from current
   componentDidUpdate(prevProps) {
     if (this.props.markup !== prevProps.markup) {
       this.handleChange(this.props.markup);
+    }
+    if (this.props.ast !== prevProps.ast) {
+      this.handleASTChange(this.props.ast);
     }
   }
 
@@ -42,8 +54,9 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { markup, components, propsMap, ast } = this.props;
-    const { currentMarkup } = this.state;
+    const { markup, components, propsMap } = this.props;
+    const { currentMarkup, currentAST } = this.state;
+
     return (
       <div className='grid'>
         <div className='header'>
@@ -57,7 +70,11 @@ class IdyllDisplay extends React.PureComponent {
           <Edit markup={markup} onChange={this.handleChange} />
         </div>
         <div className='output-container'>
-          <Render markup={currentMarkup} components={components} ast={ast} />
+          <Render
+            markup={currentMarkup}
+            components={components}
+            ast={currentAST}
+          />
         </div>
       </div>
     );
