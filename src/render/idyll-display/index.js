@@ -1,6 +1,7 @@
 import React from 'react';
 import Edit from './edit.js';
 import Render from './render.js';
+import Sidebar from './sidebar.js';
 import ComponentView from './component-view.js';
 import { path } from 'change-case';
 
@@ -75,6 +76,11 @@ class IdyllDisplay extends React.PureComponent {
             components={components}
             ast={currentAST}
           />
+        </div>
+        <div className='sidebar-view'>
+          <Sidebar ast={currentAST}>
+
+          </Sidebar>
         </div>
       </div>
     );
