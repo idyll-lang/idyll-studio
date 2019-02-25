@@ -1,9 +1,17 @@
 import React from 'react';
 
+
 class Sidebar extends React.PureComponent {
   constructor(props) {
     super(props);
+    this.modifyAST = this.modifyAST.bind(this);
   }
+
+  modifyAST() {
+    const currentAST = this.props.ast;
+    console.log('printing ast in sidebar');
+    console.log(currentAST);
+  }  
 
   render() {
     if (this.props.ast) {
@@ -11,7 +19,13 @@ class Sidebar extends React.PureComponent {
     } else {
       console.log('ast not defined in sidebar');
     }
-    return <div>This is a div sidebar</div>
+    return (
+      <div>
+        <button onClick={this.modifyAST}>
+          Change the ast!
+        </button>
+      </div>
+    );
   }
 }
 
