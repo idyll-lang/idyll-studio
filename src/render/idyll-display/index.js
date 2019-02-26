@@ -46,11 +46,11 @@ class IdyllDisplay extends React.PureComponent {
   // Insert a new component into editor and renderer given
   // component tag String
   insertComponent(componentTag) {
-    var markup = this.state.currentMarkup + '\n' + componentTag;
-    this.setState({ currentMarkup: markup });
+    // var markup = this.state.currentMarkup + '\n' + componentTag;
+    // this.setState({ currentMarkup: markup });
 
     const { insertComponent } = this.props;
-    insertComponent(markup);
+    insertComponent(componentTag);
   }
 
   render() {
@@ -70,11 +70,7 @@ class IdyllDisplay extends React.PureComponent {
           <Edit markup={markup} onChange={this.handleChange} />
         </div>
         <div className='output-container'>
-          <Render
-            markup={currentMarkup}
-            components={components}
-            ast={currentAST}
-          />
+          <Render components={components} ast={currentAST} />
         </div>
       </div>
     );

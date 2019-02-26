@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
+const compile = require('idyll-compiler');
+const idyllAST = require('idyll-ast');
 const { ipcRenderer } = require('electron');
 
 class App extends React.PureComponent {
@@ -13,7 +15,8 @@ class App extends React.PureComponent {
       savedMarkup: '',
       components: [],
       componentPropMap: new Map(),
-      ast: undefined
+      ast: undefined,
+      id: 0
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -31,7 +34,27 @@ class App extends React.PureComponent {
   // Updates markup to incorporate inserted component markup
   // to send back down to editor
   insertComponent(componentMarkup) {
-    this.setState({ markup: componentMarkup });
+    compile(componentMarkup).then(componentAST => {
+      // grab last id by walking rightmost children of tree
+      var currNode = this.state.ast;
+      while (
+        currNode.children !== undefined &&
+        currNode.children.length !== 0
+      ) {
+        currNode = currNode.children[currNode.children.length - 1];
+      }
+
+      // Assign ids to componentAST
+      var currID = currNode.id + 1;
+      idyllAST.walkNodes(componentAST, node => {
+        node.id = currID;
+        currID += 1;
+      });
+
+      var newAST = idyllAST.appendNode(this.state.ast, componentAST);
+      // console.log(this.state.ast);
+      this.setState({ ast: newAST, id: this.state.id + 1 });
+    });
   }
 
   componentDidMount() {
@@ -99,7 +122,7 @@ class App extends React.PureComponent {
     return (
       <div>
         <IdyllDisplay
-          key={this.state.pathKey}
+          key={this.state.pathKey + this.state.id}
           markup={this.state.markup}
           onChange={this.handleChange}
           insertComponent={this.insertComponent}
