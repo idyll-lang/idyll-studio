@@ -52,7 +52,6 @@ class App extends React.PureComponent {
       });
 
       var newAST = idyllAST.appendNode(this.state.ast, componentAST);
-      // console.log(this.state.ast);
       this.setState({ ast: newAST, id: this.state.id + 1 });
     });
   }
