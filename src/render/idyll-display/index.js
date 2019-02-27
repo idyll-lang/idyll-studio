@@ -39,7 +39,7 @@ class IdyllDisplay extends React.PureComponent {
       this.handleChange(this.props.markup);
     }
 
-    // ast handling
+    // handle ast changes
     if (this.props.ast !== prevProps.ast) {
       this.handleASTChange(this.props.ast);
     }
@@ -48,6 +48,9 @@ class IdyllDisplay extends React.PureComponent {
   // Insert a new component into editor and renderer given
   // component tag String
   insertComponent(componentTag) {
+    // var markup = this.state.currentMarkup + '\n' + componentTag;
+    // this.setState({ currentMarkup: markup });
+
     const { insertComponent } = this.props;
     insertComponent(componentTag);
   }
