@@ -9,8 +9,7 @@ class ComponentView extends React.PureComponent {
   }
 
   // Inserts the tag associated with the given component name
-
-  //   component : Represents an Idyll component.
+  // component : Represents an Idyll component.
   // textnode: Represents an Idyll textnode.
   // var: Represents a variable declaration in Idyll.
   // derive: Represents a derived variable. In Idyll, it represents a variable whose value is derived from other variables.
