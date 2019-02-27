@@ -8,10 +8,12 @@ class Sidebar extends React.PureComponent {
   }
 
   modifyAST() {
-    const { ast, handleASTChange } = this.props;
-    console.log('printing ast in sidebar');
-    console.log(ast);
-    handleASTChange(ast);
+    const currentAST = this.props.ast;
+    //const text = IdyllAST.getText(currentAST);
+    //console.log('printing text');
+    //console.log(text);
+    currentAST.children[0].children[1].children[0].value = "alan took over";
+    this.props.handleASTChange({...currentAST});
   }  
 
   render() {
