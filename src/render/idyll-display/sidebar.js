@@ -1,5 +1,5 @@
 import React from 'react';
-
+import IdyllAST from 'idyll-ast';
 
 class Sidebar extends React.PureComponent {
   constructor(props) {
@@ -8,9 +8,10 @@ class Sidebar extends React.PureComponent {
   }
 
   modifyAST() {
-    const currentAST = this.props.ast;
+    const { ast, handleASTChange } = this.props;
     console.log('printing ast in sidebar');
-    console.log(currentAST);
+    console.log(ast);
+    handleASTChange(ast);
   }  
 
   render() {
