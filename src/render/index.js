@@ -45,14 +45,20 @@ class App extends React.PureComponent {
       }
 
       // Assign ids to componentAST
-      var currID = currNode.id + 1;
+      // TODO: Fix backwards id assignment
+      // ASK: skipping some nums for ids okay?
+
+      // children nodes + curr node
+      var numCompNodes = componentAST.children[0].children.length + 1;
+      var currID = currNode.id + numCompNodes + 1;
       idyllAST.walkNodes(componentAST, node => {
         node.id = currID;
-        currID += 1;
+        currID -= 1;
       });
 
       var newAST = idyllAST.appendNode(this.state.ast, componentAST);
       this.setState({ ast: newAST, id: this.state.id + 1 });
+      console.log(this.state.ast);
     });
   }
 
