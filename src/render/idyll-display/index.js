@@ -31,6 +31,7 @@ class IdyllDisplay extends React.PureComponent {
 
   handleASTChange(newAST) {
     this.setState({ currentAST: newAST });
+    // go one level up
     console.log('state changed!');
   }
 
@@ -69,9 +70,9 @@ class IdyllDisplay extends React.PureComponent {
             propsMap={propsMap}
           />
         </div>
-        <div className='edit-container'>
+        {/* <div className='edit-container'>
           <Edit markup={markup} onChange={this.handleChange} />
-        </div>
+        </div> */}
         <div className='output-container'>
           <Render
             markup={currentMarkup}
