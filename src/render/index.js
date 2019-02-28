@@ -18,6 +18,7 @@ class App extends React.PureComponent {
 
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
+    this.setAST = this.setAST.bind(this);
   }
 
   // Accepts the updated markup from the editor
@@ -32,6 +33,16 @@ class App extends React.PureComponent {
   // to send back down to editor
   insertComponent(componentMarkup) {
     this.setState({ markup: componentMarkup });
+  }
+
+  // Assigns the app's ast to be the given one
+  setAST(newAST) {
+    this.setState({
+      ast: {...newAST}
+    });
+    console.log('went up and newast is');
+    console.log(newAST);
+    console.log(this.state.ast);
   }
 
   componentDidMount() {
@@ -96,6 +107,7 @@ class App extends React.PureComponent {
   }
 
   render() {
+    console.log('re-rendered display');
     return (
       <div>
         <IdyllDisplay
@@ -103,6 +115,7 @@ class App extends React.PureComponent {
           markup={this.state.markup}
           onChange={this.handleChange}
           insertComponent={this.insertComponent}
+          setAST={this.setAST}
           components={this.state.components}
           propsMap={this.state.componentPropMap}
           ast={this.state.ast}

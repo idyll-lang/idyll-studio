@@ -30,9 +30,7 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   handleASTChange(newAST) {
-    this.setState({ currentAST: newAST });
-    // go one level up
-    console.log('state changed!');
+    this.props.setAST(newAST);
   }
 
   // Update renderer to reflect newly uploaded file
@@ -60,7 +58,8 @@ class IdyllDisplay extends React.PureComponent {
     console.log("Idyll Display render called");
     const { markup, components, propsMap } = this.props;
     const { currentMarkup, currentAST } = this.state;
-
+    console.log('ast in display is ');
+    console.log(currentAST);
     return (
       <div className='grid'>
         <div className='header'>
