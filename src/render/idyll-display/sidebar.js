@@ -9,11 +9,12 @@ class Sidebar extends React.PureComponent {
 
   modifyAST() {
     const currentAST = this.props.ast;
-    //const text = IdyllAST.getText(currentAST);
-    //console.log('printing text');
-    //console.log(text);
-    currentAST.children[0].children[1].children[0].value = "alan took over";
-    this.props.handleASTChange({...currentAST});
+    const h2Nodes = IdyllAST.modifyNodesByName(currentAST, 'h2',
+      (node) => {
+        node.children[0].value = 'alan took over';
+        return node;
+    });
+    this.props.handleASTChange({...h2Nodes});
   }  
 
   render() {
@@ -24,6 +25,7 @@ class Sidebar extends React.PureComponent {
     }
     return (
       <div>
+        <h1>Sidebar View</h1>
         <button onClick={this.modifyAST}>
           Change the ast!
         </button>
