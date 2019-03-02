@@ -38,11 +38,8 @@ class App extends React.PureComponent {
   // Assigns the app's ast to be the given one
   setAST(newAST) {
     this.setState({
-      ast: {...newAST}
+      ast : {...newAST}
     });
-    console.log('went up and newast is');
-    console.log(newAST);
-    console.log(this.state.ast);
   }
 
   componentDidMount() {
@@ -107,7 +104,6 @@ class App extends React.PureComponent {
   }
 
   render() {
-    console.log('re-rendered display');
     return (
       <div>
         <IdyllDisplay

@@ -14,9 +14,6 @@ class IdyllDisplay extends React.PureComponent {
     };
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
-
-    // handle change of ast
-    this.handleASTChange = this.handleASTChange.bind(this);
   }
 
   // When editor detects changes, updates current markup
@@ -29,20 +26,17 @@ class IdyllDisplay extends React.PureComponent {
     }
   }
 
-  handleASTChange(newAST) {
-    this.props.setAST(newAST);
-  }
-
   // Update renderer to reflect newly uploaded file
   // if previous markup is any different from current
-  componentDidUpdate(prevProps) {
-    if (this.props.markup !== prevProps.markup) {
-      this.handleChange(this.props.markup);
-    }
-    if (this.props.ast !== prevProps.ast) {
-      this.handleASTChange(this.props.ast);
-    }
-  }
+  // don't need this method right now
+  // componentDidUpdate(prevProps) {
+  //   if (this.props.markup !== prevProps.markup) {
+  //     this.handleChange(this.props.markup);
+  //   }
+  //   if (this.props.ast !== prevProps.ast) {
+  //     this.handleASTChange(this.props.ast);
+  //   }
+  // }
 
   // Insert a new component into editor and renderer given
   // component tag String
@@ -55,11 +49,8 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    console.log("Idyll Display render called");
     const { markup, components, propsMap } = this.props;
     const { currentMarkup, currentAST } = this.state;
-    console.log('ast in display is ');
-    console.log(currentAST);
     return (
       <div className='grid'>
         <div className='header'>
@@ -76,11 +67,11 @@ class IdyllDisplay extends React.PureComponent {
           <Render
             markup={currentMarkup}
             components={components}
-            ast={currentAST}
+            ast={this.props.ast}
           />
         </div>
         <div className='sidebar-view'>
-          <Sidebar ast={currentAST} handleASTChange={this.handleASTChange}>
+          <Sidebar ast={this.props.ast} handleASTChange={this.props.setAST}>
 
           </Sidebar>
         </div>

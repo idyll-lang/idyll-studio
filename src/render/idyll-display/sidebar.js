@@ -14,17 +14,10 @@ class Sidebar extends React.PureComponent {
         node.children[0].value = 'alan took over';
         return node;
     });
-    console.log('h2 is');
-    console.log(h2Nodes);
     this.props.handleASTChange({...h2Nodes});
   }  
 
   render() {
-    if (this.props.ast) {
-      console.log('ast in sidebar');
-    } else {
-      console.log('ast not defined in sidebar');
-    }
     return (
       <div>
         <h1>Sidebar View</h1>
