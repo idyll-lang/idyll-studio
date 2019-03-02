@@ -15,7 +15,7 @@ class Sidebar extends React.PureComponent {
         return node;
     });
     this.props.handleASTChange({...h2Nodes});
-  }  
+  }
 
   render() {
     return (

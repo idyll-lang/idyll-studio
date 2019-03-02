@@ -10,7 +10,6 @@ class IdyllDisplay extends React.PureComponent {
     super(props);
     this.state = {
       currentMarkup: this.props.markup,
-      currentAST: this.props.ast
     };
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
@@ -50,7 +49,7 @@ class IdyllDisplay extends React.PureComponent {
 
   render() {
     const { markup, components, propsMap } = this.props;
-    const { currentMarkup, currentAST } = this.state;
+    const { currentMarkup } = this.state;
     return (
       <div className='grid'>
         <div className='header'>
