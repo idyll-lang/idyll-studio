@@ -9,7 +9,7 @@ class IdyllDisplay extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentMarkup: this.props.markup,
+      currentMarkup: this.props.markup
     };
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
