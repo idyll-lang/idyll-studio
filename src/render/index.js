@@ -34,6 +34,7 @@ class App extends React.PureComponent {
 
   // Updates markup to incorporate inserted component markup
   // to send back down to editor
+  // TODO: move this down to component-view and just pass up ast
   insertComponent(componentMarkup) {
     compile(componentMarkup).then(componentAST => {
       // grab last id by walking rightmost children of tree
@@ -50,9 +51,6 @@ class App extends React.PureComponent {
       // Modify directly and then create shallow copy
 
       // Assign ids to componentAST
-      // TODO: Fix backwards id assignment
-      // ASK: skipping some nums for ids okay?
-
       // children nodes + curr node
       var numCompNodes = componentAST.children[0].children.length + 1;
       var currID = currNode.id + numCompNodes + 1;
@@ -61,16 +59,23 @@ class App extends React.PureComponent {
         currID -= 1;
       });
 
-      var newAST = idyllAST.appendNode(this.state.ast, componentAST);
-      this.setState({ ast: newAST, id: this.state.id + 1 });
-      console.log(this.state.ast);
+      // Manipulate TextContainer child of current AST and update
+      // TODO: Scroller special case
+      var ast = this.state.ast;
+      var textContainer = ast.children[ast.children.length - 1];
+      componentAST.children[0].children.forEach(node => {
+        textContainer.children.push(node);
+      });
+
+      this.setAST(ast);
+      this.setState({ id: this.state.id + 1 });
     });
   }
 
   // Assigns the app's ast to be the given one
   setAST(newAST) {
     this.setState({
-      ast : {...newAST}
+      ast: { ...newAST }
     });
   }
 
