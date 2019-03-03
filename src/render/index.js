@@ -21,6 +21,7 @@ class App extends React.PureComponent {
 
     this.handleChange = this.handleChange.bind(this);
     this.insertComponent = this.insertComponent.bind(this);
+    this.setAST = this.setAST.bind(this);
   }
 
   // Accepts the updated markup from the editor
@@ -63,6 +64,13 @@ class App extends React.PureComponent {
       var newAST = idyllAST.appendNode(this.state.ast, componentAST);
       this.setState({ ast: newAST, id: this.state.id + 1 });
       console.log(this.state.ast);
+    });
+  }
+
+  // Assigns the app's ast to be the given one
+  setAST(newAST) {
+    this.setState({
+      ast : {...newAST}
     });
   }
 
@@ -135,6 +143,7 @@ class App extends React.PureComponent {
           markup={this.state.markup}
           onChange={this.handleChange}
           insertComponent={this.insertComponent}
+          setAST={this.setAST}
           components={this.state.components}
           propsMap={this.state.componentPropMap}
           ast={this.state.ast}
