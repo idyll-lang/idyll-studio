@@ -49,7 +49,6 @@ class IdyllDisplay extends React.PureComponent {
 
   render() {
     const { markup, components, propsMap } = this.props;
-    const { currentMarkup } = this.state;
     return (
       <div className='grid'>
         <div className='header'>
@@ -69,9 +68,7 @@ class IdyllDisplay extends React.PureComponent {
           />
         </div>
         <div className='sidebar-view'>
-          <Sidebar ast={this.props.ast} handleASTChange={this.props.setAST}>
-
-          </Sidebar>
+          <Sidebar ast={this.props.ast} handleASTChange={this.props.setAST} />
         </div>
       </div>
     );
