@@ -57,7 +57,7 @@ class IdyllDisplay extends React.PureComponent {
 
   render() {
     const { markup, components, propsMap } = this.props;
-    const { currentMarkup, currentAST } = this.state;
+    const { currentAST } = this.state;
 
     return (
       <div className='grid'>

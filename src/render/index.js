@@ -44,6 +44,10 @@ class App extends React.PureComponent {
         currNode = currNode.children[currNode.children.length - 1];
       }
 
+      // Reach into componentAST and append child
+      // Look into children and get last textcontainer
+      // Modify directly and then create shallow copy
+
       // Assign ids to componentAST
       // TODO: Fix backwards id assignment
       // ASK: skipping some nums for ids okay?
