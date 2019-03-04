@@ -11,19 +11,18 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       currentMarkup: this.props.markup
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.insertComponent = this.insertComponent.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
   }
 
-  // When editor detects changes, updates current markup
-  // to the newMarkup passed in
-  handleChange(newMarkup) {
-    this.setState({ currentMarkup: newMarkup });
-    const { onChange } = this.props; // must pass info up one level
-    if (onChange) {
-      onChange(newMarkup);
-    }
-  }
+  // // When editor detects changes, updates current markup
+  // // to the newMarkup passed in
+  // handleChange(newMarkup) {
+  //   this.setState({ currentMarkup: newMarkup });
+  //   const { onChange } = this.props; // must pass info up one level
+  //   if (onChange) {
+  //     onChange(newMarkup);
+  //   }
+  // }
 
   // Update renderer to reflect newly uploaded file
   // if previous markup is any different from current
@@ -37,16 +36,6 @@ class IdyllDisplay extends React.PureComponent {
   //   }
   // }
 
-  // Insert a new component into editor and renderer given
-  // component tag String
-  insertComponent(componentTag) {
-    // var markup = this.state.currentMarkup + '\n' + componentTag;
-    // this.setState({ currentMarkup: markup });
-
-    const { insertComponent } = this.props;
-    insertComponent(componentTag);
-  }
-
   render() {
     const { components, propsMap } = this.props;
     return (
@@ -54,7 +43,8 @@ class IdyllDisplay extends React.PureComponent {
         <div className='header'>
           <ComponentView
             components={components}
-            insertComponent={this.insertComponent}
+            ast={this.props.ast}
+            handleASTChange={this.props.setAST}
             propsMap={propsMap}
           />
         </div>

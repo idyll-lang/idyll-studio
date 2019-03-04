@@ -19,63 +19,23 @@ class App extends React.PureComponent {
       id: 0
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.insertComponent = this.insertComponent.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
     this.setAST = this.setAST.bind(this);
   }
 
-  // Accepts the updated markup from the editor
-  // for saving
-  handleChange(newMarkup) {
-    this.setState({
-      savedMarkup: newMarkup
-    });
-  }
-
-  // Updates markup to incorporate inserted component markup
-  // to send back down to editor
-  // TODO: move this down to component-view and just pass up ast
-  insertComponent(componentMarkup) {
-    compile(componentMarkup).then(componentAST => {
-      // grab last id by walking rightmost children of tree
-      var currNode = this.state.ast;
-      while (
-        currNode.children !== undefined &&
-        currNode.children.length !== 0
-      ) {
-        currNode = currNode.children[currNode.children.length - 1];
-      }
-
-      // Reach into componentAST and append child
-      // Look into children and get last textcontainer
-      // Modify directly and then create shallow copy
-
-      // Assign ids to componentAST
-      // children nodes + curr node
-      var numCompNodes = componentAST.children[0].children.length + 1;
-      var currID = currNode.id + numCompNodes + 1;
-      idyllAST.walkNodes(componentAST, node => {
-        node.id = currID;
-        currID -= 1;
-      });
-
-      // Manipulate TextContainer child of current AST and update
-      // TODO: Scroller special case
-      var ast = this.state.ast;
-      var textContainer = ast.children[ast.children.length - 1];
-      componentAST.children[0].children.forEach(node => {
-        textContainer.children.push(node);
-      });
-
-      this.setAST(ast);
-      this.setState({ id: this.state.id + 1 });
-    });
-  }
+  // // Accepts the updated markup from the editor
+  // // for saving
+  // handleChange(newMarkup) {
+  //   this.setState({
+  //     savedMarkup: newMarkup
+  //   });
+  // }
 
   // Assigns the app's ast to be the given one
   setAST(newAST) {
     this.setState({
-      ast: { ...newAST }
+      ast: { ...newAST },
+      id: this.state.id + 1
     });
   }
 
@@ -146,8 +106,7 @@ class App extends React.PureComponent {
         <IdyllDisplay
           key={this.state.pathKey + this.state.id}
           markup={this.state.markup}
-          onChange={this.handleChange}
-          insertComponent={this.insertComponent}
+          // onChange={this.handleChange}
           setAST={this.setAST}
           components={this.state.components}
           propsMap={this.state.componentPropMap}
