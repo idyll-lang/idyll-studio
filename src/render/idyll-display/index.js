@@ -3,6 +3,7 @@ import Edit from './edit.js';
 import Render from './render.js';
 import Sidebar from './sidebar.js';
 import ComponentView from './component-view.js';
+import DatasetView from './dataset-view.js';
 import { path } from 'change-case';
 
 class IdyllDisplay extends React.PureComponent {
@@ -37,7 +38,7 @@ class IdyllDisplay extends React.PureComponent {
   // }
 
   render() {
-    const { components, propsMap } = this.props;
+    const { components, propsMap, datasets } = this.props;
     return (
       <div className='grid'>
         <div className='header'>
@@ -47,6 +48,7 @@ class IdyllDisplay extends React.PureComponent {
             handleASTChange={this.props.setAST}
             propsMap={propsMap}
           />
+          <DatasetView datasets={datasets} />
         </div>
         {/* <div className='edit-container'>
           <Edit markup={markup} onChange={this.handleChange} />

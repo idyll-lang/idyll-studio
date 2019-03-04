@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
-const compile = require('idyll-compiler');
-const idyllAST = require('idyll-ast');
 const { ipcRenderer } = require('electron');
 
 class App extends React.PureComponent {
@@ -16,7 +14,8 @@ class App extends React.PureComponent {
       components: [],
       componentPropMap: new Map(),
       ast: undefined,
-      id: 0
+      id: 0,
+      datasets: undefined
     };
 
     // this.handleChange = this.handleChange.bind(this);
@@ -40,11 +39,17 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
-    // On a new file open, sets markup up to send to editor
-    ipcRenderer.on('idyll:markup', (event, markup) => {
+    // // On a new file open, sets markup up to send to editor
+    // ipcRenderer.on('idyll:markup', (event, markup) => {
+    //   this.setState({
+    //     markup: markup,
+    //     savedMarkup: markup
+    //   });
+    // });
+
+    ipcRenderer.on('idyll:datasets', (event, datasets) => {
       this.setState({
-        markup: markup,
-        savedMarkup: markup
+        datasets: datasets
       });
     });
 
@@ -106,11 +111,11 @@ class App extends React.PureComponent {
         <IdyllDisplay
           key={this.state.pathKey + this.state.id}
           markup={this.state.markup}
-          // onChange={this.handleChange}
           setAST={this.setAST}
           components={this.state.components}
           propsMap={this.state.componentPropMap}
           ast={this.state.ast}
+          datasets={this.state.datasets}
         />
       </div>
     );
