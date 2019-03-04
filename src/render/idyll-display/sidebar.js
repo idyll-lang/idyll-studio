@@ -15,15 +15,37 @@ class Sidebar extends React.PureComponent {
         return node;
     });
     this.props.handleASTChange({...h2Nodes});
+    debugger;
+  }
+
+  // Returns a list of all variables made in this ast
+  getAllVariables() {
+    const currentChildren = this.props.ast.children;
+    const variables = [];
+    for (var i = 0; i < currentChildren.length - 1; i++) {
+      const variable = currentChildren[i].properties.name.value;
+      variables.push(
+        <li>{variable}</li>
+      );
+    }
+    return variables;
   }
 
   render() {
+    if (!this.props.ast) {
+      return (
+        <div>
+          <h1>Sidebar View (Please load an Idyll project</h1>
+        </div>
+      );
+    }
     return (
       <div>
         <h1>Sidebar View</h1>
         <button onClick={this.modifyAST}>
           Change the ast!
         </button>
+        {this.getAllVariables()}
       </div>
     );
   }
