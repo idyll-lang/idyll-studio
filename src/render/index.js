@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
-const compile = require('idyll-compiler');
-const idyllAST = require('idyll-ast');
 const { ipcRenderer } = require('electron');
 
 class App extends React.PureComponent {
@@ -16,60 +14,42 @@ class App extends React.PureComponent {
       components: [],
       componentPropMap: new Map(),
       ast: undefined,
-      id: 0
+      id: 0,
+      datasets: undefined
     };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.insertComponent = this.insertComponent.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
     this.setAST = this.setAST.bind(this);
   }
 
-  // Accepts the updated markup from the editor
-  // for saving
-  handleChange(newMarkup) {
-    this.setState({
-      savedMarkup: newMarkup
-    });
-  }
-
-  // Updates markup to incorporate inserted component markup
-  // to send back down to editor
-  insertComponent(componentMarkup) {
-    compile(componentMarkup).then(componentAST => {
-      // grab last id by walking rightmost children of tree
-      var currNode = this.state.ast;
-      while (
-        currNode.children !== undefined &&
-        currNode.children.length !== 0
-      ) {
-        currNode = currNode.children[currNode.children.length - 1];
-      }
-
-      // Assign ids to componentAST
-      var currID = currNode.id + 1;
-      idyllAST.walkNodes(componentAST, node => {
-        node.id = currID;
-        currID += 1;
-      });
-
-      var newAST = idyllAST.appendNode(this.state.ast, componentAST);
-      this.setState({ ast: newAST, id: this.state.id + 1 });
-    });
-  }
+  // // Accepts the updated markup from the editor
+  // // for saving
+  // handleChange(newMarkup) {
+  //   this.setState({
+  //     savedMarkup: newMarkup
+  //   });
+  // }
 
   // Assigns the app's ast to be the given one
   setAST(newAST) {
     this.setState({
-      ast : {...newAST}
+      ast: { ...newAST },
+      id: this.state.id + 1
     });
   }
 
   componentDidMount() {
-    // On a new file open, sets markup up to send to editor
-    ipcRenderer.on('idyll:markup', (event, markup) => {
+    // // On a new file open, sets markup up to send to editor
+    // ipcRenderer.on('idyll:markup', (event, markup) => {
+    //   this.setState({
+    //     markup: markup,
+    //     savedMarkup: markup
+    //   });
+    // });
+
+    ipcRenderer.on('idyll:datasets', (event, datasets) => {
       this.setState({
-        markup: markup,
-        savedMarkup: markup
+        datasets: datasets
       });
     });
 
@@ -131,12 +111,11 @@ class App extends React.PureComponent {
         <IdyllDisplay
           key={this.state.pathKey + this.state.id}
           markup={this.state.markup}
-          onChange={this.handleChange}
-          insertComponent={this.insertComponent}
           setAST={this.setAST}
           components={this.state.components}
           propsMap={this.state.componentPropMap}
           ast={this.state.ast}
+          datasets={this.state.datasets}
         />
       </div>
     );
