@@ -23,9 +23,15 @@ class Sidebar extends React.PureComponent {
     const currentChildren = this.props.ast.children;
     const variables = [];
     for (var i = 0; i < currentChildren.length - 1; i++) {
-      const variable = currentChildren[i].properties.name.value;
+      const variable = currentChildren[i];
+      const varProperties = variable.properties;
+      const varName = varProperties.name.value;
+      const varValue = varProperties.value.value;
       variables.push(
-        <li>{variable}</li>
+        <div className='variables-view' key={varName}>
+          <li key={variable}>{varName}, whose current value is {varValue}</li>
+          <button>click to change value</button>
+        </div>
       );
     }
     return variables;
