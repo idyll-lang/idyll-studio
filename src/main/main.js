@@ -13,9 +13,6 @@ class Main {
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
-    // ast
-    this.ast;
-
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
@@ -89,31 +86,29 @@ class Main {
 
     // Compile contents
     compile(fileContent, undefined).then(ast => {
-      this.ast = ast;
-      this.mainWindow.webContents.send('idyll:ast', this.ast);
+      this.mainWindow.webContents.send('idyll:ast', ast);
       this.mainWindow.webContents.send('idyll:path', this.filePath);
       this.mainWindow.webContents.send(
         'idyll:components',
         idyll.getComponents()
       );
+      this.mainWindow.webContents.send('idyll:datasets', idyll.getDatasets());
+      this.mainWindow.webContents.send();
     });
-
-    // this.mainWindow.webContents.send('idyll:markup', fileContent);
   }
 
   // Saves current markup to open idyll project
   handleFileSave() {
-    // Let's render process know ready to receive markup to save
-    this.mainWindow.webContents.send('idyll:save', 'Saved!');
-
-    // Saves markup to file
-    if (this.filePath !== undefined) {
-      ipcMain.on('save', (event, content) => {
-        fs.writeFile(this.filePath, content, err => {
-          if (err) throw err;
-        });
-      });
-    }
+    // // Let's render process know ready to receive markup to save
+    // this.mainWindow.webContents.send('idyll:save', 'Saved!');
+    // // Saves markup to file
+    // if (this.filePath !== undefined) {
+    //   ipcMain.on('save', (event, content) => {
+    //     fs.writeFile(this.filePath, content, err => {
+    //       if (err) throw err;
+    //     });
+    //   });
+    // }
   }
 }
 

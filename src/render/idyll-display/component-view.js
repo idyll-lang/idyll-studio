@@ -1,20 +1,17 @@
 import React from 'react';
 import Select from 'react-select';
+const compile = require('idyll-compiler');
+const idyllAST = require('idyll-ast');
 
 class ComponentView extends React.PureComponent {
   constructor(props) {
     super(props);
 
     this.insertComponent = this.insertComponent.bind(this);
+    this.handleASTChange = this.handleASTChange.bind(this);
   }
 
-  // Inserts the tag associated with the given component name
-
-  //   component : Represents an Idyll component.
-  // textnode: Represents an Idyll textnode.
-  // var: Represents a variable declaration in Idyll.
-  // derive: Represents a derived variable. In Idyll, it represents a variable whose value is derived from other variables.
-  // data: Represents a dataset in Idyll. In Idyll, datasets act like variables, but instead of value, they have a source field.
+  // Generates the tag associated with the given component name
   insertComponent(name) {
     var tagInfo = this.props.propsMap.get(name);
     var tag = '[' + tagInfo.name + ' ';
@@ -29,8 +26,42 @@ class ComponentView extends React.PureComponent {
       var children = tagInfo.children !== undefined ? tagInfo.children[0] : '';
       tag += ']' + children + '[/' + tagInfo.name + ']';
     }
-    const { insertComponent } = this.props;
-    insertComponent(tag); // must pass info up level
+    this.handleASTChange(tag);
+  }
+
+  // Given String tag of component, adds corresponding nodes to ast
+  // and sends modified ast back up to top level
+  handleASTChange(componentMarkup) {
+    compile(componentMarkup).then(componentAST => {
+      // grab last id by walking rightmost children of tree
+      var currNode = this.props.ast;
+      while (
+        currNode.children !== undefined &&
+        currNode.children.length !== 0
+      ) {
+        currNode = currNode.children[currNode.children.length - 1];
+      }
+
+      // Assign ids to componentAST
+      // children nodes + curr node
+      var numCompNodes = componentAST.children[0].children.length + 1;
+      var currID = currNode.id + numCompNodes + 1;
+      idyllAST.walkNodes(componentAST, node => {
+        node.id = currID;
+        currID -= 1;
+      });
+
+      // Manipulate TextContainer child of current AST and update
+      // TODO: Scroller special case
+      var ast = this.props.ast;
+      var textContainer = ast.children[ast.children.length - 1];
+      componentAST.children[0].children.forEach(node => {
+        textContainer.children.push(node);
+      });
+
+      const { handleASTChange } = this.props;
+      handleASTChange(ast); // must pass info up level
+    });
   }
 
   render() {
