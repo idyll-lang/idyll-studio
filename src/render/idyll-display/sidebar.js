@@ -5,6 +5,7 @@ class Sidebar extends React.PureComponent {
   constructor(props) {
     super(props);
     this.modifyAST = this.modifyAST.bind(this);
+    this.assignNewVarValue = this.assignNewVarValue.bind(this);
   }
 
   modifyAST() {
@@ -15,11 +16,11 @@ class Sidebar extends React.PureComponent {
         return node;
     });
     this.props.handleASTChange({...h2Nodes});
-    debugger;
   }
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
+    //console.log(this.props.ast);
     const currentChildren = this.props.ast.children;
     const variables = [];
     for (var i = 0; i < currentChildren.length - 1; i++) {
@@ -30,11 +31,17 @@ class Sidebar extends React.PureComponent {
       variables.push(
         <div className='variables-view' key={varName}>
           <li key={variable}>{varName}, whose current value is {varValue}</li>
-          <button>click to change value</button>
+          <button onClick={() => this.assignNewVarValue(variable)}>click to change value to 20</button>
         </div>
       );
+      // Note -- why need to pass in function to onClick despite already binding?
     }
     return variables;
+  }
+
+  assignNewVarValue(node) {
+    node.properties.value.value = 20;
+    this.props.handleASTChange({...this.props.ast});
   }
 
   render() {
