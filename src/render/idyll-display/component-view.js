@@ -34,6 +34,7 @@ class ComponentView extends React.PureComponent {
   handleASTChange(componentMarkup) {
     compile(componentMarkup).then(componentAST => {
       // grab last id by walking rightmost children of tree
+      console.log(componentAST);
       var currNode = this.props.ast;
       while (
         currNode.children !== undefined &&

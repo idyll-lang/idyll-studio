@@ -32,6 +32,7 @@ class App extends React.PureComponent {
 
   // Assigns the app's ast to be the given one
   setAST(newAST) {
+    console.log(newAST);
     this.setState({
       ast: { ...newAST },
       id: this.state.id + 1

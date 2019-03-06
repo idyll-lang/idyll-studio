@@ -48,7 +48,11 @@ class IdyllDisplay extends React.PureComponent {
             handleASTChange={this.props.setAST}
             propsMap={propsMap}
           />
-          <DatasetView datasets={datasets} />
+          <DatasetView
+            datasets={datasets}
+            ast={this.props.ast}
+            handleASTChange={this.props.setAST}
+          />
         </div>
         {/* <div className='edit-container'>
           <Edit markup={markup} onChange={this.handleChange} />

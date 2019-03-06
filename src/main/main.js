@@ -85,16 +85,20 @@ class Main {
     const fileContent = fs.readFileSync(file).toString();
 
     // Compile contents
-    compile(fileContent, undefined).then(ast => {
-      this.mainWindow.webContents.send('idyll:ast', ast);
-      this.mainWindow.webContents.send('idyll:path', this.filePath);
-      this.mainWindow.webContents.send(
-        'idyll:components',
-        idyll.getComponents()
-      );
-      this.mainWindow.webContents.send('idyll:datasets', idyll.getDatasets());
-      this.mainWindow.webContents.send();
-    });
+    compile(fileContent, undefined)
+      .then(ast => {
+        this.mainWindow.webContents.send('idyll:ast', ast);
+        this.mainWindow.webContents.send('idyll:path', this.filePath);
+        this.mainWindow.webContents.send(
+          'idyll:components',
+          idyll.getComponents()
+        );
+        this.mainWindow.webContents.send('idyll:datasets', idyll.getDatasets());
+        this.mainWindow.webContents.send();
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   // Saves current markup to open idyll project
