@@ -1,5 +1,6 @@
 import React from 'react';
 import IdyllAST from 'idyll-ast';
+import VariableForm from './components/variable-form';
 
 class Sidebar extends React.PureComponent {
   constructor(props) {
@@ -31,10 +32,9 @@ class Sidebar extends React.PureComponent {
       variables.push(
         <div className='variables-view' key={varName}>
           <li key={variable}>{varName}, whose current value is {varValue}</li>
-          <button onClick={() => this.assignNewVarValue(variable)}>click to change value to 20</button>
+          <VariableForm handleASTChange={this.props.handleASTChange} node={variable} ast={this.props.ast} />
         </div>
       );
-      // Note -- why need to pass in function to onClick despite already binding?
     }
     return variables;
   }
