@@ -39,6 +39,31 @@ class Sidebar extends React.PureComponent {
     return variables;
   }
 
+  // Returns list of components in ast -- doesn't distinguish further
+  // for components not separated by inline
+  // i.e. the .idyll markup needs to have blank lines between certain
+  // components
+  getAllComponents() {
+    const components = [];
+    const currentChildren = this.props.ast.children;
+    const componentNodes = currentChildren[currentChildren.length - 1];
+    const nodesChildren = componentNodes.children;
+    for (var i = 0; i < nodesChildren.length; i++) {
+      const currentChild = nodesChildren[i];
+      // only try non-text components for now
+      if (currentChild.name !== 'p') {
+        components.push(
+          <li key={i}>{currentChild.name}</li>
+        );
+      }
+    }
+    return (
+      <div className='list-components-view'>
+        <ul>{components}</ul>
+      </div>
+    );
+  }
+
   assignNewVarValue(node) {
     node.properties.value.value = 20;
     this.props.handleASTChange({...this.props.ast});
@@ -52,13 +77,16 @@ class Sidebar extends React.PureComponent {
         </div>
       );
     }
+    // console.log('current ast below');
+    // console.log(this.props.ast);
     return (
       <div>
         <h1>Sidebar View</h1>
         <button onClick={this.modifyAST}>
           Change the ast!
         </button>
-        {this.getAllVariables()}
+        {/* {this.getAllVariables()} */}
+        {this.getAllComponents()}
       </div>
     );
   }
