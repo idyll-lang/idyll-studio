@@ -20,21 +20,16 @@ class DatasetView extends React.PureComponent {
 
     // Handle the ast change
     compile(tag).then(dataAST => {
-      // Grab textcontainer id -> assign one before to data node
+      // Assign new data node id to maxId + 1
       var ast = this.props.ast;
-      var textContainerNode = ast.children[ast.children.length - 1];
       var dataNode = dataAST.children[0];
-      dataNode.id = ast.children[ast.children.length - 2].id + 1;
-
-      // increment all ids one forward in textcontainer
-      idyllAST.walkNodes(textContainerNode, node => {
-        node.id = node.id + 1;
-      });
+      dataNode.id = this.props.maxNodeId + 1;
 
       // Insert into ast's root children
       ast.children.splice(ast.children.length - 1, 0, dataNode);
 
-      const { handleASTChange } = this.props;
+      const { handleASTChange, updateMaxId } = this.props;
+      updateMaxId(dataNode.id);
       handleASTChange(ast); // must pass info up level
     });
   }

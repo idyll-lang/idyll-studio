@@ -38,6 +38,17 @@ class App extends React.PureComponent {
     this.setState({
       maxNodeId: id
     });
+
+    // TEST PURPOSES: Check for repeat ids
+    var idSet = new Set();
+    idyllAST.walkNodes(this.state.ast, node => {
+      if (idSet.has(node.id)) {
+        console.log('Repeat Id Found');
+      } else {
+        idSet.add(node.id);
+      }
+    });
+    console.log(idSet);
   }
 
   componentDidMount() {
