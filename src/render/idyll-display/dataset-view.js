@@ -25,8 +25,16 @@ class DatasetView extends React.PureComponent {
       var dataNode = dataAST.children[0];
       dataNode.id = this.props.maxNodeId + 1;
 
-      // Insert into ast's root children
-      ast.children.splice(ast.children.length - 1, 0, dataNode);
+      // Insert into ast's root children before the first text container
+      // or non-variable/dataset child
+      var currNodeIndex = 0;
+      while (
+        ast.children[currNodeIndex].type === 'data' ||
+        ast.children[currNodeIndex].type === 'var'
+      ) {
+        currNodeIndex++;
+      }
+      ast.children.splice(currNodeIndex, 0, dataNode);
 
       const { handleASTChange, updateMaxId } = this.props;
       updateMaxId(dataNode.id);

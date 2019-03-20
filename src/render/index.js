@@ -48,7 +48,6 @@ class App extends React.PureComponent {
     //     idSet.add(node.id);
     //   }
     // });
-    // console.log(idSet);
   }
 
   componentDidMount() {
