@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
 const { ipcRenderer } = require('electron');
+const idyllAST = require('idyll-ast');
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -10,29 +11,20 @@ class App extends React.PureComponent {
     this.state = {
       markup: '',
       pathKey: '',
-      savedMarkup: '',
       components: [],
       componentPropMap: new Map(),
       ast: undefined,
       id: 0,
+      maxNodeId: -1,
       datasets: undefined
     };
 
-    // this.handleChange = this.handleChange.bind(this);
     this.setAST = this.setAST.bind(this);
+    this.createComponentMap = this.createComponentMap.bind(this);
   }
-
-  // // Accepts the updated markup from the editor
-  // // for saving
-  // handleChange(newMarkup) {
-  //   this.setState({
-  //     savedMarkup: newMarkup
-  //   });
-  // }
 
   // Assigns the app's ast to be the given one
   setAST(newAST) {
-    console.log(newAST);
     this.setState({
       ast: { ...newAST },
       id: this.state.id + 1
@@ -40,23 +32,23 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
-    // // On a new file open, sets markup up to send to editor
-    // ipcRenderer.on('idyll:markup', (event, markup) => {
-    //   this.setState({
-    //     markup: markup,
-    //     savedMarkup: markup
-    //   });
-    // });
-
+    // Load in datasets
     ipcRenderer.on('idyll:datasets', (event, datasets) => {
       this.setState({
         datasets: datasets
       });
     });
 
+    // Load in ast
     ipcRenderer.on('idyll:ast', (event, ast) => {
       this.setState({
         ast: ast
+      });
+
+      // Set max id on open
+      this.setState({ maxNodeId: -1 });
+      idyllAST.walkNodes(this.state.ast, node => {
+        this.setState({ maxNodeId: Math.max(this.state.maxNodeId, node.id) });
       });
     });
 
@@ -69,28 +61,7 @@ class App extends React.PureComponent {
 
     // Grabs component information and components
     ipcRenderer.on('idyll:components', (event, components) => {
-      var componentProps = new Map();
-
-      components.forEach(component => {
-        var path;
-        try {
-          path = require(component.path);
-        } catch (error) {
-          console.log(error);
-          return; // skip next iteration
-        }
-        // Stores {component name: props }
-        if (typeof path === 'object' && path.default !== undefined) {
-          var props = path.default._idyll;
-          componentProps.set(component.name, props);
-        } else if (typeof path === 'function') {
-          componentProps.set(component.name, {
-            name: component.name,
-            tagType: 'closed',
-            props: []
-          });
-        }
-      });
+      var componentProps = this.createComponentMap(components);
 
       this.setState({
         components: components,
@@ -98,12 +69,41 @@ class App extends React.PureComponent {
       });
     });
 
-    // When main wants to save, print "Saved!" to console
-    // and sends the saved markup
-    ipcRenderer.on('idyll:save', (event, message) => {
-      console.log(message);
-      ipcRenderer.send('save', this.state.savedMarkup);
+    // // When main wants to save, print "Saved!" to console
+    // // and sends the saved markup
+    // ipcRenderer.on('idyll:save', (event, message) => {
+    //   console.log(message);
+    //   ipcRenderer.send('save', this.state.savedMarkup);
+    // });
+  }
+
+  // Given list of components objects containing name and path,
+  // return a {component name: props} map
+  createComponentMap(components) {
+    var componentProps = new Map();
+
+    components.forEach(component => {
+      var path;
+      try {
+        path = require(component.path);
+      } catch (error) {
+        console.log(error);
+        return; // skip next iteration
+      }
+      // Stores {component name: props }
+      if (typeof path === 'object' && path.default !== undefined) {
+        var props = path.default._idyll;
+        componentProps.set(component.name, props);
+      } else if (typeof path === 'function') {
+        componentProps.set(component.name, {
+          name: component.name,
+          tagType: 'closed',
+          props: []
+        });
+      }
     });
+
+    return componentProps;
   }
 
   render() {
@@ -117,6 +117,7 @@ class App extends React.PureComponent {
           propsMap={this.state.componentPropMap}
           ast={this.state.ast}
           datasets={this.state.datasets}
+          maxNodeId={this.state.maxNodeId}
         />
       </div>
     );
