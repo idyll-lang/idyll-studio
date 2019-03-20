@@ -45,10 +45,22 @@ class ComponentView extends React.PureComponent {
       // Manipulate TextContainer child of current AST and update
       // TODO: Scroller special case
       var ast = this.props.ast;
-      var textContainer = ast.children[ast.children.length - 1];
-      componentAST.children[0].children.forEach(node => {
-        textContainer.children.push(node);
-      });
+      var lastChild = ast.children[ast.children.length - 1];
+      if (
+        lastChild.name === 'TextContainer' &&
+        componentAST.children[0].name === 'TextContainer'
+      ) {
+        // Collapse component textcontainer and add component to existing
+        // text container
+        var textContainer = lastChild;
+        componentAST.children[0].children.forEach(node => {
+          textContainer.children.push(node);
+        });
+      } else {
+        // append to root for other cases
+        var componentNode = componentAST.children[0];
+        ast = idyllAST.appendNode(ast, componentNode);
+      }
 
       const { handleASTChange, updateMaxId } = this.props;
       updateMaxId(maxId);

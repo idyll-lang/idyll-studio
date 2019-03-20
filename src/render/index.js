@@ -127,6 +127,7 @@ class App extends React.PureComponent {
   }
 
   render() {
+    console.log(this.state.ast);
     return (
       <div>
         <IdyllDisplay
