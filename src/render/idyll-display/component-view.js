@@ -33,22 +33,13 @@ class ComponentView extends React.PureComponent {
   // and sends modified ast back up to top level
   handleASTChange(componentMarkup) {
     compile(componentMarkup).then(componentAST => {
-      // grab last id by walking rightmost children of tree
-      var currNode = this.props.ast;
-      while (
-        currNode.children !== undefined &&
-        currNode.children.length !== 0
-      ) {
-        currNode = currNode.children[currNode.children.length - 1];
-      }
-
       // Assign ids to componentAST
       // children nodes + curr node
-      var numCompNodes = componentAST.children[0].children.length + 1;
-      var currID = currNode.id + numCompNodes + 1;
+      // TODO: Currently assigns id backwards
+      var maxId = this.props.maxNodeId + 1;
       idyllAST.walkNodes(componentAST, node => {
-        node.id = currID;
-        currID -= 1;
+        node.id = maxId;
+        maxId += 1;
       });
 
       // Manipulate TextContainer child of current AST and update
@@ -59,7 +50,8 @@ class ComponentView extends React.PureComponent {
         textContainer.children.push(node);
       });
 
-      const { handleASTChange } = this.props;
+      const { handleASTChange, updateMaxId } = this.props;
+      updateMaxId(maxId);
       handleASTChange(ast); // must pass info up level
     });
   }

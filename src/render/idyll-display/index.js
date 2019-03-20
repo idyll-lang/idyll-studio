@@ -21,7 +21,8 @@ class IdyllDisplay extends React.PureComponent {
       datasets,
       maxNodeId,
       setAST,
-      ast
+      ast,
+      updateMaxId
     } = this.props;
 
     return (
@@ -33,12 +34,14 @@ class IdyllDisplay extends React.PureComponent {
             handleASTChange={setAST}
             propsMap={propsMap}
             maxNodeId={maxNodeId}
+            updateMaxId={updateMaxId}
           />
           <DatasetView
             datasets={datasets}
-            ast={this.props.ast}
+            ast={ast}
             handleASTChange={setAST}
             maxNodeId={maxNodeId}
+            updateMaxId={updateMaxId}
           />
         </div>
         {/* <div className='edit-container'>

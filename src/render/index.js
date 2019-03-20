@@ -21,6 +21,7 @@ class App extends React.PureComponent {
 
     this.setAST = this.setAST.bind(this);
     this.createComponentMap = this.createComponentMap.bind(this);
+    this.updateMaxId = this.updateMaxId.bind(this);
   }
 
   // Assigns the app's ast to be the given one
@@ -28,6 +29,14 @@ class App extends React.PureComponent {
     this.setState({
       ast: { ...newAST },
       id: this.state.id + 1
+    });
+  }
+
+  // Update the max id to given maxId after
+  // insertion of component
+  updateMaxId(id) {
+    this.setState({
+      maxNodeId: id
     });
   }
 
@@ -118,6 +127,7 @@ class App extends React.PureComponent {
           ast={this.state.ast}
           datasets={this.state.datasets}
           maxNodeId={this.state.maxNodeId}
+          updateMaxId={this.updateMaxId}
         />
       </div>
     );
