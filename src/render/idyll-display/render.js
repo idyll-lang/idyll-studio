@@ -1,5 +1,6 @@
 import React from 'react';
 import IdyllDocument from 'idyll-document';
+import UserView from './components/user-view.js';
 
 class Renderer extends React.PureComponent {
   constructor(props) {
@@ -41,6 +42,9 @@ class Renderer extends React.PureComponent {
               window.IDYLL_CONTEXT = context;
             }}
             datasets={{}}
+            userViewComponent={UserView}
+            authorView={true}
+            handleComponentChange={this.props.handleComponentChange}
           />
         </div>
       </div>

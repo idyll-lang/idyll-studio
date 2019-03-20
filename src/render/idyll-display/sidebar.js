@@ -64,6 +64,21 @@ class Sidebar extends React.PureComponent {
     );
   }
 
+  // Returning list of each prop of this component
+  getProps(component) {
+    const props = [];
+    const properties = component.properties;
+    debugger;
+    for (let prop in properties) {
+      props.push(
+        <li>
+          {prop}
+        </li>
+      );
+    }
+    return props;
+  }
+
   assignNewVarValue(node) {
     node.properties.value.value = 20;
     this.props.handleASTChange({...this.props.ast});
@@ -77,8 +92,15 @@ class Sidebar extends React.PureComponent {
         </div>
       );
     }
-    // console.log('current ast below');
-    // console.log(this.props.ast);
+    if (this.props.currentComponent) {
+      return (
+        <div>
+          <h3>Below is the current one</h3>
+          {this.props.currentComponent}
+          {this.getProps(this.props.currentComponent)}
+        </div>
+      );
+    }
     return (
       <div>
         <h1>Sidebar View</h1>

@@ -13,6 +13,13 @@ class IdyllDisplay extends React.PureComponent {
       currentMarkup: this.props.markup
     };
     // this.handleChange = this.handleChange.bind(this);
+    this.handleComponentChange = this.handleComponentChange.bind(this);
+  }
+
+  handleComponentChange(newComponent) {
+    this.setState({
+      currentComponent : newComponent
+    });
   }
 
   // // When editor detects changes, updates current markup
@@ -54,10 +61,18 @@ class IdyllDisplay extends React.PureComponent {
           <Edit markup={markup} onChange={this.handleChange} />
         </div> */}
         <div className='output-container'>
-          <Render components={components} ast={this.props.ast} />
+          <Render
+            components={components}
+            ast={this.props.ast}
+            handleComponentChange={this.handleComponentChange}
+          />
         </div>
         <div className='sidebar-view'>
-          <Sidebar ast={this.props.ast} handleASTChange={this.props.setAST} />
+          <Sidebar
+            ast={this.props.ast}
+            handleASTChange={this.props.setAST}
+            handleComponentChange={this.handleComponentChange}
+            currentComponent={this.state.currentComponent} />
         </div>
       </div>
     );
