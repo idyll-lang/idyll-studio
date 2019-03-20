@@ -33,33 +33,37 @@ class ComponentView extends React.PureComponent {
   // and sends modified ast back up to top level
   handleASTChange(componentMarkup) {
     compile(componentMarkup).then(componentAST => {
-      // grab last id by walking rightmost children of tree
-      var currNode = this.props.ast;
-      while (
-        currNode.children !== undefined &&
-        currNode.children.length !== 0
-      ) {
-        currNode = currNode.children[currNode.children.length - 1];
-      }
-
       // Assign ids to componentAST
       // children nodes + curr node
-      var numCompNodes = componentAST.children[0].children.length + 1;
-      var currID = currNode.id + numCompNodes + 1;
+      // TODO: Currently assigns id backwards
+      var maxId = this.props.maxNodeId + 1;
       idyllAST.walkNodes(componentAST, node => {
-        node.id = currID;
-        currID -= 1;
+        node.id = maxId;
+        maxId += 1;
       });
 
       // Manipulate TextContainer child of current AST and update
       // TODO: Scroller special case
       var ast = this.props.ast;
-      var textContainer = ast.children[ast.children.length - 1];
-      componentAST.children[0].children.forEach(node => {
-        textContainer.children.push(node);
-      });
+      var lastChild = ast.children[ast.children.length - 1];
+      if (
+        lastChild.name === 'TextContainer' &&
+        componentAST.children[0].name === 'TextContainer'
+      ) {
+        // Collapse component textcontainer and add component to existing
+        // text container
+        var textContainer = lastChild;
+        componentAST.children[0].children.forEach(node => {
+          textContainer.children.push(node);
+        });
+      } else {
+        // append to root for other cases
+        var componentNode = componentAST.children[0];
+        ast = idyllAST.appendNode(ast, componentNode);
+      }
 
-      const { handleASTChange } = this.props;
+      const { handleASTChange, updateMaxId } = this.props;
+      updateMaxId(maxId);
       handleASTChange(ast); // must pass info up level
     });
   }

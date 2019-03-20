@@ -12,6 +12,7 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       currentMarkup: this.props.markup
     };
+<<<<<<< HEAD
     // this.handleChange = this.handleChange.bind(this);
     this.handleComponentChange = this.handleComponentChange.bind(this);
   }
@@ -20,42 +21,39 @@ class IdyllDisplay extends React.PureComponent {
     this.setState({
       currentComponent : newComponent
     });
+=======
+>>>>>>> 53f08e4f89053f7130a395a9f75407d03fe4f009
   }
 
-  // // When editor detects changes, updates current markup
-  // // to the newMarkup passed in
-  // handleChange(newMarkup) {
-  //   this.setState({ currentMarkup: newMarkup });
-  //   const { onChange } = this.props; // must pass info up one level
-  //   if (onChange) {
-  //     onChange(newMarkup);
-  //   }
-  // }
-
-  // Update renderer to reflect newly uploaded file
-  // if previous markup is any different from current
-  // don't need this method right now
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.markup !== prevProps.markup) {
-  //     this.handleChange(this.props.markup);
-  //   }
-  //   if (this.props.ast !== prevProps.ast) {
-  //     this.handleASTChange(this.props.ast);
-  //   }
-  // }
-
   render() {
-    const { components, propsMap, datasets } = this.props;
+    const {
+      components,
+      propsMap,
+      datasets,
+      maxNodeId,
+      setAST,
+      ast,
+      updateMaxId
+    } = this.props;
+
     return (
       <div className='grid'>
         <div className='header'>
           <ComponentView
             components={components}
-            ast={this.props.ast}
-            handleASTChange={this.props.setAST}
+            ast={ast}
+            handleASTChange={setAST}
             propsMap={propsMap}
+            maxNodeId={maxNodeId}
+            updateMaxId={updateMaxId}
           />
-          <DatasetView datasets={datasets} />
+          <DatasetView
+            datasets={datasets}
+            ast={ast}
+            handleASTChange={setAST}
+            maxNodeId={maxNodeId}
+            updateMaxId={updateMaxId}
+          />
         </div>
         {/* <div className='edit-container'>
           <Edit markup={markup} onChange={this.handleChange} />
