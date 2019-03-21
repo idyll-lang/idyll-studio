@@ -16,9 +16,9 @@ class IdyllDisplay extends React.PureComponent {
     this.handleComponentChange = this.handleComponentChange.bind(this);
   }
 
-  handleComponentChange(newComponent) {
+  handleComponentChange(node) {
     this.setState({
-      currentComponent : newComponent
+      currentSidebarNode : node
     });
   }
 
@@ -66,8 +66,7 @@ class IdyllDisplay extends React.PureComponent {
           <Sidebar
             ast={this.props.ast}
             handleASTChange={this.props.setAST}
-            handleComponentChange={this.handleComponentChange}
-            currentComponent={this.state.currentComponent} />
+            currentSidebarNode={this.state.currentSidebarNode} />
         </div>
       </div>
     );
