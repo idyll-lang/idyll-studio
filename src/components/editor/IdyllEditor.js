@@ -9,8 +9,10 @@ import { removeTeXBlock } from './modifiers/removeTeXBlock';
 import * as components from "idyll-components";
 import IdyllDocument from "../idyll-document/src";
 import compile from 'idyll-compiler';
+import IdyllAST from 'idyll-ast';
 
 var { Editor, EditorState, RichUtils } = Draft;
+
 
 export const hashCode = (str) => {
   var hash = 0, i, chr;
@@ -23,6 +25,9 @@ export const hashCode = (str) => {
   return hash;
 };
 
+
+
+
 class IdyllEditor extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -30,67 +35,147 @@ class IdyllEditor extends React.PureComponent {
     this.state = {
       editorState: EditorState.createEmpty(),
       liveTeXEdits: Map(),
+      ast: []
     };
 
     this._blockRenderer = (block) => {
 
+      // console.log('_blockRenderer')
       const type = block.getType();
-      console.log('type', type)
-      const text = block.getText();
-      console.log('text', text)
+      // console.log('type', type)
+      var text = block.getText();
+      // console.log('text', text)
+      const key = block.getKey();
+      // console.log('key', key)
 
       if (text !== '') {
         compile(text)
           .then((ast) => {
-            console.log('ast', ast)
+            // console.log('ast', ast, 'length', ast.length)
             // this.setState({ ast, hash: hashCode(this.props.markup), error: null });
+            //console.log('array?',Array.isArray(key));
+            IdyllAST.setProperty(ast[0], 'id', key)
+            //this.setState({ ast: ast });
+            this.doc.addBlock(ast);
           })
       }
 
-      const entity = block.getEntityAt(0)
-      console.log('entity', entity)
-      if (entity !== null) {
-        const contentState = this.state.editorState.getCurrentContent();
-        const entityInstance = contentState.getEntity(entity);
-        const data = entityInstance.getData();
+      // const entity = block.getEntityAt(0)
+      // console.log('entity', entity)
+      // if (entity !== null) {
+      //   const contentState = this.state.editorState.getCurrentContent();
+      //   const entityInstance = contentState.getEntity(entity);
+      //   const data = entityInstance.getData();
 
-        console.log('editorState', this.state.editorState)
+      //   console.log('editorState', this.state.editorState)
 
-        console.log('data', data)
-      }
-      //   compile(this.props.markup, this.props.compilerOptions)
-      //     .then((ast) => {
-      //       this.setState({ ast, hash: hashCode(this.props.markup), error: null });
-      //     })
+      //   console.log('data', data)
+      // }
+      // //   compile(this.props.markup, this.props.compilerOptions)
+      // //     .then((ast) => {
+      // //       this.setState({ ast, hash: hashCode(this.props.markup), error: null });
+      // //     })
+      // // }
+
+      // if (block.getType() === 'atomic') {
+
+
+      // console.log('block', block)
+      // return {
+      //   component: TeXBlock,
+      //   editable: false,
+      //   props: {
+      //     onStartEdit: (blockKey) => {
+      //       console.log('onStartEdit')
+      //       var { liveTeXEdits } = this.state;
+      //       this.setState({ liveTeXEdits: liveTeXEdits.set(blockKey, true) });
+      //     },
+      //     onFinishEdit: (blockKey, newContentState) => {
+      //       console.log('onFinishEdit')
+      //       var { liveTeXEdits } = this.state;
+      //       this.setState({
+      //         liveTeXEdits: liveTeXEdits.remove(blockKey),
+      //         editorState: EditorState.createWithContent(newContentState),
+      //       });
+      //     },
+      //     onRemove: (blockKey) => {
+      //       console.log('onRemove')
+      //       this._removeTeX(blockKey)}
+      //       ,
+      //   },
+      // };
       // }
 
+      return {
+        component: TeXBlock,
+        editable: true,
+        props: {
+          onEdit: (block) => {
+            // console.log('onEdit')
+            var newText = block.getText();
+            // console.log('newText', newText)
+            const newKey = block.getKey();
+            if (newText != '') {
+              compile(newText)
+                .then((ast) => {
+                  // console.log('ast', ast, 'length', ast.length)
+                  // this.setState({ ast, hash: hashCode(this.props.markup), error: null });
+                  //console.log('array?',Array.isArray(key));
+                  IdyllAST.setProperty(ast[0], 'id', newKey)
+                  //this.setState({ ast: ast });
+                  this.doc.addBlock(ast);
+                })
+            }
 
-      if (block.getType() === 'atomic') {
-        console.log('block', block)
-        return {
-          component: TeXBlock,
-          editable: false,
-          props: {
-            onStartEdit: (blockKey) => {
-              var { liveTeXEdits } = this.state;
-              this.setState({ liveTeXEdits: liveTeXEdits.set(blockKey, true) });
-            },
-            onFinishEdit: (blockKey, newContentState) => {
-              var { liveTeXEdits } = this.state;
-              this.setState({
-                liveTeXEdits: liveTeXEdits.remove(blockKey),
-                editorState: EditorState.createWithContent(newContentState),
-              });
-            },
-            onRemove: (blockKey) => this._removeTeX(blockKey),
-          },
-        };
+          }
+        },
       }
+
+
+
       return null;
     };
 
     this._focus = () => this.refs.editor.focus();
-    this._onChange = (editorState) => this.setState({ editorState });
+    this._onChange = (editorState) => {
+      var lastChangeType = editorState.getLastChangeType()
+      console.log('change', lastChangeType);
+
+// TODO regenerate previous block if split-block
+// TODO handle remove-range
+// TODO handle multi-line insert-fragment
+
+      if (lastChangeType === 'insert-characters' ||
+        lastChangeType === 'backspace-character' ||
+        lastChangeType === 'split-block' ||
+        lastChangeType === 'insert-fragment'
+        ) {
+
+        var selectionState = editorState.getSelection();
+        var anchorKey = selectionState.getAnchorKey();
+        var currentContent = editorState.getCurrentContent();
+        var currentContentBlock = currentContent.getBlockForKey(anchorKey);
+        var selectedText = currentContentBlock.getText();
+        console.log(anchorKey, selectedText)
+
+        //if (selectedText != '') {
+          compile(selectedText)
+            .then((ast) => {
+              console.log('compiled', anchorKey, selectedText)
+              console.log('ast', ast, 'length', ast.length)
+              // this.setState({ ast, hash: hashCode(this.props.markup), error: null });
+              //console.log('array?',Array.isArray(key));
+              IdyllAST.setProperty(ast[0], 'id', anchorKey)
+              //this.setState({ ast: ast });
+              this.doc.addBlock(ast);
+            })
+        //}
+
+      }
+      this.setState({
+        editorState
+      })
+    };
 
     this._handleKeyCommand = (command, editorState) => {
       var newState = RichUtils.handleKeyCommand(editorState, command);
@@ -102,6 +187,7 @@ class IdyllEditor extends React.PureComponent {
     };
 
     this._removeTeX = (blockKey) => {
+      console.log('_removeTeX')
       var { editorState, liveTeXEdits } = this.state;
       this.setState({
         liveTeXEdits: liveTeXEdits.remove(blockKey),
@@ -110,6 +196,7 @@ class IdyllEditor extends React.PureComponent {
     };
 
     this._insertTeX = () => {
+      console.log('_insertTeX')
       this.setState({
         liveTeXEdits: Map(),
         editorState: insertTeXBlock(this.state.editorState),
@@ -124,58 +211,60 @@ class IdyllEditor extends React.PureComponent {
   render() {
     return (
       <div className="container">
-        <div className={`renderer `}>
-          <div className={`renderer-container `}>
-            <div className="TexEditor-container">
-              <div className="TeXEditor-root">
-                <div className="TeXEditor-editor" onClick={this._focus}>
-                  <IdyllDocument
-                    markup={""}
-                    components={components}
-                    layout={"centered"}
-                    context={context => {
-                      window.IDYLL_CONTEXT = context;
-                    }}
-                    datasets={{}}
-                  >
-                  </IdyllDocument>
-                  <Editor
-                    blockRendererFn={this._blockRenderer}
-                    editorState={this.state.editorState}
-                    handleKeyCommand={this._handleKeyCommand}
-                    onChange={this._onChange}
-                    placeholder="Start"
-                    readOnly={this.state.liveTeXEdits.count()}
-                    ref="editor"
-                    spellCheck={true}
-                  />
-                  <style jsx>{`
-          .renderer {
-            flex: 2;
-            background: #fffff8;
-            padding: 15px;
-            font-size: 13px;
-            overflow-y: auto;
-          }
-          .renderer-container {
-            margin-left: auto;
-            margin-right: auto;
-            padding-left: 6.25%;
-            font-family: et-book, Palatino, "Palatino Linotype",
-              "Palatino LT STD", "Book Antiqua", Georgia, serif;
-            color: #111;
-            counter-reset: sidenote-counter;
-          }
-        `}</style>
-                </div>
-              </div>
-            </div>
-            <button onClick={this._insertTeX} className="TeXEditor-insert">
+        <div className="TexEditor-container">
+          <div className="TeXEditor-root">
+            {/* <button onClick={this._insertTeX} className="TeXEditor-insert">
               {'Insert new TeX'}
-            </button>
+            </button> */}
+            <div className="TeXEditor-editor" onClick={this._focus}>
+              <Editor
+                // blockRendererFn={this._blockRenderer}
+                editorState={this.state.editorState}
+                handleKeyCommand={this._handleKeyCommand}
+                onChange={this._onChange}
+                placeholder="Start writing here"
+                // readOnly={this.state.liveTeXEdits.count()}
+                ref="editor"
+                spellCheck={true}
+              />
+            </div>
           </div>
         </div>
+        <div className={`renderer `}>
+          <div className={`renderer-container `}>
+            <IdyllDocument
+              ref={(child) => { this.doc = child; }}
+              components={components}
+              layout={"blog"}
+              context={context => {
+                window.IDYLL_CONTEXT = context;
+              }}
+              datasets={{}}
+            >
+            </IdyllDocument>
+          </div>
+        </div>
+        <style jsx>{`
+.container {
+  display: flex;
+  flex: 2;
+  background: #fffff8;
+  padding: 15px;
+  font-size: 13px;
+  overflow-y: auto;
+}
+.renderer, .TexEditor-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 6.25%;
+  color: #111;
+  counter-reset: sidenote-counter;
+  text-align: left;
+}
+`}</style>
       </div>
+
+
     );
   }
 }

@@ -16,6 +16,7 @@
 
 import katex from 'katex';
 import React from 'react';
+import DraftEditorBlock from "draft-js/lib/DraftEditorBlock.react";
 
 class KatexOutput extends React.Component {
   constructor(props) {
@@ -57,40 +58,43 @@ class KatexOutput extends React.Component {
   }
 }
 
-export default class TeXBlock extends React.Component {
+export default class TeXBlock extends React.Component<Props> {
   constructor(props) {
     super(props);
-    this.state = {editMode: false};
+    // console.log('TeXBlock')
+    // this.state = {editMode: true};
 
     this._onClick = () => {
-      if (this.state.editMode) {
-        return;
-      }
+      // if (this.state.editMode) {
+      //   return;
+      // }
 
       this.setState({
         editMode: true,
-        texValue: this._getValue(),
+        // texValue: this._getValue(),
       }, () => {
         this._startEdit();
       });
     };
 
     this._onValueChange = evt => {
+      console.log('_onValueChange')
       var value = evt.target.value;
       var invalid = false;
-      try {
-        katex.__parse(value);
-      } catch (e) {
-        invalid = true;
-      } finally {
+      // try {
+      //   katex.__parse(value);
+      // } catch (e) {
+      //   invalid = true;
+      // } finally {
         this.setState({
           invalidTeX: invalid,
           texValue: value,
         });
-      }
+      // }
     };
 
     this._save = () => {
+      console.log('_save')
       var entityKey = this.props.block.getEntityAt(0);
       var newContentState = this.props.contentState.mergeEntityData(
         entityKey,
@@ -101,81 +105,101 @@ export default class TeXBlock extends React.Component {
         editMode: false,
         texValue: null,
       }, this._finishEdit.bind(this, newContentState));
+      // this.setState({
+      //   invalidTeX: false,
+      //   editMode: true,
+      //   texValue: this._getValue()
+      // });
     };
 
     this._remove = () => {
+      console.log('_remove')
       this.props.blockProps.onRemove(this.props.block.getKey());
     };
     this._startEdit = () => {
+      console.log('_startEdit')
       this.props.blockProps.onStartEdit(this.props.block.getKey());
     };
     this._finishEdit = (newContentState) => {
+      console.log('_finishEdit')
       this.props.blockProps.onFinishEdit(
         this.props.block.getKey(),
         newContentState,
       );
     };
+    // this._startEdit();
   }
 
   _getValue() {
     // console.log('this.props.block',this.props.block)
     // console.log('this.props.block.getEntityAt(0)',this.props.block.getEntityAt(0))
-    return this.props.contentState
-      .getEntity(this.props.block.getEntityAt(0))
-      .getData()['content'];
+    // return this.props.contentState
+    //   .getEntity(this.props.block.getEntityAt(0))
+    //   .getData()['content'];
+      return this.props.block.getText();
   }
 
   render() {
-    var texContent = null;
-    if (this.state.editMode) {
-      if (this.state.invalidTeX) {
-        texContent = '';
-      } else {
-        texContent = this.state.texValue;
-      }
-    } else {
-      texContent = this._getValue();
-    }
-
-    var className = 'TeXEditor-tex';
-    if (this.state.editMode) {
-      className += ' TeXEditor-activeTeX';
-    }
-
-    var editPanel = null;
-    if (this.state.editMode) {
-      var buttonClass = 'TeXEditor-saveButton';
-      if (this.state.invalidTeX) {
-        buttonClass += ' TeXEditor-invalidButton';
-      }
-
-      editPanel =
-        <div className="TeXEditor-panel">
-          <textarea
-            className="TeXEditor-texValue"
-            onChange={this._onValueChange}
-            ref="textarea"
-            value={this.state.texValue}
-          />
-          <div className="TeXEditor-buttons">
-            <button
-              className={buttonClass}
-              disabled={this.state.invalidTeX}
-              onClick={this._save}>
-              {this.state.invalidTeX ? 'Invalid TeX' : 'Done'}
-            </button>
-            <button className="TeXEditor-removeButton" onClick={this._remove}>
-              Remove
-            </button>
-          </div>
-        </div>;
-    }
+    // console.log('block render');
+    this.props.blockProps.onEdit(this.props.block);
 
     return (
-      <div className={className}>
-        <KatexOutput content={texContent} onClick={this._onClick} />
-        {editPanel}
+      <div>
+        <DraftEditorBlock {...this.props} />
       </div>
     );
+
+    // var texContent = null;
+    // if (this.state.editMode) {
+    //   if (this.state.invalidTeX) {
+    //     texContent = '';
+    //   } else {
+    //     texContent = this.state.texValue;
+    //   }
+    // } else {
+    //   texContent = this._getValue();
+    // }
+
+    // var className = 'TeXEditor-tex';
+    // if (this.state.editMode) {
+    //   className += ' TeXEditor-activeTeX';
+    // }
+
+    // var editPanel = null;
+    // if (this.state.editMode) {
+    //   var buttonClass = 'TeXEditor-saveButton';
+    //   if (this.state.invalidTeX) {
+    //     buttonClass += ' TeXEditor-invalidButton';
+    //   }
+
+    //   editPanel =
+    //     <div className="TeXEditor-panel">
+    //       <textarea
+    //         className="TeXEditor-texValue"
+    //         onChange={this._onValueChange}
+    //         ref="textarea"
+    //         value={this._getValue()}
+    //       />
+    //       <div className="TeXEditor-buttons">
+    //         <button
+    //           className={buttonClass}
+    //           disabled={this.state.invalidTeX}
+    //           onClick={this._save}>
+    //           {this.state.invalidTeX ? 'Invalid TeX' : 'Done'}
+    //         </button>
+    //         <button className="TeXEditor-removeButton" onClick={this._remove}>
+    //           Remove
+    //         </button>
+    //       </div>
+    //     </div>;
+    // }
+
+    // return (
+    //   <div className={className}>
+    //     {/* <KatexOutput content={texContent} onClick={this._onClick} /> */}
+    //     <div  onClick={this._onClick} >{texContent}</div>
+    //     {editPanel}
+    //   </div>
+    // );
   }
 }
