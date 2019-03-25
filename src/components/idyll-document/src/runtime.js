@@ -7,6 +7,7 @@ import entries from 'object.entries';
 import values from 'object.values';
 import { generatePlaceholder } from './components/placeholder';
 import AuthorTool from './components/author-tool';
+import IdyllAST from 'idyll-ast';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -220,23 +221,39 @@ class IdyllRuntime extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    console.log('Construct')
+    this.ast = this.props.ast || [];
+
     this.scrollListener = this.scrollListener.bind(this);
     this.initScrollListener = this.initScrollListener.bind(this);
 
-    const ast = filterASTForDocument(props.ast);
+    this.addBlock = this.addBlock.bind(this);
+    this.removeBlock = this.removeBlock.bind(this);
+    this.update = this.update.bind(this);
+    // this.state = { kids : []} 
 
-    const { vars, derived, data, elements } = splitAST(ast);
+    this.update();
+
+  }
+
+  update(){
+    // console.log('update',this.props)
+    // console.log('ast',this.ast)
+
+    this.ast = filterASTForDocument(this.ast);
+
+    const { vars, derived, data, elements } = splitAST(this.ast);
     const Wrapper = createWrapper({
-      theme: props.theme,
-      layout: props.layout,
-      authorView: props.authorView
+      theme: this.props.theme,
+      layout: this.props.layout,
+      authorView: this.props.authorView
     });
 
     let hasInitialized = false;
     let initialContext = {};
     // Initialize a custom context
-    if (typeof props.context === 'function') {
-      props.context({
+    if (typeof this.props.context === 'function') {
+      this.props.context({
         update: newState => {
           if (!hasInitialized) {
             initialContext = Object.assign(initialContext, newState);
@@ -263,10 +280,10 @@ class IdyllRuntime extends React.PureComponent {
       {},
       {
         ...getVars(vars, initialContext),
-        ...getData(data, props.datasets)
+        ...getData(data, this.props.datasets)
       },
       initialContext,
-      props.initialState ? props.initialState : {}
+      this.props.initialState ? this.props.initialState : {}
     );
     const derivedVars = (this.derivedVars = getVars(derived, initialState));
 
@@ -322,7 +339,7 @@ class IdyllRuntime extends React.PureComponent {
     };
 
     Object.keys(internalComponents).forEach(key => {
-      if (props.components[key]) {
+      if (this.props.components[key]) {
         console.warn(
           `Warning! You are including a component named ${key}, but this is a reserved Idyll component. Please rename your component.`
         );
@@ -331,12 +348,12 @@ class IdyllRuntime extends React.PureComponent {
 
     const components = Object.assign(
       fallbackComponents,
-      props.components,
+      this.props.components,
       internalComponents
     );
 
     const rjs = new ReactJsonSchema(components);
-    const schema = translate(ast);
+    const schema = translate(this.ast);
 
     const wrapTargets = findWrapTargets(schema, this.state);
 
@@ -410,9 +427,13 @@ class IdyllRuntime extends React.PureComponent {
       };
     });
 
-    this.kids = rjs.parseSchema(transformedSchema);
-  }
+    // console.log('this.state',this.state)
 
+    this.setState({kids: rjs.parseSchema(transformedSchema)});
+    //this.kids = rjs.parseSchema(transformedSchema);
+    // console.log('this.kids ',this.kids)
+  }
+ 
   scrollListener() {
     const refs = getRefs();
     updateRefsCallbacks.forEach(f => f({ ...this.state, refs }));
@@ -474,10 +495,70 @@ class IdyllRuntime extends React.PureComponent {
     this._onMount && this._onMount();
   }
 
+  addBlock(ast){
+    console.log('addBlock',ast,'to',this.ast );
+    if(ast === undefined) return;
+    console.log('ast[0]',ast[0])
+    const id = IdyllAST.getProperty(ast[0], 'id');
+    const key = id[1];
+    console.log('key',key);
+
+    const modifyNodeByKey = function(ast, key, newNode) {
+      var found = false;
+      var handleNode = (node) => {
+        if (typeof node === 'string') {
+          return node;
+        }
+        var id = IdyllAST.getProperty(node, 'id');
+        if(id === undefined) {
+          return node;
+        }
+        var compare = id[1] === key
+        // console.log('id[1]',id[1],'key',key,compare)
+        if( compare ) {
+          console.log('mod block')
+          found = true;
+          return newNode;
+          
+        }
+    
+        node = IdyllAST.modifyChildren(node, handleNode);
+        return node;
+      }
+    
+      ast = ast.map((node) => {
+        return handleNode(node);
+      });
+      if (found === false) {
+        console.log('append block')
+        ast = IdyllAST.appendNode(ast,newNode);
+      }
+      return ast;
+    };
+
+    this.ast = modifyNodeByKey(this.ast,key,ast[0]);
+    
+    //this.ast = this.ast.concat(ast);
+
+    // console.log('new ast',this.ast[1][2][0][2]);
+    //IdyllAST.findNodes
+    this.update()
+  }
+
+  removeBlock(ast){
+    console.log('removeBlock',ast,'to',this.ast );
+    if(ast === undefined) return;
+  }
+
   render() {
+    // console.log('render')
+    // console.log('this.state.kids ',this.state.kids)
     return (
       <div className="idyll-root" ref={this.initScrollListener}>
-        {this.kids}
+        {this.state.kids}
+        {/* {React.Children.map(this.state.kids, (child, i) => {
+          return child
+        })} */}
       </div>
     );
   }
