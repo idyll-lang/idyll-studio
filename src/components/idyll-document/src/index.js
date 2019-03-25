@@ -24,6 +24,8 @@ class IdyllDocument extends React.Component {
       hash: '',
       error: null
     }
+    this.addBlock = this.addBlock.bind(this);
+    this.removeBlock = this.removeBlock.bind(this);
   }
 
   componentDidMount() {
@@ -42,9 +44,12 @@ class IdyllDocument extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.ast) {
+      console.log('newProps.ast',newProps.ast)
+      //this.setState({ast: newProps.ast})
       return;
     }
 
+    if (newProps.markup) {
     const hash = hashCode(newProps.markup);
     if (hash !== this.state.hash) {
       this.setState({ previousAST: this.state.ast });
@@ -54,6 +59,7 @@ class IdyllDocument extends React.Component {
         })
         .catch(this.componentDidCatch.bind(this));
     }
+  }
   }
 
   getErrorComponent() {
@@ -65,10 +71,19 @@ class IdyllDocument extends React.Component {
     }, this.state.error);
   }
 
+  addBlock(ast){
+    this.runtime.addBlock(ast);
+
+  }
+
+  removeBlock(ast){
+    this.runtime.removeBlock(ast);
+  }
+
   render() {
     return (
       <div >
-        <Runtime
+        <Runtime ref={(child) => { this.runtime = child; }}
           {...this.props}
           key={ this.state.hash }
           context={(context) => {
