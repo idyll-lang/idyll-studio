@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "draft-js": "^0.10.5",
+    "idyll-ast": "^1.5.1",
     "idyll-components": "^3.4.1",
     "idyll-document": "^2.13.2",
     "immutable": "^4.0.0-rc.12",
