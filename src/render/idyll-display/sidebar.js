@@ -68,7 +68,6 @@ class Sidebar extends React.PureComponent {
   getComponentInfo(ASTNode) {
     console.log(ASTNode);
     const properties = [];
-    debugger;
     for (let property in ASTNode.properties) {
       properties.push(
         <li key={property}>
