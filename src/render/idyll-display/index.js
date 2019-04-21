@@ -51,22 +51,19 @@ class IdyllDisplay extends React.PureComponent {
             maxNodeId={maxNodeId}
             updateMaxId={updateMaxId}
           />
+          <div className='sidebar-view'>
+            <Sidebar
+              ast={this.props.ast}
+              handleASTChange={this.props.setAST}
+              currentSidebarNode={this.state.currentSidebarNode} />
+          </div>
         </div>
-        {/* <div className='edit-container'>
-          <Edit markup={markup} onChange={this.handleChange} />
-        </div> */}
         <div className='output-container'>
           <Render
             components={components}
             ast={this.props.ast}
             handleComponentChange={this.handleComponentChange}
           />
-        </div>
-        <div className='sidebar-view'>
-          <Sidebar
-            ast={this.props.ast}
-            handleASTChange={this.props.setAST}
-            currentSidebarNode={this.state.currentSidebarNode} />
         </div>
       </div>
     );
