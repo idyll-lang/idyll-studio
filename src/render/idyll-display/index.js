@@ -12,6 +12,14 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       currentMarkup: this.props.markup
     };
+    // this.handleChange = this.handleChange.bind(this);
+    this.handleComponentChange = this.handleComponentChange.bind(this);
+  }
+
+  handleComponentChange(node) {
+    this.setState({
+      currentSidebarNode : node
+    });
   }
 
   render() {
@@ -27,31 +35,22 @@ class IdyllDisplay extends React.PureComponent {
 
     return (
       <div className='grid'>
-        <div className='header'>
-          <ComponentView
-            components={components}
-            ast={ast}
-            handleASTChange={setAST}
-            propsMap={propsMap}
-            maxNodeId={maxNodeId}
-            updateMaxId={updateMaxId}
-          />
-          <DatasetView
-            datasets={datasets}
-            ast={ast}
-            handleASTChange={setAST}
-            maxNodeId={maxNodeId}
-            updateMaxId={updateMaxId}
-          />
-        </div>
-        {/* <div className='edit-container'>
-          <Edit markup={markup} onChange={this.handleChange} />
-        </div> */}
+        <Sidebar
+          ast={ast}
+          handleASTChange={setAST}
+          currentSidebarNode={this.state.currentSidebarNode}
+          propsMap={propsMap}
+          maxNodeId={maxNodeId}
+          updateMaxId={updateMaxId}
+          datasets={datasets}
+          components={components}
+        />
         <div className='output-container'>
-          <Render components={components} ast={this.props.ast} />
-        </div>
-        <div className='sidebar-view'>
-          <Sidebar ast={this.props.ast} handleASTChange={this.props.setAST} />
+          <Render
+            components={components}
+            ast={this.props.ast}
+            handleComponentChange={this.handleComponentChange}
+          />
         </div>
       </div>
     );

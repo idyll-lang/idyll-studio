@@ -76,6 +76,7 @@ class ComponentView extends React.PureComponent {
         <div className='component-container'>
           {components && components.length ? (
             <Select
+              style={{width: `50px`}}
               placeholder='Select a component'
               ref='select'
               // on change callback

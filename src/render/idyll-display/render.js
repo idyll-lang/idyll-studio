@@ -1,5 +1,6 @@
 import React from 'react';
 import IdyllDocument from 'idyll-document';
+import UserView from './components/user-view.js';
 
 class Renderer extends React.PureComponent {
   constructor(props) {
@@ -29,8 +30,24 @@ class Renderer extends React.PureComponent {
       }
       return memo;
     }, {});
+
+    const CreateUserView = (func) => {
+      return class UserView extends React.PureComponent {
+        render() {
+          return (
+            <div>
+              {this.props.component}
+              <button onClick={() => func(this.props.idyllASTNode)}>
+                Click to see props of the comp. in sidebar!
+              </button>
+            </div>
+          );
+        }
+      }
+    };
+    const NewUserView = CreateUserView(this.props.handleComponentChange);
     return (
-      <div className='renderer' style={{ width: '50%' }}>
+      <div className='renderer'>
         <div className='renderer-container'>
           <IdyllDocument
             //markup={markup}
@@ -41,6 +58,9 @@ class Renderer extends React.PureComponent {
               window.IDYLL_CONTEXT = context;
             }}
             datasets={{}}
+            userViewComponent={NewUserView}
+            authorView={true}
+            // handleComponentChange={this.props.handleComponentChange}
           />
         </div>
       </div>
