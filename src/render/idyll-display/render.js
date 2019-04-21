@@ -47,7 +47,7 @@ class Renderer extends React.PureComponent {
     };
     const NewUserView = CreateUserView(this.props.handleComponentChange);
     return (
-      <div className='renderer' style={{ width: '50%' }}>
+      <div className='renderer'>
         <div className='renderer-container'>
           <IdyllDocument
             //markup={markup}

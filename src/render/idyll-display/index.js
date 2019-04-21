@@ -35,29 +35,16 @@ class IdyllDisplay extends React.PureComponent {
 
     return (
       <div className='grid'>
-        <div className='header'>
-          <ComponentView
-            components={components}
-            ast={ast}
-            handleASTChange={setAST}
-            propsMap={propsMap}
-            maxNodeId={maxNodeId}
-            updateMaxId={updateMaxId}
-          />
-          <DatasetView
-            datasets={datasets}
-            ast={ast}
-            handleASTChange={setAST}
-            maxNodeId={maxNodeId}
-            updateMaxId={updateMaxId}
-          />
-          <div className='sidebar-view'>
-            <Sidebar
-              ast={this.props.ast}
-              handleASTChange={this.props.setAST}
-              currentSidebarNode={this.state.currentSidebarNode} />
-          </div>
-        </div>
+        <Sidebar
+          ast={ast}
+          handleASTChange={setAST}
+          currentSidebarNode={this.state.currentSidebarNode}
+          propsMap={propsMap}
+          maxNodeId={maxNodeId}
+          updateMaxId={updateMaxId}
+          datasets={datasets}
+          components={components}
+        />
         <div className='output-container'>
           <Render
             components={components}

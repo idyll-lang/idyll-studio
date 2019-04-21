@@ -1,6 +1,8 @@
 import React from 'react';
 import IdyllAST from 'idyll-ast';
 import VariableForm from './components/variable-form';
+import ComponentView from './component-view.js';
+import DatasetView from './dataset-view.js';
 
 class Sidebar extends React.PureComponent {
   constructor(props) {
@@ -21,7 +23,6 @@ class Sidebar extends React.PureComponent {
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
-    //console.log(this.props.ast);
     const currentChildren = this.props.ast.children;
     const variables = [];
     for (var i = 0; i < currentChildren.length - 1; i++) {
@@ -98,7 +99,7 @@ class Sidebar extends React.PureComponent {
     if (!this.props.ast) {
       return (
         <div>
-          <h1>Sidebar View (Please load an Idyll project</h1>
+          <h1>Sidebar View (Please load an Idyll project)</h1>
         </div>
       );
     }
@@ -110,14 +111,47 @@ class Sidebar extends React.PureComponent {
         </div>
       );
     }
+
+    const {
+      components,
+      propsMap,
+      datasets,
+      maxNodeId,
+      handleASTChange,
+      ast,
+      updateMaxId
+    } = this.props;
     return (
-      <div>
-        <h1>Sidebar View</h1>
-        <button onClick={this.modifyAST}>
-          Change the ast!
-        </button>
-        {/* {this.getAllVariables()} */}
+      <div className='sidebar-information'>
+        <div className='look-and-feel'>
+          <h2>LOOK AND FEEL</h2>
+          <p>TODO adding information for here!</p>
+        </div>
+        <div className='components-and-datasets'>
+          <h2>COMPONENTS AND DATASETS</h2>
+          <ComponentView
+              components={components}
+              ast={ast}
+              handleASTChange={handleASTChange}
+              propsMap={propsMap}
+              maxNodeId={maxNodeId}
+              updateMaxId={updateMaxId}
+          />
+          <DatasetView
+            datasets={datasets}
+            ast={ast}
+            handleASTChange={handleASTChange}
+            maxNodeId={maxNodeId}
+            updateMaxId={updateMaxId}
+          />
+        </div>
+        <h2>Variables View Below!</h2>
+        {this.getAllVariables()}
+
+        <h2>Components Used Below</h2>
         {this.getAllComponents()}
+
+        <h2>DEPLOYMENT</h2>
       </div>
     );
   }
