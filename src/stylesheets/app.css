@@ -28,7 +28,7 @@ body, html {
   background: #222;
   color: #fff;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
 }
 
 .component-container {

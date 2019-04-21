@@ -145,13 +145,17 @@ class Sidebar extends React.PureComponent {
             updateMaxId={updateMaxId}
           />
         </div>
-        <h2>Variables View Below!</h2>
-        {this.getAllVariables()}
-
-        <h2>Components Used Below</h2>
-        {this.getAllComponents()}
-
-        <h2>DEPLOYMENT</h2>
+        <div className='variables-view'>
+          <h2>Variables View Below!</h2>
+          {this.getAllVariables()}
+        </div>
+        <div className='components-present-view'>
+          <h2>Components Used Below</h2>
+          {this.getAllComponents()}
+        </div>
+        <div className='publish-view'>
+          <h2>DEPLOYMENT</h2>
+        </div>
       </div>
     );
   }
