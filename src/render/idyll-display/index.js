@@ -12,7 +12,6 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       currentMarkup: this.props.markup
     };
-    // this.handleChange = this.handleChange.bind(this);
     this.handleComponentChange = this.handleComponentChange.bind(this);
   }
 

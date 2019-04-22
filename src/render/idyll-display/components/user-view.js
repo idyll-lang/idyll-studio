@@ -7,8 +7,6 @@ class UserView extends React.PureComponent {
   }
 
   handleClick() {
-    console.log(this.props.idyllASTNode);
-    //this.props.handleComponentChange(this.props.component);
     this.props.handleComponentChange(this.props.idyllASTNode);
   }
 
