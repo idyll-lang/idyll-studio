@@ -114,6 +114,7 @@ class Sidebar extends React.PureComponent {
     }
     return (
       <div>
+        <a onClick={() => this.props.updateNode(null)}>← Back</a>
         <p>
           This is a {ASTNode.name} component.
           Its properties are below
@@ -157,7 +158,7 @@ class Sidebar extends React.PureComponent {
       updateMaxId
     } = this.props;
     return (
-      <div className='sidebar-information' style={{width: this.state.collapsed ? 0 : '100%'}}>
+      <div className='sidebar-information' style={{width: this.state.collapsed ? 0 : undefined}}>
         <div className='look-and-feel'>
           <h2>LOOK AND FEEL</h2>
           {this.getStyleView()}

@@ -52,6 +52,7 @@ class IdyllDisplay extends React.PureComponent {
           ast={ast}
           handleASTChange={setAST}
           currentSidebarNode={this.state.currentSidebarNode}
+          updateNode={this.handleComponentChange.bind(this)}
           propsMap={propsMap}
           maxNodeId={maxNodeId}
           updateMaxId={updateMaxId}
