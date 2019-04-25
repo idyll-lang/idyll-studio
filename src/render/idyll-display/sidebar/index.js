@@ -1,19 +1,58 @@
 import React from 'react';
-import IdyllAST from 'idyll-ast';
-import VariableForm from './components/variable-form';
+import AST from 'idyll-ast';
+import VariableForm from '../components/variable-form.js';
 import ComponentView from './component-view.js';
 import DatasetView from './dataset-view.js';
+
+import * as layouts from 'idyll-layouts';
+import * as themes from 'idyll-themes';
+
+console.log(layouts, themes);
 
 class Sidebar extends React.PureComponent {
   constructor(props) {
     super(props);
     this.modifyAST = this.modifyAST.bind(this);
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
+
+    this.state = {
+      collapsed: false
+    };
+  }
+
+  handleThemeChange(event) {
+    this.props.updateTheme(event.target.value);
+  }
+  handleLayoutChange(event) {
+    this.props.updateLayout(event.target.value);
+  }
+
+  getStyleView() {
+    return (
+      <div>
+        <div>
+          Theme: <select onChange={this.handleThemeChange.bind(this)} value={this.props.theme}>{Object.keys(themes).map(themeName => {
+            return <option value={themeName}>{themeName}</option>
+          })}</select>
+        </div>
+        <div>
+          Layout: <select onChange={this.handleLayoutChange.bind(this)} value={this.props.layout}>{Object.keys(layouts).map(layoutName => {
+            return <option value={layoutName}>{layoutName}</option>
+          })}</select>
+        </div>
+      </div>
+    )
+  }
+
+  handleToggle() {
+    this.setState({
+      collapsed: !this.state.collapsed
+    });
   }
 
   modifyAST() {
     const currentAST = this.props.ast;
-    const h2Nodes = IdyllAST.modifyNodesByName(currentAST, 'h2',
+    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2',
       (node) => {
         node.children[0].value = 'alan took over';
         return node;
@@ -23,21 +62,17 @@ class Sidebar extends React.PureComponent {
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
-    const currentChildren = this.props.ast.children;
-    const variables = [];
-    for (var i = 0; i < currentChildren.length - 1; i++) {
-      const variable = currentChildren[i];
-      const varProperties = variable.properties;
-      const varName = varProperties.name.value;
-      const varValue = varProperties.value.value;
-      variables.push(
-        <div className='variables-view' key={varName}>
-          <li key={variable}>{varName}, whose current value is {varValue}</li>
+    return AST.getNodesByType(this.props.ast, 'var').map((variable) => {
+      const props = variable.properties;
+      const name = props.name.value;
+      const value = props.value.value;
+      return (
+        <div className='variables-view' key={name}>
+          <li key={variable}>{name}, whose current value is {value}</li>
           <VariableForm handleASTChange={this.props.handleASTChange} node={variable} ast={this.props.ast} />
         </div>
-      );
-    }
-    return variables;
+      )
+    });
   }
 
   // Returns list of components in ast -- doesn't distinguish further
@@ -122,10 +157,10 @@ class Sidebar extends React.PureComponent {
       updateMaxId
     } = this.props;
     return (
-      <div className='sidebar-information'>
+      <div className='sidebar-information' style={{width: this.state.collapsed ? 0 : '100%'}}>
         <div className='look-and-feel'>
           <h2>LOOK AND FEEL</h2>
-          <p>TODO adding information for here!</p>
+          {this.getStyleView()}
         </div>
         <div className='components-and-datasets'>
           <h2>COMPONENTS AND DATASETS</h2>
@@ -149,12 +184,16 @@ class Sidebar extends React.PureComponent {
           <h2>Variables View Below!</h2>
           {this.getAllVariables()}
         </div>
-        <div className='components-present-view'>
+        {/* <div className='components-present-view'>
           <h2>Components Used Below</h2>
           {this.getAllComponents()}
-        </div>
+        </div> */}
         <div className='publish-view'>
           <h2>DEPLOYMENT</h2>
+        </div>
+
+        <div className="sidebar-collapse" onClick={this.handleToggle.bind(this)}>
+          Collapse
         </div>
       </div>
     );

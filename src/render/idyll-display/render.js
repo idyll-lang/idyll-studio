@@ -53,11 +53,14 @@ class Renderer extends React.PureComponent {
             //markup={markup}
             ast={ast}
             components={loadedComponent}
-            layout={'centered'}
+            layout={this.props.layout}
+            theme={this.props.theme}
             context={context => {
               window.IDYLL_CONTEXT = context;
             }}
             datasets={{}}
+            injectThemeCSS={true}
+            injectLayoutCSS={true}
             userViewComponent={NewUserView}
             authorView={true}
             // handleComponentChange={this.props.handleComponentChange}
