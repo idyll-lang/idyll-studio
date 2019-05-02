@@ -1,8 +1,8 @@
 import React from 'react';
 import AST from 'idyll-ast';
 import VariableForm from '../components/variable-form.js';
-import ComponentView from './component-view.js';
-import DatasetView from './dataset-view.js';
+import ComponentView from '../components/component-view.js';
+import DatasetView from '../components/dataset-view.js';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
