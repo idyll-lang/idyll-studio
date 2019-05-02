@@ -27,7 +27,6 @@ import VariableForm from './variable-form';
       }
     });
     return (
-      <div className='variable-view'>
         <table>
           <tbody>
             <tr>
@@ -39,8 +38,6 @@ import VariableForm from './variable-form';
             {variableInfoRows}
           </tbody>
         </table>
-        <button className='add-variable-button'>Add variable</button>
-      </div>
     );
   }
 
@@ -50,7 +47,12 @@ import VariableForm from './variable-form';
     return (
       <div className='variables-view'>
         <h2>Variable Views below!</h2>
-        {variablesTable}
+        <div className='variables-table-view'>
+          {variablesTable}
+        </div>
+        <div className='add-variable-button'>
+          <button>Add variable</button>
+        </div>
       </div>
     )
   }
