@@ -1,8 +1,8 @@
 import React from 'react';
 import AST from 'idyll-ast';
-import VariableForm from '../components/variable-form.js';
 import ComponentView from '../components/component-view.js';
 import DatasetView from '../components/dataset-view.js';
+import VariableView from '../components/variable-view';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -181,10 +181,10 @@ class Sidebar extends React.PureComponent {
             updateMaxId={updateMaxId}
           />
         </div>
-        <div className='variables-view'>
-          <h2>Variables View Below!</h2>
-          {this.getAllVariables()}
-        </div>
+        <VariableView
+          ast={ast}
+          handleASTChange={handleASTChange}
+        />
         {/* <div className='components-present-view'>
           <h2>Components Used Below</h2>
           {this.getAllComponents()}
