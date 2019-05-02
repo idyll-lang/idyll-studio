@@ -27,17 +27,20 @@ import VariableForm from './variable-form';
       }
     });
     return (
-      <table>
-        <tbody>
-          <tr>
-            <th>Type</th>
-            <th>Name</th>
-            <th>Initial value</th>
-            <th>Current value</th>
-          </tr>
-          {variableInfoRows}
-        </tbody>
-      </table>
+      <div className='variable-view'>
+        <table>
+          <tbody>
+            <tr>
+              <th>Type</th>
+              <th>Name</th>
+              <th>Initial value</th>
+              <th>Current value</th>
+            </tr>
+            {variableInfoRows}
+          </tbody>
+        </table>
+        <button className='add-variable-button'>Add variable</button>
+      </div>
     );
   }
 
