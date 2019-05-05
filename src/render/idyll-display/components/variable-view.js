@@ -14,7 +14,7 @@ import VariableForm from './variable-form';
       if (childType === 'var' || childType === 'data') { // allow for derivedVar types too
         const properties = child.properties;
         const varName = properties.name.value;
-        const varValue = properties.value.value;
+        const varValue = childType === 'var' ? properties.value.value : properties.source.value;
         const initialValue = 'TODO';
         return (
           <tr key={JSON.stringify(varName)} className='variables-table-row'>
