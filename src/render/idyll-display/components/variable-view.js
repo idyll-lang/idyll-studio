@@ -11,7 +11,7 @@ import VariableForm from './variable-form';
     const currentChildren = ast.children;
     const variableInfoRows = currentChildren.map((child) => {
       const childType = child.type;
-      if (childType !== 'component') { // allow for derivedVar types too
+      if (childType === 'var' || childType === 'data') { // allow for derivedVar types too
         const properties = child.properties;
         const varName = properties.name.value;
         const varValue = properties.value.value;
