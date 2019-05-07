@@ -9,7 +9,7 @@ class Deploy extends React.PureComponent {
   }
 
   render() {
-    return <div className='deploy' />;
+    return <div>Hi</div>;
   }
 }
 

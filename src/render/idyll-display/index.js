@@ -13,7 +13,6 @@ class IdyllDisplay extends React.PureComponent {
       layout: 'centered',
       theme: 'default'
     };
-    this.deploy = this.deploy.bind(this);
     this.handleComponentChange = this.handleComponentChange.bind(this);
   }
 
@@ -33,12 +32,6 @@ class IdyllDisplay extends React.PureComponent {
     this.setState({
       theme: theme
     });
-  }
-
-  // Deploying logic
-  deploy() {
-    const { deploy } = this.props;
-    deploy();
   }
 
   render() {
@@ -74,6 +67,7 @@ class IdyllDisplay extends React.PureComponent {
           theme={this.state.theme}
           updateTheme={this.updateTheme.bind(this)}
           updateLayout={this.updateLayout.bind(this)}
+          deploy={this.props.deploy}
         />
         <div className='output-container'>
           <Render

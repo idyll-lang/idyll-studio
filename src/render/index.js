@@ -144,6 +144,7 @@ class App extends React.PureComponent {
           datasets={this.state.datasets}
           maxNodeId={this.state.maxNodeId}
           updateMaxId={this.updateMaxId}
+          deploy={this.deploy}
         />
       </div>
     );
