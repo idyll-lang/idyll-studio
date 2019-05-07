@@ -19,15 +19,9 @@ class App extends React.PureComponent {
       datasets: undefined
     };
 
-<<<<<<< HEAD
-    this.handleChange = this.handleChange.bind(this);
-    this.insertComponent = this.insertComponent.bind(this);
-    this.deploy = this.deploy.bind(this);
-=======
     this.setAST = this.setAST.bind(this);
     this.createComponentMap = this.createComponentMap.bind(this);
     this.updateMaxId = this.updateMaxId.bind(this);
->>>>>>> 5e2fc613e39502a0b44600850d79298453db4ef8
   }
 
   // Assigns the app's ast to be the given one
