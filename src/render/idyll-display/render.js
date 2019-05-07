@@ -31,7 +31,7 @@ class Renderer extends React.PureComponent {
       return memo;
     }, {});
 
-    const CreateUserView = (func) => {
+    const CreateUserView = func => {
       return class UserView extends React.PureComponent {
         render() {
           return (
@@ -43,7 +43,7 @@ class Renderer extends React.PureComponent {
             </div>
           );
         }
-      }
+      };
     };
     const NewUserView = CreateUserView(this.props.handleComponentChange);
     return (

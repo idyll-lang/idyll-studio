@@ -3,7 +3,6 @@ import AST from 'idyll-ast';
 import ComponentView from '../components/component-view.js';
 import DatasetView from '../components/dataset-view.js';
 import VariableView from '../components/variable-view';
-import Deploy from '../components/deploy.js';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -175,7 +174,6 @@ class Sidebar extends React.PureComponent {
         <VariableView ast={ast} handleASTChange={handleASTChange} />
         <div className='publish-view'>
           <h2>DEPLOYMENT</h2>
-          <Deploy />
         </div>
 
         <div
