@@ -7,6 +7,7 @@ const readdir = require('recursive-readdir');
 const request = require('request-promise-native');
 const urljoin = require('url-join');
 const IDYLL_PUB_API = 'https://api.idyll.pub';
+const compile = require('idyll-compiler');
 
 class Main {
   constructor(electronObjects) {
@@ -101,25 +102,36 @@ class Main {
 
     // Accepts a file path
     const fileContent = fs.readFileSync(file).toString();
-    this.mainWindow.webContents.send('idyll:markup', fileContent);
-    this.mainWindow.webContents.send('idyll:path', this.filePath);
-    this.mainWindow.webContents.send(
-      'idyll:components',
-      this.idyll.getComponents()
-    );
+
+    // Compile contents
+    compile(fileContent, undefined)
+      .then(ast => {
+        this.mainWindow.webContents.send('idyll:ast', ast);
+        this.mainWindow.webContents.send('idyll:path', this.filePath);
+        this.mainWindow.webContents.send(
+          'idyll:components',
+          idyll.getComponents()
+        );
+        this.mainWindow.webContents.send('idyll:datasets', idyll.getDatasets());
+        this.mainWindow.webContents.send();
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   // Saves current markup to open idyll project
   handleFileSave() {
-    this.mainWindow.webContents.send('idyll:save', 'Saved!');
-    if (this.filePath !== undefined) {
-      // must check if actually saved
-      ipcMain.on('save', (event, content) => {
-        fs.writeFile(this.filePath, content, err => {
-          if (err) throw err;
-        });
-      });
-    }
+    // // Let's render process know ready to receive markup to save
+    // this.mainWindow.webContents.send('idyll:save', 'Saved!');
+    // // Saves markup to file
+    // if (this.filePath !== undefined) {
+    //   ipcMain.on('save', (event, content) => {
+    //     fs.writeFile(this.filePath, content, err => {
+    //       if (err) throw err;
+    //     });
+    //   });
+    // }
   }
 
   async publish() {

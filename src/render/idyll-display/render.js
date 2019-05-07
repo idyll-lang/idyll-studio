@@ -1,5 +1,6 @@
 import React from 'react';
 import IdyllDocument from 'idyll-document';
+import UserView from './components/user-view.js';
 
 class Renderer extends React.PureComponent {
   constructor(props) {
@@ -14,9 +15,8 @@ class Renderer extends React.PureComponent {
   }
 
   render() {
-    const { markup, components } = this.props;
-
-    if (!markup) {
+    const { components, ast } = this.props;
+    if (!ast) {
       return 'Please load an Idyll project...';
     }
     if (!components || !components.length) {
@@ -30,17 +30,40 @@ class Renderer extends React.PureComponent {
       }
       return memo;
     }, {});
+
+    const CreateUserView = (func) => {
+      return class UserView extends React.PureComponent {
+        render() {
+          return (
+            <div>
+              {this.props.component}
+              <button onClick={() => func(this.props.idyllASTNode)}>
+                Click to see props of the comp. in sidebar!
+              </button>
+            </div>
+          );
+        }
+      }
+    };
+    const NewUserView = CreateUserView(this.props.handleComponentChange);
     return (
-      <div className='renderer' style={{ width: '50%' }}>
+      <div className='renderer'>
         <div className='renderer-container'>
           <IdyllDocument
-            markup={markup}
+            //markup={markup}
+            ast={ast}
             components={loadedComponent}
-            layout={'centered'}
+            layout={this.props.layout}
+            theme={this.props.theme}
             context={context => {
               window.IDYLL_CONTEXT = context;
             }}
             datasets={{}}
+            injectThemeCSS={true}
+            injectLayoutCSS={true}
+            userViewComponent={NewUserView}
+            authorView={true}
+            // handleComponentChange={this.props.handleComponentChange}
           />
         </div>
       </div>

@@ -1,45 +1,38 @@
 import React from 'react';
 import Edit from './edit.js';
 import Render from './render.js';
-import ComponentView from './component-view.js';
+import Sidebar from './sidebar';
+import { path } from 'change-case';
 
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      currentMarkup: this.props.markup
+      currentMarkup: this.props.markup,
+      // TODO - get these values from the project config!
+      layout: 'centered',
+      theme: 'default'
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.insertComponent = this.insertComponent.bind(this);
     this.deploy = this.deploy.bind(this);
+    this.handleComponentChange = this.handleComponentChange.bind(this);
   }
 
-  // When editor detects changes, updates current markup
-  // to the newMarkup passed in
-  handleChange(newMarkup) {
-    this.setState({ currentMarkup: newMarkup });
-    const { onChange } = this.props; // must pass info up one level
-    if (onChange) {
-      onChange(newMarkup);
-    }
+  handleComponentChange(node) {
+    this.setState({
+      currentSidebarNode: node
+    });
   }
 
-  // Update renderer to reflect newly uploaded file
-  // if previous markup is any different from current
-  componentDidUpdate(prevProps) {
-    if (this.props.markup !== prevProps.markup) {
-      this.handleChange(this.props.markup);
-    }
+  updateLayout(layout) {
+    this.setState({
+      layout: layout
+    });
   }
 
-  // Insert a new component into editor and renderer given
-  // component tag String
-  insertComponent(componentTag) {
-    var markup = this.state.currentMarkup + '\n' + componentTag;
-    this.setState({ currentMarkup: markup });
-
-    const { insertComponent } = this.props;
-    insertComponent(markup);
+  updateTheme(theme) {
+    this.setState({
+      theme: theme
+    });
   }
 
   // Deploying logic
@@ -49,26 +42,47 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { markup, components, propsMap } = this.props;
-    const { currentMarkup } = this.state;
+    const {
+      components,
+      propsMap,
+      datasets,
+      maxNodeId,
+      setAST,
+      ast,
+      updateMaxId
+    } = this.props;
 
+    console.log(
+      'rendering theme, ',
+      this.state.theme,
+      'layout, ',
+      this.state.layout
+    );
     return (
       <div className='grid'>
-        <div className='header'>
-          <ComponentView
-            components={components}
-            insertComponent={this.insertComponent}
-            propsMap={propsMap}
-          />
-        </div>
-        <div className='edit-container'>
-          <Edit markup={markup} onChange={this.handleChange} />
-        </div>
+        <Sidebar
+          ast={ast}
+          handleASTChange={setAST}
+          currentSidebarNode={this.state.currentSidebarNode}
+          updateNode={this.handleComponentChange.bind(this)}
+          propsMap={propsMap}
+          maxNodeId={maxNodeId}
+          updateMaxId={updateMaxId}
+          datasets={datasets}
+          components={components}
+          layout={this.state.layout}
+          theme={this.state.theme}
+          updateTheme={this.updateTheme.bind(this)}
+          updateLayout={this.updateLayout.bind(this)}
+        />
         <div className='output-container'>
-          <Render markup={currentMarkup} components={components} />
-        </div>
-        <div className='sidebar'>
-          <button onClick={this.deploy}>Publish</button>
+          <Render
+            components={components}
+            theme={this.state.theme}
+            layout={this.state.layout}
+            ast={this.props.ast}
+            handleComponentChange={this.handleComponentChange}
+          />
         </div>
       </div>
     );
