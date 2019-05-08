@@ -1,9 +1,15 @@
 import React from 'react';
 import Select from 'react-select';
+import Context from '../../context';
+
+const getRandomId = () => {
+  return Math.floor(Math.random()*10000000000) + 100000000;
+}
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
 
 class ComponentView extends React.PureComponent {
+  static contextType = Context;
   constructor(props) {
     super(props);
 
@@ -13,7 +19,7 @@ class ComponentView extends React.PureComponent {
 
   // Generates the tag associated with the given component name
   insertComponent(name) {
-    var tagInfo = this.props.propsMap.get(name);
+    var tagInfo = this.context.propsMap.get(name);
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
       tagInfo.props.forEach(prop => {
@@ -33,18 +39,10 @@ class ComponentView extends React.PureComponent {
   // and sends modified ast back up to top level
   handleASTChange(componentMarkup) {
     compile(componentMarkup).then(componentAST => {
-      // Assign ids to componentAST
-      // children nodes + curr node
-      // TODO: Currently assigns id backwards
-      var maxId = this.props.maxNodeId + 1;
-      idyllAST.walkNodes(componentAST, node => {
-        node.id = maxId;
-        maxId += 1;
-      });
 
       // Manipulate TextContainer child of current AST and update
       // TODO: Scroller special case
-      var ast = this.props.ast;
+      var ast = this.context.ast;
       var lastChild = ast.children[ast.children.length - 1];
       if (
         lastChild.name === 'TextContainer' &&
@@ -54,22 +52,22 @@ class ComponentView extends React.PureComponent {
         // text container
         var textContainer = lastChild;
         componentAST.children[0].children.forEach(node => {
+          node.id = getRandomId();
           textContainer.children.push(node);
         });
       } else {
         // append to root for other cases
         var componentNode = componentAST.children[0];
+        componentNode.id = +uuidv4().replace(/-/g, '');
         ast = idyllAST.appendNode(ast, componentNode);
       }
 
-      const { handleASTChange, updateMaxId } = this.props;
-      updateMaxId(maxId);
-      handleASTChange(ast); // must pass info up level
+      this.context.setAst(ast); // must pass info up level
     });
   }
 
   render() {
-    const { components } = this.props;
+    const { components } = this.context;
     return (
       <div className='component-view'>
         <div className='label'>Components</div>

@@ -13,12 +13,15 @@ class Main {
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
+    ipcMain.on('client:openProject', this.handleFileOpen.bind(this))
+
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
   }
 
   handleFileOpen() {
+    console.log('handleFileOpen');
     // Returns absolute path of file
     const files = dialog.showOpenDialog(this.mainWindow, {
       properties: ['openFile'],
@@ -85,16 +88,14 @@ class Main {
     const fileContent = fs.readFileSync(file).toString();
 
     // Compile contents
-    compile(fileContent, undefined)
+    compile(fileContent, {})
       .then(ast => {
-        this.mainWindow.webContents.send('idyll:ast', ast);
-        this.mainWindow.webContents.send('idyll:path', this.filePath);
-        this.mainWindow.webContents.send(
-          'idyll:components',
-          idyll.getComponents()
-        );
-        this.mainWindow.webContents.send('idyll:datasets', idyll.getDatasets());
-        this.mainWindow.webContents.send();
+        this.mainWindow.webContents.send('idyll:compile', {
+          ast: ast,
+          path: this.filePath,
+          components: idyll.getComponents(),
+          datasets: idyll.getDatasets()
+        });
       })
       .catch(error => {
         console.log(error);
