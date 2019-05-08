@@ -127,6 +127,7 @@ class App extends React.PureComponent {
 
   // Deploying logic
   deploy() {
+    console.log('hi');
     ipcRenderer.send('deploy', 'Deployed!');
   }
 

@@ -9,7 +9,11 @@ class Deploy extends React.PureComponent {
   }
 
   render() {
-    return <div>Hi</div>;
+    return (
+      <div>
+        <button onClick={this.props.deploy}>Publish</button>
+      </div>
+    );
   }
 }
 

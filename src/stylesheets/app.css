@@ -6,16 +6,6 @@ html {
 
 .grid {
   display: grid;
-<<<<<<< HEAD
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 100px calc(100vh - 100px);
-  /* grid-gap: 1em; */
-}
-
-.header {
-  grid-row: 1;
-  grid-column: 1 / 4;
-=======
   height: 100vh;
   grid-template-columns: auto 3fr;
   transition: grid-template-colums 0.5;
@@ -26,7 +16,6 @@ html {
 .sidebar-information {
   /* grid-row: 1; */
   /* grid-column: 1 / 4; */
->>>>>>> 5e2fc613e39502a0b44600850d79298453db4ef8
   padding: 1em;
 }
 
@@ -50,18 +39,9 @@ html {
 .sidebar-information h2 {
   text-transform: uppercase;
   font-size: 18px;
-
 }
 
 .component-container {
   /* overflow-x: scroll; */
   color: black;
-<<<<<<< HEAD
 }
-
-.component {
-  /* display: inline-block; */
-}
-=======
-}
->>>>>>> 5e2fc613e39502a0b44600850d79298453db4ef8
