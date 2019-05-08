@@ -1,11 +1,17 @@
 import React from 'react';
 import Select from 'react-select';
+import Context from '../../context';
+
+const getRandomId = () => {
+  return Math.floor(Math.random()*10000000000) + 100000000;
+}
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
 
 // {extension: ".json", name: "example-data.json", path: "/Users/meganvo/projects/deploy-test/data/example-data.json"}
 
 class DatasetView extends React.PureComponent {
+  static contextType = Context;
   constructor(props) {
     super(props);
 
@@ -20,10 +26,10 @@ class DatasetView extends React.PureComponent {
 
     // Handle the ast change
     compile(tag).then(dataAST => {
-      // Assign new data node id to maxId + 1
-      var ast = this.props.ast;
+      var ast = this.context.ast;
       var dataNode = dataAST.children[0];
-      dataNode.id = this.props.maxNodeId + 1;
+      dataNode.id = getRandomId();
+
 
       // Insert into ast's root children before the first text container
       // or non-variable/dataset child
@@ -36,14 +42,13 @@ class DatasetView extends React.PureComponent {
       }
       ast.children.splice(currNodeIndex, 0, dataNode);
 
-      const { handleASTChange, updateMaxId } = this.props;
-      updateMaxId(dataNode.id);
-      handleASTChange(ast); // must pass info up level
+      const { setAst } = this.context;
+      setAst(ast); // must pass info up level
     });
   }
 
   render() {
-    const { datasets } = this.props;
+    const { datasets } = this.context;
     return (
       <div className='dataset-view'>
         <div className='label'>Datasets</div>

@@ -1,7 +1,10 @@
 import React from 'react';
 import VariableForm from './variable-form';
+import Context from '../../context';
 
  class VariableView extends React.PureComponent {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
     this.getVariableTable = this.getVariableTable.bind(this);
@@ -43,7 +46,7 @@ import VariableForm from './variable-form';
 
    // Returns a list of all variables in the AST
   render() {
-    const variablesTable = this.getVariableTable(this.props.ast);
+    const variablesTable = this.getVariableTable(this.context.ast);
     return (
       <div className='variables-view'>
         <h2>Variable Views below!</h2>
