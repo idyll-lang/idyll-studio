@@ -1,13 +1,37 @@
 import React from 'react';
 import VariableForm from './variable-form';
 import Context from '../../context';
+import IdyllAST from 'idyll-ast';
 
  class VariableView extends React.PureComponent {
   static contextType = Context;
 
   constructor(props) {
     super(props);
+    this.addVariable = this.addVariable.bind(this);
     this.getVariableTable = this.getVariableTable.bind(this);
+  }
+
+  addVariable(ast) {
+    const newID = this.context.ast.children.length + 2;
+    const nameOfVar = 'alansVar' + newID;
+    const valueOfVar = newID;
+    const newVarNode = {
+      id: newID,
+      type: 'var',
+      properties: {
+        name: {
+          type: 'value',
+          value: nameOfVar
+        },
+        value: {
+          type: 'value',
+          value: valueOfVar
+        }
+      }
+    };
+    const updatedAST = IdyllAST.appendNode(ast, newVarNode);
+    this.context.setAst(updatedAST);
   }
 
   getVariableTable(ast) {
@@ -54,7 +78,7 @@ import Context from '../../context';
           {variablesTable}
         </div>
         <div className='add-variable-button'>
-          <button>Add variable</button>
+          <button onClick={() => this.addVariable(this.context.ast)}>Add variable</button>
         </div>
       </div>
     )
