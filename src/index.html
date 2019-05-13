@@ -10,6 +10,7 @@
 		// install babel hooks in the renderer process
 		require('@babel/register')({
 			presets: [ "@babel/preset-env", "@babel/preset-react" ],
+			plugins: ["@babel/plugin-proposal-class-properties"],
 			ignore: [(path) => path.indexOf('node_modules') > -1]
 		});
 		require('./render/index.js');

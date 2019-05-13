@@ -3,7 +3,9 @@ import AST from 'idyll-ast';
 import ComponentView from '../components/component-view.js';
 import DatasetView from '../components/dataset-view.js';
 import VariableView from '../components/variable-view';
-import Deploy from '../components/deploy.js';
+import Deployment from '../components/deploy.js';
+import ComponentDetails from './component.js';
+import Context from '../../context';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -11,6 +13,8 @@ import * as themes from 'idyll-themes';
 console.log(layouts, themes);
 
 class Sidebar extends React.PureComponent {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
     this.modifyAST = this.modifyAST.bind(this);
@@ -22,10 +26,10 @@ class Sidebar extends React.PureComponent {
   }
 
   handleThemeChange(event) {
-    this.props.updateTheme(event.target.value);
+    this.context.setTheme(event.target.value);
   }
   handleLayoutChange(event) {
-    this.props.updateLayout(event.target.value);
+    this.context.setLayout(event.target.value);
   }
 
   getStyleView() {
@@ -35,10 +39,14 @@ class Sidebar extends React.PureComponent {
           Theme:{' '}
           <select
             onChange={this.handleThemeChange.bind(this)}
-            value={this.props.theme}
+            value={this.context.theme}
           >
             {Object.keys(themes).map(themeName => {
-              return <option value={themeName}>{themeName}</option>;
+              return (
+                <option key={themeName} value={themeName}>
+                  {themeName}
+                </option>
+              );
             })}
           </select>
         </div>
@@ -46,10 +54,14 @@ class Sidebar extends React.PureComponent {
           Layout:{' '}
           <select
             onChange={this.handleLayoutChange.bind(this)}
-            value={this.props.layout}
+            value={this.context.layout}
           >
             {Object.keys(layouts).map(layoutName => {
-              return <option value={layoutName}>{layoutName}</option>;
+              return (
+                <option key={layoutName} value={layoutName}>
+                  {layoutName}
+                </option>
+              );
             })}
           </select>
         </div>
@@ -64,17 +76,17 @@ class Sidebar extends React.PureComponent {
   }
 
   modifyAST() {
-    const currentAST = this.props.ast;
+    const currentAST = this.context.ast;
     const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', node => {
       node.children[0].value = 'alan took over';
       return node;
     });
-    this.props.handleASTChange({ ...h2Nodes });
+    this.context.setAst({ ...h2Nodes });
   }
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
-    return AST.getNodesByType(this.props.ast, 'var').map(variable => {
+    return AST.getNodesByType(this.context.ast, 'var').map(variable => {
       const props = variable.properties;
       const name = props.name.value;
       const value = props.value.value;
@@ -83,107 +95,60 @@ class Sidebar extends React.PureComponent {
           <li key={variable}>
             {name}, whose current value is {value}
           </li>
-          <VariableForm
-            handleASTChange={this.props.handleASTChange}
-            node={variable}
-            ast={this.props.ast}
-          />
+          <VariableForm node={variable} ast={this.context.ast} />
         </div>
       );
     });
   }
 
-  // Returning list of each prop of this component
-  getComponentInfo(ASTNode) {
-    console.log(ASTNode);
-    const properties = [];
-    for (let property in ASTNode.properties) {
-      properties.push(
-        <li key={property}>
-          {/* TODO Handling if the current value is a variable */}
-          {property}, current value is {ASTNode.properties[property].value}
-        </li>
-      );
-    }
-    return (
-      <div>
-        <a onClick={() => this.props.updateNode(null)}>← Back</a>
-        <p>This is a {ASTNode.name} component. Its properties are below</p>
-        <ul>{properties}</ul>
-      </div>
-    );
-  }
-
   assignNewVarValue(node) {
     node.properties.value.value = 20;
-    this.props.handleASTChange({ ...this.props.ast });
+    this.context.setAst({ ...this.context.ast });
   }
 
   render() {
-    if (!this.props.ast) {
+    const { ast, currentSidebarNode } = this.context;
+
+    if (!ast) {
       return (
         <div>
           <h1>Sidebar View (Please load an Idyll project)</h1>
         </div>
       );
     }
-    if (this.props.currentSidebarNode) {
-      return (
-        <div>
-          <h3>Below is the current one</h3>
-          {this.getComponentInfo(this.props.currentSidebarNode)}
-        </div>
-      );
-    }
 
-    const {
-      components,
-      propsMap,
-      datasets,
-      maxNodeId,
-      handleASTChange,
-      ast,
-      updateMaxId
-    } = this.props;
     return (
       <div
         className='sidebar-information'
         style={{ width: this.state.collapsed ? 0 : undefined }}
       >
-        <div className='look-and-feel'>
-          <h2>LOOK AND FEEL</h2>
-          {this.getStyleView()}
-        </div>
-        <div className='components-and-datasets'>
-          <h2>COMPONENTS AND DATASETS</h2>
-          <ComponentView
-            components={components}
-            ast={ast}
-            handleASTChange={handleASTChange}
-            propsMap={propsMap}
-            maxNodeId={maxNodeId}
-            updateMaxId={updateMaxId}
-          />
-          <DatasetView
-            datasets={datasets}
-            ast={ast}
-            handleASTChange={handleASTChange}
-            maxNodeId={maxNodeId}
-            updateMaxId={updateMaxId}
-          />
-        </div>
-        <VariableView ast={ast} handleASTChange={handleASTChange} />
-        <div className='publish-view'>
-          <h2>DEPLOYMENT</h2>
-          <Deploy deploy={this.props.deploy} />
-        </div>
+        {currentSidebarNode ? (
+          <ComponentDetails />
+        ) : (
+          <div>
+            <div className='look-and-feel'>
+              <h2>LOOK AND FEEL</h2>
+              {this.getStyleView()}
+            </div>
+            <div className='components-and-datasets'>
+              <h2>COMPONENTS AND DATASETS</h2>
+              <ComponentView />
+              <DatasetView />
+            </div>
+            <VariableView />
+            <div className='publish-view'>
+              <h2>DEPLOYMENT</h2>
+              <Deployment />
+            </div>
 
-        <div
-          className='sidebar-collapse'
-          onClick={this.handleToggle.bind(this)}
-        >
-          Collapse
-        </div>
+            <div
+              className='sidebar-collapse'
+              onClick={this.handleToggle.bind(this)}
+            >
+              Collapse
+            </div>
+          </div>
+        )}
       </div>
     );
   }

@@ -1,6 +1,9 @@
 import React from 'react';
+import Context from '../../context';
 
 class VariableForm extends React.PureComponent {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
 
@@ -16,8 +19,8 @@ class VariableForm extends React.PureComponent {
 
   handleSubmit(event) {
     const newValue = parseInt(this.state.value);
-    this.props.node.properties.value.value = newValue;
-    this.props.handleASTChange({...this.props.ast});
+    this.context.node.properties.value.value = newValue;
+    this.context.setAst({...this.context.ast});
     event.preventDefault();
   }
 

@@ -16,16 +16,22 @@ class Main {
 
     this.filePath = '';
     this.idyll;
-    this.workingDir = '';
+    this.workingDir;
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
+
+    ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
+
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
 
-    // Deploying command
+    // Deploy methods
     this.publish = this.publish.bind(this);
     this.getProjectToken = this.getProjectToken.bind(this);
+
+    // Set up deploy connection
+    // Deploying command
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
         this.idyll.build();
@@ -35,6 +41,7 @@ class Main {
   }
 
   handleFileOpen() {
+    console.log('handleFileOpen');
     // Returns absolute path of file
     const files = dialog.showOpenDialog(this.mainWindow, {
       properties: ['openFile'],
@@ -104,16 +111,14 @@ class Main {
     const fileContent = fs.readFileSync(file).toString();
 
     // Compile contents
-    compile(fileContent, undefined)
+    compile(fileContent, {})
       .then(ast => {
-        this.mainWindow.webContents.send('idyll:ast', ast);
-        this.mainWindow.webContents.send('idyll:path', this.filePath);
-        this.mainWindow.webContents.send(
-          'idyll:components',
-          idyll.getComponents()
-        );
-        this.mainWindow.webContents.send('idyll:datasets', idyll.getDatasets());
-        this.mainWindow.webContents.send();
+        this.mainWindow.webContents.send('idyll:compile', {
+          ast: ast,
+          path: this.filePath,
+          components: this.idyll.getComponents(),
+          datasets: this.idyll.getDatasets()
+        });
       })
       .catch(error => {
         console.log(error);
@@ -138,7 +143,6 @@ class Main {
     const projectDir = this.workingDir;
     const tokenPath = p.join(projectDir, '.idyll', 'token');
     const config = require(p.join(projectDir, 'package.json'));
-
     try {
       let buildDir = p.join(projectDir, 'build');
       let token = await this.getProjectToken(tokenPath, config);
@@ -168,8 +172,9 @@ class Main {
   async getProjectToken(tokenPath, config) {
     var token;
     try {
-      console.log('Deploying...');
+      console.log('Deploying');
       token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
+      console.log('Using existing token...');
     } catch (err) {
       let deployment = await request.post({
         url: urljoin(IDYLL_PUB_API, 'create'),
@@ -179,8 +184,15 @@ class Main {
         json: true
       });
       token = deployment.token;
-      console.log('Getting new url...');
-      fs.writeFileSync(tokenPath, token, { encoding: 'utf-8' });
+      console.log('Using new token: ' + token);
+      await fs.writeFile(tokenPath, token, { encoding: 'utf-8' }, function(
+        err,
+        data
+      ) {
+        if (err) {
+          console.log(err);
+        }
+      });
     }
     return token;
   }

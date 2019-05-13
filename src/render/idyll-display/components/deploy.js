@@ -2,8 +2,10 @@ import React from 'react';
 import Select from 'react-select';
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
+import Context from '../../context';
 
 class Deploy extends React.PureComponent {
+  static contextType = Context;
   constructor(props) {
     super(props);
   }
@@ -11,7 +13,7 @@ class Deploy extends React.PureComponent {
   render() {
     return (
       <div>
-        <button onClick={this.props.deploy}>Publish</button>
+        <button onClick={this.context.deploy}>Publish</button>
       </div>
     );
   }

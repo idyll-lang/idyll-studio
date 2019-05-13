@@ -45,3 +45,42 @@ html {
   /* overflow-x: scroll; */
   color: black;
 }
+
+button.loader {
+  display: block;
+  padding: 1em 2em;
+  background: #6122fb;
+  color: white;
+  margin: 1em auto;
+}
+
+.component-debug-view {
+  position: relative;
+  transition: background-color 0.3s ease-in;
+}
+
+.author-view-button {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  opacity: 0.38;
+  background-color: #e7e3d0;
+  background-image: url('https://idyll-lang.org/static/images/quill-icon.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.author-view-button:focus {
+  outline: none;
+}
+
+.component-debug-view:hover > .author-view-button {
+  opacity: 0.87;
+  transition: opacity 0.25s linear;
+}

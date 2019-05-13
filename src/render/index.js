@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
+import Context from './context';
+
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
 
@@ -9,84 +11,47 @@ class App extends React.PureComponent {
     super(props);
 
     this.state = {
-      markup: '',
       pathKey: '',
       components: [],
       componentPropMap: new Map(),
       ast: undefined,
-      id: 0,
-      maxNodeId: -1,
-      datasets: undefined
+      datasets: undefined,
+      currentSidebarNode: null
     };
 
-    this.setAST = this.setAST.bind(this);
     this.createComponentMap = this.createComponentMap.bind(this);
-    this.updateMaxId = this.updateMaxId.bind(this);
   }
 
-  // Assigns the app's ast to be the given one
-  setAST(newAST) {
-    this.setState({
-      ast: { ...newAST },
-      id: this.state.id + 1
-    });
-  }
-
-  // Update the max id to given maxId after
-  // insertion of component
-  updateMaxId(id) {
-    this.setState({
-      maxNodeId: id
-    });
-
-    // TEST PURPOSES: Check for repeat ids
-    // var idSet = new Set();
-    // idyllAST.walkNodes(this.state.ast, node => {
-    //   if (idSet.has(node.id)) {
-    //     console.log('Repeat Id Found');
-    //   } else {
-    //     idSet.add(node.id);
-    //   }
-    // });
-  }
+  // TEST PURPOSES: Check for repeat ids
+  // var idSet = new Set();
+  // idyllAST.walkNodes(this.state.ast, node => {
+  //   if (idSet.has(node.id)) {
+  //     console.log('Repeat Id Found');
+  //   } else {
+  //     idSet.add(node.id);
+  //   }
+  // });
+  // }
 
   componentDidMount() {
     // Load in datasets
-    ipcRenderer.on('idyll:datasets', (event, datasets) => {
-      this.setState({
-        datasets: datasets
-      });
-    });
+    ipcRenderer.on(
+      'idyll:compile',
+      (event, { datasets, ast, components, path }) => {
+        console.log(components);
+        var componentProps = this.createComponentMap(components);
 
-    // Load in ast
-    ipcRenderer.on('idyll:ast', (event, ast) => {
-      this.setState({
-        ast: ast
-      });
-
-      // Set max id on open
-      this.setState({ maxNodeId: -1 });
-      idyllAST.walkNodes(this.state.ast, node => {
-        this.setState({ maxNodeId: Math.max(this.state.maxNodeId, node.id) });
-      });
-    });
-
-    // Grabs file path to set as a key for renderer
-    ipcRenderer.on('idyll:path', (event, path) => {
-      this.setState({
-        pathKey: path
-      });
-    });
-
-    // Grabs component information and components
-    ipcRenderer.on('idyll:components', (event, components) => {
-      var componentProps = this.createComponentMap(components);
-
-      this.setState({
-        components: components,
-        componentPropMap: componentProps
-      });
-    });
+        this.setState({
+          datasets: datasets,
+          ast: ast,
+          pathKey: path,
+          components: components,
+          componentPropMap: componentProps,
+          layout: 'centered',
+          theme: 'default'
+        });
+      }
+    );
 
     // // When main wants to save, print "Saved!" to console
     // // and sends the saved markup
@@ -94,6 +59,47 @@ class App extends React.PureComponent {
     //   console.log(message);
     //   ipcRenderer.send('save', this.state.savedMarkup);
     // });
+  }
+
+  getContext() {
+    const {
+      ast,
+      datasets,
+      context,
+      theme,
+      layout,
+      componentPropMap,
+      currentSidebarNode,
+      components
+    } = this.state;
+    return {
+      context: context,
+      components: components,
+      theme: theme,
+      layout: layout,
+      ast: ast,
+      propsMap: componentPropMap,
+      datasets: datasets,
+      currentSidebarNode: currentSidebarNode,
+      setSidebarNode: node => {
+        this.setState({ currentSidebarNode: node });
+      },
+      setTheme: theme => {
+        this.setState({ theme: theme });
+      },
+      setLayout: layout => {
+        this.setState({ layout: layout });
+      },
+      setAst: ast => {
+        this.setState({ ast: { ...ast } });
+      },
+      setContext: context => {
+        this.setState({ context: context });
+      },
+      deploy: () => {
+        ipcRenderer.send('deploy', 'hi');
+      }
+    };
   }
 
   // Given list of components objects containing name and path,
@@ -125,29 +131,43 @@ class App extends React.PureComponent {
     return componentProps;
   }
 
-  // Deploying logic
-  deploy() {
-    console.log('hi');
-    ipcRenderer.send('deploy', 'Deployed!');
+  handleLoad() {
+    console.log('handleLoad');
+    ipcRenderer.send('client:openProject');
   }
 
   render() {
+    if (!this.state.ast) {
+      return (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100vw',
+            height: '100vh'
+          }}
+        >
+          <div
+            style={{
+              background: '#efefef',
+              fontFamily: 'Helvetica',
+              borderRadius: 0,
+              padding: '4em'
+            }}
+          >
+            Load an Idyll project
+            <button className='loader' onClick={this.handleLoad.bind(this)}>
+              Select...
+            </button>
+          </div>
+        </div>
+      );
+    }
     return (
-      <div>
-        <IdyllDisplay
-          key={this.state.pathKey + this.state.id}
-          markup={this.state.markup}
-          setAST={this.setAST}
-          components={this.state.components}
-          deploy={this.deploy}
-          propsMap={this.state.componentPropMap}
-          ast={this.state.ast}
-          datasets={this.state.datasets}
-          maxNodeId={this.state.maxNodeId}
-          updateMaxId={this.updateMaxId}
-          deploy={this.deploy}
-        />
-      </div>
+      <Context.Provider value={this.getContext()}>
+        <IdyllDisplay key={this.state.pathKey} />
+      </Context.Provider>
     );
   }
 }
