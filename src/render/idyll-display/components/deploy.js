@@ -1,8 +1,8 @@
 import React from 'react';
-import Select from 'react-select';
-const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
 import Context from '../../context';
+
+// TODO: Handle case where meta property doesn't exist
 
 class Deploy extends React.PureComponent {
   static contextType = Context;
@@ -20,7 +20,7 @@ class Deploy extends React.PureComponent {
     this.context.setAst(this.context.ast);
 
     // Debug
-    // console.log(this.context.ast.children[4].children[0].properties.title);
+    console.log(this.context.ast.children[4].children[0].properties[propName]);
   }
 
   renderProps(propName) {
@@ -32,7 +32,9 @@ class Deploy extends React.PureComponent {
           }}
           type='text'
           defaultValue={
-            this.metaNode ? this.metaNode.properties[propName].value : null
+            this.metaNode && this.metaNode.properties[propName]
+              ? this.metaNode.properties[propName].value
+              : null
           }
         />
       </div>
@@ -43,15 +45,12 @@ class Deploy extends React.PureComponent {
     return (
       <div className='deploy-view'>
         <div className='label'>Metadata</div>
-        <div
-          className='meta-container'
-          style={{
-            display: 'flex',
-            flexDirection: 'row'
-          }}
-        >
-          Title
-          {this.renderProps('title')}
+        <div className='meta-container'>
+          <div className='meta'>Title {this.renderProps('title')}</div>
+          <div className='meta'>
+            Description {this.renderProps('description')}
+          </div>
+          <div className='meta'>URL {this.renderProps('url')}</div>
         </div>
         <button onClick={this.context.deploy}>Publish</button>
       </div>
@@ -60,3 +59,14 @@ class Deploy extends React.PureComponent {
 }
 
 export default Deploy;
+
+// this.metaNode
+//   ? Object.keys(this.metaNode.properties).map(propName => {
+//       return (
+//         <div key={propName} style={{ display: 'flex', flexDirection: 'row' }}>
+//           {propName}
+//           {this.renderProps(propName)}
+//         </div>
+//       );
+//     })
+//   : null;

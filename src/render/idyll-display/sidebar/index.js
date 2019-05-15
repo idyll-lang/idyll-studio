@@ -108,7 +108,6 @@ class Sidebar extends React.PureComponent {
 
   render() {
     const { ast, currentSidebarNode } = this.context;
-    console.log(currentSidebarNode);
 
     if (!ast) {
       return (
