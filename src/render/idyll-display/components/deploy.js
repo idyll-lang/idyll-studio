@@ -3,7 +3,7 @@ const idyllAST = require('idyll-ast');
 import Context from '../../context';
 
 // TODO: Handle case where meta property doesn't exist
-
+// TODO: Check if meta tag exists
 class Deploy extends React.PureComponent {
   static contextType = Context;
   constructor(props) {
@@ -25,19 +25,15 @@ class Deploy extends React.PureComponent {
 
   renderProps(propName) {
     return (
-      <div>
-        <input
-          onChange={e => {
-            this.handleUpdateValue(propName, e);
-          }}
-          type='text'
-          defaultValue={
-            this.metaNode && this.metaNode.properties[propName]
-              ? this.metaNode.properties[propName].value
-              : null
-          }
-        />
-      </div>
+      <input
+        onChange={e => {
+          this.handleUpdateValue(propName, e);
+        }}
+        type='text'
+        defaultValue={
+          this.metaNode ? this.metaNode.properties[propName].value : null
+        }
+      />
     );
   }
 
@@ -50,7 +46,7 @@ class Deploy extends React.PureComponent {
           <div className='meta'>
             Description {this.renderProps('description')}
           </div>
-          <div className='meta'>URL {this.renderProps('url')}</div>
+          {/* <div className='meta'>URL {this.renderProps('url')}</div> */}
         </div>
         <button onClick={this.context.deploy}>Publish</button>
       </div>
