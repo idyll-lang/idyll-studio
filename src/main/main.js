@@ -152,13 +152,15 @@ class Main {
         acc[p.relative(buildDir, f)] = fs.createReadStream(f);
         return acc;
       }, {});
-      formData.token = token;
+      formData['token'] = token;
 
       let { alias } = await request.post({
         url: urljoin(IDYLL_PUB_API, 'deploy'),
         formData: formData,
-        json: true
+        json: true,
+        headers: { 'Content-Type': 'application/json' }
       });
+      console.log(alias);
       console.log(`Project deployed at https://idyll.pub/post/${alias}/`);
     } catch (err) {
       console.log(err);
@@ -184,7 +186,7 @@ class Main {
         json: true
       });
       token = deployment.token;
-      console.log('Using new token: ' + token);
+      console.log('Using new token...');
       await fs.writeFile(tokenPath, token, { encoding: 'utf-8' }, function(
         err,
         data
@@ -194,6 +196,7 @@ class Main {
         }
       });
     }
+    console.log('token: ' + token);
     return token;
   }
 }
