@@ -48,7 +48,7 @@ class Deploy extends React.PureComponent {
 
     // Debug
     console.log(
-      this.context.ast.children[this.context.ast.children.length - 1]
+      idyllAST.getNodesByType(this.context.ast, 'meta')[0].properties
     );
   }
 
