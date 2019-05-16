@@ -1,15 +1,29 @@
 import React from 'react';
-import VariableForm from './variable-form';
+import ReactDataGrid from 'react-data-grid';
 import Context from '../../context';
 import IdyllAST from 'idyll-ast';
 
  class VariableView extends React.PureComponent {
   static contextType = Context;
+  static columns = [
+    { key: 'type', name: "Type", editable: true },
+    { key: 'name', name: "Name", editable: true },
+    { key: 'initialValue', name: "Initial value", editable: true },
+    { key: 'currentValue', name: "Current value", editable: true }
+  ];
 
   constructor(props) {
     super(props);
     this.addVariable = this.addVariable.bind(this);
     this.getVariableTable = this.getVariableTable.bind(this);
+    this.getRows = this.getRows.bind(this);
+    this.state = ({
+      rows: []
+    });
+  }
+
+  componentDidMount() {
+    this.getRows(this.context.ast);
   }
 
   addVariable(ast) {
@@ -34,48 +48,46 @@ import IdyllAST from 'idyll-ast';
     this.context.setAst(updatedAST);
   }
 
-  getVariableTable(ast) {
+  getRows(ast) {
+    const rows = [];
     const currentChildren = ast.children;
-    const variableInfoRows = currentChildren.map((child) => {
+    currentChildren.map((child) => {
       const childType = child.type;
       if (childType === 'var' || childType === 'data') { // allow for derivedVar types too
         const properties = child.properties;
         const varName = properties.name.value;
         const varValue = childType === 'var' ? properties.value.value : properties.source.value;
         const initialValue = 'TODO';
-        return (
-          <tr key={JSON.stringify(varName)} className='variables-table-row'>
-            <td>{childType}</td>
-            <td>{varName}</td>
-            <td>{initialValue}</td>
-            <td>{varValue}</td>
-          </tr>
-        );
+        rows.push({
+          type: childType,
+          name: varName,
+          initialValue: initialValue,
+          currentValue: varValue
+        });
       }
     });
-    return (
-        <table>
-          <tbody>
-            <tr>
-              <th>Type</th>
-              <th>Name</th>
-              <th>Initial value</th>
-              <th>Current value</th>
-            </tr>
-            {variableInfoRows}
-          </tbody>
-        </table>
-    );
+    this.setState({rows: rows});
   }
 
    // Returns a list of all variables in the AST
   render() {
-    const variablesTable = this.getVariableTable(this.context.ast);
+    //const variablesTable = this.getVariableTable(this.context.ast);
+    const columns = [
+      { key: 'type', name: "Type", editable: true },
+      { key: 'name', name: "Name", editable: true },
+      { key: 'initialValue', name: "Initial value", editable: true },
+      { key: 'currentValue', name: "Current value", editable: true }
+    ];
     return (
       <div className='variables-view'>
         <h2>Variable Views below!</h2>
         <div className='variables-table-view'>
-          {variablesTable}
+          <ReactDataGrid
+            columns={columns}
+            rowGetter={i => this.state.rows[i]}
+            rowsCount={this.state.rows.length}
+            enableCellSelect={true}
+          />
         </div>
         <div className='add-variable-button'>
           <button onClick={() => this.addVariable(this.context.ast)}>Add variable</button>
