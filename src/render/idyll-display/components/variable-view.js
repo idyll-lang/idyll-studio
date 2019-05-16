@@ -14,7 +14,7 @@ import IdyllAST from 'idyll-ast';
 
   addVariable(ast) {
     const newID = this.context.ast.children.length + 2;
-    const nameOfVar = 'alansVar' + newID;
+    const nameOfVar = 'var' + newID;
     const valueOfVar = newID;
     const newVarNode = {
       id: newID,
