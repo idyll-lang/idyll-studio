@@ -1,9 +1,11 @@
 import React from 'react';
 const idyllAST = require('idyll-ast');
 import Context from '../../context';
+const compile = require('idyll-compiler');
+const getRandomId = () => {
+  return Math.floor(Math.random() * 10000000000) + 100000000;
+};
 
-// TODO: Handle case where meta property doesn't exist
-// TODO: Check if meta tag exists
 class Deploy extends React.PureComponent {
   static contextType = Context;
   constructor(props) {
@@ -13,14 +15,41 @@ class Deploy extends React.PureComponent {
   componentDidMount() {
     // Grab meta node
     this.metaNode = idyllAST.getNodesByType(this.context.ast, 'meta')[0];
+    if (!this.metaNode) {
+      // if doesn't exist insert into tree
+      compile('[meta /]').then(metaAST => {
+        let ast = this.context.ast;
+        let lastChild = ast.children[ast.children.length - 1];
+
+        // reset ids
+        metaAST.children[0].id = getRandomId(); // TextContainer
+        this.metaNode = metaAST.children[0].children[0]; // meta
+        this.metaNode.id = getRandomId();
+
+        if (lastChild.name === 'TextContainer') {
+          // push just meta tag
+          lastChild.children.push(metaAST.children[0].children[0]);
+        } else {
+          // push text container
+          ast = idyllAST.appendNode(ast, metaAST.children[0]);
+        }
+        this.context.setAst(this.context.ast);
+      });
+    }
   }
 
   handleUpdateValue(propName, e) {
+    // if index.idyll doesn't have this prop for meta tag, insert one
+    if (!(propName in this.metaNode.properties)) {
+      this.metaNode.properties[propName] = { type: 'value', value: '' };
+    }
     this.metaNode.properties[propName].value = e.target.value;
     this.context.setAst(this.context.ast);
 
     // Debug
-    console.log(this.context.ast.children[4].children[0].properties[propName]);
+    console.log(
+      this.context.ast.children[this.context.ast.children.length - 1]
+    );
   }
 
   renderProps(propName) {
@@ -31,7 +60,9 @@ class Deploy extends React.PureComponent {
         }}
         type='text'
         defaultValue={
-          this.metaNode ? this.metaNode.properties[propName].value : null
+          this.metaNode && propName in this.metaNode.properties
+            ? this.metaNode.properties[propName].value
+            : null
         }
       />
     );
@@ -46,7 +77,7 @@ class Deploy extends React.PureComponent {
           <div className='meta'>
             Description {this.renderProps('description')}
           </div>
-          {/* <div className='meta'>URL {this.renderProps('url')}</div> */}
+          <div className='meta'>URL {this.renderProps('url')}</div>
         </div>
         <button onClick={this.context.deploy}>Publish</button>
       </div>
