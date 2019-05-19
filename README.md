@@ -7,15 +7,15 @@ Sketches towards an integrated dynamic publishing application.
 
 ## Mockup
 
-![Overview](./mocks/Overview.png)
-![Annotations](./mocks/Annotations.png)
-![Text](./mocks/Text edit selection.png)
-![Text](./mocks/Text edit inline.png)
-![Component](./mocks/Component add inline.png)
-![Component](./mocks/Component add.png)
-![Custom](./mocks/Custom Component select.png)
-![Component](./mocks/Component Select.png)
-![Component](./mocks/Component hover.png)
+![Overview](./mocks/overview.png)
+![Annotations](./mocks/annotations.png)
+![Text](./mocks/text-edit-selection.png)
+![Text](./mocks/text-edit-inline.png)
+![Component](./mocks/component-add-inline.png)
+![Component](./mocks/component-add.png)
+![Custom](./mocks/custom-component-select.png)
+![Component](./mocks/component-select.png)
+![Component](./mocks/component-hover.png)
 
 # DEVELOPING
 
