@@ -11,22 +11,17 @@ class Deploy extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { metaNode: null };
-    this.getMetaNode = this.getMetaNode.bind(this);
   }
 
   componentDidMount() {
     // Grab meta node
-    this.getMetaNode();
-  }
-
-  getMetaNode() {
     let node = idyllAST.getNodesByType(this.context.ast, 'meta')[0];
     this.setState(
       {
         metaNode: node
       },
       () => {
-        if (this.state.metaNode == null) {
+        if (!this.state.metaNode) {
           // if doesn't exist insert into tree
           compile('[meta /]').then(metaAST => {
             let ast = this.context.ast;
