@@ -22,17 +22,6 @@ class App extends React.PureComponent {
     this.createComponentMap = this.createComponentMap.bind(this);
   }
 
-  // TEST PURPOSES: Check for repeat ids
-  // var idSet = new Set();
-  // idyllAST.walkNodes(this.state.ast, node => {
-  //   if (idSet.has(node.id)) {
-  //     console.log('Repeat Id Found');
-  //   } else {
-  //     idSet.add(node.id);
-  //   }
-  // });
-  // }
-
   componentDidMount() {
     // Load in datasets
     ipcRenderer.on(
@@ -53,6 +42,12 @@ class App extends React.PureComponent {
       }
     );
 
+    ipcRenderer.on('url', (event, url) => {
+      this.setState({
+        url: url
+      });
+    });
+
     // // When main wants to save, print "Saved!" to console
     // // and sends the saved markup
     // ipcRenderer.on('idyll:save', (event, message) => {
@@ -70,7 +65,8 @@ class App extends React.PureComponent {
       layout,
       componentPropMap,
       currentSidebarNode,
-      components
+      components,
+      url
     } = this.state;
     return {
       context: context,
@@ -81,6 +77,7 @@ class App extends React.PureComponent {
       propsMap: componentPropMap,
       datasets: datasets,
       currentSidebarNode: currentSidebarNode,
+      url: url,
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },

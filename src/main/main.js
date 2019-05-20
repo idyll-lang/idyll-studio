@@ -162,6 +162,12 @@ class Main {
       });
       console.log(alias);
       console.log(`Project deployed at https://idyll.pub/post/${alias}/`);
+
+      // Send to render process the url
+      this.mainWindow.webContents.send(
+        'url',
+        `https://idyll.pub/post/${alias}/`
+      );
     } catch (err) {
       console.log(err);
     }

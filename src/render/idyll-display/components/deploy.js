@@ -85,7 +85,9 @@ class Deploy extends React.PureComponent {
           <div className='meta'>
             Description {this.renderProps('description')}
           </div>
-          <div className='meta'>URL {this.renderProps('url')}</div>
+          <div className='meta'>
+            URL <a href={this.context.url}>{this.context.url}</a>
+          </div>
         </div>
         <button onClick={this.context.deploy}>Publish</button>
       </div>
