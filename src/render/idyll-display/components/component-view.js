@@ -56,7 +56,7 @@ class ComponentView extends React.PureComponent {
       } else {
         // append to root for other cases
         var componentNode = componentAST.children[0];
-        componentNode.id = +uuidv4().replace(/-/g, '');
+        componentNode.id = getRandomId();
         ast = idyllAST.appendNode(ast, componentNode);
       }
 
