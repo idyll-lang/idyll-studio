@@ -8,7 +8,6 @@ import Context from '../../context';
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
 
-console.log(layouts, themes);
 
 class Component extends React.PureComponent {
 

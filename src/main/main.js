@@ -21,7 +21,6 @@ class Main {
   }
 
   handleFileOpen() {
-    console.log('handleFileOpen');
     // Returns absolute path of file
     const files = dialog.showOpenDialog(this.mainWindow, {
       properties: ['openFile'],

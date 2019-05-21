@@ -11,6 +11,12 @@ import * as themes from 'idyll-themes';
 
 console.log(layouts, themes);
 
+const tabs = {
+  DOCUMENT: 'document',
+  VARIABLES: 'variables',
+  COMPONENTS: 'components'
+}
+
 class Sidebar extends React.PureComponent {
 
   static contextType = Context;
@@ -21,7 +27,8 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      collapsed: false
+      collapsed: false,
+      selectedTab: tabs.DOCUMENT
     };
   }
 
@@ -81,8 +88,43 @@ class Sidebar extends React.PureComponent {
   }
 
   assignNewVarValue(node) {
+    // TODO - find this node in the original AST
     node.properties.value.value = 20;
     this.context.setAst({...this.context.ast});
+  }
+
+  renderInner() {
+    switch(this.state.selectedTab) {
+      case tabs.DOCUMENT:
+        return <div>
+          <div className='look-and-feel'>
+            <h2>Look and Feel.</h2>
+            {this.getStyleView()}
+          </div>
+          <div className='publish-view'>
+            <h2>Deploy.</h2>
+          </div>
+        </div>
+      case tabs.VARIABLES:
+        return (
+          <div>
+            <div className='components-and-datasets'>
+              <h2>Variables and Datasets.</h2>
+              <VariableView />
+              <DatasetView />
+            </div>
+          </div>
+        )
+      case tabs.COMPONENTS:
+        return (
+          <div>
+            <div className='components-and-datasets'>
+              <h2>Components.</h2>
+              <ComponentView />
+            </div>
+          </div>
+        )
+    }
   }
 
   render() {
@@ -104,22 +146,20 @@ class Sidebar extends React.PureComponent {
       <div className='sidebar-information' style={{width: this.state.collapsed ? 0 : undefined}}>
         {
           currentSidebarNode ? <ComponentDetails /> : <div>
-            <div className='look-and-feel'>
-              <h2>LOOK AND FEEL</h2>
-              {this.getStyleView()}
-            </div>
-            <div className='components-and-datasets'>
-              <h2>COMPONENTS AND DATASETS</h2>
-              <ComponentView />
-              <DatasetView />
-            </div>
-            <VariableView />
-            <div className='publish-view'>
-              <h2>DEPLOYMENT</h2>
-            </div>
+            <div className="sidebar-tab-container">
 
-            <div className="sidebar-collapse" onClick={this.handleToggle.bind(this)}>
-              Collapse
+              <div className={`sidebar-tab ${this.state.selectedTab === tabs.DOCUMENT ? 'selected' : '' }`} onClick={() => { this.setState({ selectedTab: tabs.DOCUMENT})}}>
+                Document
+              </div>
+              <div className={`sidebar-tab ${this.state.selectedTab === tabs.VARIABLES ? 'selected' : '' }`} onClick={() => { this.setState({ selectedTab: tabs.VARIABLES})}}>
+                Variables
+              </div>
+              <div className={`sidebar-tab ${this.state.selectedTab === tabs.COMPONENTS ? 'selected' : '' }`} onClick={() => { this.setState({ selectedTab: tabs.COMPONENTS})}}>
+                Components
+              </div>
+            </div>
+            <div className="sidebar-inner">
+              {this.renderInner()}
             </div>
           </div>
         }

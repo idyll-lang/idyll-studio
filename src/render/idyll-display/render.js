@@ -2,6 +2,11 @@ import React from 'react';
 import IdyllDocument from 'idyll-document';
 import AuthorView from './components/author-view.js';
 import Context from '../context';
+import DropTarget from './components/drop-target';
+
+const getRandomId = () => {
+  return Math.floor(Math.random()*10000000000) + 100000000;
+}
 
 class Renderer extends React.PureComponent {
   static contextType = Context;
@@ -16,8 +21,62 @@ class Renderer extends React.PureComponent {
     });
   }
 
-  render() {
+  injectDropTargets(ast) {
+    // deep copy
+    const astCopy = JSON.parse(JSON.stringify(ast));
+    astCopy.children = (astCopy.children || []).map((node) => {
+      if (node.type !== 'component') {
+        return node;
+      }
 
+      if (node.name === 'TextContainer') {
+        if (node.children.length === 1 && node.children[0].type === 'meta') {
+          return node;
+        }
+        node.children = node.children.reduce((memo, child, i, arr) => {
+          if (i === 0) {
+            return [{
+              id: -1,
+              type: 'component',
+              name: 'IdyllEditorDropTarget',
+              properties: {
+                insertBefore: {
+                  type: 'value',
+                  value: child.id
+                }
+              }
+            }, child, {
+              id: -2,
+              type: 'component',
+              name: 'IdyllEditorDropTarget',
+              properties: {
+                insertAfter: {
+                  type: 'value',
+                  value: child.id
+                }
+              }
+            }]
+          }
+          return [...memo, child, {
+            id: -(i + 2),
+            type: 'component',
+            name: 'IdyllEditorDropTarget',
+            properties: {
+              insertAfter: {
+                type: 'value',
+                value: child.id
+              }
+            }
+          }];
+        }, []);
+      }
+      return node;
+    })
+    // return ast;
+    return astCopy;
+  }
+
+  render() {
     if (this.state.error) {
       return <div>
         Error
@@ -42,12 +101,15 @@ class Renderer extends React.PureComponent {
 
     return (
       <div className='renderer'>
-        <div className='renderer-container'>
+        <div className='renderer-container' contentEditable={false}>
           <IdyllDocument
             //markup={markup}
-            key={JSON.stringify(ast)}
-            ast={ast}
-            components={this.loadedComponents}
+            // key={JSON.stringify(ast)}
+            ast={this.injectDropTargets(ast)}
+            components={{
+              IdyllEditorDropTarget: DropTarget,
+              ...this.loadedComponents
+            }}
             layout={this.context.layout}
             theme={this.context.theme}
             context={context => {

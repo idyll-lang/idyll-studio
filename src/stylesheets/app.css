@@ -16,7 +16,7 @@ body, html {
 .sidebar-information {
   /* grid-row: 1; */
   /* grid-column: 1 / 4; */
-  padding: 1em;
+  /* padding: 1em; */
 }
 
 .output-container {
@@ -36,9 +36,7 @@ body, html {
   transition: width 0.5s;
 }
 .sidebar-information h2 {
-  text-transform: uppercase;
   font-size: 18px;
-
 }
 
 .component-container {
@@ -57,7 +55,7 @@ button.loader {
 
 .component-debug-view {
   position: relative;
-  transition: background-color 0.3s ease-in;
+  /* transition: background-color 0.3s ease-in; */
 }
 
 .author-view-button {
@@ -83,5 +81,35 @@ button.loader {
 
 .component-debug-view:hover > .author-view-button {
   opacity: 0.87;
-  transition: opacity 0.25s linear;
+  transition: none;
+}
+
+.sidebar-tab-container {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+}
+
+
+.sidebar-tab {
+  padding: 1em 1em;
+  /* transition: font-size 0.75s; */
+  cursor: pointer;
+}
+.sidebar-tab:not(:first-of-type) {
+  /* border-left: solid 1px #222; */
+}
+
+
+.sidebar-tab.selected {
+  font-weight: bold;
+  text-decoration: underline;
+  font-size: 1.2em;
+}
+.sidebar-inner {
+  padding: 1em;
+}
+
+[contenteditable]:focus {
+  outline: none;
 }
