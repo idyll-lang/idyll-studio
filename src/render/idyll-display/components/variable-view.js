@@ -3,19 +3,19 @@ import ReactDataGrid from 'react-data-grid';
 import Context from '../../context';
 import IdyllAST from 'idyll-ast';
 
+const columns = [
+  { key: 'type', name: "Type", editable: true },
+  { key: 'name', name: "Name", editable: true },
+  { key: 'initialValue', name: "Initial value", editable: true },
+  { key: 'currentValue', name: "Current value", editable: true }
+];
+
  class VariableView extends React.PureComponent {
   static contextType = Context;
-  static columns = [
-    { key: 'type', name: "Type", editable: true },
-    { key: 'name', name: "Name", editable: true },
-    { key: 'initialValue', name: "Initial value", editable: true },
-    { key: 'currentValue', name: "Current value", editable: true }
-  ];
 
   constructor(props) {
     super(props);
     this.addVariable = this.addVariable.bind(this);
-    this.getVariableTable = this.getVariableTable.bind(this);
     this.getRows = this.getRows.bind(this);
     this.state = ({
       rows: []
