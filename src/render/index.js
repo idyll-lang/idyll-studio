@@ -48,12 +48,12 @@ class App extends React.PureComponent {
       });
     });
 
-    // // When main wants to save, print "Saved!" to console
-    // // and sends the saved markup
-    // ipcRenderer.on('idyll:save', (event, message) => {
-    //   console.log(message);
-    //   ipcRenderer.send('save', this.state.savedMarkup);
-    // });
+    // When main wants to save, print "Saved!" to console
+    // and sends the saved markup
+    ipcRenderer.on('idyll:save', (event, message) => {
+      console.log(message);
+      ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast));
+    });
   }
 
   getContext() {

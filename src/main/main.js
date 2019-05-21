@@ -127,16 +127,16 @@ class Main {
 
   // Saves current markup to open idyll project
   handleFileSave() {
-    // // Let's render process know ready to receive markup to save
-    // this.mainWindow.webContents.send('idyll:save', 'Saved!');
-    // // Saves markup to file
-    // if (this.filePath !== undefined) {
-    //   ipcMain.on('save', (event, content) => {
-    //     fs.writeFile(this.filePath, content, err => {
-    //       if (err) throw err;
-    //     });
-    //   });
-    // }
+    // Let's render process know ready to receive markup to save
+    this.mainWindow.webContents.send('idyll:save', 'Saved!');
+    // Saves markup to file
+    if (this.filePath !== undefined) {
+      ipcMain.on('save', (event, content) => {
+        fs.writeFile(this.filePath, content, err => {
+          if (err) throw err;
+        });
+      });
+    }
   }
 
   async publish() {
