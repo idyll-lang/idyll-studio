@@ -34,8 +34,16 @@ class Main {
     // Deploying command
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
-        this.idyll.build();
-        this.publish();
+        console.log('Building...');
+        this.idyll
+          .build(this.workingDir)
+          .on('update', () => {
+            console.log('Finished building!');
+            this.publish();
+          })
+          .on('error', err => {
+            console.log(err);
+          });
       }
     });
   }

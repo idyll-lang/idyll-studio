@@ -54,10 +54,10 @@ class Deploy extends React.PureComponent {
     this.state.metaNode.properties[propName].value = e.target.value;
     this.context.setAst(this.context.ast);
 
-    // Debug
-    console.log(
-      idyllAST.getNodesByType(this.context.ast, 'meta')[0].properties
-    );
+    // // Debug
+    // console.log(
+    //   idyllAST.getNodesByType(this.context.ast, 'meta')[0].properties
+    // );
   }
 
   renderProps(propName) {
@@ -84,6 +84,9 @@ class Deploy extends React.PureComponent {
           <div className='meta'>Title {this.renderProps('title')}</div>
           <div className='meta'>
             Description {this.renderProps('description')}
+          </div>
+          <div className='meta'>
+            Share Image URL {this.renderProps('shareImageUrl')}
           </div>
           <div className='meta'>
             URL <a href={this.context.url}>{this.context.url}</a>

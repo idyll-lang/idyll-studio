@@ -124,7 +124,8 @@ class Sidebar extends React.PureComponent {
               {this.getStyleView()}
             </div>
             <div className='publish-view'>
-              <h2>Deploy.</h2>
+              <h2>Deploy</h2>
+              <Deployment />
             </div>
           </div>
         );
