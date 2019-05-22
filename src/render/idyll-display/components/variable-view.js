@@ -18,12 +18,16 @@ const columns = [
     this.addVariable = this.addVariable.bind(this);
     this.getRows = this.getRows.bind(this);
     this.state = ({
-      rows: []
+      rows: [],
+      contextUpdates: 0
     });
   }
 
   componentDidMount() {
-    this.getRows(this.context.ast);
+    // TODO - ensure that there isn't a problem registering multiple listeners.
+    this.context.context.onUpdate(() => {
+      this.setState({ contextUpdates: this.state.contextUpdates + 1 });
+    });
   }
 
   addVariable(ast) {
@@ -50,27 +54,53 @@ const columns = [
 
   getRows(ast) {
     const rows = [];
-    const currentChildren = ast.children;
+    const currentChildren = this.context.ast.children;
+    const currentData = this.context.context.data();
+    this._rowsToVars = []
     currentChildren.map((child) => {
       const childType = child.type;
       if (childType === 'var' || childType === 'data') { // allow for derivedVar types too
         const properties = child.properties;
         const varName = properties.name.value;
-        const varValue = childType === 'var' ? properties.value.value : properties.source.value;
-        const initialValue = 'TODO';
+        const varValue = currentData[varName];
+        const initialValue = childType === 'var' ? properties.value.value : properties.source.value;
         rows.push({
           type: childType,
           name: varName,
           initialValue: initialValue,
           currentValue: varValue
         });
+        this._rowsToVars.push(child);
       }
     });
-    this.setState({rows: rows});
+    return rows;
+  }
+
+  handleGridUpdated(update) {
+    if (update.action === 'CELL_UPDATE') {
+      Object.keys(update.updated).forEach((key) => {
+        const val = update.updated[key];
+        switch(key) {
+          case 'currentValue':
+            this.context.context.update({ [update.fromRowData.name]: val });
+            break;
+          case 'initialValue':
+            this._rowsToVars[update.fromRow].properties.value.value = val;
+            break;
+          case 'name':
+            this._rowsToVars[update.fromRow].properties.name.value = val;
+            break;
+        }
+      });
+
+    }
+
+    this.context.setAst(this.context.ast);
   }
 
    // Returns a list of all variables in the AST
   render() {
+    const rows = this.getRows();
     //const variablesTable = this.getVariableTable(this.context.ast);
     const columns = [
       { key: 'type', name: "Type", editable: true },
@@ -80,13 +110,13 @@ const columns = [
     ];
     return (
       <div className='variables-view'>
-        <h2>Variable Views below!</h2>
         <div className='variables-table-view'>
           <ReactDataGrid
             columns={columns}
-            rowGetter={i => this.state.rows[i]}
-            rowsCount={this.state.rows.length}
+            rowGetter={i => rows[i]}
+            rowsCount={rows.length}
             enableCellSelect={true}
+            onGridRowsUpdated={this.handleGridUpdated.bind(this)}
           />
         </div>
         <div className='add-variable-button'>
