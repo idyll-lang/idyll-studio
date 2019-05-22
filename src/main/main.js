@@ -34,9 +34,10 @@ class Main {
     // Deploying command
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
-        console.log('Building...');
+        // Send to render process the url
+        this.mainWindow.webContents.send('building', `Building...`);
         this.idyll.build(this.workingDir);
-        console.log('Finished!');
+        this.mainWindow.webContents.send('publishing', `Publishing...`);
         this.publish();
       }
     });
@@ -161,6 +162,7 @@ class Main {
         json: true,
         headers: { 'Content-Type': 'application/json' }
       });
+
       console.log(alias);
       console.log(`Project deployed at https://idyll.pub/post/${alias}/`);
 
@@ -170,6 +172,7 @@ class Main {
         `https://idyll.pub/post/${alias}/`
       );
     } catch (err) {
+      this.mainWindow.webContents.send('pub-error', 'error');
       console.log(err);
     }
   }

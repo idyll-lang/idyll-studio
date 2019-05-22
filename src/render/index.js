@@ -42,9 +42,30 @@ class App extends React.PureComponent {
       }
     );
 
+    ipcRenderer.on('building', (event, message) => {
+      console.log(message);
+      this.setState({
+        currProcess: 'building'
+      });
+    });
+
+    ipcRenderer.on('publishing', (event, message) => {
+      console.log(message);
+      this.setState({
+        currProcess: 'publishing'
+      });
+    });
+
+    ipcRenderer.on('pub-error', (event, message) => {
+      this.setState({
+        currProcess: 'error'
+      });
+    });
+
     ipcRenderer.on('url', (event, url) => {
       this.setState({
-        url: url
+        url: url,
+        currProcess: 'published'
       });
     });
 
@@ -66,7 +87,8 @@ class App extends React.PureComponent {
       componentPropMap,
       currentSidebarNode,
       components,
-      url
+      url,
+      currProcess
     } = this.state;
     return {
       context: context,
@@ -78,6 +100,7 @@ class App extends React.PureComponent {
       datasets: datasets,
       currentSidebarNode: currentSidebarNode,
       url: url,
+      currProcess: currProcess,
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },

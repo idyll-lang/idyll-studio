@@ -6,6 +6,13 @@ const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
 };
 
+const UIMessage = {
+  building: 'Building project...',
+  publishing: 'Currently publishing...',
+  error: 'An error occurred while publishing',
+  published: 'Published!'
+};
+
 class Deploy extends React.PureComponent {
   static contextType = Context;
   constructor(props) {
@@ -92,7 +99,14 @@ class Deploy extends React.PureComponent {
             URL <a href={this.context.url}>{this.context.url}</a>
           </div>
         </div>
-        <button onClick={this.context.deploy}>Publish</button>
+        <button
+          id='publish-btn'
+          onClick={this.context.deploy}
+          disabled={this.context.currProcess === 'publishing'}
+        >
+          Publish
+        </button>
+        {UIMessage[this.context.currProcess]}
       </div>
     );
   }
