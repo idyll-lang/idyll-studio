@@ -16,31 +16,54 @@ class Component extends React.PureComponent {
   handleUpdateValue(propName) {
     return (e) => {
       const node = this.context.currentSidebarNode;
-      node.properties[propName].value = e.target.value;
+      let val = e.target.value;
+      if (val.trim() !== '') {
+        val = Number(e.target.value);
+      }
+      if (isNaN(val)) {
+        val = e.target.value;
+      }
+
+      node.properties[propName].value = val;
+      this.context.setAst(this.context.ast);
+    }
+  }
+
+  handleUpdateType(propName, type) {
+    return () => {
+      const node = this.context.currentSidebarNode;
+      node.properties[propName].type = type;
       this.context.setAst(this.context.ast);
     }
   }
 
   renderExpression(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row'}}>
-      <input onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div style={{background: '#B8E986'}}>{prop.type}</div>
+    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+      <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
+      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'variable')} style={{marginLeft: '1em', borderRadius: 20, background: '#B8E986'}}>{prop.type}</div>
+      <div>
+      </div>
     </div>
   }
   renderValue(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row'}}>
-      <input onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div style={{background: '#4A90E2'}}>{typeof prop.value}</div>
+    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+      <input className={"prop-input"} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
+      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'expression')} style={{marginLeft: '1em', borderRadius: 20, background: '#4A90E2', color: '#fff'}}>{typeof prop.value}</div>
+      <div>
+        {/* Current Value: {idyllState[prop.value]} */}
+      </div>
     </div>
   }
   renderVariable(key, prop) {
     const idyllState = this.context.context.data();
     return <div>
-        <div style={{display: 'flex', flexDirection: 'row'}}>
-        <input onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-        <div style={{background: '#50E3C2'}}>{prop.type}</div>
+      <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
+        <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
+        <div className={"prop-type"} onClick={this.handleUpdateType(key, 'value')} style={{marginLeft: '1em', borderRadius: 20, background: '#50E3C2'}}>{prop.type}</div>
       </div>
-      Current Value: {idyllState[prop.value]}
+      <div>
+        Current Value: {idyllState[prop.value]}
+      </div>
     </div>
   }
 
@@ -69,9 +92,11 @@ class Component extends React.PureComponent {
         {
           Object.keys(ASTNode.properties).map((propName) => {
             const prop = ASTNode.properties[propName];
-            return <div key={propName} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-              {propName}
-              {this.renderProp(propName, prop)}
+            return <div style={{marginBottom: '1em', padding: '0 1em'}}>
+              <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propName}</div>
+              <div key={propName} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                {this.renderProp(propName, prop)}
+              </div>
             </div>
           })
         }
