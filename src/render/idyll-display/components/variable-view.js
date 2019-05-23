@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Context from '../../context';
 import IdyllAST from 'idyll-ast';
+import VariableForm from './variable-form';
 
 const columns = [
   { key: 'type', name: "Type", editable: true },
@@ -17,6 +18,8 @@ const columns = [
     super(props);
     this.addVariable = this.addVariable.bind(this);
     this.getRows = this.getRows.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.addVariable = this.addVariable.bind(this);
     this.state = ({
       rows: [],
       contextUpdates: 0
@@ -30,33 +33,39 @@ const columns = [
     });
   }
 
-  addVariable(ast) {
+  handleChange(e) {
+    e.preventDefault();
+    this.setState({ [e.target.name] : e.target.value }); // hmm won't work if variable is called rows or contextUpdates
+  }
+
+  addVariable(event) {
+    event.preventDefault();
+    console.log(this.state.name);
+    console.log(this.state.initialValue);
     const newID = this.context.ast.children.length + 2;
-    const nameOfVar = 'var' + newID;
-    const valueOfVar = newID;
     const newVarNode = {
       id: newID,
       type: 'var',
       properties: {
         name: {
           type: 'value',
-          value: nameOfVar
+          value: this.state.name
         },
         value: {
           type: 'value',
-          value: valueOfVar
+          value: this.state.initialValue
         }
       }
     };
-    const updatedAST = IdyllAST.appendNode(ast, newVarNode);
+    const updatedAST = IdyllAST.appendNode(this.context.ast, newVarNode);
     this.context.setAst(updatedAST);
   }
 
-  getRows(ast) {
+  getRows() {
     const rows = [];
     const currentChildren = this.context.ast.children;
     const currentData = this.context.context.data();
-    this._rowsToVars = []
+    this._rowsToVars = [];
     currentChildren.map((child) => {
       const childType = child.type;
       if (childType === 'var' || childType === 'data') { // allow for derivedVar types too
@@ -102,12 +111,6 @@ const columns = [
   render() {
     const rows = this.getRows();
     //const variablesTable = this.getVariableTable(this.context.ast);
-    const columns = [
-      { key: 'type', name: "Type", editable: true },
-      { key: 'name', name: "Name", editable: true },
-      { key: 'initialValue', name: "Initial value", editable: true },
-      { key: 'currentValue', name: "Current value", editable: true }
-    ];
     return (
       <div className='variables-view'>
         <div className='variables-table-view'>
@@ -119,8 +122,18 @@ const columns = [
             onGridRowsUpdated={this.handleGridUpdated.bind(this)}
           />
         </div>
-        <div className='add-variable-button'>
-          <button onClick={() => this.addVariable(this.context.ast)}>Add variable</button>
+        <div>
+          <form onSubmit={this.addVariable}>
+            <label>
+              New var name:
+              <input type="text" name="name" value={this.state.value} onChange={this.handleChange} />
+            </label>
+            <label>
+              New var initial value:
+              <input type="text" name="initialValue" value={this.state.value} onChange={this.handleChange} />
+            </label>
+            <button type="submit">Add new variable!</button>
+          </form>
         </div>
       </div>
     )

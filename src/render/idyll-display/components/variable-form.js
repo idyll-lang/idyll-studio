@@ -18,9 +18,6 @@ class VariableForm extends React.PureComponent {
   }
 
   handleSubmit(event) {
-    const newValue = parseInt(this.state.value);
-    this.context.node.properties.value.value = newValue;
-    this.context.setAst({...this.context.ast});
     event.preventDefault();
   }
 
@@ -28,12 +25,12 @@ class VariableForm extends React.PureComponent {
   // and also other value confirmation checks
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form onSubmit={this.props.addVariable}>
         <label>
-          Update value to:
+          New var name:
           <input type="text" value={this.state.value} onChange={this.handleChange} />
         </label>
-        <input type="submit" value="Submit" />
+        <button type="submit">Add new variable!</button>
       </form>
     );
   }
