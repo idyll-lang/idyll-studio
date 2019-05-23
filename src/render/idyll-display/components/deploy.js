@@ -7,7 +7,6 @@ const getRandomId = () => {
 };
 
 const UIMessage = {
-  building: 'Building project...',
   publishing: 'Currently publishing...',
   error: 'An error occurred while publishing',
   published: 'Published!'
@@ -85,6 +84,7 @@ class Deploy extends React.PureComponent {
 
   render() {
     return (
+      // Meta View
       <div className='deploy-view'>
         <div className='label'>Metadata</div>
         <div className='meta-container'>
@@ -93,20 +93,24 @@ class Deploy extends React.PureComponent {
             Description {this.renderProps('description')}
           </div>
           <div className='meta'>
-            Share Image URL {this.renderProps('shareImageUrl')}
+            Share Image {this.renderProps('shareImageUrl')}
           </div>
           <div className='meta'>
             URL <a href={this.context.url}>{this.context.url}</a>
           </div>
         </div>
-        <button
-          id='publish-btn'
-          onClick={this.context.deploy}
-          disabled={this.context.currProcess === 'publishing'}
-        >
-          Publish
-        </button>
-        {UIMessage[this.context.currProcess]}
+
+        {/* Publish Button */}
+        <div className='publish-btn-container'>
+          <button
+            id='publish-btn'
+            onClick={this.context.deploy}
+            disabled={this.context.currProcess === 'publishing'}
+          >
+            Publish
+          </button>
+          <div>{UIMessage[this.context.currProcess]}</div>
+        </div>
       </div>
     );
   }

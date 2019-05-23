@@ -37,17 +37,12 @@ class App extends React.PureComponent {
           components: components,
           componentPropMap: componentProps,
           layout: 'centered',
-          theme: 'default'
+          theme: 'default',
+          currProcess: '',
+          url: '' // replace once sql stuff implemented
         });
       }
     );
-
-    ipcRenderer.on('building', (event, message) => {
-      console.log(message);
-      this.setState({
-        currProcess: 'building'
-      });
-    });
 
     ipcRenderer.on('publishing', (event, message) => {
       console.log(message);

@@ -35,7 +35,6 @@ class Main {
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
         // Send to render process the url
-        this.mainWindow.webContents.send('building', `Building...`);
         this.idyll.build(this.workingDir);
         this.mainWindow.webContents.send('publishing', `Publishing...`);
         this.publish();

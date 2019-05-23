@@ -90,7 +90,6 @@ button.loader {
   height: 50px;
 }
 
-
 .sidebar-tab {
   padding: 1em 1em;
   /* transition: font-size 0.75s; */
@@ -99,7 +98,6 @@ button.loader {
 .sidebar-tab:not(:first-of-type) {
   /* border-left: solid 1px #222; */
 }
-
 
 .sidebar-tab.selected {
   font-weight: bold;
@@ -112,4 +110,24 @@ button.loader {
 
 [contenteditable]:focus {
   outline: none;
+}
+
+#publish-btn {
+  border: none;
+  background-color: dimgrey;
+  color: white;
+  padding: 5px 20px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.meta-container {
+  text-align: right;
+  width: 80%;
+}
+
+.publish-btn-container {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
 }
