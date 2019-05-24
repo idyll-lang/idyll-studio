@@ -39,7 +39,7 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currProcess: '',
-          url: '' // replace once sql stuff implemented
+          url: '' // replace once sqlite db implemented
         });
       }
     );

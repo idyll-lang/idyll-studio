@@ -112,7 +112,7 @@ button.loader {
   outline: none;
 }
 
-#publish-btn {
+#publish-button {
   border: none;
   background-color: dimgrey;
   color: white;
@@ -121,12 +121,16 @@ button.loader {
   margin: 10px;
 }
 
+#publish-button:disabled {
+  cursor: auto;
+}
+
 .meta-container {
   text-align: right;
   width: 80%;
 }
 
-.publish-btn-container {
+.publish-button-container {
   width: 50%;
   margin: 0 auto;
   text-align: center;

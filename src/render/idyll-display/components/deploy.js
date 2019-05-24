@@ -101,9 +101,9 @@ class Deploy extends React.PureComponent {
         </div>
 
         {/* Publish Button */}
-        <div className='publish-btn-container'>
+        <div className='publish-button-container'>
           <button
-            id='publish-btn'
+            id='publish-button'
             onClick={this.context.deploy}
             disabled={this.context.currProcess === 'publishing'}
           >
