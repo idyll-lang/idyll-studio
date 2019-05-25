@@ -124,15 +124,20 @@ class AuthorTool extends React.PureComponent {
   }
 
   updateNode(node, oldString, newString) {
+    let updated = false;
     Object.keys(node.properties || {}).forEach((key) => {
       const prop = node.properties[key];
       if (prop.type === 'value' && ('' + prop.value).trim() == ('' + oldString).trim()) {
         prop.value = newString;
+        updated = true;
       }
     });
+    let localUpdate = false;
     (node.children || []).forEach(child => {
-      this.updateNode(child, oldString, newString);
+      localUpdate = this.updateNode(child, oldString, newString);
+      updated = updated || localUpdate;
     })
+    return updated;
   }
 
   // Flips between whether we are in the author view of a component
@@ -140,12 +145,10 @@ class AuthorTool extends React.PureComponent {
     if (this.state.showCode) {
 
       const output = compile(this._markup, { async: false });
-      console.log(output);
       let node = output.children[0];
       if (node.children && node.children.length) {
         node = node.children[0];
       }
-      console.log(node);
       const targetNode = getNodeById(this.context.ast, this.props.idyllASTNode.id);
       Object.keys(node).forEach((key) => {
         if (key === 'id') {
@@ -153,7 +156,6 @@ class AuthorTool extends React.PureComponent {
         }
         targetNode[key] = node[key];
       });
-      console.log(targetNode);
 
       this.context.setAst(this.context.ast);
       this.setState({
@@ -187,13 +189,16 @@ class AuthorTool extends React.PureComponent {
       return;
     }
     const node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
+    let updated = false;
     var observer = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
-          this.updateNode(node, mutation.oldValue, mutation.target.data);
+          updated = this.updateNode(node, mutation.oldValue, mutation.target.data);
         });
-        const ast = this.context.ast;
-        ast.id = getRandomId();
-        this.context.setAst(ast);
+        if (updated) {
+          const ast = this.context.ast;
+          ast.id = getRandomId();
+          this.context.setAst(ast);
+        }
     });
     var config = { subtree: true, characterData: true, characterDataOldValue: true }
     observer.observe(this._componentRef, config);
@@ -260,21 +265,15 @@ class AuthorTool extends React.PureComponent {
           // margin: '0px -10px 20px'
         }
       : null;
-    const putButtonBack = isAuthorView
-      ? {
-          right: '10px',
-          top: '3px'
-        }
-      : null;
-
     return (
       <div
         className="component-debug-view"
         style={addBorder}
         ref={ref => (this._refContainer = ref)}
       >
+        <div contentEditable={true} suppressContentEditableWarning={true} ref={ref => this._componentRef = ref}>{props.component}</div>
         {
-          this.state.showCode ? (<div >
+          this.state.showCode ? (<div className={'idyll-code-editor'}>
             <pre>
               <code>
                 <div contentEditable={true} ref={(ref) => this.handleMarkupRef(ref)}>
@@ -282,22 +281,26 @@ class AuthorTool extends React.PureComponent {
                 </div>
               </code>
             </pre>
-          </div>) : <div contentEditable={true} suppressContentEditableWarning={true} ref={ref => this._componentRef = ref}>{props.component}</div>
+          </div>) : null
         }
-        <button
-          className="author-view-button"
-          style={{right: 40}}
-          onClick={this.handleClickProps.bind(this)}
-          data-tip
-          data-for={props.uniqueKey}
-        />
-        <button
-          className="author-view-button"
-          style={putButtonBack}
-          onClick={this.handleClickCode.bind(this)}
-          data-tip
-          data-for={props.uniqueKey}
-        />
+        <div className="author-view-container">
+          <button
+            className="author-view-button"
+            onClick={this.handleClickProps.bind(this)}
+            data-tip
+            data-for={props.uniqueKey}
+          >
+            Properties
+          </button>
+          <button
+            className="author-view-button"
+            onClick={this.handleClickCode.bind(this)}
+            data-tip
+            data-for={props.uniqueKey}
+          >
+            Code
+          </button>
+        </div>
       </div>
     );
   }
