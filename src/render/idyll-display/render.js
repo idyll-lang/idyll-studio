@@ -5,8 +5,8 @@ import Context from '../context';
 import DropTarget from './components/drop-target';
 
 const getRandomId = () => {
-  return Math.floor(Math.random()*10000000000) + 100000000;
-}
+  return Math.floor(Math.random() * 10000000000) + 100000000;
+};
 
 class Renderer extends React.PureComponent {
   static contextType = Context;
@@ -24,7 +24,7 @@ class Renderer extends React.PureComponent {
   injectDropTargets(ast) {
     // deep copy
     const astCopy = JSON.parse(JSON.stringify(ast));
-    astCopy.children = (astCopy.children || []).map((node) => {
+    astCopy.children = (astCopy.children || []).map(node => {
       if (node.type !== 'component') {
         return node;
       }
@@ -35,18 +35,37 @@ class Renderer extends React.PureComponent {
         }
         node.children = node.children.reduce((memo, child, i, arr) => {
           if (i === 0) {
-            return [{
-              id: -1,
-              type: 'component',
-              name: 'IdyllEditorDropTarget',
-              properties: {
-                insertBefore: {
-                  type: 'value',
-                  value: child.id
+            return [
+              {
+                id: -1,
+                type: 'component',
+                name: 'IdyllEditorDropTarget',
+                properties: {
+                  insertBefore: {
+                    type: 'value',
+                    value: child.id
+                  }
+                }
+              },
+              child,
+              {
+                id: -2,
+                type: 'component',
+                name: 'IdyllEditorDropTarget',
+                properties: {
+                  insertAfter: {
+                    type: 'value',
+                    value: child.id
+                  }
                 }
               }
-            }, child, {
-              id: -2,
+            ];
+          }
+          return [
+            ...memo,
+            child,
+            {
+              id: -(i + 2),
               type: 'component',
               name: 'IdyllEditorDropTarget',
               properties: {
@@ -55,41 +74,30 @@ class Renderer extends React.PureComponent {
                   value: child.id
                 }
               }
-            }]
-          }
-          return [...memo, child, {
-            id: -(i + 2),
-            type: 'component',
-            name: 'IdyllEditorDropTarget',
-            properties: {
-              insertAfter: {
-                type: 'value',
-                value: child.id
-              }
             }
-          }];
+          ];
         }, []);
       }
       return node;
-    })
+    });
     // return ast;
     return astCopy;
   }
 
   render() {
     if (this.state.error) {
-      return <div>
-        Error
-        <pre>
-          {this.state.error}
-        </pre>
-      </div>
+      return (
+        <div>
+          Error
+          <pre>{this.state.error}</pre>
+        </div>
+      );
     }
     const { ast, components } = this.context;
     if (!this.loadedComponents) {
       this.loadedComponents = {};
     }
-    components.forEach(({name, path}) => {
+    components.forEach(({ name, path }) => {
       if (!this.loadedComponents[name]) {
         try {
           this.loadedComponents[name] = require(path);

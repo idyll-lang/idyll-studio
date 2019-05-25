@@ -1,5 +1,5 @@
-
-body, html {
+body,
+html {
   padding: 0;
   margin: 0;
 }
@@ -58,7 +58,6 @@ button.loader:hover {
   transform: scale(1.1);
 }
 
-
 .component-debug-view {
   position: relative;
   /* transition: background-color 0.3s ease-in; */
@@ -99,7 +98,6 @@ button.loader:hover {
   height: 50px;
 }
 
-
 .sidebar-tab {
   padding: 1em 1em;
   /* transition: font-size 0.75s; */
@@ -108,7 +106,6 @@ button.loader:hover {
 .sidebar-tab:not(:first-of-type) {
   /* border-left: solid 1px #222; */
 }
-
 
 .sidebar-tab.selected {
   font-weight: bold;
@@ -123,6 +120,31 @@ button.loader:hover {
   outline: none;
 }
 
+<<<<<<< HEAD
+#publish-button {
+  border: none;
+  background-color: dimgrey;
+  color: white;
+  padding: 5px 20px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+#publish-button:disabled {
+  cursor: auto;
+}
+
+.meta-container {
+  text-align: right;
+  width: 80%;
+}
+
+.publish-button-container {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
+}
+=======
 .prop-input {
   margin: 0;
   width: 100%;
@@ -144,3 +166,4 @@ button.loader:hover {
   max-width: 800px;
   margin: 0 auto;
 }
+>>>>>>> master

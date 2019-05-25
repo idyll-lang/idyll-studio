@@ -20,74 +20,101 @@ class App extends React.PureComponent {
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
-
   }
-
-
-    // TEST PURPOSES: Check for repeat ids
-    // var idSet = new Set();
-    // idyllAST.walkNodes(this.state.ast, node => {
-    //   if (idSet.has(node.id)) {
-    //     console.log('Repeat Id Found');
-    //   } else {
-    //     idSet.add(node.id);
-    //   }
-    // });
-  // }
 
   componentDidMount() {
     // Load in datasets
-    ipcRenderer.on('idyll:compile', (event, {datasets, ast, components, path}) => {
+    ipcRenderer.on(
+      'idyll:compile',
+      (event, { datasets, ast, components, path }) => {
+        console.log(components);
+        var componentProps = this.createComponentMap(components);
 
-      console.log(components);
-      var componentProps = this.createComponentMap(components);
+        this.setState({
+          datasets: datasets,
+          ast: ast,
+          pathKey: path,
+          components: components,
+          componentPropMap: componentProps,
+          layout: 'centered',
+          theme: 'default',
+          currProcess: '',
+          url: '' // replace once sqlite db implemented
+        });
+      }
+    );
 
+    ipcRenderer.on('publishing', (event, message) => {
+      console.log(message);
       this.setState({
-        datasets: datasets,
-        ast: ast,
-        pathKey: path,
-        components: components,
-        componentPropMap: componentProps,
-        layout: 'centered',
-        theme: 'default'
-      })
+        currProcess: 'publishing'
+      });
     });
 
-    // // When main wants to save, print "Saved!" to console
-    // // and sends the saved markup
-    // ipcRenderer.on('idyll:save', (event, message) => {
-    //   console.log(message);
-    //   ipcRenderer.send('save', this.state.savedMarkup);
-    // });
+    ipcRenderer.on('pub-error', (event, message) => {
+      this.setState({
+        currProcess: 'error'
+      });
+    });
+
+    ipcRenderer.on('url', (event, url) => {
+      this.setState({
+        url: url,
+        currProcess: 'published'
+      });
+    });
+
+    // When main wants to save, print "Saved!" to console
+    // and sends the saved markup
+    ipcRenderer.on('idyll:save', (event, message) => {
+      console.log(message);
+      ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast));
+    });
   }
 
   getContext() {
-    const { ast, datasets,context, theme, layout, componentPropMap, currentSidebarNode, components } = this.state;
+    const {
+      ast,
+      datasets,
+      context,
+      theme,
+      layout,
+      componentPropMap,
+      currentSidebarNode,
+      components,
+      url,
+      currProcess
+    } = this.state;
     return {
-      context:context,
-      components:components,
+      context: context,
+      components: components,
       theme: theme,
       layout: layout,
-      ast:ast,
-      propsMap:componentPropMap,
+      ast: ast,
+      propsMap: componentPropMap,
       datasets: datasets,
       currentSidebarNode: currentSidebarNode,
-      setSidebarNode: (node) => {
+      url: url,
+      currProcess: currProcess,
+      setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },
-      setTheme: (theme) => {
+      setTheme: theme => {
         this.setState({ theme: theme });
       },
-      setLayout: (layout) => {
+      setLayout: layout => {
         this.setState({ layout: layout });
       },
-      setAst: (ast) => {
-        this.setState({ ast: {...ast} });
+      setAst: ast => {
+        this.setState({ ast: { ...ast } });
       },
-      setContext: (context) => {
+      setContext: context => {
         this.setState({ context: context });
+      },
+      deploy: () => {
+        ipcRenderer.send('deploy', 'hi');
       }
-    }
+    };
   }
 
   // Given list of components objects containing name and path,
@@ -126,21 +153,35 @@ class App extends React.PureComponent {
 
   render() {
     if (!this.state.ast) {
-      return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100vw', height: '100vh'}}>
-
-        <div style={{background: '#efefef', fontFamily: 'Helvetica', borderRadius: 0, padding: '4em'}}>
-          Load an Idyll project
-          <button className="loader" onClick={this.handleLoad.bind(this)}>
-            Select...
-          </button>
+      return (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100vw',
+            height: '100vh'
+          }}
+        >
+          <div
+            style={{
+              background: '#efefef',
+              fontFamily: 'Helvetica',
+              borderRadius: 0,
+              padding: '4em'
+            }}
+          >
+            Load an Idyll project
+            <button className='loader' onClick={this.handleLoad.bind(this)}>
+              Select...
+            </button>
+          </div>
         </div>
-      </div>;
+      );
     }
     return (
       <Context.Provider value={this.getContext()}>
-        <IdyllDisplay
-          key={this.state.pathKey}
-        />
+        <IdyllDisplay key={this.state.pathKey} />
       </Context.Provider>
     );
   }
