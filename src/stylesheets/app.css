@@ -23,7 +23,7 @@ body, html {
   /* grid-row: 2; */
   /* grid-column: 1 / 2; */
   overflow-y: auto;
-  padding: 1em;
+  padding: 0;
 }
 
 .sidebar-information {
@@ -50,6 +50,12 @@ button.loader {
   background: #6122fb;
   color: white;
   margin: 1em auto;
+  cursor: pointer;
+  transition: trasform 0.25s;
+  outline: none;
+}
+button.loader:hover {
+  transform: scale(1.1);
 }
 
 
@@ -58,30 +64,33 @@ button.loader {
   /* transition: background-color 0.3s ease-in; */
 }
 
-.author-view-button {
+.author-view-container {
   position: absolute;
   top: 3px;
   right: 0;
-  opacity: .38;
-  background-color: #E7E3D0;
-  background-image: url('https://idyll-lang.org/static/images/quill-icon.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
-  box-sizing: border-box;
+  opacity: .33;
+  display: flex;
+  flex-direction: row;
+}
+.author-view-button {
+  position: static !important;
+  color: white;
+  margin-left: 10px;
   border-radius: 12px;
   cursor: pointer;
+  width: auto !important;
+  background-image: none !important;
+  background-color: #222 !important;
+  color: white !important;
+  opacity: 1 !important;;
 }
 
 .author-view-button:focus {
   outline: none;
 }
 
-.component-debug-view:hover > .author-view-button {
-  opacity: 0.87;
-  transition: none;
+.component-debug-view:hover > .author-view-container {
+  opacity: 1;
 }
 
 .sidebar-tab-container {
@@ -112,4 +121,26 @@ button.loader {
 
 [contenteditable]:focus {
   outline: none;
+}
+
+.prop-input {
+  margin: 0;
+  width: 100%;
+}
+
+.prop-type {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  width: 120px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.idyll-root {
+  padding: 0 !important;
+}
+
+.idyll-code-editor {
+  max-width: 800px;
+  margin: 0 auto;
 }
