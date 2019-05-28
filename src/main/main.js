@@ -35,9 +35,12 @@ class Main {
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
         // Send to render process the url
-        this.idyll.build(this.workingDir);
         this.mainWindow.webContents.send('publishing', `Publishing...`);
-        this.publish();
+        this
+          .idyll.build(this.workingDir)
+          .on('update', () => {
+            this.publish();
+          });
       }
     });
   }

@@ -67,7 +67,7 @@ button.loader:hover {
   position: absolute;
   top: 3px;
   right: 0;
-  opacity: .33;
+  /* opacity: .33; */
   display: flex;
   flex-direction: row;
 }
@@ -120,7 +120,6 @@ button.loader:hover {
   outline: none;
 }
 
-<<<<<<< HEAD
 #publish-button {
   border: none;
   background-color: dimgrey;
@@ -144,10 +143,12 @@ button.loader:hover {
   margin: 0 auto;
   text-align: center;
 }
-=======
 .prop-input {
   margin: 0;
   width: 100%;
+  border-radius: 20px 0 0 20px;
+  border: solid 1px #ddd;
+  padding-left: 1em;
 }
 
 .prop-type {
@@ -166,4 +167,10 @@ button.loader:hover {
   max-width: 800px;
   margin: 0 auto;
 }
->>>>>>> master
+
+
+.editable-text:hover {
+  margin-left: -12px;
+  padding-left: 10px;
+  border-left: solid 2px #ddd;
+}
