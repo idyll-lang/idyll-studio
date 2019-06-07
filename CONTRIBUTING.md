@@ -21,7 +21,7 @@ To get an idea of what we are trying to create check out the mocks in the README
 
 ### Running locally
 
-Run the project using `npm start` or `yarn start`. Open the project that you created in step 5 above.
+Run the project using `npm start` or `yarn start`. Open the project that you created in step 5 above - use the "load project" button and select the `index.idyll` file at the root of your project directory.
 
 ### Making changes
 
