@@ -11,10 +11,10 @@ _Note: The mocks are slightly out of date, as we now use tabs in the sidebar rat
 
 **Overview**
 
-![Overview](./mocks/overview.png)
+![Overview](./mocks/Overview.png)
 
 **Annotations**
-![Annotations](./mocks/annotations.png)
+![Annotations](./mocks/Annotations.png)
 
 **Text 1**
 ![Text](./mocks/text-edit-selection.png)
