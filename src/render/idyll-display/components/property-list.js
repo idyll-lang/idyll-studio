@@ -1,13 +1,6 @@
 import React from 'react';
-import AST from 'idyll-ast';
-import ComponentView from '../components/component-view.js';
-import DatasetView from '../components/dataset-view.js';
-import VariableView from '../components/variable-view';
+import Property from './property';
 import Context from '../../context';
-
-import * as layouts from 'idyll-layouts';
-import * as themes from 'idyll-themes';
-
 
 class Component extends React.PureComponent {
 
@@ -26,7 +19,7 @@ class Component extends React.PureComponent {
   }
 
   addProperty() {
-    const node = this.context.currentSidebarNode;
+    const node = this.props.node;
     node.properties = node.properties || {};
     node.properties[this.state.newPropName] = {
       type: 'value',
@@ -39,7 +32,7 @@ class Component extends React.PureComponent {
 
   handleUpdateValue(propName) {
     return (e) => {
-      const node = this.context.currentSidebarNode;
+      const node = this.props.node;
       let val = e.target.value;
       if (val.trim() !== '') {
         val = Number(e.target.value);
@@ -55,7 +48,7 @@ class Component extends React.PureComponent {
 
   handleUpdateType(propName, type) {
     return () => {
-      const node = this.context.currentSidebarNode;
+      const node = this.props.node;
       node.properties[propName].type = type;
       this.context.setAst(this.context.ast);
     }
@@ -103,28 +96,23 @@ class Component extends React.PureComponent {
   }
 
   render() {
-    const ASTNode = this.context.currentSidebarNode;
+    const ASTNode = this.props.node;
     const properties = [];
 
     return (
       <div>
-        <a onClick={() => this.context.setSidebarNode(null)}>← Back</a>
-        <h2>
-          {ASTNode.name} component
-        </h2>
-        <div>
         {
           Object.keys(ASTNode.properties || {}).map((propName) => {
             const prop = ASTNode.properties[propName];
-            return <div style={{marginBottom: '1em', padding: '0 1em'}}>
-              <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propName}</div>
-              <div key={propName} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                {this.renderProp(propName, prop)}
+            return <div key={propName} style={{marginBottom: '1em', padding: '0 0.25em'}}>
+              {/* <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propName}</div> */}
+              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Property setAst={this.context.setAst} ast={this.context.ast} node={ASTNode} name={propName} value={prop} />
               </div>
             </div>
           })
         }
-        <div>
+        {/* <div>
           Add property
 
           <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -134,7 +122,7 @@ class Component extends React.PureComponent {
             </button>
           </div>
         </div>
-        </div>
+        </div> */}
       </div>
     );
   }

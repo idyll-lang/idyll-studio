@@ -1,5 +1,8 @@
 import React from 'react';
 import Context from '../../context';
+import PropertiesList from './property-list';
+import { DropTarget } from 'react-dnd'
+
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
 
@@ -117,7 +120,8 @@ class AuthorTool extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      showCode: false
+      showCode: false,
+      showProperties: false
     }
     this._markup = this.getMarkup(props);
     cursorPositions[props.idyllASTNode.id] = -1;
@@ -168,11 +172,14 @@ class AuthorTool extends React.PureComponent {
   }
 
   handleClickProps() {
-    if (this.context.currentSidebarNode && this.context.currentSidebarNode.id === this.props.idyllASTNode.id) {
-      this.context.setSidebarNode(null);
-    } else {
-      this.context.setSidebarNode(getNodeById(this.context.ast, this.props.idyllASTNode.id));
-    }
+    this.setState({
+      showProperties: !this.state.showProperties
+    })
+    // if (this.context.currentSidebarNode && this.context.currentSidebarNode.id === this.props.idyllASTNode.id) {
+    //   this.context.setSidebarNode(null);
+    // } else {
+    //   this.context.setSidebarNode(getNodeById(this.context.ast, this.props.idyllASTNode.id));
+    // }
   }
 
   getMarkup(props) {
@@ -255,20 +262,23 @@ class AuthorTool extends React.PureComponent {
   // a quill icon to indicate whether we're hovering in the component,
   // and debugging information when the icon is pressed
   render() {
-    const isAuthorView = this.context.currentSidebarNode && this.context.currentSidebarNode.id === this.props.idyllASTNode.id;
+    // const isAuthorView = this.context.currentSidebarNode && this.context.currentSidebarNode.id === this.props.idyllASTNode.id;
     const { idyll, updateProps, hasError, ...props } = this.props;
-    const addBorder = isAuthorView
-      ? {
-          // boxShadow: '5px 5px 10px 1px lightGray',
-          // transition: 'box-shadow 0.35s linear',
-          // padding: '0px 10px 10px',
-          // margin: '0px -10px 20px'
-        }
-      : null;
-    return (
+    const { isOver, dropTarget } = this.props;
+
+    // const addBorder = isAuthorView
+    //   ? {
+    //       // boxShadow: '5px 5px 10px 1px lightGray',
+    //       // transition: 'box-shadow 0.35s linear',
+    //       // padding: '0px 10px 10px',
+    //       // margin: '0px -10px 20px'
+    //     }
+    //   : null;
+    return dropTarget(
+    // return (
       <div
         className="component-debug-view"
-        style={addBorder}
+        // style={addBorder}
         ref={ref => (this._refContainer = ref)}
       >
         <div contentEditable={true} suppressContentEditableWarning={true} ref={ref => this._componentRef = ref}>{props.component}</div>
@@ -300,10 +310,33 @@ class AuthorTool extends React.PureComponent {
           >
             Code
           </button>
+          {
+            (this.state.showProperties || isOver) ? (
+              <div style={{position: 'absolute', top: 30, right: 30}}>
+                <PropertiesList node={this.props.idyllASTNode} />
+              </div>
+            ) : null
+          }
         </div>
       </div>
     );
   }
 }
 
-export default AuthorTool;
+
+const variableTarget = {
+  drop(props, monitor, component) {
+    // component.insertComponent(monitor.getItem().component);
+  }
+}
+
+function collect(connect, monitor) {
+  return {
+    dropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+  }
+}
+
+
+export default DropTarget('VARIABLE', variableTarget, collect)(AuthorTool)
+// export default AuthorTool;

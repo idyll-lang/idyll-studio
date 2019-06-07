@@ -106,6 +106,7 @@ class App extends React.PureComponent {
         this.setState({ layout: layout });
       },
       setAst: ast => {
+        console.log('set ast');
         this.setState({ ast: { ...ast } });
       },
       setContext: context => {
