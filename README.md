@@ -4,6 +4,10 @@
 
 Sketches towards an integrated dynamic publishing application.
 
+# DEVELOPING
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md)
+
 
 ## Mockup
 
@@ -36,7 +40,3 @@ _Note: The mocks are slightly out of date, as we now use tabs in the sidebar rat
 
 **Component hover**
 ![Component](./mocks/component-hover.png)
-
-# DEVELOPING
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md)
