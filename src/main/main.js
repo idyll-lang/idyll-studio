@@ -85,7 +85,7 @@ class Main {
       componentFolder: this.workingDir + '/components/',
       dataFolder: this.workingDir + '/data',
       layout: 'centered',
-      theme: 'github'
+      theme: 'default'
     });
 
     // filter to catch all requests to static folder
