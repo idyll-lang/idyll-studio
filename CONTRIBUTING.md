@@ -16,11 +16,12 @@ To get an idea of what we are trying to create check out the mocks in the README
    1. First run `yarn link` inside of `idyll/packages/idyll-cli`
    2. Run `yarn link idyll` in this repo
    
-That should be all the setup you need.
+5. Create a new idyll project somewhere on your file system using `idyll create`. 
+
 
 ### Running locally
 
-Run the project using `npm start` or `yarn start`. 
+Run the project using `npm start` or `yarn start`. Open the project that you created in step 5 above.
 
 ### Making changes
 
