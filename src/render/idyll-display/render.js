@@ -1,6 +1,7 @@
 import React from 'react';
 import IdyllDocument from 'idyll-document';
 import AuthorView from './components/author-view.js';
+import TextEdit from './components/text-edit.js';
 import Context from '../context';
 import DropTarget from './components/drop-target';
 
@@ -127,6 +128,7 @@ class Renderer extends React.PureComponent {
             injectThemeCSS={true}
             injectLayoutCSS={true}
             userViewComponent={AuthorView}
+            textEditComponent={TextEdit}
             authorView={true}
           />
         </div>

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Context from '../../context';
 import IdyllAST from 'idyll-ast';
+import { DragSource } from 'react-dnd'
 
 const columns = [
   { key: 'type', name: "Type", editable: true },
@@ -9,6 +10,37 @@ const columns = [
   { key: 'initialValue', name: "Initial value", editable: true },
   { key: 'currentValue', name: "Current value", editable: true }
 ];
+
+class VariableFormatter extends React.PureComponent {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const { value, isDragging, dragSource } = this.props;
+    return dragSource(
+      <div style={{ opacity: isDragging ? 0.5 : 1 }}>{value}</div>
+    );
+  }
+}
+
+
+
+/**
+ * Implement the drag source contract.
+ */
+const variableSource = {
+  beginDrag: props => ({ name: props.value }),
+}
+
+function variableCollect(connect, monitor) {
+  return {
+    dragSource: connect.dragSource(),
+    isDragging: monitor.isDragging(),
+  }
+}
+
+const DraggableFormatter = DragSource('VARIABLE', variableSource, variableCollect)(VariableFormatter);
 
  class VariableView extends React.PureComponent {
   static contextType = Context;
@@ -104,7 +136,7 @@ const columns = [
     //const variablesTable = this.getVariableTable(this.context.ast);
     const columns = [
       { key: 'type', name: "Type", editable: true },
-      { key: 'name', name: "Name", editable: true },
+      { key: 'name', name: "Name", editable: true, formatter: DraggableFormatter },
       { key: 'initialValue', name: "Initial value", editable: true },
       { key: 'currentValue', name: "Current value", editable: true }
     ];

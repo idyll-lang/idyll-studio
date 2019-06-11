@@ -35,9 +35,12 @@ class Main {
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
         // Send to render process the url
-        this.idyll.build(this.workingDir);
         this.mainWindow.webContents.send('publishing', `Publishing...`);
-        this.publish();
+        this
+          .idyll.build(this.workingDir)
+          .on('update', () => {
+            this.publish();
+          });
       }
     });
   }
@@ -82,7 +85,7 @@ class Main {
       componentFolder: this.workingDir + '/components/',
       dataFolder: this.workingDir + '/data',
       layout: 'centered',
-      theme: 'github'
+      theme: 'default'
     });
 
     // filter to catch all requests to static folder
