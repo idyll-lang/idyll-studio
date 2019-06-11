@@ -1,6 +1,6 @@
 [Work in Progress]
 
-# Idyll Desktop
+# Idyll Studio
 
 Sketches towards an integrated dynamic publishing application.
 
