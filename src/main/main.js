@@ -69,10 +69,8 @@ class Main {
 
     this.filePath = file;
 
-    var slash = '\\';
-    if (process.platform === 'darwin') {
-      slash = '/';
-    }
+    const slash = p.sep;
+
     this.workingDir = this.filePath.substring(
       0,
       this.filePath.lastIndexOf(slash)
