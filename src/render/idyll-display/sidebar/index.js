@@ -6,6 +6,7 @@ import VariableView from '../components/variable-view';
 import Deployment from '../components/deploy.js';
 import ComponentDetails from './component.js';
 import Context from '../../context';
+const { ipcRenderer } = require('electron');
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -30,6 +31,10 @@ class Sidebar extends React.PureComponent {
       collapsed: false,
       selectedTab: tabs.DOCUMENT
     };
+  }
+
+  componentDidMount(){
+    ipcRenderer.on('toggleSidebar', () => this.handleToggle());
   }
 
   handleThemeChange(event) {
