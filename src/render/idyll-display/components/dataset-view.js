@@ -1,5 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
+import ReactJson from 'react-json-view'
 import Context from '../../context';
 
 const getRandomId = () => {
@@ -14,13 +15,20 @@ class DatasetView extends React.PureComponent {
   static contextType = Context;
   constructor(props) {
     super(props);
-
+    // I forget -- is this necessary to initialize? I struggle to get it to work without
+    this.state = {
+      selectedDataset: undefined
+    }
     this.insertData = this.insertData.bind(this);
   }
 
   // Generates the tag associated with the given dataset
   // [data name:'myData' source:'myData.csv' /]
   insertData(dataset) {
+    this.setState(() => {
+      return {selectedDataset: dataset}
+    });
+
     var tag =
       "[data name:'" + dataset.name + "' source:'" + dataset.path + "' /]";
 
@@ -49,6 +57,12 @@ class DatasetView extends React.PureComponent {
 
   render() {
     const { datasets } = this.context;
+    let datasetContentView;
+    if (this.state.selectedDataset) {
+      datasetContentView = (
+        <ReactJson src={require(this.state.selectedDataset.path)} />
+      );
+    }
     return (
       <div className='dataset-view'>
         <div className='label'>Datasets</div>
@@ -67,6 +81,9 @@ class DatasetView extends React.PureComponent {
               }}
             />
           ) : null}
+        </div>
+        <div className='chosen-dataset-viewer'>
+          {datasetContentView}
         </div>
       </div>
     );

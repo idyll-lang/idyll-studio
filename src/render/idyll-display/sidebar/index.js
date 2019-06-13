@@ -15,6 +15,7 @@ console.log(layouts, themes);
 const tabs = {
   DOCUMENT: 'document',
   VARIABLES: 'variables',
+  DATASETS: 'datasets',
   COMPONENTS: 'components'
 };
 
@@ -129,20 +130,28 @@ class Sidebar extends React.PureComponent {
             </div>
           </div>
         );
+      case tabs.DATASETS:
+        return (
+          <div>
+            <div className='datasets-content'>
+              <h2> Datasets are here </h2>
+              <DatasetView />
+            </div>
+          </div>
+        );
       case tabs.VARIABLES:
         return (
           <div>
-            <div className='components-and-datasets'>
+            <div className='variables-content'>
               <h2>Variables and Datasets.</h2>
               <VariableView />
-              <DatasetView />
             </div>
           </div>
         );
       case tabs.COMPONENTS:
         return (
           <div>
-            <div className='components-and-datasets'>
+            <div className='components-content'>
               <h2>Components.</h2>
               <ComponentView />
             </div>
@@ -191,6 +200,16 @@ class Sidebar extends React.PureComponent {
                 }}
               >
                 Variables
+              </div>
+              <div
+                className={`sidebar-tab ${
+                  this.state.selectedTab === tabs.DATASETS ? 'selected' : ''
+                }`}
+                onClick={() => {
+                  this.setState({ selectedTab: tabs.DATASETS });
+                }}
+              >
+                Datasets
               </div>
               <div
                 className={`sidebar-tab ${
