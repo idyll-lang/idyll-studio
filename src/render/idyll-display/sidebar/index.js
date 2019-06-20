@@ -6,7 +6,6 @@ import VariableView from '../components/variable-view';
 import Deployment from '../components/deploy.js';
 import ComponentDetails from './component.js';
 import Context from '../../context';
-const { ipcRenderer } = require('electron');
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -28,13 +27,8 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      collapsed: false,
       selectedTab: tabs.DOCUMENT
     };
-  }
-
-  componentDidMount(){
-    ipcRenderer.on('toggleSidebar', () => this.handleToggle());
   }
 
   handleThemeChange(event) {
@@ -79,12 +73,6 @@ class Sidebar extends React.PureComponent {
         </div>
       </div>
     );
-  }
-
-  handleToggle() {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
   }
 
   modifyAST() {
@@ -170,7 +158,6 @@ class Sidebar extends React.PureComponent {
     return (
       <div
         className='sidebar-information'
-        style={{ width: this.state.collapsed ? 0 : undefined }}
       >
         {currentSidebarNode ? (
           <ComponentDetails />

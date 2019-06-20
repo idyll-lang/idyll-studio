@@ -5,13 +5,25 @@ import Sidebar from './sidebar';
 import { path } from 'change-case';
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+const { ipcRenderer } = require('electron');
 
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       // TODO - get these values from the project config!
+      collapsed: false
     };
+  }
+
+  componentDidMount(){
+    ipcRenderer.on('toggleSidebar', () => this.handleToggle());
+  }
+
+  handleToggle() {
+    this.setState({
+      collapsed: !this.state.collapsed
+    });
   }
 
   render() {
@@ -23,11 +35,12 @@ class IdyllDisplay extends React.PureComponent {
     );
     return (
       <DragDropContextProvider backend={HTML5Backend}>
-        <div className='grid'>
+        <div className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}>
           <Sidebar />
           <div className='output-container'>
             <Render />
           </div>
+
         </div>
       </DragDropContextProvider>
     );
