@@ -27,7 +27,6 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      collapsed: false,
       selectedTab: tabs.DOCUMENT
     };
   }
@@ -74,12 +73,6 @@ class Sidebar extends React.PureComponent {
         </div>
       </div>
     );
-  }
-
-  handleToggle() {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
   }
 
   modifyAST() {
@@ -165,7 +158,6 @@ class Sidebar extends React.PureComponent {
     return (
       <div
         className='sidebar-information'
-        style={{ width: this.state.collapsed ? 0 : undefined }}
       >
         {currentSidebarNode ? (
           <ComponentDetails />

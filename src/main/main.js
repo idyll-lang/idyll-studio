@@ -25,6 +25,7 @@ class Main {
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
+    menu.on('toggle:sidebar', this.handleToggleSidebar.bind(this));
 
     // Deploy methods
     this.publish = this.publish.bind(this);
@@ -139,6 +140,10 @@ class Main {
         });
       });
     }
+  }
+
+  handleToggleSidebar() {
+    this.mainWindow.webContents.send('toggleSidebar');
   }
 
   async publish() {
