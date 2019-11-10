@@ -22,10 +22,10 @@ class DataStore {
   }
 
   // get url by token
-  getUrlByToken(inputToken) {
+  getTokenUrlByToken(inputToken) {
     return this.data['tokenUrls'].filter(
       tokenUrlMap => tokenUrlMap.token === inputToken
-    );
+    )[0];
   }
 
   // get last session
@@ -35,14 +35,21 @@ class DataStore {
   }
 
   // add url and token
-  addNewUrlTokenPair(url, token) {
-    let dataClone = { ...this.data };
-    dataClone['tokenUrls'].push({ token: token, url: url });
+  addTokenUrlPair(url, token) {
+    const existingToken = this.getTokenUrlByToken(token);
+    console.log('Checking for token pair...', existingToken);
 
-    this.data = dataClone;
+    if (!existingToken) {
+      console.log('Adding new token pair...');
+      let dataClone = { ...this.data };
 
-    // serialize data back to file
-    updateFile(this.path, JSON.stringify(this.data));
+      dataClone['tokenUrls'].push({ token: token, url: url });
+
+      this.data = dataClone;
+
+      // serialize data back to file
+      updateFile(this.path, JSON.stringify(this.data));
+    }
   }
 
   // update / put session
