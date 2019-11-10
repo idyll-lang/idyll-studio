@@ -8,6 +8,7 @@ class DataStore {
     const userDataPath = (electron.app || electron.remote.app).getPath(
       'userData'
     );
+    console.log(userDataPath);
 
     this.path = path.join(userDataPath, 'project-data.json');
 
@@ -16,25 +17,27 @@ class DataStore {
     } catch (error) {
       console.log('Creating a new store...');
       this.data = defaultData;
+      updateFile(this.path, this.data);
     }
   }
 
   // get url by token
   getUrlByToken(inputToken) {
-    return this.data.tokenUrls.filter(
+    return this.data['tokenUrls'].filter(
       tokenUrlMap => tokenUrlMap.token === inputToken
     );
   }
 
   // get last session
   getLastSessionProjectPath() {
-    return this.data.lastOpenedProject.filePath;
+    const lastProject = this.data.lastOpenedProject['filePath'];
+    return lastProject ? lastProject : null;
   }
 
   // add url and token
   addNewUrlTokenPair(url, token) {
     let dataClone = { ...this.data };
-    dataClone.tokenUrls.push({ token: token, url: url });
+    dataClone['tokenUrls'].push({ token: token, url: url });
 
     this.data = dataClone;
 
@@ -44,10 +47,11 @@ class DataStore {
 
   // update / put session
   updateLastOpenedProject(projectPath) {
-    this.data = {
-      ...this.data,
-      lastOpenedProject: { filePath: projectPath, lastOpened: Date.now() }
-    };
+    let dataClone = { ...this.data };
+    dataClone.lastOpenedProject['filePath'] = projectPath;
+    dataClone.lastOpenedProject['lastOpened'] = Date.now();
+
+    this.data = dataClone;
 
     updateFile(this.path, JSON.stringify(this.data));
   }
@@ -55,9 +59,10 @@ class DataStore {
 
 function updateFile(path, contents) {
   try {
+    console.log('Updating file...', path, contents);
     fs.writeFileSync(path, contents);
   } catch (error) {
-    console.log('Error saving url and publishing token: ', error);
+    console.log('Error: ', error);
   }
 }
 

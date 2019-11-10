@@ -15,14 +15,23 @@ class Main {
     this.mainWindow = electronObjects.win;
     const menu = new Menu(electronObjects);
 
-    this.filePath = '';
-    this.idyll;
-    this.workingDir;
+    this.store = electronObjects.store;
 
-    this.store = new DataStore({
-      tokenUrls: [],
-      lastProject: { filePath: null, time: null }
-    });
+    if (electronObjects.existingProjectPath) {
+      // this.filePath = electronObjects.existingProjectPath;
+      // this.workingDir = getWorkingDirectory(this.filePath);
+
+      // // Instantiate an Idyll instance
+      // this.idyll = Idyll({
+      //   inputFile: this.filePath,
+      //   output: this.workingDir + '/build/',
+      //   componentFolder: this.workingDir + '/components/',
+      //   dataFolder: this.workingDir + '/data',
+      //   layout: 'centered',
+      //   theme: 'default'
+      // });
+      this.executeOnProjectOpen(electronObjects.existingProjectPath);
+    }
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
@@ -71,65 +80,7 @@ class Main {
 
     // Gets full file path
     const file = files[0];
-    this.filePath = file;
-
-    const slash = p.sep;
-    this.workingDir = this.filePath.substring(
-      0,
-      this.filePath.lastIndexOf(slash)
-    );
-
-    // Instantiate an Idyll instance
-    this.idyll = Idyll({
-      inputFile: this.filePath,
-      output: this.workingDir + '/build/',
-      componentFolder: this.workingDir + '/components/',
-      dataFolder: this.workingDir + '/data',
-      layout: 'centered',
-      theme: 'default'
-    });
-
-    // filter to catch all requests to static folder
-    const staticContentFilter = { urls: ['static/*'] };
-    this.mainWindow.webContents.session.webRequest.onBeforeRequest(
-      staticContentFilter,
-      (details, callback) => {
-        const { url } = details;
-        if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
-          const localURL = url.replace(
-            this.electronWorkingDir,
-            this.workingDir
-          );
-          callback({
-            cancel: false,
-            redirectURL: encodeURI(localURL)
-          });
-        } else {
-          callback({
-            cancel: false
-          });
-        }
-      }
-    );
-
-    // Accepts a file path
-    const fileContent = fs.readFileSync(file).toString();
-
-    // Compile contents
-    compile(fileContent, {})
-      .then(ast => {
-        this.mainWindow.webContents.send('idyll:compile', {
-          ast: ast,
-          path: this.filePath,
-          components: this.idyll.getComponents(),
-          datasets: this.idyll.getDatasets()
-        });
-      })
-      .catch(error => {
-        console.log(error);
-      });
-
-    this.store.updateLastOpenedProject(this.path);
+    this.executeOnProjectOpen(file);
   }
 
   // Saves current markup to open idyll project
@@ -218,6 +169,74 @@ class Main {
     console.log('token: ' + token);
     return token;
   }
+
+  executeOnProjectOpen(file) {
+    this.filePath = file;
+
+    // const slash = p.sep;
+    // this.workingDir = this.filePath.substring(
+    //   0,
+    //   this.filePath.lastIndexOf(slash)
+    // );
+    this.workingDir = getWorkingDirectory(this.filePath);
+
+    // Instantiate an Idyll instance
+    this.idyll = Idyll({
+      inputFile: this.filePath,
+      output: this.workingDir + '/build/',
+      componentFolder: this.workingDir + '/components/',
+      dataFolder: this.workingDir + '/data',
+      layout: 'centered',
+      theme: 'default'
+    });
+
+    // filter to catch all requests to static folder
+    const staticContentFilter = { urls: ['static/*'] };
+    this.mainWindow.webContents.session.webRequest.onBeforeRequest(
+      staticContentFilter,
+      (details, callback) => {
+        const { url } = details;
+        if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
+          const localURL = url.replace(
+            this.electronWorkingDir,
+            this.workingDir
+          );
+          callback({
+            cancel: false,
+            redirectURL: encodeURI(localURL)
+          });
+        } else {
+          callback({
+            cancel: false
+          });
+        }
+      }
+    );
+
+    // Accepts a file path
+    const fileContent = fs.readFileSync(file).toString();
+
+    // Compile contents
+    compile(fileContent, {})
+      .then(ast => {
+        this.mainWindow.webContents.send('idyll:compile', {
+          ast: ast,
+          path: this.filePath,
+          components: this.idyll.getComponents(),
+          datasets: this.idyll.getDatasets()
+        });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    this.store.updateLastOpenedProject(this.filePath);
+  }
+}
+
+function getWorkingDirectory(filePath) {
+  const slash = p.sep;
+  return filePath.substring(0, filePath.lastIndexOf(slash));
 }
 
 module.exports = Main;
