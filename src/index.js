@@ -15,7 +15,23 @@ function createWindow() {
     height: 1000,
     minWidth: 600,
     minHeight: 400,
-    title: 'electron-compile-react'
+    title: 'electron-compile-react',
+    show: false
+  });
+
+  const store = new DataStore({
+    tokenUrls: [],
+    lastOpenedProject: { filePath: null, lastOpened: null }
+  });
+
+  const main = new Main({ app, win, store });
+
+  win.once('ready-to-show', () => {
+    const existingProjectPath = getExistingProject(store);
+    if (existingProjectPath) {
+      main.executeOnProjectOpen(existingProjectPath);
+    }
+    win.show();
   });
 
   // load the index.html of the app based on script ENV Variables.
@@ -47,15 +63,6 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null;
   });
-
-  const store = new DataStore({
-    tokenUrls: [],
-    lastOpenedProject: { filePath: null, lastOpened: null }
-  });
-
-  const existingProjectPath = getExistingProject(store);
-
-  new Main({ app, win, store, existingProjectPath });
 }
 
 // This method will be called when Electron has finished

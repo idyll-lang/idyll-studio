@@ -8,7 +8,6 @@ const request = require('request-promise-native');
 const urljoin = require('url-join');
 const IDYLL_PUB_API = 'https://api.idyll.pub';
 const compile = require('idyll-compiler');
-const DataStore = require('../data-store');
 
 class Main {
   constructor(electronObjects) {
@@ -16,22 +15,6 @@ class Main {
     const menu = new Menu(electronObjects);
 
     this.store = electronObjects.store;
-
-    if (electronObjects.existingProjectPath) {
-      // this.filePath = electronObjects.existingProjectPath;
-      // this.workingDir = getWorkingDirectory(this.filePath);
-
-      // // Instantiate an Idyll instance
-      // this.idyll = Idyll({
-      //   inputFile: this.filePath,
-      //   output: this.workingDir + '/build/',
-      //   componentFolder: this.workingDir + '/components/',
-      //   dataFolder: this.workingDir + '/data',
-      //   layout: 'centered',
-      //   theme: 'default'
-      // });
-      this.executeOnProjectOpen(electronObjects.existingProjectPath);
-    }
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
@@ -173,11 +156,6 @@ class Main {
   executeOnProjectOpen(file) {
     this.filePath = file;
 
-    // const slash = p.sep;
-    // this.workingDir = this.filePath.substring(
-    //   0,
-    //   this.filePath.lastIndexOf(slash)
-    // );
     this.workingDir = getWorkingDirectory(this.filePath);
 
     // Instantiate an Idyll instance
