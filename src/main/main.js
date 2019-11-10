@@ -8,6 +8,7 @@ const request = require('request-promise-native');
 const urljoin = require('url-join');
 const IDYLL_PUB_API = 'https://api.idyll.pub';
 const compile = require('idyll-compiler');
+const DataStore = require('../data-store');
 
 class Main {
   constructor(electronObjects) {
@@ -17,6 +18,11 @@ class Main {
     this.filePath = '';
     this.idyll;
     this.workingDir;
+
+    this.store = new DataStore({
+      tokenUrls: [],
+      lastProject: { filePath: null, time: null }
+    });
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
@@ -37,11 +43,9 @@ class Main {
       if (this.idyll) {
         // Send to render process the url
         this.mainWindow.webContents.send('publishing', `Publishing...`);
-        this
-          .idyll.build(this.workingDir)
-          .on('update', () => {
-            this.publish();
-          });
+        this.idyll.build(this.workingDir).on('update', () => {
+          this.publish();
+        });
       }
     });
   }
@@ -67,11 +71,9 @@ class Main {
 
     // Gets full file path
     const file = files[0];
-
     this.filePath = file;
 
     const slash = p.sep;
-
     this.workingDir = this.filePath.substring(
       0,
       this.filePath.lastIndexOf(slash)
@@ -126,6 +128,8 @@ class Main {
       .catch(error => {
         console.log(error);
       });
+
+    this.store.updateLastOpenedProject(this.path);
   }
 
   // Saves current markup to open idyll project
