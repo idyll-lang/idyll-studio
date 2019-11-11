@@ -66,7 +66,7 @@ class DataStore {
 
 function updateFile(path, contents) {
   try {
-    console.log('Updating file...', path, contents);
+    console.log('Updating file...', contents);
     fs.writeFileSync(path, contents);
   } catch (error) {
     console.log('Error: ', error);

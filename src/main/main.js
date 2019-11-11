@@ -198,11 +198,24 @@ class Main {
     // Compile contents
     compile(fileContent, {})
       .then(ast => {
+        const tokenPath = getTokenPath(this.workingDir);
+        let url;
+        try {
+          const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
+          url = this.store.getTokenUrlByToken(token).url;
+
+          console.log('retrieved url successfully', url);
+        } catch (error) {
+          url = '';
+          console.log(error, 'Token does not exist yet.');
+        }
+
         this.mainWindow.webContents.send('idyll:compile', {
           ast: ast,
           path: this.filePath,
           components: this.idyll.getComponents(),
-          datasets: this.idyll.getDatasets()
+          datasets: this.idyll.getDatasets(),
+          url: url
         });
       })
       .catch(error => {
@@ -210,20 +223,6 @@ class Main {
       });
 
     this.store.updateLastOpenedProject(this.filePath);
-
-    const tokenPath = getTokenPath(this.workingDir);
-    try {
-      const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
-      const url = this.store.getTokenUrlByToken(token).url;
-
-      console.log('retrieved url successfully', url);
-      this.mainWindow.webContents.send('url', {
-        url: url,
-        status: 'published'
-      });
-    } catch (error) {
-      console.log(error, 'Token does not exist yet.');
-    }
   }
 }
 

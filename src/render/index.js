@@ -16,7 +16,9 @@ class App extends React.PureComponent {
       componentPropMap: new Map(),
       ast: undefined,
       datasets: undefined,
-      currentSidebarNode: null
+      currentSidebarNode: null,
+      url: '',
+      currProcess: null
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -26,7 +28,7 @@ class App extends React.PureComponent {
     // Load in datasets
     ipcRenderer.on(
       'idyll:compile',
-      (event, { datasets, ast, components, path }) => {
+      (event, { datasets, ast, components, path, url }) => {
         console.log(components);
         var componentProps = this.createComponentMap(components);
 
@@ -39,7 +41,7 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currProcess: '',
-          url: '' // replace once sqlite db implemented
+          url: url // replace once sqlite db implemented
         });
       }
     );
