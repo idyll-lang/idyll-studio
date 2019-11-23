@@ -9,7 +9,6 @@ const idyllAST = require('idyll-ast');
 const PUBLISHING_ERROR = 'Error occurred while publishing: ';
 const PUBLISHING = 'Publishing your project...';
 const PUBLISHED = 'Published!';
-const PROJECT_LOADING = 'Loading project...';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -60,12 +59,6 @@ class App extends React.PureComponent {
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
         currProcess: PUBLISHING_ERROR + message
-      });
-    });
-
-    ipcRenderer.on('loading-project', (event, message) => {
-      this.setState({
-        currProcess: PROJECT_LOADING
       });
     });
 

@@ -55,8 +55,7 @@ class Main {
       properties: ['openFile'],
       filters: [
         {
-          // Give a specific filter on what
-          // type of files we are looking for
+          // Give a specific filter on acceptable file types
           name: 'Idyll',
           extensions: ['idyll', 'idl']
         }
@@ -93,7 +92,6 @@ class Main {
 
   async publish() {
     const projectDir = this.workingDir;
-    // const tokenPath = p.join(projectDir, '.idyll', 'token');
     const tokenPath = getTokenPath(p, projectDir);
     const config = require(p.join(projectDir, 'package.json'));
     try {
@@ -197,8 +195,14 @@ class Main {
       }
     );
 
-    // Accepts a file path
-    const fileContent = fs.readFileSync(file).toString();
+    // Serialize file contents
+    let fileContent = '';
+    try {
+      fileContent = fs.readFileSync(file).toString();
+    } catch (err) {
+      console.log(err);
+      // handle this in the UI somehow?
+    }
 
     // Compile contents
     compile(fileContent, {})
@@ -213,9 +217,10 @@ class Main {
           if (tokenUrl) {
             url = tokenUrl.url;
           } else {
+            // TODO: Get URL from idyll pub api here
             console.log('Make request to server for url since token exists');
+            // url = await request.get({ url: IDYLL_PUB_API/{token} })
           }
-          this.mainWindow.webContents.send('loading-project');
         } catch (error) {
           console.log(error, 'Token does not exist yet.');
         }
