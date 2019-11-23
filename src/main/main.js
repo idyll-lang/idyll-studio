@@ -1,4 +1,4 @@
-const { dialog, ipcMain, app } = require('electron');
+const { dialog, ipcMain } = require('electron');
 const Menu = require('./menu');
 const fs = require('fs');
 const Idyll = require('idyll');
@@ -8,6 +8,7 @@ const request = require('request-promise-native');
 const urljoin = require('url-join');
 const IDYLL_PUB_API = 'https://api.idyll.pub';
 const compile = require('idyll-compiler');
+const { getWorkingDirectory, getTokenPath } = require('./utils');
 
 class Main {
   constructor(electronObjects) {
@@ -34,10 +35,16 @@ class Main {
     ipcMain.on('deploy', (event, message) => {
       if (this.idyll) {
         // Send to render process the url
-        this.mainWindow.webContents.send('publishing', `Publishing...`);
-        this.idyll.build(this.workingDir).on('update', () => {
-          this.publish();
-        });
+        this.mainWindow.webContents.send('publishing');
+        this.idyll
+          .build(this.workingDir)
+          .on('update', () => {
+            this.publish();
+          })
+          .on('error', err => {
+            console.log(err);
+            this.mainWindow.webContents.send('pub-error', err.message);
+          });
       }
     });
   }
@@ -87,7 +94,7 @@ class Main {
   async publish() {
     const projectDir = this.workingDir;
     // const tokenPath = p.join(projectDir, '.idyll', 'token');
-    const tokenPath = getTokenPath(projectDir);
+    const tokenPath = getTokenPath(p, projectDir);
     const config = require(p.join(projectDir, 'package.json'));
     try {
       let buildDir = p.join(projectDir, 'build');
@@ -109,18 +116,16 @@ class Main {
 
       const url = `https://idyll.pub/post/${alias}/`;
 
-      console.log('Project deployed at ' + url);
-
       // Send to render process the url
-      this.mainWindow.webContents.send('url', {
+      this.mainWindow.webContents.send('published-url', {
         url: url,
         status: 'published'
       });
 
       this.store.addTokenUrlPair(url, token);
     } catch (err) {
-      this.mainWindow.webContents.send('pub-error', 'error');
       console.log(err);
+      this.mainWindow.webContents.send('pub-error', err.message);
     }
   }
 
@@ -133,7 +138,6 @@ class Main {
     try {
       token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
     } catch (err) {
-      console.log('Creating new token...');
       let deployment = await request.post({
         url: urljoin(IDYLL_PUB_API, 'create'),
         body: {
@@ -148,6 +152,7 @@ class Main {
       ) {
         if (err) {
           console.log(err);
+          this.mainWindow.webContents.send('pub-error', err.message);
         }
       });
     }
@@ -157,7 +162,7 @@ class Main {
   executeOnProjectOpen(file) {
     this.filePath = file;
 
-    this.workingDir = getWorkingDirectory(this.filePath);
+    this.workingDir = getWorkingDirectory(p, this.filePath);
 
     // Instantiate an Idyll instance
     this.idyll = Idyll({
@@ -198,18 +203,24 @@ class Main {
     // Compile contents
     compile(fileContent, {})
       .then(ast => {
-        const tokenPath = getTokenPath(this.workingDir);
-        let url;
+        // Get project URL if it exists
+        const tokenPath = getTokenPath(p, this.workingDir);
+
+        let url = '';
         try {
           const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
-          url = this.store.getTokenUrlByToken(token).url;
-
-          console.log('retrieved url successfully', url);
+          const tokenUrl = this.store.getTokenUrlByToken(token);
+          if (tokenUrl) {
+            url = tokenUrl.url;
+          } else {
+            console.log('Make request to server for url since token exists');
+          }
+          this.mainWindow.webContents.send('loading-project');
         } catch (error) {
-          url = '';
           console.log(error, 'Token does not exist yet.');
         }
 
+        // send ast and contents over to renderer
         this.mainWindow.webContents.send('idyll:compile', {
           ast: ast,
           path: this.filePath,
@@ -224,17 +235,6 @@ class Main {
 
     this.store.updateLastOpenedProject(this.filePath);
   }
-}
-
-function getWorkingDirectory(filePath) {
-  const slash = p.sep;
-  return filePath.substring(0, filePath.lastIndexOf(slash));
-}
-
-function getTokenPath(workingDir) {
-  const tokenPath = p.join(workingDir, '.idyll', 'token');
-
-  return tokenPath;
 }
 
 module.exports = Main;

@@ -117,7 +117,7 @@ class Sidebar extends React.PureComponent {
               {this.getStyleView()}
             </div>
             <div className='publish-view'>
-              <h2>Deploy</h2>
+              <h2>Deployment</h2>
               <Deployment />
             </div>
           </div>
@@ -156,9 +156,7 @@ class Sidebar extends React.PureComponent {
     }
 
     return (
-      <div
-        className='sidebar-information'
-      >
+      <div className='sidebar-information'>
         {currentSidebarNode ? (
           <ComponentDetails />
         ) : (

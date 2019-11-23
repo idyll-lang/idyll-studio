@@ -21,7 +21,6 @@ html {
   width: calc(100vw + 300px);
 }
 
-
 .output-container {
   /* grid-row: 2; */
   /* grid-column: 1 / 2; */
@@ -94,7 +93,7 @@ button.loader:hover {
   background-image: none !important;
   background-color: #222 !important;
   color: white !important;
-  opacity: 1 !important;;
+  opacity: 1 !important;
 }
 
 .author-view-button:focus {
@@ -148,14 +147,30 @@ button.loader:hover {
 
 .meta-container {
   text-align: right;
-  width: 80%;
+  width: 90%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: baseline;
+  column-gap: 7px;
+}
+
+.meta-container a {
+  text-align: left;
+}
+
+.deploy-view {
+  display: grid;
 }
 
 .publish-button-container {
-  width: 50%;
-  margin: 0 auto;
+  justify-self: center;
   text-align: center;
 }
+
+#publish-button {
+  width: 150px;
+}
+
 .prop-input {
   margin: 0;
   width: 100%;
@@ -180,7 +195,6 @@ button.loader:hover {
   max-width: 800px;
   margin: 0 auto;
 }
-
 
 .editable-text:hover {
   margin-left: -12px;

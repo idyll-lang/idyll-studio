@@ -8,7 +8,6 @@ class DataStore {
     const userDataPath = (electron.app || electron.remote.app).getPath(
       'userData'
     );
-    console.log(userDataPath);
 
     this.path = path.join(userDataPath, 'project-data.json');
 
@@ -23,9 +22,11 @@ class DataStore {
 
   // get url by token
   getTokenUrlByToken(inputToken) {
-    return this.data['tokenUrls'].filter(
+    const tokenUrl = this.data['tokenUrls'].filter(
       tokenUrlMap => tokenUrlMap.token === inputToken
     )[0];
+
+    return tokenUrl;
   }
 
   // get last session
@@ -64,6 +65,7 @@ class DataStore {
   }
 }
 
+// Given a file path and the contents to write, updates the file
 function updateFile(path, contents) {
   try {
     console.log('Updating file...', contents);

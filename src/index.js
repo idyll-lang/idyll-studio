@@ -26,6 +26,7 @@ function createWindow() {
 
   const main = new Main({ app, win, store });
 
+  // When everything is ready to load, show window
   win.once('ready-to-show', () => {
     const existingProjectPath = getExistingProject(store);
     if (existingProjectPath) {
