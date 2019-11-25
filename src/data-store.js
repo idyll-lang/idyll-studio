@@ -38,10 +38,8 @@ class DataStore {
   // add url and token
   addTokenUrlPair(url, token) {
     const existingToken = this.getTokenUrlByToken(token);
-    console.log('Checking for token pair...', existingToken);
 
     if (!existingToken) {
-      console.log('Adding new token pair...');
       let dataClone = { ...this.data };
 
       dataClone['tokenUrls'].push({ token: token, url: url });

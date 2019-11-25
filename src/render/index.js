@@ -62,9 +62,9 @@ class App extends React.PureComponent {
       });
     });
 
-    ipcRenderer.on('published-url', (event, request) => {
+    ipcRenderer.on('published-url', (event, url) => {
       this.setState({
-        url: request.url,
+        url: url,
         currProcess: PUBLISHED
       });
     });

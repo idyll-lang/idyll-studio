@@ -28,7 +28,7 @@ function createWindow() {
 
   // When everything is ready to load, show window
   win.once('ready-to-show', () => {
-    const existingProjectPath = getExistingProject(store);
+    const existingProjectPath = store.getLastSessionProjectPath();
     if (existingProjectPath) {
       main.executeOnProjectOpen(existingProjectPath);
     }
@@ -90,10 +90,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-function getExistingProject(store) {
-  const lastOpenedProject = store.getLastSessionProjectPath();
-  if (lastOpenedProject) {
-    console.log('Opening up existing project...', lastOpenedProject);
-  }
-  return lastOpenedProject;
-}
