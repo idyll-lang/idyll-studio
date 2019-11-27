@@ -20,30 +20,55 @@ class DataStore {
     }
   }
 
-  // get url by token
+  /**
+   * Returns a {token: url} pair from the project.
+   * If the token/url pair does not exist in the file,
+   * returns null
+   * @param {string} inputToken the .idyll token contents
+   */
   getTokenUrlByToken(inputToken) {
+    if (!inputToken) {
+      throw new Error('Input token should not be null or undefined.');
+    }
+
     const tokenUrl = this.data['tokenUrls'].filter(
       tokenUrlMap => tokenUrlMap.token === inputToken
     )[0];
 
-    return tokenUrl;
+    return tokenUrl ? { ...tokenUrl } : null;
   }
 
-  // get last session
+  /**
+   * Gets the last opened session's project file path.
+   * Returns null if no project has been opened before.
+   * Otherwise returns a string path
+   */
   getLastSessionProjectPath() {
     const lastProject = this.data.lastOpenedProject['filePath'];
     return lastProject ? lastProject : null;
   }
 
-  // add url and token
+  /**
+   * Updates the file with the {token: url}
+   * @param {string} url the publishing url
+   * @param {string} token the corresponding token string
+   */
   addTokenUrlPair(url, token) {
+    if (!url || !token) {
+      throw new Error('Url and token must not be null or undefined.');
+    }
+
     const existingToken = this.getTokenUrlByToken(token);
 
     if (!existingToken) {
-      let dataClone = { ...this.data };
+      // get deep copy of tokenUrl array
+      const tokenUrls = getDeepCopyOfTokenUrls(this.data.tokenUrls);
+      tokenUrls.push({ token: token, url: url });
 
-      dataClone['tokenUrls'].push({ token: token, url: url });
+      // get copy of last session info
+      const lastOpened = { ...this.data.lastOpenedProject };
 
+      const dataClone = { tokenUrls: tokenUrls, lastOpenedProject: lastOpened };
       this.data = dataClone;
 
       // serialize data back to file
@@ -51,11 +76,23 @@ class DataStore {
     }
   }
 
-  // update / put session
+  /**
+   * Updates the file and stores the last session's
+   * project path with the date / time it was opened
+   * @param {string} projectPath
+   */
   updateLastOpenedProject(projectPath) {
-    let dataClone = { ...this.data };
-    dataClone.lastOpenedProject['filePath'] = projectPath;
-    dataClone.lastOpenedProject['lastOpened'] = Date.now();
+    if (!projectPath) {
+      throw new Error('Project path must not be null or undefined.');
+    }
+
+    const tokenUrls = getDeepCopyOfTokenUrls(this.data.tokenUrls);
+    const lastOpenedProject = { filePath: projectPath, lastOpened: Date.now() };
+
+    const dataClone = {
+      tokenUrls: tokenUrls,
+      lastOpenedProject: lastOpenedProject
+    };
 
     this.data = dataClone;
 
@@ -69,8 +106,17 @@ function updateFile(path, contents) {
     console.log('Updating file...', contents);
     fs.writeFileSync(path, contents);
   } catch (error) {
-    console.log('Error: ', error);
+    console.log(error);
+    throw error;
   }
+}
+
+// Helper function that returns deep copy of
+// token urls
+function getDeepCopyOfTokenUrls(tokenUrls) {
+  return tokenUrls.map(tokenUrl => ({
+    ...tokenUrl
+  }));
 }
 
 module.exports = DataStore;
