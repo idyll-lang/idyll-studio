@@ -1,11 +1,9 @@
-const p = require('path');
-
 /**
  * Gets the working directory of a file
  * @param {*} p a path module
  * @param {string} filePath the string filePath
  */
-const getWorkingDirectory = filePath => {
+const getWorkingDirectory = (p, filePath) => {
   const slash = p.sep;
   return filePath.substring(0, filePath.lastIndexOf(slash));
 };
@@ -15,7 +13,7 @@ const getWorkingDirectory = filePath => {
  * @param {*} p a path module
  * @param {string} workingDir the working directory of the file
  */
-const getTokenPath = workingDir => {
+const getTokenPath = (p, workingDir) => {
   const tokenPath = p.join(workingDir, '.idyll', 'token');
   return tokenPath;
 };

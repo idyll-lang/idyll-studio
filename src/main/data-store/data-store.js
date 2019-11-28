@@ -4,7 +4,12 @@ const path = require('path');
 // Reference: https://github.com/ccnokes/electron-tutorials/blob/master/storing-data/store.js
 
 class DataStore {
-  constructor(defaultData) {
+  constructor(
+    defaultData = {
+      tokenUrls: [],
+      lastOpenedProject: { filePath: null, lastOpened: null }
+    }
+  ) {
     const userDataPath = (electron.app || electron.remote.app).getPath(
       'userData'
     );
@@ -27,8 +32,10 @@ class DataStore {
    * @param {string} inputToken the .idyll token contents
    */
   getTokenUrlByToken(inputToken) {
-    if (!inputToken) {
-      throw new Error('Input token should not be null or undefined.');
+    if (inputToken === null || inputToken === undefined) {
+      throw new InvalidParameterError(
+        'Input token should not be null or undefined.'
+      );
     }
 
     const tokenUrl = this.data['tokenUrls'].filter(
@@ -54,8 +61,10 @@ class DataStore {
    * @param {string} token the corresponding token string
    */
   addTokenUrlPair(url, token) {
-    if (!url || !token) {
-      throw new Error('Url and token must not be null or undefined.');
+    if (url === null || url === undefined) {
+      throw new InvalidParameterError('Url must not be null or undefined.');
+    } else if (token === null || token === undefined) {
+      throw new InvalidParameterError('Token must not be null or undefined');
     }
 
     const existingToken = this.getTokenUrlByToken(token);
@@ -82,8 +91,10 @@ class DataStore {
    * @param {string} projectPath
    */
   updateLastOpenedProject(projectPath) {
-    if (!projectPath) {
-      throw new Error('Project path must not be null or undefined.');
+    if (projectPath === null || projectPath === undefined) {
+      throw new InvalidParameterError(
+        'Project path must not be null or undefined.'
+      );
     }
 
     const tokenUrls = getDeepCopyOfTokenUrls(this.data.tokenUrls);
@@ -100,7 +111,11 @@ class DataStore {
   }
 }
 
-// Given a file path and the contents to write, updates the file
+/**
+ * Updates the data store file with the current data
+ * @param {string} path the file path for the project
+ * @param {string} contents the data contents
+ */
 function updateFile(path, contents) {
   try {
     console.log('Updating file...', contents);
@@ -111,8 +126,10 @@ function updateFile(path, contents) {
   }
 }
 
-// Helper function that returns deep copy of
-// token urls
+/**
+ * Returns a deep copy of the tokenUrl list
+ * @param {string} tokenUrls the list of tokenUrl objects
+ */
 function getDeepCopyOfTokenUrls(tokenUrls) {
   return tokenUrls.map(tokenUrl => ({
     ...tokenUrl

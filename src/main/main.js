@@ -92,7 +92,7 @@ class Main {
 
   async publish() {
     const projectDir = this.workingDir;
-    const tokenPath = getTokenPath(projectDir);
+    const tokenPath = getTokenPath(p, projectDir);
     const config = require(p.join(projectDir, 'package.json'));
     try {
       let buildDir = p.join(projectDir, 'build');
@@ -157,7 +157,7 @@ class Main {
   executeOnProjectOpen(file) {
     this.filePath = file;
 
-    this.workingDir = getWorkingDirectory(this.filePath);
+    this.workingDir = getWorkingDirectory(p, this.filePath);
 
     // Instantiate an Idyll instance
     this.idyll = Idyll({
@@ -205,7 +205,7 @@ class Main {
     compile(fileContent, {})
       .then(ast => {
         // Get project URL if it exists
-        const tokenPath = getTokenPath(this.workingDir);
+        const tokenPath = getTokenPath(p, this.workingDir);
 
         let url = '';
         try {

@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const url = require('url');
 const Main = require('./main/main.js');
-const DataStore = require('./data-store');
+const DataStore = require('./main/data-store/data-store');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -19,10 +19,7 @@ function createWindow() {
     show: false
   });
 
-  const store = new DataStore({
-    tokenUrls: [],
-    lastOpenedProject: { filePath: null, lastOpened: null }
-  });
+  const store = new DataStore();
 
   const main = new Main({ app, win, store });
 
