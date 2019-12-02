@@ -1,6 +1,8 @@
 const electron = require('electron');
 const fs = require('fs');
 const path = require('path');
+const error = require('../../error');
+
 // Reference: https://github.com/ccnokes/electron-tutorials/blob/master/storing-data/store.js
 
 class DataStore {
@@ -19,7 +21,7 @@ class DataStore {
     try {
       this.data = JSON.parse(fs.readFileSync(this.path));
     } catch (error) {
-      console.log('Creating a new store...');
+      console.log(error, 'Creating a new store...');
       this.data = defaultData;
       updateFile(this.path, this.data);
     }
@@ -32,9 +34,9 @@ class DataStore {
    * @param {string} inputToken the .idyll token contents
    */
   getTokenUrlByToken(inputToken) {
-    if (inputToken === null || inputToken === undefined) {
-      throw new InvalidParameterError(
-        'Input token should not be null or undefined.'
+    if (!inputToken) {
+      throw new error.InvalidParameterError(
+        'Input token must not be null or undefined'
       );
     }
 
@@ -61,10 +63,14 @@ class DataStore {
    * @param {string} token the corresponding token string
    */
   addTokenUrlPair(url, token) {
-    if (url === null || url === undefined) {
-      throw new InvalidParameterError('Url must not be null or undefined.');
-    } else if (token === null || token === undefined) {
-      throw new InvalidParameterError('Token must not be null or undefined');
+    if (!url) {
+      throw new error.InvalidParameterError(
+        'Url must not be null or undefined'
+      );
+    } else if (!token) {
+      throw new error.InvalidParameterError(
+        'Token must not be null or undefined'
+      );
     }
 
     const existingToken = this.getTokenUrlByToken(token);
@@ -91,9 +97,9 @@ class DataStore {
    * @param {string} projectPath
    */
   updateLastOpenedProject(projectPath) {
-    if (projectPath === null || projectPath === undefined) {
-      throw new InvalidParameterError(
-        'Project path must not be null or undefined.'
+    if (!projectPath) {
+      throw new error.InvalidParameterError(
+        'Project path must not be null or undefined'
       );
     }
 
