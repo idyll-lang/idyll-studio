@@ -198,7 +198,6 @@ class Main {
       fileContent = fs.readFileSync(file).toString();
     } catch (err) {
       console.log(err);
-      // handle this in the UI somehow?
     }
 
     // Compile contents

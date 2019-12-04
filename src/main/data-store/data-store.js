@@ -23,7 +23,7 @@ class DataStore {
     } catch (error) {
       console.log(error, 'Creating a new store...');
       this.data = defaultData;
-      updateFile(this.path, this.data);
+      updateFile(this.path, JSON.stringify(this.data));
     }
   }
 
@@ -34,11 +34,7 @@ class DataStore {
    * @param {string} inputToken the .idyll token contents
    */
   getTokenUrlByToken(inputToken) {
-    if (!inputToken) {
-      throw new error.InvalidParameterError(
-        'Input token must not be null or undefined'
-      );
-    }
+    checkParams(inputToken, 'inputToken');
 
     const tokenUrl = this.data['tokenUrls'].filter(
       tokenUrlMap => tokenUrlMap.token === inputToken
@@ -63,15 +59,8 @@ class DataStore {
    * @param {string} token the corresponding token string
    */
   addTokenUrlPair(url, token) {
-    if (!url) {
-      throw new error.InvalidParameterError(
-        'Url must not be null or undefined'
-      );
-    } else if (!token) {
-      throw new error.InvalidParameterError(
-        'Token must not be null or undefined'
-      );
-    }
+    checkParams(url, 'url');
+    checkParams(token, 'token');
 
     const existingToken = this.getTokenUrlByToken(token);
 
@@ -97,11 +86,7 @@ class DataStore {
    * @param {string} projectPath
    */
   updateLastOpenedProject(projectPath) {
-    if (!projectPath) {
-      throw new error.InvalidParameterError(
-        'Project path must not be null or undefined'
-      );
-    }
+    checkParams(projectPath, 'projectPath');
 
     const tokenUrls = getDeepCopyOfTokenUrls(this.data.tokenUrls);
     const lastOpenedProject = { filePath: projectPath, lastOpened: Date.now() };
@@ -128,7 +113,6 @@ function updateFile(path, contents) {
     fs.writeFileSync(path, contents);
   } catch (error) {
     console.log(error);
-    throw error;
   }
 }
 
@@ -140,6 +124,14 @@ function getDeepCopyOfTokenUrls(tokenUrls) {
   return tokenUrls.map(tokenUrl => ({
     ...tokenUrl
   }));
+}
+
+function checkParams(input, inputName) {
+  if (!input) {
+    throw new error.InvalidParameterError(
+      inputName + ' must not be null or undefined'
+    );
+  }
 }
 
 module.exports = DataStore;
