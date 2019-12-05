@@ -168,7 +168,7 @@ button.loader:hover {
 }
 
 #publish-button {
-  width: 150px;
+  min-width: 150px;
 }
 
 .prop-input {
