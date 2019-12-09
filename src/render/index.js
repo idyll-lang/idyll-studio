@@ -6,6 +6,10 @@ import Context from './context';
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
 
+const PUBLISHING_ERROR = 'Error occurred while publishing: ';
+const PUBLISHING = 'Publishing your project...';
+const PUBLISHED = 'Published!';
+
 class App extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -16,7 +20,9 @@ class App extends React.PureComponent {
       componentPropMap: new Map(),
       ast: undefined,
       datasets: undefined,
-      currentSidebarNode: null
+      currentSidebarNode: null,
+      url: '',
+      currProcess: null
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -26,7 +32,7 @@ class App extends React.PureComponent {
     // Load in datasets
     ipcRenderer.on(
       'idyll:compile',
-      (event, { datasets, ast, components, path }) => {
+      (event, { datasets, ast, components, path, url }) => {
         console.log(components);
         var componentProps = this.createComponentMap(components);
 
@@ -39,28 +45,27 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currProcess: '',
-          url: '' // replace once sqlite db implemented
+          url: url // replace once sqlite db implemented
         });
       }
     );
 
     ipcRenderer.on('publishing', (event, message) => {
-      console.log(message);
       this.setState({
-        currProcess: 'publishing'
+        currProcess: PUBLISHING
       });
     });
 
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
-        currProcess: 'error'
+        currProcess: PUBLISHING_ERROR + message
       });
     });
 
-    ipcRenderer.on('url', (event, url) => {
+    ipcRenderer.on('published-url', (event, url) => {
       this.setState({
         url: url,
-        currProcess: 'published'
+        currProcess: PUBLISHED
       });
     });
 
