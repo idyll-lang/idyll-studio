@@ -1,6 +1,6 @@
 import React from 'react';
 import Context from '../../context';
-import { DropTarget } from 'react-dnd'
+import { DropTarget } from 'react-dnd';
 import { updateNodeById } from '../utils';
 
 class Component extends React.PureComponent {
@@ -10,11 +10,11 @@ class Component extends React.PureComponent {
     super(props);
     this.state = {
       showDetails: false
-    }
+    };
   }
 
   handleUpdateValue(propName) {
-    return (e) => {
+    return e => {
       const node = this.props.node;
       let val = e.target.value;
       if (val.trim() !== '') {
@@ -25,8 +25,17 @@ class Component extends React.PureComponent {
       }
 
       node.properties[propName].value = val;
-      this.context.setAst(this.context.ast);
-    }
+      console.log(
+        this.context.ast,
+        this.context.ast.children[4].children[1],
+        node,
+        this.context.ast.children[4].children[1] === node
+      );
+
+      updateNodeById(this.context.ast, node.id, node.properties);
+
+      this.props.setAst(this.context.ast);
+    };
   }
 
   handleUpdateType(propName, type) {
@@ -34,7 +43,7 @@ class Component extends React.PureComponent {
       const node = this.props.node;
       node.properties[propName].type = type;
       this.context.setAst(this.context.ast);
-    }
+    };
   }
 
   getBackgroundColor(propType) {
@@ -59,37 +68,88 @@ class Component extends React.PureComponent {
   }
 
   renderExpression(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-      <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'variable')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor('expression'), color: this.getColor('expression')}}>{prop.type}</div>
-      <div>
+    return (
+      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+        <input
+          className={'prop-input'}
+          style={{ fontFamily: 'monospace' }}
+          onChange={this.handleUpdateValue(key)}
+          type='text'
+          value={prop.value}
+        />
+        <div
+          className={'prop-type'}
+          onClick={this.handleUpdateType(key, 'variable')}
+          style={{
+            marginLeft: 0,
+            borderRadius: '0 20px 20px 0',
+            background: this.getBackgroundColor('expression'),
+            color: this.getColor('expression')
+          }}
+        >
+          {prop.type}
+        </div>
+        <div />
       </div>
-    </div>
+    );
   }
   renderValue(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-      <input className={"prop-input"} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'expression')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor('value'), color: this.getColor('value')}}>{typeof prop.value}</div>
-      <div>
-        {/* Current Value: {idyllState[prop.value]} */}
+    return (
+      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+        <input
+          className={'prop-input'}
+          onChange={this.handleUpdateValue(key)}
+          type='text'
+          value={prop.value}
+        />
+        <div
+          className={'prop-type'}
+          onClick={this.handleUpdateType(key, 'expression')}
+          style={{
+            marginLeft: 0,
+            borderRadius: '0 20px 20px 0',
+            background: this.getBackgroundColor('value'),
+            color: this.getColor('value')
+          }}
+        >
+          {typeof prop.value}
+        </div>
+        <div>{/* Current Value: {idyllState[prop.value]} */}</div>
       </div>
-    </div>
+    );
   }
   renderVariable(key, prop) {
     const idyllState = this.context.context.data();
-    return <div>
-      <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-        <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-        <div className={"prop-type"} onClick={this.handleUpdateType(key, 'value')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor('variable'), color: this.getColor('variable')}}>{prop.type}</div>
-      </div>
+    return (
       <div>
-        Current Value: {idyllState[prop.value]}
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <input
+            className={'prop-input'}
+            style={{ fontFamily: 'monospace' }}
+            onChange={this.handleUpdateValue(key)}
+            type='text'
+            value={prop.value}
+          />
+          <div
+            className={'prop-type'}
+            onClick={this.handleUpdateType(key, 'value')}
+            style={{
+              marginLeft: 0,
+              borderRadius: '0 20px 20px 0',
+              background: this.getBackgroundColor('variable'),
+              color: this.getColor('variable')
+            }}
+          >
+            {prop.type}
+          </div>
+        </div>
+        <div>Current Value: {idyllState[prop.value]}</div>
       </div>
-    </div>
+    );
   }
 
   renderProp(key, prop) {
-    switch(prop.type) {
+    switch (prop.type) {
       case 'variable':
         return this.renderVariable(key, prop);
       case 'value':
@@ -104,16 +164,27 @@ class Component extends React.PureComponent {
 
     let ret;
     if (!this.state.showDetails) {
-      ret = <div className={"prop-type"} onClick={() => this.setState({ showDetails: true })} style={{marginLeft: 0, border: isOver ? 'solid 2px green' : undefined, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor(value.type), color: this.getColor(value.type)}}>{name}</div>
+      ret = (
+        <div
+          className={'prop-type'}
+          onClick={() => this.setState({ showDetails: true })}
+          style={{
+            marginLeft: 0,
+            border: isOver ? 'solid 2px green' : undefined,
+            borderRadius: '0 20px 20px 0',
+            background: this.getBackgroundColor(value.type),
+            color: this.getColor(value.type)
+          }}
+        >
+          {name}
+        </div>
+      );
     } else {
       ret = this.renderProp(name, value);
     }
-    return dropTarget(<div>
-      {ret}
-    </div>)
+    return dropTarget(<div>{ret}</div>);
   }
 }
-
 
 const variableTarget = {
   drop(props, monitor, component) {
@@ -125,18 +196,19 @@ const variableTarget = {
     // node.properties[props.name].value = name;
     // node.properties[props.name].type = 'variable';
     // console.log('updating ast');
-    updateNodeById(props.ast, node.id, { properties: { [props.name]: { value: name, type: 'variable' }} })
+    updateNodeById(props.ast, node.id, {
+      properties: { [props.name]: { value: name, type: 'variable' } }
+    });
     props.setAst(props.ast);
   }
-}
+};
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-  }
+    isOver: monitor.isOver()
+  };
 }
 
-
-export default DropTarget('VARIABLE', variableTarget, collect)(Component)
+export default DropTarget('VARIABLE', variableTarget, collect)(Component);
 // export default Component;
