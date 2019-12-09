@@ -6,12 +6,6 @@ const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
 };
 
-const UIMessage = {
-  publishing: 'Currently publishing...',
-  error: 'An error occurred while publishing',
-  published: 'Published!'
-};
-
 class Deploy extends React.PureComponent {
   static contextType = Context;
   constructor(props) {
@@ -86,18 +80,12 @@ class Deploy extends React.PureComponent {
     return (
       // Meta View
       <div className='deploy-view'>
-        <div className='label'>Metadata</div>
+        <div className='label'>METADATA</div>
         <div className='meta-container'>
-          <div className='meta'>Title {this.renderProps('title')}</div>
-          <div className='meta'>
-            Description {this.renderProps('description')}
-          </div>
-          <div className='meta'>
-            Share Image {this.renderProps('shareImageUrl')}
-          </div>
-          <div className='meta'>
-            URL <a href={this.context.url}>{this.context.url}</a>
-          </div>
+          Title {this.renderProps('title')}
+          Description {this.renderProps('description')}
+          Share Image {this.renderProps('shareImageUrl')}
+          URL <a href={this.context.url}>{this.context.url}</a>
         </div>
 
         {/* Publish Button */}
@@ -109,7 +97,7 @@ class Deploy extends React.PureComponent {
           >
             Publish
           </button>
-          <div>{UIMessage[this.context.currProcess]}</div>
+          <div>{this.context.currProcess}</div>
         </div>
       </div>
     );
