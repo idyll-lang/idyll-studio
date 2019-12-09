@@ -8,19 +8,18 @@
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
-    "create-react-class": "^15.6.3",
     "draft-js": "^0.10.5",
     "electron": "^4.2.12",
-    "idyll": "^4.8.0",
+    "idyll": "^4.8.1",
     "idyll-compiler": "^4.0.12",
     "idyll-components": "^3.11.1",
-    "idyll-document": "^3.1.8",
+    "idyll-document": "^3.1.9",
     "react": "^16.11.0",
     "react-data-grid": "^6.1.0",
     "react-dnd": "^7.7.0",
     "react-dnd-html5-backend": "^7.7.0",
     "react-dom": "^16.11.0",
-    "react-select": "^2.3.0"
+    "react-select": "^2.4.4"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
