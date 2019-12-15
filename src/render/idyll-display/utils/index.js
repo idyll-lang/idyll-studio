@@ -1,8 +1,6 @@
-
-
 const getRandomId = () => {
-  return Math.floor(Math.random()*10000000000) + 100000000;
-}
+  return Math.floor(Math.random() * 10000000000) + 100000000;
+};
 
 const getNodeById = (node, id) => {
   if (node.id === id) {
@@ -18,23 +16,25 @@ const getNodeById = (node, id) => {
     }
   }
   return false;
-}
+};
 
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
-  Object.keys(newProps).forEach((key) => {
+
+  Object.keys(newProps).forEach(key => {
     if (key === 'id') {
       return;
     }
-    if (typeof newProps[key] === 'object' && typeof targetNode[key] === 'object') {
+    if (
+      typeof newProps[key] === 'object' &&
+      typeof targetNode[key] === 'object'
+    ) {
       targetNode[key] = Object.assign({}, targetNode[key], newProps[key]);
     } else {
       targetNode[key] = newProps[key];
     }
   });
-
-}
-
+};
 
 const deleteNodeById = (node, id) => {
   if (!node.children || !node.children.length) {
@@ -53,12 +53,11 @@ const deleteNodeById = (node, id) => {
     }
   }
   return false;
-}
-
+};
 
 module.exports = {
   getNodeById,
   deleteNodeById,
   updateNodeById,
   getRandomId
-}
+};

@@ -7,6 +7,7 @@ const readdir = require('recursive-readdir');
 const request = require('request-promise-native');
 const urljoin = require('url-join');
 const IDYLL_PUB_API = 'https://api.idyll.pub';
+const IDYLL_PUB_URL = 'https://idyll.pub/post';
 const compile = require('idyll-compiler');
 const { getWorkingDirectory, getTokenPath } = require('./utils');
 
@@ -112,7 +113,8 @@ class Main {
         headers: { 'Content-Type': 'application/json' }
       });
 
-      const url = `https://idyll.pub/post/${alias}/`;
+      // const url = `https://idyll.pub/post/${alias}/`;
+      const url = IDYLL_PUB_URL + `/${alias}/`;
 
       // Send to render process the url
       this.mainWindow.webContents.send('published-url', url);
@@ -202,24 +204,11 @@ class Main {
 
     // Compile contents
     compile(fileContent, {})
-      .then(ast => {
+      .then(async ast => {
         // Get project URL if it exists
         const tokenPath = getTokenPath(p, this.workingDir);
 
-        let url = '';
-        try {
-          const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
-          const tokenUrl = this.store.getTokenUrlByToken(token);
-          if (tokenUrl) {
-            url = tokenUrl.url;
-          } else {
-            // TODO: Get URL from idyll pub api here
-            console.log('Make request to server for url since token exists');
-            // url = await request.get({ url: IDYLL_PUB_API/{token} })
-          }
-        } catch (error) {
-          console.log(error, 'Token does not exist yet.');
-        }
+        let url = await requestUrl(tokenPath, this.store);
 
         // send ast and contents over to renderer
         this.mainWindow.webContents.send('idyll:compile', {
@@ -237,5 +226,28 @@ class Main {
       });
   }
 }
+
+const requestUrl = async (tokenPath, store) => {
+  let url = '';
+  try {
+    const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
+    const tokenUrl = store.getTokenUrlByToken(token);
+    if (tokenUrl) {
+      url = tokenUrl.url;
+    } else {
+      const res = await request.get({
+        url: `https://api.idyll.pub/lookup/${token}`
+      });
+
+      const alias = JSON.parse(res).alias;
+
+      url = IDYLL_PUB_URL + `/${alias}/`;
+      store.addTokenUrlPair(url, token);
+    }
+  } catch (error) {
+    console.log(error, 'Token does not exist yet.');
+  }
+  return url;
+};
 
 module.exports = Main;

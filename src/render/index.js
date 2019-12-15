@@ -22,7 +22,7 @@ class App extends React.PureComponent {
       datasets: undefined,
       currentSidebarNode: null,
       url: '',
-      currProcess: null
+      currentProcess: null
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -44,7 +44,7 @@ class App extends React.PureComponent {
           componentPropMap: componentProps,
           layout: 'centered',
           theme: 'default',
-          currProcess: '',
+          currentProcess: '',
           url: url // replace once sqlite db implemented
         });
       }
@@ -52,20 +52,20 @@ class App extends React.PureComponent {
 
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
-        currProcess: PUBLISHING
+        currentProcess: PUBLISHING
       });
     });
 
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
-        currProcess: PUBLISHING_ERROR + message
+        currentProcess: PUBLISHING_ERROR + message
       });
     });
 
     ipcRenderer.on('published-url', (event, url) => {
       this.setState({
         url: url,
-        currProcess: PUBLISHED
+        currentProcess: PUBLISHED
       });
     });
 
@@ -88,7 +88,7 @@ class App extends React.PureComponent {
       currentSidebarNode,
       components,
       url,
-      currProcess
+      currentProcess
     } = this.state;
     return {
       context: context,
@@ -100,7 +100,7 @@ class App extends React.PureComponent {
       datasets: datasets,
       currentSidebarNode: currentSidebarNode,
       url: url,
-      currProcess: currProcess,
+      currentProcess: currentProcess,
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },
@@ -113,6 +113,7 @@ class App extends React.PureComponent {
       setAst: ast => {
         console.log('set ast');
         this.setState({ ast: { ...ast } });
+        console.log(this.state.ast);
       },
       setContext: context => {
         this.setState({ context: context });

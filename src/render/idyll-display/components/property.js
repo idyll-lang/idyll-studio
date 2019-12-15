@@ -25,14 +25,9 @@ class Component extends React.PureComponent {
       }
 
       node.properties[propName].value = val;
-      console.log(
-        this.context.ast,
-        this.context.ast.children[4].children[1],
-        node,
-        this.context.ast.children[4].children[1] === node
-      );
 
       updateNodeById(this.context.ast, node.id, node.properties);
+      console.log(this.context.ast);
 
       this.props.setAst(this.context.ast);
     };
@@ -93,6 +88,7 @@ class Component extends React.PureComponent {
       </div>
     );
   }
+
   renderValue(key, prop) {
     return (
       <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -118,6 +114,7 @@ class Component extends React.PureComponent {
       </div>
     );
   }
+
   renderVariable(key, prop) {
     const idyllState = this.context.context.data();
     return (
