@@ -22,13 +22,13 @@ Make your changes in a branch or fork and submit a PR. If you're making visual c
 
 ### Testing changes to idyll
 
+If you need to modify the main [idyll](https://idyll-lang.org) project, do the following:
 
 1. Clone the main Idyll project and follow the instructures there to install its dependencies.
 2. Check out the branch you want or make desired changes locally.
 3. Link the local idyll into this project:
    1. First run `yarn link` inside of `idyll/packages/idyll-cli`
    2. Run `yarn link idyll` in this repo
-
 
 
 ## User Guide
