@@ -4,9 +4,13 @@ This project is a work in progress. Use at risk of frustration.
 
 *How do you...*
 
-*...start it?* 
+*...install it?* 
 
-[Install the dependencies](./CONTRIBUTING.md) and run `yarn start` (or `npm start`).
+Clone the repo and install the dependencies. [More details.](./CONTRIBUTING.md).
+
+*...run it?* 
+
+Run `yarn start` (or `npm start`).
 
 
 *...make a new project?* 
