@@ -26,10 +26,13 @@ class Component extends React.PureComponent {
 
       node.properties[propName].value = val;
 
-      updateNodeById(this.context.ast, node.id, node.properties);
-      console.log(this.context.ast);
+      // updateNodeById(this.context.ast, node.id, node.properties);
+      // console.log(this.context.ast);
 
-      this.props.setAst(this.context.ast);
+      // console.log('property', this.context.ast);
+
+      // this.props.setAst(this.context.ast);
+      this.props.updateProperty(propName, val);
     };
   }
 

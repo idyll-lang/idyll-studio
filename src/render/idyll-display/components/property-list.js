@@ -142,6 +142,29 @@ class Component extends React.PureComponent {
     }
   }
 
+  /**
+   *
+   * @param {string} propertyName the name of the prop
+   * @param {string} propertyValue the value of the prop
+   */
+  updateProperty(propertyName, propertyValue) {
+    const propertiesCopy = {};
+    Object.keys(this.props.node.properties).forEach(property => {
+      const propertyObject = this.props.node.properties[property];
+
+      if (property === propertyName) {
+        propertiesCopy[propertyName] = {
+          ...propertyObject,
+          value: propertyValue
+        };
+      } else {
+        propertiesCopy[property] = { ...propertyObject };
+      }
+    });
+    // send to author view with info
+    this.props.updateNodeWithNewProperties(this.props.node, propertiesCopy);
+  }
+
   render() {
     const ASTNode = this.props.node;
     const properties = [];
@@ -164,7 +187,7 @@ class Component extends React.PureComponent {
                 }}
               >
                 <Property
-                  setAst={this.context.setAst}
+                  updateProperty={this.updateProperty.bind(this)}
                   ast={this.context.ast}
                   node={ASTNode}
                   name={propName}

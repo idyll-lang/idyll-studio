@@ -2,6 +2,7 @@ import React from 'react';
 import Context from '../../context';
 import PropertiesList from './property-list';
 import { DropTarget } from 'react-dnd';
+import { updateNodeById } from '../utils';
 
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
@@ -137,6 +138,7 @@ class AuthorTool extends React.PureComponent {
       ) {
         prop.value = newString;
         updated = true;
+        // console.log(prop, prop.value, updated);
       }
     });
     let localUpdate = false;
@@ -145,6 +147,39 @@ class AuthorTool extends React.PureComponent {
       updated = updated || localUpdate;
     });
     return updated;
+  }
+
+  /**
+   * Updates the node with the new value and
+   * sets the ast
+   * @param {node} node
+   * @param {object} newPropertyList mapping of property names and their new values
+   */
+  updateNodeWithNewProperties(nodeParam, newPropertyList) {
+    // update node
+    // notify ast
+    // console.log('update!', node, propertyName, propertyValue);
+    // const property = node.properties[propertyName];
+    // property.value = propertyValue;
+
+    // updateNodeById(this.context.ast, node.id, )
+    // this.context.setAst(this.context.ast);
+    // updateNodeById(this.context.ast, node.id, newPropertyList);
+    let node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
+    const newNode = { ...node, properties: newPropertyList };
+
+    const childrenCopy = AST.getChildren(node);
+    if (newNode.children) {
+      newNode.children = childrenCopy;
+    }
+
+    console.log(
+      node,
+      this.context.ast.children[4].children[1],
+      node === this.context.ast.children[4].children[1]
+    );
+    node.properties = newPropertyList;
+    this.context.setAst(this.context.ast);
   }
 
   // Flips between whether we are in the author view of a component
@@ -204,6 +239,7 @@ class AuthorTool extends React.PureComponent {
     let updated = false;
     var observer = new MutationObserver(mutations => {
       mutations.forEach(mutation => {
+        // console.log('mutation', mutation);
         updated = this.updateNode(
           node,
           mutation.oldValue,
@@ -348,7 +384,12 @@ class AuthorTool extends React.PureComponent {
           </button>
           {this.state.showProperties || isOver ? (
             <div style={{ position: 'absolute', top: 30, right: 30 }}>
-              <PropertiesList node={this.props.idyllASTNode} />
+              <PropertiesList
+                node={this.props.idyllASTNode}
+                updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
+                  this
+                )}
+              />
             </div>
           ) : null}
         </div>
