@@ -1,11 +1,9 @@
-import React from 'react';
-import Edit from './edit.js';
+import * as React from 'react';
 import Render from './render.js';
 import Sidebar from './sidebar';
-import { path } from 'change-case';
-import { DragDropContextProvider } from 'react-dnd';
+import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-const { ipcRenderer } = require('electron');
+import { ipcRenderer } from 'electron';
 
 class IdyllDisplay extends React.PureComponent {
   constructor(props) {
@@ -16,7 +14,7 @@ class IdyllDisplay extends React.PureComponent {
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     ipcRenderer.on('toggleSidebar', () => this.handleToggle());
   }
 
@@ -34,15 +32,16 @@ class IdyllDisplay extends React.PureComponent {
       this.state.layout
     );
     return (
-      <DragDropContextProvider backend={HTML5Backend}>
-        <div className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}>
+      <DndProvider backend={HTML5Backend}>
+        <div
+          className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}
+        >
           <Sidebar />
           <div className='output-container'>
             <Render />
           </div>
-
         </div>
-      </DragDropContextProvider>
+      </DndProvider>
     );
   }
 }

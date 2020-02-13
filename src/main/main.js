@@ -19,6 +19,7 @@ class Main {
     this.store = electronObjects.store;
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
+    console.log(this.electronWorkingDir);
 
     ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
 
@@ -50,27 +51,31 @@ class Main {
     });
   }
 
-  handleFileOpen() {
+  async handleFileOpen() {
     // Returns absolute path of file
-    const files = dialog.showOpenDialog(this.mainWindow, {
-      properties: ['openFile'],
-      filters: [
-        {
-          // Give a specific filter on acceptable file types
-          name: 'Idyll',
-          extensions: ['idyll', 'idl']
-        }
-      ]
-    });
+    try {
+      const files = await dialog.showOpenDialog(this.mainWindow, {
+        properties: ['openFile'],
+        filters: [
+          {
+            // Give a specific filter on acceptable file types
+            name: 'Idyll',
+            extensions: ['idyll', 'idl']
+          }
+        ]
+      });
 
-    // If no files, don't open
-    if (!files) {
-      return;
+      // If no files, don't open
+      if (!files) {
+        return;
+      }
+
+      // Gets full file path
+      const file = files.filePaths[0];
+      this.executeOnProjectOpen(file);
+    } catch (err) {
+      console.log(err);
     }
-
-    // Gets full file path
-    const file = files[0];
-    this.executeOnProjectOpen(file);
   }
 
   // Saves current markup to open idyll project
@@ -172,7 +177,7 @@ class Main {
     });
 
     // filter to catch all requests to static folder
-    const staticContentFilter = { urls: ['static/*'] };
+    const staticContentFilter = { urls: ['*://*/static/*'] };
     this.mainWindow.webContents.session.webRequest.onBeforeRequest(
       staticContentFilter,
       (details, callback) => {
