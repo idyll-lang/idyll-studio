@@ -22,7 +22,8 @@ class App extends React.PureComponent {
       datasets: undefined,
       currentSidebarNode: null,
       url: '',
-      currentProcess: null
+      currentProcess: null,
+      activeComponent: null
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -88,7 +89,8 @@ class App extends React.PureComponent {
       currentSidebarNode,
       components,
       url,
-      currentProcess
+      currentProcess,
+      activeComponent
     } = this.state;
     return {
       context: context,
@@ -101,6 +103,7 @@ class App extends React.PureComponent {
       currentSidebarNode: currentSidebarNode,
       url: url,
       currentProcess: currentProcess,
+      activeComponent: activeComponent,
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },
@@ -120,6 +123,9 @@ class App extends React.PureComponent {
       },
       deploy: () => {
         ipcRenderer.send('deploy', 'hi');
+      },
+      setActiveComponent: activeComponent => {
+        this.setState({ activeComponent: { ...activeComponent } });
       }
     };
   }
@@ -186,6 +192,7 @@ class App extends React.PureComponent {
         </div>
       );
     }
+
     return (
       <Context.Provider value={this.getContext()}>
         <IdyllDisplay key={this.state.pathKey} />

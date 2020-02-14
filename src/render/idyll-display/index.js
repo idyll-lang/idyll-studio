@@ -4,8 +4,12 @@ import Sidebar from './sidebar';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { ipcRenderer } from 'electron';
+import AuthorView from './components/author-view';
+import Context from '../context';
 
 class IdyllDisplay extends React.PureComponent {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -39,6 +43,11 @@ class IdyllDisplay extends React.PureComponent {
           <Sidebar />
           <div className='output-container'>
             <Render />
+            {this.context.activeComponent ? (
+              <AuthorView activeComponent={this.context.activeComponent} />
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </DndProvider>
