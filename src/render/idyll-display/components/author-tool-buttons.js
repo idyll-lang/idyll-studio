@@ -1,41 +1,12 @@
 import React from 'react';
 import Context from '../../context';
 import { DropTarget } from 'react-dnd';
+import { getNodeById, isChildOf, getRandomId } from '../utils/';
 
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
 
 const cursorPositions = {};
-const getRandomId = () => {
-  return Math.floor(Math.random() * 10000000000) + 100000000;
-};
-
-const getNodeById = (node, id) => {
-  if (node.id === id) {
-    return node;
-  }
-  if (!node.children || !node.children.length) {
-    return false;
-  }
-  for (var i = 0; i < node.children.length; i++) {
-    const ret = getNodeById(node.children[i], id);
-    if (ret) {
-      return ret;
-    }
-  }
-  return false;
-};
-
-function isChildOf(node, parent) {
-  while (node !== null) {
-    if (node === parent) {
-      return true;
-    }
-    node = node.parentNode;
-  }
-
-  return false;
-}
 
 function getCurrentCursorPosition(parent) {
   var selection = window.getSelection(),
@@ -145,26 +116,6 @@ class AuthorToolButtons extends React.PureComponent {
       updated = updated || localUpdate;
     });
     return updated;
-  }
-
-  /**
-   * Updates the node with the new value and
-   * sets the ast
-   * @param {node} node
-   * @param {object} newPropertyList mapping of property names and their new values
-   */
-  updateNodeWithNewProperties(nodeParam, newPropertyList) {
-    // update node
-    let node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
-    const newNode = { ...node, properties: newPropertyList };
-
-    const childrenCopy = AST.getChildren(node);
-    if (newNode.children) {
-      newNode.children = childrenCopy;
-    }
-
-    node.properties = newPropertyList;
-    this.context.setAst(this.context.ast);
   }
 
   // Flips between whether we are in the author view of a component

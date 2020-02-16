@@ -43,11 +43,7 @@ class IdyllDisplay extends React.PureComponent {
           <Sidebar />
           <div className='output-container'>
             <Render />
-            {this.context.activeComponent ? (
-              <AuthorView activeComponent={this.context.activeComponent} />
-            ) : (
-              <></>
-            )}
+            {this.context.activeComponent ? <AuthorView /> : <></>}
           </div>
         </div>
       </DndProvider>

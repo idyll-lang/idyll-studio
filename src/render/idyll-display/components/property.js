@@ -26,12 +26,6 @@ class Component extends React.PureComponent {
 
       node.properties[propName].value = val;
 
-      // updateNodeById(this.context.ast, node.id, node.properties);
-      // console.log(this.context.ast);
-
-      // console.log('property', this.context.ast);
-
-      // this.props.setAst(this.context.ast);
       this.props.updateProperty(propName, val);
     };
   }
@@ -161,7 +155,7 @@ class Component extends React.PureComponent {
 
   render() {
     const { name, value, isOver, dropTarget } = this.props;
-
+    console.log('value', value);
     let ret;
     if (!this.state.showDetails) {
       ret = (
@@ -211,4 +205,3 @@ function collect(connect, monitor) {
 }
 
 export default DropTarget('VARIABLE', variableTarget, collect)(Component);
-// export default Component;

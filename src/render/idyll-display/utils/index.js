@@ -55,9 +55,21 @@ const deleteNodeById = (node, id) => {
   return false;
 };
 
+const isChildOf = (node, parent) => {
+  while (node !== null) {
+    if (node === parent) {
+      return true;
+    }
+    node = node.parentNode;
+  }
+
+  return false;
+};
+
 module.exports = {
   getNodeById,
   deleteNodeById,
   updateNodeById,
-  getRandomId
+  getRandomId,
+  isChildOf
 };
