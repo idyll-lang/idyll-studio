@@ -1,10 +1,7 @@
 import React from 'react';
 import Property from './property';
-import Context from '../../context';
 
 class Component extends React.PureComponent {
-  static contextType = Context;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -25,31 +22,7 @@ class Component extends React.PureComponent {
     };
 
     this.setState({ newPropName: '' });
-    this.context.setAst(this.context.ast);
-  }
-
-  handleUpdateValue(propName) {
-    return e => {
-      const node = this.props.node;
-      let val = e.target.value;
-      if (val.trim() !== '') {
-        val = Number(e.target.value);
-      }
-      if (isNaN(val)) {
-        val = e.target.value;
-      }
-
-      node.properties[propName].value = val;
-      this.context.setAst(this.context.ast);
-    };
-  }
-
-  handleUpdateType(propName, type) {
-    return () => {
-      const node = this.props.node;
-      node.properties[propName].type = type;
-      this.context.setAst(this.context.ast);
-    };
+    // this.context.setAst(this.context.ast);
   }
 
   /**
@@ -78,11 +51,11 @@ class Component extends React.PureComponent {
   render() {
     const ASTNode = this.props.node;
     const properties = [];
-
     return (
       <div>
         {Object.keys(ASTNode.properties || {}).map(propName => {
           const prop = ASTNode.properties[propName];
+
           return (
             <div
               key={propName}
@@ -98,10 +71,13 @@ class Component extends React.PureComponent {
               >
                 <Property
                   updateProperty={this.updateProperty.bind(this)}
-                  ast={this.context.ast}
                   node={ASTNode}
                   name={propName}
                   value={prop}
+                  updateNodeType={this.props.updateNodeType}
+                  variableData={this.props.variableData}
+                  updateShowPropDetailsMap={this.props.updateShowPropDetailsMap}
+                  showDetails={this.props.showPropDetailsMap[propName]}
                 />
               </div>
             </div>

@@ -1,16 +1,10 @@
 import React from 'react';
-import Context from '../../context';
 import { DropTarget } from 'react-dnd';
 import { updateNodeById } from '../utils';
 
 class Component extends React.PureComponent {
-  static contextType = Context;
-
   constructor(props) {
     super(props);
-    this.state = {
-      showDetails: false
-    };
   }
 
   handleUpdateValue(propName) {
@@ -27,14 +21,6 @@ class Component extends React.PureComponent {
       node.properties[propName].value = val;
 
       this.props.updateProperty(propName, val);
-    };
-  }
-
-  handleUpdateType(propName, type) {
-    return () => {
-      const node = this.props.node;
-      node.properties[propName].type = type;
-      this.context.setAst(this.context.ast);
     };
   }
 
@@ -71,7 +57,7 @@ class Component extends React.PureComponent {
         />
         <div
           className={'prop-type'}
-          onClick={this.handleUpdateType(key, 'variable')}
+          onClick={this.props.updateNodeType(key, 'variable')}
           style={{
             marginLeft: 0,
             borderRadius: '0 20px 20px 0',
@@ -97,7 +83,7 @@ class Component extends React.PureComponent {
         />
         <div
           className={'prop-type'}
-          onClick={this.handleUpdateType(key, 'expression')}
+          onClick={this.props.updateNodeType(key, 'expression')}
           style={{
             marginLeft: 0,
             borderRadius: '0 20px 20px 0',
@@ -113,7 +99,6 @@ class Component extends React.PureComponent {
   }
 
   renderVariable(key, prop) {
-    const idyllState = this.context.context.data();
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -126,7 +111,7 @@ class Component extends React.PureComponent {
           />
           <div
             className={'prop-type'}
-            onClick={this.handleUpdateType(key, 'value')}
+            onClick={this.props.updateNodeType(key, 'value')}
             style={{
               marginLeft: 0,
               borderRadius: '0 20px 20px 0',
@@ -137,7 +122,7 @@ class Component extends React.PureComponent {
             {prop.type}
           </div>
         </div>
-        <div>Current Value: {idyllState[prop.value]}</div>
+        <div>Current Value: {this.props.variableData[prop.value]}</div>
       </div>
     );
   }
@@ -153,15 +138,18 @@ class Component extends React.PureComponent {
     }
   }
 
+  updatePropDetails() {
+    this.props.updateShowPropDetailsMap(this.props.name);
+  }
+
   render() {
-    const { name, value, isOver, dropTarget } = this.props;
-    console.log('value', value);
+    const { name, value, isOver, dropTarget, showDetails } = this.props;
     let ret;
-    if (!this.state.showDetails) {
+    if (!showDetails) {
       ret = (
         <div
           className={'prop-type'}
-          onClick={() => this.setState({ showDetails: true })}
+          onClick={this.updatePropDetails.bind(this)}
           style={{
             marginLeft: 0,
             border: isOver ? 'solid 2px green' : undefined,
