@@ -1,8 +1,6 @@
 import * as React from 'react';
 import Render from './render.js';
 import Sidebar from './sidebar';
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
 import { ipcRenderer } from 'electron';
 import AuthorView from './components/author-view';
 import Context from '../context';
@@ -29,24 +27,27 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    console.log(
-      'rendering theme, ',
-      this.state.theme,
-      'layout, ',
-      this.state.layout
-    );
+    const { activeComponent } = this.context;
     return (
-      <DndProvider backend={HTML5Backend}>
+      <>
         <div
           className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}
         >
           <Sidebar />
           <div className='output-container'>
             <Render />
-            {this.context.activeComponent ? <AuthorView /> : <></>}
+            <AuthorView
+              activeId={
+                activeComponent
+                  ? this.context.activeComponent.name +
+                    '-' +
+                    this.context.activeComponent.id
+                  : ''
+              }
+            />
           </div>
         </div>
-      </DndProvider>
+      </>
     );
   }
 }

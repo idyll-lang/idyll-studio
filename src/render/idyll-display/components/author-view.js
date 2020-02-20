@@ -3,11 +3,12 @@ import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
 import { getNodeById } from '../utils/';
 import Context from '../../context';
-import { isChildOf } from '../utils/';
 const AST = require('idyll-ast');
 
 /**
- * TODO: Make sure active component is updated as well
+ * An AuthorView is associated with an active component.
+ * If a component is registered as active, renders
+ * a property list of all the components properties for editing.
  */
 class AuthorView extends React.PureComponent {
   static contextType = Context;
@@ -24,15 +25,44 @@ class AuthorView extends React.PureComponent {
   }
 
   componentDidMount() {
-    const activeComponent = this.context.activeComponent.properties;
+    const { activeComponent } = this.context;
+
+    const activeComponentProperties =
+      activeComponent && activeComponent.properties
+        ? activeComponent.properties
+        : {};
+
     const resultMap = {};
-    for (const key of Object.keys(activeComponent)) {
+    for (const key of Object.keys(activeComponentProperties)) {
       resultMap[key] = false;
     }
 
     this.setState({
       showPropDetailsMap: resultMap
     });
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      showPropDetailsMap: {},
+      activePropName: '',
+      cursorPosition: -1
+    });
+
+    this.context.setActiveComponent(null);
+  }
+
+  componentDidUpdate(prevProps) {
+    console.log('hi', prevProps.activeId, this.props.activeId);
+
+    if (prevProps.activeId !== this.props.activeId) {
+      this.setState({
+        showPropDetailsMap: {},
+        activePropName: '',
+        newPropName: '',
+        cursorPosition: -1
+      });
+    }
   }
 
   updateShowPropDetailsMap(propName) {
@@ -43,7 +73,6 @@ class AuthorView extends React.PureComponent {
 
   updateNodeWithNewProperties(idyllASTNode, newPropertyList, e, propertyName) {
     const selectionStart = e.target.selectionStart;
-    const eventNode = e.target;
 
     this.setState({
       activePropName: propertyName,
@@ -62,9 +91,7 @@ class AuthorView extends React.PureComponent {
     node.properties = newPropertyList;
     this.context.setAst(this.context.ast);
 
-    // console.log(eventNode);
-    // eventNode.focus();
-    // eventNode.setSelectionRange(selectionStart, selectionStart);
+    console.log(this.context.activeComponent, 'active component');
   }
 
   updateNodeType(propName, type) {
@@ -76,32 +103,35 @@ class AuthorView extends React.PureComponent {
   }
 
   render() {
-    const childComponent = (
-      <div className='author-view-overlay'>
-        <PropertyList
-          node={this.context.activeComponent}
-          updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
-            this
-          )}
-          updateNodeType={this.updateNodeType.bind(this)}
-          variableData={this.context.context.data()}
-          updateShowPropDetailsMap={this.updateShowPropDetailsMap.bind(this)}
-          showPropDetailsMap={this.state.showPropDetailsMap}
-          activePropName={this.state.activePropName}
-          cursorPosition={this.state.cursorPosition}
-        />
-      </div>
-    );
+    const { activeComponent } = this.context;
 
-    const componentDomNode = document.getElementById(
-      this.context.activeComponent.name + '-' + this.context.activeComponent.id
-    );
+    if (activeComponent) {
+      const childComponent = (
+        <div className='author-view-overlay'>
+          <PropertyList
+            node={activeComponent}
+            updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
+              this
+            )}
+            updateNodeType={this.updateNodeType.bind(this)}
+            updateShowPropDetailsMap={this.updateShowPropDetailsMap.bind(this)}
+            variableData={this.context.context.data()}
+            showPropDetailsMap={this.state.showPropDetailsMap}
+            activePropName={this.state.activePropName}
+            cursorPosition={this.state.cursorPosition}
+          />
+        </div>
+      );
 
-    if (componentDomNode) {
-      return ReactDOM.createPortal(childComponent, componentDomNode);
-    } else {
-      return <></>;
+      const componentDomNode = activeComponent
+        ? document.getElementById(this.props.activeId)
+        : null;
+
+      if (componentDomNode) {
+        return ReactDOM.createPortal(childComponent, componentDomNode);
+      }
     }
+    return <></>;
   }
 }
 

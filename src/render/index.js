@@ -5,6 +5,8 @@ import Context from './context';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const PUBLISHING_ERROR = 'Error occurred while publishing: ';
 const PUBLISHING = 'Publishing your project...';
@@ -195,7 +197,9 @@ class App extends React.PureComponent {
 
     return (
       <Context.Provider value={this.getContext()}>
-        <IdyllDisplay key={this.state.pathKey} />
+        <DndProvider backend={HTML5Backend}>
+          <IdyllDisplay key={this.state.pathKey} />
+        </DndProvider>
       </Context.Provider>
     );
   }

@@ -7,8 +7,6 @@ class Component extends React.PureComponent {
     super(props);
   }
 
-  componentDidMount() {}
-
   handleUpdateValue(propName) {
     return e => {
       const node = this.props.node;
@@ -75,12 +73,6 @@ class Component extends React.PureComponent {
   }
 
   renderValue(key, prop) {
-    console.log(
-      this.props.activePropName === key,
-      key,
-      this.props.activePropName
-    );
-
     const isActiveProp = this.props.activePropName === key;
 
     return (

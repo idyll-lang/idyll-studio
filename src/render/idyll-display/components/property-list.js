@@ -44,6 +44,7 @@ class Component extends React.PureComponent {
         propertiesCopy[property] = { ...propertyObject };
       }
     });
+
     // send to author view with info
     this.props.updateNodeWithNewProperties(
       this.props.node,
