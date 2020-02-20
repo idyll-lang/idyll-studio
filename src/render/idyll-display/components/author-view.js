@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
 import { getNodeById } from '../utils/';
 import Context from '../../context';
+import { isChildOf } from '../utils/';
 const AST = require('idyll-ast');
 
 /**
@@ -16,7 +17,9 @@ class AuthorView extends React.PureComponent {
 
     this.state = {
       newPropName: '',
-      showPropDetailsMap: {} // name of prop -> true if open, false if not
+      showPropDetailsMap: {}, // name of prop -> true if open, false if not
+      activePropName: '',
+      cursorPosition: -1
     };
   }
 
@@ -33,13 +36,20 @@ class AuthorView extends React.PureComponent {
   }
 
   updateShowPropDetailsMap(propName) {
-    console.log(propName, this.state.showPropDetailsMap);
     this.setState({
       showPropDetailsMap: { ...this.state.showPropDetailsMap, [propName]: true }
     });
   }
 
-  updateNodeWithNewProperties(idyllASTNode, newPropertyList) {
+  updateNodeWithNewProperties(idyllASTNode, newPropertyList, e, propertyName) {
+    const selectionStart = e.target.selectionStart;
+    const eventNode = e.target;
+
+    this.setState({
+      activePropName: propertyName,
+      cursorPosition: selectionStart
+    });
+
     // update node
     let node = getNodeById(this.context.ast, idyllASTNode.id);
     const newNode = { ...node, properties: newPropertyList };
@@ -51,6 +61,10 @@ class AuthorView extends React.PureComponent {
 
     node.properties = newPropertyList;
     this.context.setAst(this.context.ast);
+
+    // console.log(eventNode);
+    // eventNode.focus();
+    // eventNode.setSelectionRange(selectionStart, selectionStart);
   }
 
   updateNodeType(propName, type) {
@@ -73,6 +87,8 @@ class AuthorView extends React.PureComponent {
           variableData={this.context.context.data()}
           updateShowPropDetailsMap={this.updateShowPropDetailsMap.bind(this)}
           showPropDetailsMap={this.state.showPropDetailsMap}
+          activePropName={this.state.activePropName}
+          cursorPosition={this.state.cursorPosition}
         />
       </div>
     );

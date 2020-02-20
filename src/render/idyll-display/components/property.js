@@ -7,6 +7,8 @@ class Component extends React.PureComponent {
     super(props);
   }
 
+  componentDidMount() {}
+
   handleUpdateValue(propName) {
     return e => {
       const node = this.props.node;
@@ -20,7 +22,7 @@ class Component extends React.PureComponent {
 
       node.properties[propName].value = val;
 
-      this.props.updateProperty(propName, val);
+      this.props.updateProperty(propName, val, e);
     };
   }
 
@@ -73,6 +75,14 @@ class Component extends React.PureComponent {
   }
 
   renderValue(key, prop) {
+    console.log(
+      this.props.activePropName === key,
+      key,
+      this.props.activePropName
+    );
+
+    const isActiveProp = this.props.activePropName === key;
+
     return (
       <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
         <input
@@ -80,6 +90,11 @@ class Component extends React.PureComponent {
           onChange={this.handleUpdateValue(key)}
           type='text'
           value={prop.value}
+          autoFocus={isActiveProp}
+          onFocus={e => {
+            e.target.selectionStart = this.props.cursorPosition;
+            e.target.selectionEnd = this.props.cursorPosition;
+          }}
         />
         <div
           className={'prop-type'}

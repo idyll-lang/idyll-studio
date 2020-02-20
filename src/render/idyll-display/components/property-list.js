@@ -30,7 +30,7 @@ class Component extends React.PureComponent {
    * @param {string} propertyName the name of the prop
    * @param {string} propertyValue the value of the prop
    */
-  updateProperty(propertyName, propertyValue) {
+  updateProperty(propertyName, propertyValue, e) {
     const propertiesCopy = {};
     Object.keys(this.props.node.properties).forEach(property => {
       const propertyObject = this.props.node.properties[property];
@@ -45,7 +45,12 @@ class Component extends React.PureComponent {
       }
     });
     // send to author view with info
-    this.props.updateNodeWithNewProperties(this.props.node, propertiesCopy);
+    this.props.updateNodeWithNewProperties(
+      this.props.node,
+      propertiesCopy,
+      e,
+      propertyName
+    );
   }
 
   render() {
@@ -78,6 +83,8 @@ class Component extends React.PureComponent {
                   variableData={this.props.variableData}
                   updateShowPropDetailsMap={this.props.updateShowPropDetailsMap}
                   showDetails={this.props.showPropDetailsMap[propName]}
+                  activePropName={this.props.activePropName}
+                  cursorPosition={this.props.cursorPosition}
                 />
               </div>
             </div>
