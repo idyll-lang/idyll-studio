@@ -81,8 +81,8 @@ export const WrappedAuthorView = withContext(
     updateNodeWithNewProperties(
       idyllASTNode,
       newPropertyList,
-      e,
-      propertyName
+      propertyName,
+      e
     ) {
       const selectionStart = e.target.selectionStart;
 
@@ -102,8 +102,6 @@ export const WrappedAuthorView = withContext(
 
       node.properties = newPropertyList;
       this.props.context.setAst(this.props.context.ast);
-
-      console.log(this.props.context.activeComponent, 'active component');
     }
 
     updateNodeType(propName, type) {

@@ -49,8 +49,8 @@ class Component extends React.PureComponent {
     this.props.updateNodeWithNewProperties(
       this.props.node,
       propertiesCopy,
-      e,
-      propertyName
+      propertyName,
+      e
     );
   }
 

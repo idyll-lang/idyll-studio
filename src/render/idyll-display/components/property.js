@@ -46,6 +46,8 @@ class Component extends React.PureComponent {
   }
 
   renderExpression(key, prop) {
+    const isActiveProp = this.props.activePropName === key;
+
     return (
       <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
         <input
@@ -54,6 +56,11 @@ class Component extends React.PureComponent {
           onChange={this.handleUpdateValue(key)}
           type='text'
           value={prop.value}
+          autoFocus={isActiveProp}
+          onFocus={e => {
+            e.target.selectionStart = this.props.cursorPosition;
+            e.target.selectionEnd = this.props.cursorPosition;
+          }}
         />
         <div
           className={'prop-type'}
@@ -106,6 +113,8 @@ class Component extends React.PureComponent {
   }
 
   renderVariable(key, prop) {
+    const isActiveProp = this.props.activePropName === key;
+
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -115,6 +124,11 @@ class Component extends React.PureComponent {
             onChange={this.handleUpdateValue(key)}
             type='text'
             value={prop.value}
+            autoFocus={isActiveProp}
+            onFocus={e => {
+              e.target.selectionStart = this.props.cursorPosition;
+              e.target.selectionEnd = this.props.cursorPosition;
+            }}
           />
           <div
             className={'prop-type'}
