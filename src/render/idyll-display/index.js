@@ -2,7 +2,7 @@ import * as React from 'react';
 import Render from './render.js';
 import Sidebar from './sidebar';
 import { ipcRenderer } from 'electron';
-import AuthorView from './components/author-view';
+import { WrappedAuthorView } from './components/author-view';
 import Context from '../context';
 
 class IdyllDisplay extends React.PureComponent {
@@ -36,15 +36,7 @@ class IdyllDisplay extends React.PureComponent {
           <Sidebar />
           <div className='output-container'>
             <Render />
-            <AuthorView
-              activeId={
-                activeComponent
-                  ? this.context.activeComponent.name +
-                    '-' +
-                    this.context.activeComponent.id
-                  : ''
-              }
-            />
+            <WrappedAuthorView />
           </div>
         </div>
       </>
@@ -53,3 +45,11 @@ class IdyllDisplay extends React.PureComponent {
 }
 
 export default IdyllDisplay;
+
+// activeId={
+//   activeComponent
+// ? this.context.activeComponent.name +
+//   '-' +
+//   this.context.activeComponent.id
+//     : ''
+// }
