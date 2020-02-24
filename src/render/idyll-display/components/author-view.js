@@ -1,10 +1,16 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
-import { getNodeById } from '../utils/';
+import { getNodeById, isDifferentActiveNode } from '../utils/';
 import Context from '../../context';
 const AST = require('idyll-ast');
 
+/**
+ * Returns a component that is passed the context as a prop
+ * to be its consumer.
+ * @param {React.PureComponent} WrappedConsumer a component that will consume
+ *                                              the context
+ */
 const withContext = WrappedConsumer => props => (
   <Context.Consumer>
     {context => <WrappedConsumer {...props} context={context} />}
@@ -57,9 +63,24 @@ export const WrappedAuthorView = withContext(
       this.props.context.setActiveComponent(null);
     }
 
-    componentDidUpdate(prevProps) {
+    /**
+     * Resets the state under two conditions:
+     *   1) if one node is null and the other is not
+     *   2) if both nodes are non-null but represent different
+     *      components
+     */
+    componentDidUpdate(previousProps) {
+      const previousActiveComponent = previousProps.context.activeComponent;
+      const currentActiveComponent = this.props.context.activeComponent;
+
       if (
-        prevProps.context.activeComponent !== this.props.context.activeComponent
+        isDifferentActiveNode(
+          previousActiveComponent,
+          currentActiveComponent
+        ) ||
+        (previousActiveComponent &&
+          currentActiveComponent &&
+          previousActiveComponent.id !== currentActiveComponent.id)
       ) {
         this.setState({
           showPropDetailsMap: {},
@@ -78,6 +99,17 @@ export const WrappedAuthorView = withContext(
       });
     }
 
+    /**
+     * On a prop change for the given active node,
+     * updates the ast with its new prop values and
+     * updates the context's active component to the
+     * changed node
+     * @param {IdyllAstNode} idyllASTNode the current active node
+     * @param {Object} newPropertyList the new properties list
+     * @param {string} propertyName the prop name changed
+     * @param {React.ChangeEvent} e the change event associated
+     *                               w/ the prop change
+     */
     updateNodeWithNewProperties(
       idyllASTNode,
       newPropertyList,
@@ -93,6 +125,7 @@ export const WrappedAuthorView = withContext(
 
       // update node
       let node = getNodeById(this.props.context.ast, idyllASTNode.id);
+
       const newNode = { ...node, properties: newPropertyList };
 
       const childrenCopy = AST.getChildren(node);
@@ -102,8 +135,16 @@ export const WrappedAuthorView = withContext(
 
       node.properties = newPropertyList;
       this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
     }
 
+    /**
+     * Updates the prop type to the given one
+     * in the ast
+     * @param {string} propName the name of the prop
+     * @param {string} type the next type of the prop
+     *                      (value, variable, expression)
+     */
     updateNodeType(propName, type) {
       return () => {
         const node = this.props.context.activeComponent;

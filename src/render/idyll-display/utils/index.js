@@ -66,10 +66,20 @@ const isChildOf = (node, parent) => {
   return false;
 };
 
+/**
+ * Returns true if one node is null / undefined and the other
+ * is not.
+ * @param {IdyllAstNode} node1 an idyll node
+ * @param {IdyllAstNode} node2 an idyll node
+ */
+const isDifferentActiveNode = (node1, node2) =>
+  (node1 && !node2) || (node2 && !node1);
+
 module.exports = {
   getNodeById,
   deleteNodeById,
   updateNodeById,
   getRandomId,
-  isChildOf
+  isChildOf,
+  isDifferentActiveNode
 };

@@ -1,6 +1,9 @@
 import React from 'react';
 import Property from './property';
 
+/**
+ * Returns a list of properties for the given node
+ */
 class Component extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -26,9 +29,12 @@ class Component extends React.PureComponent {
   }
 
   /**
-   *
+   * Makes a copy of the node's properties with the
+   * new property value and notifies parent
    * @param {string} propertyName the name of the prop
    * @param {string} propertyValue the value of the prop
+   * @param {React.ChangeEvent} e the change event associated
+   *                              with the node input change
    */
   updateProperty(propertyName, propertyValue, e) {
     const propertiesCopy = {};
@@ -77,7 +83,6 @@ class Component extends React.PureComponent {
               >
                 <Property
                   updateProperty={this.updateProperty.bind(this)}
-                  node={ASTNode}
                   name={propName}
                   value={prop}
                   updateNodeType={this.props.updateNodeType}

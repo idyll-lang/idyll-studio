@@ -7,9 +7,13 @@ class Component extends React.PureComponent {
     super(props);
   }
 
+  /**
+   * Returns a function that gets the input value
+   * and notifies the parent of a prop value change
+   * @param {string} propName the name of prop being updated
+   */
   handleUpdateValue(propName) {
     return e => {
-      const node = this.props.node;
       let val = e.target.value;
       if (val.trim() !== '') {
         val = Number(e.target.value);
@@ -17,8 +21,6 @@ class Component extends React.PureComponent {
       if (isNaN(val)) {
         val = e.target.value;
       }
-
-      node.properties[propName].value = val;
 
       this.props.updateProperty(propName, val, e);
     };
@@ -45,74 +47,14 @@ class Component extends React.PureComponent {
     }
   }
 
-  renderExpression(key, prop) {
-    const isActiveProp = this.props.activePropName === key;
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-        <input
-          className={'prop-input'}
-          style={{ fontFamily: 'monospace' }}
-          onChange={this.handleUpdateValue(key)}
-          type='text'
-          value={prop.value}
-          autoFocus={isActiveProp}
-          onFocus={e => {
-            e.target.selectionStart = this.props.cursorPosition;
-            e.target.selectionEnd = this.props.cursorPosition;
-          }}
-        />
-        <div
-          className={'prop-type'}
-          onClick={this.props.updateNodeType(key, 'variable')}
-          style={{
-            marginLeft: 0,
-            borderRadius: '0 20px 20px 0',
-            background: this.getBackgroundColor('expression'),
-            color: this.getColor('expression')
-          }}
-        >
-          {prop.type}
-        </div>
-        <div />
-      </div>
-    );
-  }
-
-  renderValue(key, prop) {
-    const isActiveProp = this.props.activePropName === key;
-
-    return (
-      <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-        <input
-          className={'prop-input'}
-          onChange={this.handleUpdateValue(key)}
-          type='text'
-          value={prop.value}
-          autoFocus={isActiveProp}
-          onFocus={e => {
-            e.target.selectionStart = this.props.cursorPosition;
-            e.target.selectionEnd = this.props.cursorPosition;
-          }}
-        />
-        <div
-          className={'prop-type'}
-          onClick={this.props.updateNodeType(key, 'expression')}
-          style={{
-            marginLeft: 0,
-            borderRadius: '0 20px 20px 0',
-            background: this.getBackgroundColor('value'),
-            color: this.getColor('value')
-          }}
-        >
-          {typeof prop.value}
-        </div>
-        <div>{/* Current Value: {idyllState[prop.value]} */}</div>
-      </div>
-    );
-  }
-
-  renderVariable(key, prop) {
+  /**
+   * Renders an input for the corresponding
+   * prop name
+   * @param {string} key the prop name
+   * @param {string} prop the prop value
+   * @param {string} nextType the next prop type
+   */
+  renderPropInput(key, prop, nextType) {
     const isActiveProp = this.props.activePropName === key;
 
     return (
@@ -132,18 +74,24 @@ class Component extends React.PureComponent {
           />
           <div
             className={'prop-type'}
-            onClick={this.props.updateNodeType(key, 'value')}
+            onClick={this.props.updateNodeType(key, nextType)}
             style={{
               marginLeft: 0,
               borderRadius: '0 20px 20px 0',
-              background: this.getBackgroundColor('variable'),
-              color: this.getColor('variable')
+              background: this.getBackgroundColor(prop.type),
+              color: this.getColor(prop.type)
             }}
           >
-            {prop.type}
+            {prop.type === 'value' ? typeof prop.value : prop.type}
           </div>
         </div>
-        <div>Current Value: {this.props.variableData[prop.value]}</div>
+
+        {/* If variable, display current value */}
+        {prop.type === 'variable' ? (
+          <div>Current Value: {this.props.variableData[prop.value]}</div>
+        ) : (
+          <></>
+        )}
       </div>
     );
   }
@@ -151,11 +99,11 @@ class Component extends React.PureComponent {
   renderProp(key, prop) {
     switch (prop.type) {
       case 'variable':
-        return this.renderVariable(key, prop);
+        return this.renderPropInput(key, prop, 'value');
       case 'value':
-        return this.renderValue(key, prop);
+        return this.renderPropInput(key, prop, 'expression');
       case 'expression':
-        return this.renderExpression(key, prop);
+        return this.renderPropInput(key, prop, 'variable');
     }
   }
 
