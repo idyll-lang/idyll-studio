@@ -7,6 +7,11 @@
     "test": "jest",
     "test:watch": "npm run test -- --watch"
   },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
+  },
   "dependencies": {
     "draft-js": "^0.11.4",
     "electron": "^8.0.0",
@@ -35,6 +40,7 @@
     "electron-packager": "^14.2.1",
     "electron-react-devtools": "^0.5.3",
     "electron-reload": "^1.5.0",
+    "enzyme": "^3.11.0",
     "expect": "^25.1.0",
     "jest": "^25.1.0"
   }
