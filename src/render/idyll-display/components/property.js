@@ -162,3 +162,4 @@ function collect(connect, monitor) {
 }
 
 export default DropTarget('VARIABLE', variableTarget, collect)(Component);
+export { Component as Property };

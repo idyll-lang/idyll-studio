@@ -1,4 +1,4 @@
-const { isDifferentActiveNode } = require('../src/render/idyll-display/utils');
+import { isDifferentActiveNode } from '../src/render/idyll-display/utils';
 const expect = require('expect');
 
 describe('isDifferentActiveNode tests', () => {
