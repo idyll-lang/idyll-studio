@@ -48,6 +48,17 @@ class Component extends React.PureComponent {
   }
 
   /**
+   * Updates the prop type
+   * @param {string} propName the prop name
+   * @param {string} type the next type of the prop
+   */
+  updateNodeType(propName, type) {
+    return e => {
+      this.props.updateNodeType(propName, type);
+    };
+  }
+
+  /**
    * Renders an input for the corresponding
    * prop name
    * @param {string} key the prop name
