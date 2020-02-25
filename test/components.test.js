@@ -135,9 +135,6 @@ describe('<Property /> with props', () => {
     input.simulate('change', { target: { value: 'abc' } });
     expect(updateProperty).toHaveBeenCalledTimes(1);
     expect(updateProperty.mock.results[0].value).toEqual(['author', 'abc']);
-
-    const div = component.find('div.prop-type');
-    expect(div.props().onClick).toEqual(['author', 'value']);
   });
 });
 

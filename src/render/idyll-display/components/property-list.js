@@ -31,20 +31,20 @@ class Component extends React.PureComponent {
   /**
    * Makes a copy of the node's properties with the
    * new property value and notifies parent
-   * @param {string} propertyName the name of the prop
-   * @param {string} propertyValue the value of the prop
+   * @param {string} propName the name of the prop
+   * @param {string} propValue the value of the prop
    * @param {React.ChangeEvent} e the change event associated
    *                              with the node input change
    */
-  updateProperty(propertyName, propertyValue, e) {
+  updateProperty(propName, propValue, e) {
     const propertiesCopy = {};
     Object.keys(this.props.node.properties).forEach(property => {
       const propertyObject = this.props.node.properties[property];
 
-      if (property === propertyName) {
-        propertiesCopy[propertyName] = {
+      if (property === propName) {
+        propertiesCopy[propName] = {
           ...propertyObject,
-          value: propertyValue
+          value: propValue
         };
       } else {
         propertiesCopy[property] = { ...propertyObject };
@@ -55,9 +55,13 @@ class Component extends React.PureComponent {
     this.props.updateNodeWithNewProperties(
       this.props.node,
       propertiesCopy,
-      propertyName,
+      propName,
       e
     );
+  }
+
+  updateNodeType(propName, propType) {
+    this.props.updateNodeType(propName, propType, this.props.node);
   }
 
   render() {
@@ -85,8 +89,8 @@ class Component extends React.PureComponent {
                   updateProperty={this.updateProperty.bind(this)}
                   name={propName}
                   value={prop}
-                  updateNodeType={this.props.updateNodeType}
                   variableData={this.props.variableData}
+                  updateNodeType={this.updateNodeType.bind(this)}
                   updateShowPropDetailsMap={this.props.updateShowPropDetailsMap}
                   showDetails={this.props.showPropDetailsMap[propName]}
                   activePropName={this.props.activePropName}

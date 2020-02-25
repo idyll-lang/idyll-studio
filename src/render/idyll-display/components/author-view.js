@@ -105,35 +105,30 @@ export const WrappedAuthorView = withContext(
      * updates the context's active component to the
      * changed node
      * @param {IdyllAstNode} idyllASTNode the current active node
-     * @param {Object} newPropertyList the new properties list
-     * @param {string} propertyName the prop name changed
+     * @param {Object} newPropList the new properties list
+     * @param {string} propName the prop name changed
      * @param {React.ChangeEvent} e the change event associated
      *                               w/ the prop change
      */
-    updateNodeWithNewProperties(
-      idyllASTNode,
-      newPropertyList,
-      propertyName,
-      e
-    ) {
+    updateNodeWithNewProperties(idyllASTNode, newPropList, propName, e) {
       const selectionStart = e.target.selectionStart;
 
       this.setState({
-        activePropName: propertyName,
+        activePropName: propName,
         cursorPosition: selectionStart
       });
 
       // update node
       let node = getNodeById(this.props.context.ast, idyllASTNode.id);
 
-      const newNode = { ...node, properties: newPropertyList };
+      const newNode = { ...node, properties: newPropList };
 
       const childrenCopy = AST.getChildren(node);
       if (newNode.children) {
         newNode.children = childrenCopy;
       }
 
-      node.properties = newPropertyList;
+      node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
     }
@@ -142,15 +137,14 @@ export const WrappedAuthorView = withContext(
      * Updates the prop type to the given one
      * in the ast
      * @param {string} propName the name of the prop
-     * @param {string} type the next type of the prop
+     * @param {string} propType the next type of the prop
      *                      (value, variable, expression)
      */
-    updateNodeType(propName, type) {
-      return () => {
-        const node = this.props.context.activeComponent;
-        node.properties[propName].type = type;
-        this.props.context.setAst(this.props.context.ast);
-      };
+    updateNodeType(propName, propType, idyllASTNode) {
+      const node = getNodeById(this.props.context.ast, idyllASTNode.id);
+      node.properties[propName].type = propType;
+      this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
     }
 
     render() {

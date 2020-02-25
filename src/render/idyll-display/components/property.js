@@ -5,6 +5,8 @@ import { updateNodeById } from '../utils';
 class Component extends React.PureComponent {
   constructor(props) {
     super(props);
+
+    this.handleUpdateValue = this.handleUpdateValue.bind(this);
   }
 
   /**
@@ -74,7 +76,7 @@ class Component extends React.PureComponent {
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
-            onChange={this.handleUpdateValue(key)}
+            onChange={this.handleUpdateValue(key, prop.type)}
             type='text'
             value={prop.value}
             autoFocus={isActiveProp}
@@ -85,7 +87,7 @@ class Component extends React.PureComponent {
           />
           <div
             className={'prop-type'}
-            onClick={this.props.updateNodeType(key, nextType)}
+            onClick={this.updateNodeType(key, nextType)}
             style={{
               marginLeft: 0,
               borderRadius: '0 20px 20px 0',
