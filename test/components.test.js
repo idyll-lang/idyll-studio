@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { mount, shallow } from 'enzyme';
+import { shallow } from 'enzyme';
 import { Property } from '../src/render/idyll-display/components/property';
 import expect from 'expect';
+import PropertyList from '../src/render/idyll-display/components/property-list';
 
 describe('<Property /> with props', () => {
   let component;
@@ -137,5 +138,42 @@ describe('<Property /> with props', () => {
 
     const div = component.find('div.prop-type');
     expect(div.props().onClick).toEqual(['author', 'value']);
+  });
+});
+
+describe('<PropertyList />', () => {
+  let component;
+  let updateNodeWithNewProperties;
+  let updateNodeType;
+  let updateShowPropDetailsMap;
+  let variableData = {};
+  let showPropDetailsMap = { author: false, link: true };
+
+  beforeEach(() => {
+    updateNodeWithNewProperties = jest.fn();
+    updateNodeType = jest.fn();
+    updateShowPropDetailsMap = jest.fn();
+  });
+
+  it('should render two Properties', () => {
+    component = shallow(
+      <PropertyList
+        node={{ properties: { author: 'my-cat-deirdre', link: 'link' } }}
+        updateNodeWithNewProperties={updateNodeWithNewProperties}
+        updateNodeType={updateNodeType}
+        updateShowPropDetailsMap={updateShowPropDetailsMap}
+        variableData={variableData}
+        showPropDetailsMap={showPropDetailsMap}
+        activePropName='link'
+        cursorPosition={-1}
+      />
+    );
+
+    const div = component.find('div').get(0);
+
+    // 2 props (author and link)
+    expect(div.props.children).toHaveLength(2);
+    expect(div.props.children[0].key).toBe('author');
+    expect(div.props.children[1].key).toBe('link');
   });
 });
