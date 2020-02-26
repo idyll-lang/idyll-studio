@@ -25,7 +25,6 @@ class Component extends React.PureComponent {
     };
 
     this.setState({ newPropName: '' });
-    // this.context.setAst(this.context.ast);
   }
 
   /**

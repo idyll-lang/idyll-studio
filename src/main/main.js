@@ -19,7 +19,6 @@ class Main {
     this.store = electronObjects.store;
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
-    console.log(this.electronWorkingDir);
 
     ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
 
@@ -118,7 +117,6 @@ class Main {
         headers: { 'Content-Type': 'application/json' }
       });
 
-      // const url = `https://idyll.pub/post/${alias}/`;
       const url = IDYLL_PUB_URL + `/${alias}/`;
 
       // Send to render process the url
@@ -213,7 +211,7 @@ class Main {
         // Get project URL if it exists
         const tokenPath = getTokenPath(p, this.workingDir);
 
-        let url = await requestUrl(tokenPath, this.store);
+        const url = await requestUrl(tokenPath, this.store);
 
         // send ast and contents over to renderer
         this.mainWindow.webContents.send('idyll:compile', {

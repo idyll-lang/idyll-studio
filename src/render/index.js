@@ -118,13 +118,12 @@ class App extends React.PureComponent {
       setAst: ast => {
         console.log('set ast');
         this.setState({ ast: { ...ast } });
-        console.log(this.state.ast);
       },
       setContext: context => {
         this.setState({ context: context });
       },
       deploy: () => {
-        ipcRenderer.send('deploy', 'hi');
+        ipcRenderer.send('deploy', '');
       },
       setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
