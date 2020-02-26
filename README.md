@@ -4,10 +4,12 @@
 
 Sketches towards an integrated dynamic publishing application.
 
+# USAGE GUIDE
+See [USER_GUIDE.md](./USER_GUIDE.md)
+
 # DEVELOPING
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
-
 
 ## Mockup
 
