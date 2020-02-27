@@ -249,10 +249,7 @@ class AuthorToolButtons extends React.PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (
-      this.state.showCode === false &&
-      this.state.showCode !== prevState.showCode
-    ) {
+    if (!this.state.showCode && this.state.showCode !== prevState.showCode) {
       this.registerObserver();
     }
   }

@@ -2,14 +2,14 @@ import { isDifferentActiveNode } from '../src/render/idyll-display/utils';
 const expect = require('expect');
 
 describe('isDifferentActiveNode tests', () => {
-  it('should return true with first node null', () => {
+  it('should return true with just first node null', () => {
     const node1 = null;
     const node2 = { context: { someNode: 'idyllNode' } };
 
     expect(isDifferentActiveNode(node1, node2)).toBeTruthy();
   });
 
-  it('should return true with second node null', () => {
+  it('should return true with just second node null', () => {
     const node1 = { context: { someNode: 'idyllNode' } };
     const node2 = null;
 
