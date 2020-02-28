@@ -17,7 +17,6 @@ class DataStore {
     );
 
     this.path = path.join(userDataPath, 'project-data.json');
-
     try {
       this.data = JSON.parse(fs.readFileSync(this.path));
     } catch (error) {

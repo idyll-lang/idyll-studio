@@ -1,13 +1,13 @@
-import React from 'react';
-import Edit from './edit.js';
+import * as React from 'react';
 import Render from './render.js';
 import Sidebar from './sidebar';
-import { path } from 'change-case';
-import { DragDropContextProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
-const { ipcRenderer } = require('electron');
+import { ipcRenderer } from 'electron';
+import { WrappedAuthorView } from './components/author-view';
+import Context from '../context';
 
 class IdyllDisplay extends React.PureComponent {
+  static contextType = Context;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +16,7 @@ class IdyllDisplay extends React.PureComponent {
     };
   }
 
-  componentDidMount(){
+  componentDidMount() {
     ipcRenderer.on('toggleSidebar', () => this.handleToggle());
   }
 
@@ -27,24 +27,29 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    console.log(
-      'rendering theme, ',
-      this.state.theme,
-      'layout, ',
-      this.state.layout
-    );
+    const { activeComponent } = this.context;
     return (
-      <DragDropContextProvider backend={HTML5Backend}>
-        <div className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}>
+      <>
+        <div
+          className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}
+        >
           <Sidebar />
           <div className='output-container'>
             <Render />
+            <WrappedAuthorView />
           </div>
-
         </div>
-      </DragDropContextProvider>
+      </>
     );
   }
 }
 
 export default IdyllDisplay;
+
+// activeId={
+//   activeComponent
+// ? this.context.activeComponent.name +
+//   '-' +
+//   this.context.activeComponent.id
+//     : ''
+// }

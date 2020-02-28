@@ -7,6 +7,7 @@ const readdir = require('recursive-readdir');
 const request = require('request-promise-native');
 const urljoin = require('url-join');
 const IDYLL_PUB_API = 'https://api.idyll.pub';
+const IDYLL_PUB_URL = 'https://idyll.pub/post';
 const compile = require('idyll-compiler');
 const { getWorkingDirectory, getTokenPath } = require('./utils');
 
@@ -49,27 +50,31 @@ class Main {
     });
   }
 
-  handleFileOpen() {
+  async handleFileOpen() {
     // Returns absolute path of file
-    const files = dialog.showOpenDialog(this.mainWindow, {
-      properties: ['openFile'],
-      filters: [
-        {
-          // Give a specific filter on acceptable file types
-          name: 'Idyll',
-          extensions: ['idyll', 'idl']
-        }
-      ]
-    });
+    try {
+      const files = await dialog.showOpenDialog(this.mainWindow, {
+        properties: ['openFile'],
+        filters: [
+          {
+            // Give a specific filter on acceptable file types
+            name: 'Idyll',
+            extensions: ['idyll', 'idl']
+          }
+        ]
+      });
 
-    // If no files, don't open
-    if (!files) {
-      return;
+      // If no files, don't open
+      if (!files) {
+        return;
+      }
+
+      // Gets full file path
+      const file = files.filePaths[0];
+      this.executeOnProjectOpen(file);
+    } catch (err) {
+      console.log(err);
     }
-
-    // Gets full file path
-    const file = files[0];
-    this.executeOnProjectOpen(file);
   }
 
   // Saves current markup to open idyll project
@@ -112,7 +117,7 @@ class Main {
         headers: { 'Content-Type': 'application/json' }
       });
 
-      const url = `https://idyll.pub/post/${alias}/`;
+      const url = IDYLL_PUB_URL + `/${alias}/`;
 
       // Send to render process the url
       this.mainWindow.webContents.send('published-url', url);
@@ -170,7 +175,7 @@ class Main {
     });
 
     // filter to catch all requests to static folder
-    const staticContentFilter = { urls: ['static/*'] };
+    const staticContentFilter = { urls: ['*://*/static/*'] };
     this.mainWindow.webContents.session.webRequest.onBeforeRequest(
       staticContentFilter,
       (details, callback) => {
@@ -202,24 +207,11 @@ class Main {
 
     // Compile contents
     compile(fileContent, {})
-      .then(ast => {
+      .then(async ast => {
         // Get project URL if it exists
         const tokenPath = getTokenPath(p, this.workingDir);
 
-        let url = '';
-        try {
-          const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
-          const tokenUrl = this.store.getTokenUrlByToken(token);
-          if (tokenUrl) {
-            url = tokenUrl.url;
-          } else {
-            // TODO: Get URL from idyll pub api here
-            console.log('Make request to server for url since token exists');
-            // url = await request.get({ url: IDYLL_PUB_API/{token} })
-          }
-        } catch (error) {
-          console.log(error, 'Token does not exist yet.');
-        }
+        const url = await requestUrl(tokenPath, this.store);
 
         // send ast and contents over to renderer
         this.mainWindow.webContents.send('idyll:compile', {
@@ -237,5 +229,28 @@ class Main {
       });
   }
 }
+
+const requestUrl = async (tokenPath, store) => {
+  let url = '';
+  try {
+    const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
+    const tokenUrl = store.getTokenUrlByToken(token);
+    if (tokenUrl) {
+      url = tokenUrl.url;
+    } else {
+      const res = await request.get({
+        url: `https://api.idyll.pub/lookup/${token}`
+      });
+
+      const alias = JSON.parse(res).alias;
+
+      url = IDYLL_PUB_URL + `/${alias}/`;
+      store.addTokenUrlPair(url, token);
+    }
+  } catch (error) {
+    console.log(error, 'Token does not exist yet.');
+  }
+  return url;
+};
 
 module.exports = Main;

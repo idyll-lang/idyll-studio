@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
 const Main = require('./main/main.js');
@@ -11,6 +11,9 @@ let win;
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true
+    },
     width: 1300,
     height: 1000,
     minWidth: 600,

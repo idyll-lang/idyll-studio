@@ -100,6 +100,13 @@ button.loader:hover {
   outline: none;
 }
 
+.author-view-overlay {
+  position: absolute;
+  top: 2.5rem;
+  left: 0.5rem;
+  z-index: 100;
+}
+
 .component-debug-view:hover > .author-view-container {
   opacity: 1;
 }

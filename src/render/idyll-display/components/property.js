@@ -1,21 +1,21 @@
 import React from 'react';
-import Context from '../../context';
-import { DropTarget } from 'react-dnd'
+import { DropTarget } from 'react-dnd';
 import { updateNodeById } from '../utils';
 
 class Component extends React.PureComponent {
-  static contextType = Context;
-
   constructor(props) {
     super(props);
-    this.state = {
-      showDetails: false
-    }
+
+    this.handleUpdateValue = this.handleUpdateValue.bind(this);
   }
 
+  /**
+   * Returns a function that gets the input value
+   * and notifies the parent of a prop value change
+   * @param {string} propName the name of prop being updated
+   */
   handleUpdateValue(propName) {
-    return (e) => {
-      const node = this.props.node;
+    return e => {
       let val = e.target.value;
       if (val.trim() !== '') {
         val = Number(e.target.value);
@@ -24,17 +24,8 @@ class Component extends React.PureComponent {
         val = e.target.value;
       }
 
-      node.properties[propName].value = val;
-      this.context.setAst(this.context.ast);
-    }
-  }
-
-  handleUpdateType(propName, type) {
-    return () => {
-      const node = this.props.node;
-      node.properties[propName].type = type;
-      this.context.setAst(this.context.ast);
-    }
+      this.props.updateProperty(propName, val, e);
+    };
   }
 
   getBackgroundColor(propType) {
@@ -58,62 +49,106 @@ class Component extends React.PureComponent {
     }
   }
 
-  renderExpression(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-      <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'variable')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor('expression'), color: this.getColor('expression')}}>{prop.type}</div>
-      <div>
-      </div>
-    </div>
+  /**
+   * Updates the prop type
+   * @param {string} propName the prop name
+   * @param {string} type the next type of the prop
+   */
+  updateNodeType(propName, type) {
+    return e => {
+      this.props.updateNodeType(propName, type);
+    };
   }
-  renderValue(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-      <input className={"prop-input"} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'expression')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor('value'), color: this.getColor('value')}}>{typeof prop.value}</div>
+
+  /**
+   * Renders an input for the corresponding
+   * prop name
+   * @param {string} key the prop name
+   * @param {string} prop the prop value
+   * @param {string} nextType the next prop type
+   */
+  renderPropInput(key, prop, nextType) {
+    const isActiveProp = this.props.activePropName === key;
+
+    return (
       <div>
-        {/* Current Value: {idyllState[prop.value]} */}
+        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <input
+            className={'prop-input'}
+            style={{ fontFamily: 'monospace' }}
+            onChange={this.handleUpdateValue(key, prop.type)}
+            type='text'
+            value={prop.value}
+            autoFocus={isActiveProp}
+            onFocus={e => {
+              e.target.selectionStart = this.props.cursorPosition;
+              e.target.selectionEnd = this.props.cursorPosition;
+            }}
+          />
+          <div
+            className={'prop-type'}
+            onClick={this.updateNodeType(key, nextType)}
+            style={{
+              marginLeft: 0,
+              borderRadius: '0 20px 20px 0',
+              background: this.getBackgroundColor(prop.type),
+              color: this.getColor(prop.type)
+            }}
+          >
+            {prop.type === 'value' ? typeof prop.value : prop.type}
+          </div>
+        </div>
+
+        {/* If variable, display current value */}
+        {prop.type === 'variable' ? (
+          <div>Current Value: {this.props.variableData[prop.value]}</div>
+        ) : (
+          <></>
+        )}
       </div>
-    </div>
-  }
-  renderVariable(key, prop) {
-    const idyllState = this.context.context.data();
-    return <div>
-      <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-        <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-        <div className={"prop-type"} onClick={this.handleUpdateType(key, 'value')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor('variable'), color: this.getColor('variable')}}>{prop.type}</div>
-      </div>
-      <div>
-        Current Value: {idyllState[prop.value]}
-      </div>
-    </div>
+    );
   }
 
   renderProp(key, prop) {
-    switch(prop.type) {
+    switch (prop.type) {
       case 'variable':
-        return this.renderVariable(key, prop);
+        return this.renderPropInput(key, prop, 'value');
       case 'value':
-        return this.renderValue(key, prop);
+        return this.renderPropInput(key, prop, 'expression');
       case 'expression':
-        return this.renderExpression(key, prop);
+        return this.renderPropInput(key, prop, 'variable');
     }
+  }
+
+  updatePropDetails() {
+    this.props.updateShowPropDetailsMap(this.props.name);
   }
 
   render() {
-    const { name, value, isOver, dropTarget } = this.props;
-
+    const { name, value, isOver, dropTarget, showDetails } = this.props;
     let ret;
-    if (!this.state.showDetails) {
-      ret = <div className={"prop-type"} onClick={() => this.setState({ showDetails: true })} style={{marginLeft: 0, border: isOver ? 'solid 2px green' : undefined, borderRadius: '0 20px 20px 0', background: this.getBackgroundColor(value.type), color: this.getColor(value.type)}}>{name}</div>
+    if (!showDetails) {
+      ret = (
+        <div
+          className={'prop-type'}
+          onClick={this.updatePropDetails.bind(this)}
+          style={{
+            marginLeft: 0,
+            border: isOver ? 'solid 2px green' : undefined,
+            borderRadius: '0 20px 20px 0',
+            background: this.getBackgroundColor(value.type),
+            color: this.getColor(value.type)
+          }}
+        >
+          {name}
+        </div>
+      );
     } else {
       ret = this.renderProp(name, value);
     }
-    return dropTarget(<div>
-      {ret}
-    </div>)
+    return dropTarget(<div>{ret}</div>);
   }
 }
-
 
 const variableTarget = {
   drop(props, monitor, component) {
@@ -125,18 +160,19 @@ const variableTarget = {
     // node.properties[props.name].value = name;
     // node.properties[props.name].type = 'variable';
     // console.log('updating ast');
-    updateNodeById(props.ast, node.id, { properties: { [props.name]: { value: name, type: 'variable' }} })
+    updateNodeById(props.ast, node.id, {
+      properties: { [props.name]: { value: name, type: 'variable' } }
+    });
     props.setAst(props.ast);
   }
-}
+};
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
-  }
+    isOver: monitor.isOver()
+  };
 }
 
-
-export default DropTarget('VARIABLE', variableTarget, collect)(Component)
-// export default Component;
+export default DropTarget('VARIABLE', variableTarget, collect)(Component);
+export { Component as Property };
