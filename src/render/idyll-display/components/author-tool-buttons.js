@@ -167,92 +167,96 @@ class AuthorToolButtons extends React.PureComponent {
     });
   }
 
-  registerObserver() {
-    if (!this._componentRef) {
-      return;
-    }
-    const node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
-    let updated = false;
-    var observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        console.log('mutation', mutation);
-        updated = this.updateNode(
-          node,
-          mutation.oldValue,
-          mutation.target.data
-        );
-      });
-      if (updated) {
-        const ast = this.context.ast;
-        ast.id = getRandomId();
-        this.context.setAst(ast);
-      }
-    });
-    var config = {
-      subtree: true,
-      characterData: true,
-      characterDataOldValue: true
-    };
-    observer.observe(this._componentRef, config);
-    this.observer = observer;
+  onExecute(value) {
+    console.log(value);
   }
 
-  componentDidMount() {
-    setCurrentCursorPosition(
-      this._componentRef,
-      cursorPositions[this.props.idyllASTNode.id]
-    );
-    // Set up mutation observer to catch DOM changes.
-    this.registerObserver();
-  }
+  // registerObserver() {
+  //   if (!this._componentRef) {
+  //     return;
+  //   }
+  //   const node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
+  //   let updated = false;
+  //   var observer = new MutationObserver(mutations => {
+  //     mutations.forEach(mutation => {
+  //       console.log('mutation', mutation);
+  //       updated = this.updateNode(
+  //         node,
+  //         mutation.oldValue,
+  //         mutation.target.data
+  //       );
+  //     });
+  //     if (updated) {
+  //       const ast = this.context.ast;
+  //       ast.id = getRandomId();
+  //       this.context.setAst(ast);
+  //     }
+  //   });
+  //   var config = {
+  //     subtree: true,
+  //     characterData: true,
+  //     characterDataOldValue: true
+  //   };
+  //   observer.observe(this._componentRef, config);
+  //   this.observer = observer;
+  // }
 
-  handleMarkupRef(ref) {
-    if (!ref) {
-      return;
-    }
-    if (this.markupObserver) {
-      this.markupObserver.disconnect();
-    }
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-    this._markupRef = ref;
+  // componentDidMount() {
+  //   setCurrentCursorPosition(
+  //     this._componentRef,
+  //     cursorPositions[this.props.idyllASTNode.id]
+  //   );
+  //   // Set up mutation observer to catch DOM changes.
+  //   this.registerObserver();
+  // }
 
-    // Set up mutation observer to catch DOM changes.
-    const node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
-    var observer = new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        const input = mutation.target.data;
-        this._markup = input;
-      });
-      // const ast = this.context.ast;
-      // ast.id = getRandomId();
-      // this.context.setAst(ast);
-    });
-    var config = {
-      subtree: true,
-      characterData: true,
-      characterDataOldValue: true
-    };
-    observer.observe(this._markupRef, config);
-    this.markupObserver = observer;
-  }
+  // handleMarkupRef(ref) {
+  //   if (!ref) {
+  //     return;
+  //   }
+  //   if (this.markupObserver) {
+  //     this.markupObserver.disconnect();
+  //   }
+  //   if (this.observer) {
+  //     this.observer.disconnect();
+  //   }
+  //   this._markupRef = ref;
 
-  componentWillUnmount() {
-    this.observer && this.observer.disconnect();
-    this.markupObserver && this.markupObserver.disconnect();
-    this._componentRef
-      ? (cursorPositions[this.props.idyllASTNode.id] = getCurrentCursorPosition(
-          this._componentRef.parentNode
-        ))
-      : null;
-  }
+  //   // Set up mutation observer to catch DOM changes.
+  //   const node = getNodeById(this.context.ast, this.props.idyllASTNode.id);
+  //   var observer = new MutationObserver(mutations => {
+  //     mutations.forEach(mutation => {
+  //       const input = mutation.target.data;
+  //       this._markup = input;
+  //     });
+  //     // const ast = this.context.ast;
+  //     // ast.id = getRandomId();
+  //     // this.context.setAst(ast);
+  //   });
+  //   var config = {
+  //     subtree: true,
+  //     characterData: true,
+  //     characterDataOldValue: true
+  //   };
+  //   observer.observe(this._markupRef, config);
+  //   this.markupObserver = observer;
+  // }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (!this.state.showCode && this.state.showCode !== prevState.showCode) {
-      this.registerObserver();
-    }
-  }
+  // componentWillUnmount() {
+  //   this.observer && this.observer.disconnect();
+  //   this.markupObserver && this.markupObserver.disconnect();
+  //   this._componentRef
+  //     ? (cursorPositions[this.props.idyllASTNode.id] = getCurrentCursorPosition(
+  //         this._componentRef.parentNode
+  //       ))
+  //     : null;
+  // }
+
+  // componentDidUpdate(prevProps, prevState) {
+  //   if (!this.state.showCode && this.state.showCode !== prevState.showCode) {
+  //     this.registerObserver();
+  //   }
+  // }
 
   // Returns an entire author view, including the component itself,
   // a quill icon to indicate whether we're hovering in the component,
@@ -262,10 +266,7 @@ class AuthorToolButtons extends React.PureComponent {
     const { dropTarget } = this.props;
 
     return dropTarget(
-      <div
-        className='component-debug-view'
-        ref={ref => (this._refContainer = ref)}
-      >
+      <div className='component-debug-view'>
         <div
           contentEditable={true}
           suppressContentEditableWarning={true}
@@ -275,16 +276,14 @@ class AuthorToolButtons extends React.PureComponent {
         </div>
         {this.state.showCode ? (
           <div className={'idyll-code-editor'}>
-            <pre>
-              <code>
-                <div
+            {/* <div
                   contentEditable={true}
+                  suppressContentEditableWarning={true}
                   ref={ref => this.handleMarkupRef(ref)}
                 >
                   {this._markup}
-                </div>
-              </code>
-            </pre>
+                </div> */}
+            <EditableCodeCell onExecute={this.onExecute.bind(this)} />
           </div>
         ) : null}
         <div className='author-view-container' id={this.domId}>
@@ -328,3 +327,71 @@ export default DropTarget(
   variableTarget,
   collect
 )(AuthorToolButtons);
+
+/**
+ * props.onExecute
+ */
+export class EditableCodeCell extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: false,
+      value: ''
+    };
+  }
+
+  toggleEdit = e => {
+    e.stopPropagation();
+    console.log('hi');
+    if (this.state.editing) {
+      this.setState({
+        editing: false
+      });
+    } else {
+      this.edit();
+    }
+  };
+
+  edit = () => {
+    this.setState(
+      {
+        editing: true
+      },
+      () => {
+        this._cellCodeRef.focus();
+      }
+    );
+  };
+
+  // send to parent on change
+  execute = () => {
+    this.props.onExecute(this.state.value);
+  };
+
+  handleKeyDown = e => {
+    e.stopPropagation();
+    if (event.shiftKey && event.keyCode === 13) {
+      e.preventDefault();
+      this.execute();
+    }
+  };
+
+  render() {
+    const { editing } = this.state;
+
+    return (
+      <pre onClick={!editing ? this.toggleEdit : undefined}>
+        <code>
+          <div
+            ref={codeRef => (this._cellCodeRef = codeRef)}
+            contentEditable={editing}
+            suppressContentEditableWarning={true}
+            onKeyDown={this.handleKeyDown}
+          >
+            {this.state.value}
+          </div>
+        </code>
+      </pre>
+    );
+  }
+}
