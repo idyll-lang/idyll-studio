@@ -23,9 +23,18 @@ class AuthorToolButtons extends React.PureComponent {
   // Flips between whether we are in the author view of a component
   handleClickCode() {
     if (this.state.showCode) {
-      this.setState({
-        showCode: false
-      });
+      let shouldClose = true;
+      if (this.getMarkup(this.props) !== this.state.markup) {
+        shouldClose = confirm(
+          'Closing this code cell means any changes made to it will be lost. Are you sure you want to close?'
+        );
+      }
+
+      if (shouldClose) {
+        this.setState({
+          showCode: false
+        });
+      }
     } else {
       // get the latest
       this.setState({
@@ -55,15 +64,21 @@ class AuthorToolButtons extends React.PureComponent {
     });
   }
 
-  onExecute(value) {
+  onExecute(newMarkup) {
     this.setState(
       {
-        markup: value
+        markup: newMarkup
       },
       () => {
         this.updateAst();
       }
     );
+  }
+
+  onBlur(newMarkup) {
+    this.setState({
+      markup: newMarkup
+    });
   }
 
   updateAst() {
@@ -106,6 +121,7 @@ class AuthorToolButtons extends React.PureComponent {
           <div className={'idyll-code-editor'}>
             <EditableCodeCell
               onExecute={this.onExecute.bind(this)}
+              onBlur={this.onBlur.bind(this)}
               markup={this.state.markup}
             />
           </div>

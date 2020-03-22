@@ -2,7 +2,7 @@ import * as React from 'react';
 
 /**
  * Renders editable code cell that executes on shift + enter
- * @props - onExecute, markup, isOpen
+ * @props - onExecute, onBlur, markup
  */
 export default class EditableCodeCell extends React.Component {
   constructor(props) {
@@ -36,14 +36,20 @@ export default class EditableCodeCell extends React.Component {
     );
   };
 
-  // send to parent on change
+  // Executes code change
   execute = () => {
     this.props.onExecute(this._cellCodeRef.current.textContent);
   };
 
+  // Updates markup on blur
+  onBlur = e => {
+    this.toggleEdit(e);
+    this.props.onBlur(this._cellCodeRef.current.textContent);
+  };
+
   handleKeyDown = e => {
     e.stopPropagation();
-    if (event.shiftKey && event.keyCode === 13) {
+    if (e.shiftKey && e.keyCode === 13) {
       e.preventDefault();
       this.execute();
     }
@@ -60,6 +66,7 @@ export default class EditableCodeCell extends React.Component {
             contentEditable={editing}
             suppressContentEditableWarning={true}
             onKeyDown={this.handleKeyDown}
+            onBlur={this.onBlur}
           >
             {this.props.markup}
           </div>
