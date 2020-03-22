@@ -3,6 +3,8 @@ import Context from '../../context';
 import { DropTarget } from 'react-dnd';
 import { getNodeById } from '../utils/';
 import EditableCodeCell from './code-cell';
+import { EditingWarning } from '../../../error';
+import { EDITING_WARNING_MESSAGE } from '../../../error-constants';
 
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
@@ -25,9 +27,7 @@ class AuthorToolButtons extends React.PureComponent {
     if (this.state.showCode) {
       let shouldClose = true;
       if (this.getMarkup(this.props) !== this.state.markup) {
-        shouldClose = confirm(
-          'Closing this code cell means any changes made to it will be lost. Are you sure you want to close?'
-        );
+        shouldClose = confirm(new EditingWarning(EDITING_WARNING_MESSAGE));
       }
 
       if (shouldClose) {
