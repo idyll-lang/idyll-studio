@@ -12,7 +12,7 @@ describe('<Property /> with props', () => {
   let updateNodeType;
   let updateShowPropDetailsMap;
 
-  const dropTarget = jest.fn(jsxElement => jsxElement);
+  const dropTarget = jest.fn((jsxElement) => jsxElement);
 
   beforeEach(() => {
     updateProperty = jest.fn((propertyName, value, e) => [propertyName, value]);
@@ -223,5 +223,25 @@ describe('<EditableCodeCell />', () => {
 
     div.simulate('blur');
     expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it('should display markup and edit markup', () => {
+    const markup = '[Testing one:`2 + 3` /]';
+    component = mount(
+      <EditableCodeCell markup={markup} onExecute={onExecute} onBlur={onBlur} />
+    );
+
+    const code = component.find('code');
+    const text = code.text();
+    expect(text).toBe(markup);
+
+    let div = component.find('div');
+
+    expect(div.props().contentEditable).toBeFalsy();
+    const pre = component.find('pre');
+    pre.simulate('click');
+
+    div = component.find('div');
+    expect(div.props().contentEditable).toBeTruthy();
   });
 });
