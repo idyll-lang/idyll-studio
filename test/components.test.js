@@ -225,7 +225,7 @@ describe('<EditableCodeCell />', () => {
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
 
-  it('should display markup and edit markup', () => {
+  it('should display markup and toggle content editable', () => {
     const markup = '[Testing one:`2 + 3` /]';
     component = mount(
       <EditableCodeCell markup={markup} onExecute={onExecute} onBlur={onBlur} />
