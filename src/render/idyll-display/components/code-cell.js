@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { EXECUTE_KEY } from '../../../constants';
 
 /**
  * Renders editable code cell that executes on shift + enter
