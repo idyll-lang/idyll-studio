@@ -49,7 +49,7 @@ export default class EditableCodeCell extends React.Component {
 
   handleKeyDown = (e) => {
     e.stopPropagation();
-    if (e.shiftKey && e.key === 'Enter') {
+    if (e.shiftKey && e.key === EXECUTE_KEY) {
       e.preventDefault();
       this.execute();
     }
