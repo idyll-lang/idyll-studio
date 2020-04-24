@@ -8,17 +8,17 @@ export default class EditableCodeCell extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editing: false
+      editing: false,
     };
 
     this._cellCodeRef = React.createRef();
   }
 
-  toggleEdit = e => {
+  toggleEdit = (e) => {
     e.stopPropagation();
     if (this.state.editing) {
       this.setState({
-        editing: false
+        editing: false,
       });
     } else {
       this.edit();
@@ -28,7 +28,7 @@ export default class EditableCodeCell extends React.Component {
   edit = () => {
     this.setState(
       {
-        editing: true
+        editing: true,
       },
       () => {
         this._cellCodeRef.current.focus();
@@ -42,14 +42,14 @@ export default class EditableCodeCell extends React.Component {
   };
 
   // Updates markup on blur
-  onBlur = e => {
+  onBlur = (e) => {
     this.toggleEdit(e);
     this.props.onBlur(this._cellCodeRef.current.textContent);
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     e.stopPropagation();
-    if (e.shiftKey && e.keyCode === 13) {
+    if (e.shiftKey && e.key === 'Enter') {
       e.preventDefault();
       this.execute();
     }
