@@ -36,7 +36,7 @@
     "@babel/preset-react": "^7.8.3",
     "@babel/preset-stage-2": "^7.8.3",
     "@babel/register": "^7.8.3",
-    "acorn": "^7.1.0",
+    "acorn": "^7.1.1",
     "cross-env": "^7.0.0",
     "electron-connect": "*",
     "electron-devtools-installer": "^2.2.4",
