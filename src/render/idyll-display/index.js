@@ -27,7 +27,6 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   render() {
-    const { activeComponent } = this.context;
     return (
       <>
         <div
@@ -45,11 +44,3 @@ class IdyllDisplay extends React.PureComponent {
 }
 
 export default IdyllDisplay;
-
-// activeId={
-//   activeComponent
-// ? this.context.activeComponent.name +
-//   '-' +
-//   this.context.activeComponent.id
-//     : ''
-// }

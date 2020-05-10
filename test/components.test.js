@@ -1,8 +1,9 @@
 import * as React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { Property } from '../src/render/idyll-display/components/property';
 import expect from 'expect';
 import PropertyList from '../src/render/idyll-display/components/property-list';
+import EditableCodeCell from '../src/render/idyll-display/components/code-cell';
 
 describe('<Property /> with props', () => {
   let component;
@@ -11,7 +12,7 @@ describe('<Property /> with props', () => {
   let updateNodeType;
   let updateShowPropDetailsMap;
 
-  const dropTarget = jest.fn(jsxElement => jsxElement);
+  const dropTarget = jest.fn((jsxElement) => jsxElement);
 
   beforeEach(() => {
     updateProperty = jest.fn((propertyName, value, e) => [propertyName, value]);
@@ -172,5 +173,75 @@ describe('<PropertyList />', () => {
     expect(div.props.children).toHaveLength(2);
     expect(div.props.children[0].key).toBe('author');
     expect(div.props.children[1].key).toBe('link');
+  });
+});
+
+describe('<EditableCodeCell />', () => {
+  let component;
+  let onExecute;
+  let onBlur;
+
+  beforeEach(() => {
+    onExecute = jest.fn();
+    onBlur = jest.fn();
+  });
+
+  it('should display the markup and run onBlur', () => {
+    const markup = '[Testing one:`2 + 3` /]';
+    component = mount(
+      <EditableCodeCell markup={markup} onExecute={onExecute} onBlur={onBlur} />
+    );
+
+    const code = component.find('code');
+    const text = code.text();
+    expect(text).toBe(markup);
+
+    const div = component.find('div');
+    div.simulate('click');
+    expect(onBlur).toHaveBeenCalledTimes(0);
+    div.simulate('blur');
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it('should display markup and execute on shift + enter', () => {
+    const markup = '[Testing one:`2 + 3` /]';
+    component = mount(
+      <EditableCodeCell markup={markup} onExecute={onExecute} onBlur={onBlur} />
+    );
+
+    const code = component.find('code');
+    const text = code.text();
+    expect(text).toBe(markup);
+
+    const div = component.find('div');
+    div.simulate('click');
+    expect(onBlur).toHaveBeenCalledTimes(0);
+
+    expect(onExecute).toHaveBeenCalledTimes(0);
+    div.simulate('keyDown', { key: 'Enter', keyCode: 13, shiftKey: true });
+    expect(onExecute).toHaveBeenCalledTimes(1);
+
+    div.simulate('blur');
+    expect(onBlur).toHaveBeenCalledTimes(1);
+  });
+
+  it('should display markup and toggle content editable', () => {
+    const markup = '[Testing one:`2 + 3` /]';
+    component = mount(
+      <EditableCodeCell markup={markup} onExecute={onExecute} onBlur={onBlur} />
+    );
+
+    const code = component.find('code');
+    const text = code.text();
+    expect(text).toBe(markup);
+
+    let div = component.find('div');
+
+    expect(div.props().contentEditable).toBeFalsy();
+    const pre = component.find('pre');
+    pre.simulate('click');
+
+    div = component.find('div');
+    expect(div.props().contentEditable).toBeTruthy();
   });
 });

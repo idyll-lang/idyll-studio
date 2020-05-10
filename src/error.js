@@ -12,3 +12,9 @@ exports.InvalidParameterError = class InvalidParameterError extends ExtendableEr
     super(msg);
   }
 };
+
+exports.EditingWarning = class EditingWarning extends ExtendableError {
+  constructor(msg) {
+    super(msg);
+  }
+};
