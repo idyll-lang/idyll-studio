@@ -1,21 +1,19 @@
 import React from 'react';
 import Property from './property';
-import Context from '../../context';
 
+/**
+ * Returns a list of properties for the given node
+ */
 class Component extends React.PureComponent {
-
-  static contextType = Context;
-
-
   constructor(props) {
     super(props);
     this.state = {
       newPropName: ''
-    }
+    };
   }
 
   handleUpdateNewPropName(event) {
-    this.setState({newPropName: event.target.value});
+    this.setState({ newPropName: event.target.value });
   }
 
   addProperty() {
@@ -27,91 +25,80 @@ class Component extends React.PureComponent {
     };
 
     this.setState({ newPropName: '' });
-    this.context.setAst(this.context.ast);
   }
 
-  handleUpdateValue(propName) {
-    return (e) => {
-      const node = this.props.node;
-      let val = e.target.value;
-      if (val.trim() !== '') {
-        val = Number(e.target.value);
+  /**
+   * Makes a copy of the node's properties with the
+   * new property value and notifies parent
+   * @param {string} propName the name of the prop
+   * @param {string} propValue the value of the prop
+   * @param {React.ChangeEvent} e the change event associated
+   *                              with the node input change
+   */
+  updateProperty(propName, propValue, e) {
+    const propertiesCopy = {};
+    Object.keys(this.props.node.properties).forEach(property => {
+      const propertyObject = this.props.node.properties[property];
+
+      if (property === propName) {
+        propertiesCopy[propName] = {
+          ...propertyObject,
+          value: propValue
+        };
+      } else {
+        propertiesCopy[property] = { ...propertyObject };
       }
-      if (isNaN(val)) {
-        val = e.target.value;
-      }
+    });
 
-      node.properties[propName].value = val;
-      this.context.setAst(this.context.ast);
-    }
-  }
-
-  handleUpdateType(propName, type) {
-    return () => {
-      const node = this.props.node;
-      node.properties[propName].type = type;
-      this.context.setAst(this.context.ast);
-    }
+    // send to author view with info
+    this.props.updateNodeWithNewProperties(
+      this.props.node,
+      propertiesCopy,
+      propName,
+      e
+    );
   }
 
-  renderExpression(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-      <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'variable')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: '#B8E986'}}>{prop.type}</div>
-      <div>
-      </div>
-    </div>
-  }
-  renderValue(key, prop) {
-    return <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-      <input className={"prop-input"} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-      <div className={"prop-type"} onClick={this.handleUpdateType(key, 'expression')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: '#4A90E2', color: '#fff'}}>{typeof prop.value}</div>
-      <div>
-        {/* Current Value: {idyllState[prop.value]} */}
-      </div>
-    </div>
-  }
-  renderVariable(key, prop) {
-    const idyllState = this.context.context.data();
-    return <div>
-      <div style={{display: 'flex', flexDirection: 'row', width: '100%'}}>
-        <input className={"prop-input"} style={{fontFamily: 'monospace'}} onChange={this.handleUpdateValue(key)} type="text" value={prop.value}></input>
-        <div className={"prop-type"} onClick={this.handleUpdateType(key, 'value')} style={{marginLeft: 0, borderRadius: '0 20px 20px 0', background: '#50E3C2'}}>{prop.type}</div>
-      </div>
-      <div>
-        Current Value: {idyllState[prop.value]}
-      </div>
-    </div>
-  }
-
-  renderProp(key, prop) {
-    switch(prop.type) {
-      case 'variable':
-        return this.renderVariable(key, prop);
-      case 'value':
-        return this.renderValue(key, prop);
-      case 'expression':
-        return this.renderExpression(key, prop);
-    }
+  updateNodeType(propName, propType) {
+    this.props.updateNodeType(propName, propType, this.props.node);
   }
 
   render() {
     const ASTNode = this.props.node;
     const properties = [];
-
     return (
       <div>
-        {
-          Object.keys(ASTNode.properties || {}).map((propName) => {
-            const prop = ASTNode.properties[propName];
-            return <div key={propName} style={{marginBottom: '1em', padding: '0 0.25em'}}>
+        {Object.keys(ASTNode.properties || {}).map(propName => {
+          const prop = ASTNode.properties[propName];
+
+          return (
+            <div
+              key={propName}
+              style={{ marginBottom: '1em', padding: '0 0.25em' }}
+            >
               {/* <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propName}</div> */}
-              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                <Property setAst={this.context.setAst} ast={this.context.ast} node={ASTNode} name={propName} value={prop} />
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Property
+                  updateProperty={this.updateProperty.bind(this)}
+                  name={propName}
+                  value={prop}
+                  variableData={this.props.variableData}
+                  updateNodeType={this.updateNodeType.bind(this)}
+                  updateShowPropDetailsMap={this.props.updateShowPropDetailsMap}
+                  showDetails={this.props.showPropDetailsMap[propName]}
+                  activePropName={this.props.activePropName}
+                  cursorPosition={this.props.cursorPosition}
+                />
               </div>
             </div>
-          })
-        }
+          );
+        })}
         {/* <div>
           Add property
 

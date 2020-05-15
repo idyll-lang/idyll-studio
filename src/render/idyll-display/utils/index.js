@@ -1,8 +1,6 @@
-
-
 const getRandomId = () => {
-  return Math.floor(Math.random()*10000000000) + 100000000;
-}
+  return Math.floor(Math.random() * 10000000000) + 100000000;
+};
 
 const getNodeById = (node, id) => {
   if (node.id === id) {
@@ -18,23 +16,25 @@ const getNodeById = (node, id) => {
     }
   }
   return false;
-}
+};
 
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
-  Object.keys(newProps).forEach((key) => {
+
+  Object.keys(newProps).forEach(key => {
     if (key === 'id') {
       return;
     }
-    if (typeof newProps[key] === 'object' && typeof targetNode[key] === 'object') {
+    if (
+      typeof newProps[key] === 'object' &&
+      typeof targetNode[key] === 'object'
+    ) {
       targetNode[key] = Object.assign({}, targetNode[key], newProps[key]);
     } else {
       targetNode[key] = newProps[key];
     }
   });
-
-}
-
+};
 
 const deleteNodeById = (node, id) => {
   if (!node.children || !node.children.length) {
@@ -53,12 +53,33 @@ const deleteNodeById = (node, id) => {
     }
   }
   return false;
-}
+};
 
+const isChildOf = (node, parent) => {
+  while (node !== null) {
+    if (node === parent) {
+      return true;
+    }
+    node = node.parentNode;
+  }
+
+  return false;
+};
+
+/**
+ * Returns true if one node is null / undefined and the other
+ * is not.
+ * @param {IdyllAstNode} node1 an idyll node
+ * @param {IdyllAstNode} node2 an idyll node
+ */
+const isDifferentActiveNode = (node1, node2) =>
+  (node1 && !node2) || (node2 && !node1);
 
 module.exports = {
   getNodeById,
   deleteNodeById,
   updateNodeById,
-  getRandomId
-}
+  getRandomId,
+  isChildOf,
+  isDifferentActiveNode
+};

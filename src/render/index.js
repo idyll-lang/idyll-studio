@@ -5,6 +5,12 @@ import Context from './context';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
+const PUBLISHING_ERROR = 'Error occurred while publishing: ';
+const PUBLISHING = 'Publishing your project...';
+const PUBLISHED = 'Published!';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -16,7 +22,10 @@ class App extends React.PureComponent {
       componentPropMap: new Map(),
       ast: undefined,
       datasets: undefined,
-      currentSidebarNode: null
+      currentSidebarNode: null,
+      url: '',
+      currentProcess: null,
+      activeComponent: null
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -26,7 +35,7 @@ class App extends React.PureComponent {
     // Load in datasets
     ipcRenderer.on(
       'idyll:compile',
-      (event, { datasets, ast, components, path }) => {
+      (event, { datasets, ast, components, path, url }) => {
         console.log(components);
         var componentProps = this.createComponentMap(components);
 
@@ -38,29 +47,28 @@ class App extends React.PureComponent {
           componentPropMap: componentProps,
           layout: 'centered',
           theme: 'default',
-          currProcess: '',
-          url: '' // replace once sqlite db implemented
+          currentProcess: '',
+          url: url // replace once sqlite db implemented
         });
       }
     );
 
     ipcRenderer.on('publishing', (event, message) => {
-      console.log(message);
       this.setState({
-        currProcess: 'publishing'
+        currentProcess: PUBLISHING
       });
     });
 
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
-        currProcess: 'error'
+        currentProcess: PUBLISHING_ERROR + message
       });
     });
 
-    ipcRenderer.on('url', (event, url) => {
+    ipcRenderer.on('published-url', (event, url) => {
       this.setState({
         url: url,
-        currProcess: 'published'
+        currentProcess: PUBLISHED
       });
     });
 
@@ -83,7 +91,8 @@ class App extends React.PureComponent {
       currentSidebarNode,
       components,
       url,
-      currProcess
+      currentProcess,
+      activeComponent
     } = this.state;
     return {
       context: context,
@@ -95,7 +104,8 @@ class App extends React.PureComponent {
       datasets: datasets,
       currentSidebarNode: currentSidebarNode,
       url: url,
-      currProcess: currProcess,
+      currentProcess: currentProcess,
+      activeComponent: activeComponent,
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },
@@ -113,7 +123,10 @@ class App extends React.PureComponent {
         this.setState({ context: context });
       },
       deploy: () => {
-        ipcRenderer.send('deploy', 'hi');
+        ipcRenderer.send('deploy', '');
+      },
+      setActiveComponent: activeComponent => {
+        this.setState({ activeComponent: { ...activeComponent } });
       }
     };
   }
@@ -180,9 +193,12 @@ class App extends React.PureComponent {
         </div>
       );
     }
+
     return (
       <Context.Provider value={this.getContext()}>
-        <IdyllDisplay key={this.state.pathKey} />
+        <DndProvider backend={HTML5Backend}>
+          <IdyllDisplay key={this.state.pathKey} />
+        </DndProvider>
       </Context.Provider>
     );
   }

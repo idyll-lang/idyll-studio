@@ -28,7 +28,6 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      collapsed: false,
       selectedTab: tabs.DOCUMENT
     };
   }
@@ -77,12 +76,6 @@ class Sidebar extends React.PureComponent {
     );
   }
 
-  handleToggle() {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
-
   modifyAST() {
     const currentAST = this.context.ast;
     const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', node => {
@@ -125,7 +118,7 @@ class Sidebar extends React.PureComponent {
               {this.getStyleView()}
             </div>
             <div className='publish-view'>
-              <h2>Deploy</h2>
+              <h2>Deployment</h2>
               <Deployment />
             </div>
           </div>
@@ -172,10 +165,7 @@ class Sidebar extends React.PureComponent {
     }
 
     return (
-      <div
-        className='sidebar-information'
-        style={{ width: this.state.collapsed ? 0 : undefined }}
-      >
+      <div className='sidebar-information'>
         {currentSidebarNode ? (
           <ComponentDetails />
         ) : (

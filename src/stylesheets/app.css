@@ -8,15 +8,17 @@ html {
   display: grid;
   height: 100vh;
   grid-template-columns: auto 3fr;
-  transition: grid-template-colums 0.5;
+  /* transition: grid-template-colums 0.5s; */
   /* grid-template-rows: 100px calc(100vh - 100px); */
   /* grid-gap: 1em; */
+  transition: transform 0.5s linear, width 0.5s linear;
+  width: 100vw;
+  transform: translateX(0);
 }
 
-.sidebar-information {
-  /* grid-row: 1; */
-  /* grid-column: 1 / 4; */
-  /* padding: 1em; */
+.grid.sidebar-collapse {
+  transform: translateX(-300px);
+  width: calc(100vw + 300px);
 }
 
 .output-container {
@@ -33,8 +35,18 @@ html {
   height: 100vh;
   overflow: auto;
   width: 300px;
-  transition: width 0.5s;
+  /* transition: all 0.5s; */
+  /* transition: transform 0.5s; */
+  overflow-x: hidden;
 }
+.sidebar-information > div {
+  width: 300px;
+}
+.grid.sidebar-collapse .sidebar-information {
+  /* transform: translateX(-300px); */
+  /* width: 0; */
+}
+
 .sidebar-information h2 {
   font-size: 18px;
 }
@@ -81,11 +93,18 @@ button.loader:hover {
   background-image: none !important;
   background-color: #222 !important;
   color: white !important;
-  opacity: 1 !important;;
+  opacity: 1 !important;
 }
 
 .author-view-button:focus {
   outline: none;
+}
+
+.author-view-overlay {
+  position: absolute;
+  top: 2.5rem;
+  left: 0.5rem;
+  z-index: 100;
 }
 
 .component-debug-view:hover > .author-view-container {
@@ -135,14 +154,30 @@ button.loader:hover {
 
 .meta-container {
   text-align: right;
-  width: 80%;
+  width: 90%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: baseline;
+  column-gap: 7px;
+}
+
+.meta-container a {
+  text-align: left;
+}
+
+.deploy-view {
+  display: grid;
 }
 
 .publish-button-container {
-  width: 50%;
-  margin: 0 auto;
+  justify-self: center;
   text-align: center;
 }
+
+#publish-button {
+  min-width: 150px;
+}
+
 .prop-input {
   margin: 0;
   width: 100%;
@@ -167,7 +202,6 @@ button.loader:hover {
   max-width: 800px;
   margin: 0 auto;
 }
-
 
 .editable-text:hover {
   margin-left: -12px;

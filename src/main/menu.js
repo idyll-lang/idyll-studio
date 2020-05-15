@@ -25,6 +25,18 @@ class IdyllDesktopMenu extends EventEmitter {
         ]
       },
       {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Toggle Sidebar',
+            accelerator: 'CmdOrCtrl+B',
+            click: () => {
+              this.emit('toggle:sidebar');
+            }
+          }
+        ]
+      },
+      {
         label: 'Edit',
         submenu: [
           { role: 'undo' },
@@ -42,7 +54,7 @@ class IdyllDesktopMenu extends EventEmitter {
     // For macs make the first label the app name
     if (process.platform === 'darwin') {
       template.unshift({
-        label: app.getName()
+        label: app.name
       });
     }
 
