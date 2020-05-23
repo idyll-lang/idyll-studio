@@ -8,7 +8,7 @@ import {
   PRESENTATION,
   HELPERS,
 } from '../../../constants';
-import ComponentCategory from './component-category';
+import ComponentAccordion from './component-accordion';
 import { withContext } from '../../context/with-context';
 
 export const WrappedComponentView = withContext(
@@ -48,7 +48,7 @@ export const WrappedComponentView = withContext(
           <div className='component-container'>
             {Object.keys(this.categoriesMap).map((category, i) => {
               return (
-                <ComponentCategory
+                <ComponentAccordion
                   category={category}
                   key={'component_category:' + i}
                   components={this.categoriesMap[category]}

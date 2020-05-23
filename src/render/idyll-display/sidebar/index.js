@@ -136,7 +136,7 @@ class Sidebar extends React.PureComponent {
         return (
           <div>
             <div className='components-and-datasets'>
-              <h2>Components.</h2>
+              <h2>Components</h2>
               <WrappedComponentView />
             </div>
           </div>
