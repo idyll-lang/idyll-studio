@@ -1,6 +1,6 @@
 import React from 'react';
 const idyllAST = require('idyll-ast');
-import Context from '../../context';
+import Context from '../../context/context';
 const compile = require('idyll-compiler');
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -18,12 +18,12 @@ class Deploy extends React.PureComponent {
     let node = idyllAST.getNodesByType(this.context.ast, 'meta')[0];
     this.setState(
       {
-        metaNode: node
+        metaNode: node,
       },
       () => {
         if (!this.state.metaNode) {
           // if doesn't exist insert into tree
-          compile('[meta /]').then(metaAST => {
+          compile('[meta /]').then((metaAST) => {
             let ast = this.context.ast;
             let lastChild = ast.children[ast.children.length - 1];
 
@@ -63,7 +63,7 @@ class Deploy extends React.PureComponent {
   renderProps(propName) {
     return (
       <input
-        onChange={e => {
+        onChange={(e) => {
           this.handleUpdateValue(propName, e);
         }}
         type='text'

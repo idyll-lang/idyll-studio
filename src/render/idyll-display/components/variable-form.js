@@ -1,5 +1,5 @@
 import React from 'react';
-import Context from '../../context';
+import Context from '../../context/context';
 
 class VariableForm extends React.PureComponent {
   static contextType = Context;
@@ -7,20 +7,20 @@ class VariableForm extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {value: ''};
+    this.state = { value: '' };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
+    this.setState({ value: event.target.value });
   }
 
   handleSubmit(event) {
     const newValue = parseInt(this.state.value);
     this.context.node.properties.value.value = newValue;
-    this.context.setAst({...this.context.ast});
+    this.context.setAst({ ...this.context.ast });
     event.preventDefault();
   }
 
@@ -31,9 +31,13 @@ class VariableForm extends React.PureComponent {
       <form onSubmit={this.handleSubmit}>
         <label>
           Update value to:
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input
+            type='text'
+            value={this.state.value}
+            onChange={this.handleChange}
+          />
         </label>
-        <input type="submit" value="Submit" />
+        <input type='submit' value='Submit' />
       </form>
     );
   }

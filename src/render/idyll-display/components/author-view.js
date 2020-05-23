@@ -2,20 +2,8 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
 import { getNodeById, isDifferentActiveNode } from '../utils/';
-import Context from '../../context';
 const AST = require('idyll-ast');
-
-/**
- * Returns a component that is passed the context as a prop
- * to be its consumer.
- * @param {React.PureComponent} WrappedConsumer a component that will consume
- *                                              the context
- */
-const withContext = WrappedConsumer => props => (
-  <Context.Consumer>
-    {context => <WrappedConsumer {...props} context={context} />}
-  </Context.Consumer>
-);
+import { withContext } from '../../context/with-context';
 
 /**
  * An AuthorView is associated with an active component.
@@ -31,7 +19,7 @@ export const WrappedAuthorView = withContext(
         newPropName: '',
         showPropDetailsMap: {}, // name of prop -> true if open, false if not
         activePropName: '',
-        cursorPosition: -1
+        cursorPosition: -1,
       };
     }
 
@@ -49,7 +37,7 @@ export const WrappedAuthorView = withContext(
       }
 
       this.setState({
-        showPropDetailsMap: resultMap
+        showPropDetailsMap: resultMap,
       });
     }
 
@@ -57,7 +45,7 @@ export const WrappedAuthorView = withContext(
       this.setState({
         showPropDetailsMap: {},
         activePropName: '',
-        cursorPosition: -1
+        cursorPosition: -1,
       });
 
       this.props.context.setActiveComponent(null);
@@ -85,7 +73,7 @@ export const WrappedAuthorView = withContext(
         this.setState({
           showPropDetailsMap: {},
           activePropName: '',
-          cursorPosition: -1
+          cursorPosition: -1,
         });
       }
     }
@@ -94,8 +82,8 @@ export const WrappedAuthorView = withContext(
       this.setState({
         showPropDetailsMap: {
           ...this.state.showPropDetailsMap,
-          [propName]: true
-        }
+          [propName]: true,
+        },
       });
     }
 
@@ -115,7 +103,7 @@ export const WrappedAuthorView = withContext(
 
       this.setState({
         activePropName: propName,
-        cursorPosition: selectionStart
+        cursorPosition: selectionStart,
       });
 
       // update node

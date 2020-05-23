@@ -1,10 +1,10 @@
 import React from 'react';
 import Select from 'react-select';
-import Context from '../../context';
+import Context from '../../context/context';
 
 const getRandomId = () => {
-  return Math.floor(Math.random()*10000000000) + 100000000;
-}
+  return Math.floor(Math.random() * 10000000000) + 100000000;
+};
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
 
@@ -25,11 +25,10 @@ class DatasetView extends React.PureComponent {
       "[data name:'" + dataset.name + "' source:'" + dataset.path + "' /]";
 
     // Handle the ast change
-    compile(tag).then(dataAST => {
+    compile(tag).then((dataAST) => {
       var ast = this.context.ast;
       var dataNode = dataAST.children[0];
       dataNode.id = getRandomId();
-
 
       // Insert into ast's root children before the first text container
       // or non-variable/dataset child
@@ -58,7 +57,7 @@ class DatasetView extends React.PureComponent {
               placeholder='Select a dataset'
               ref='select'
               // on change callback
-              options={datasets.map(dataset => {
+              options={datasets.map((dataset) => {
                 return { value: dataset, label: dataset.name };
               })}
               onChange={({ value }) => {

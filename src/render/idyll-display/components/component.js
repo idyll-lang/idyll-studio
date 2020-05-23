@@ -1,5 +1,5 @@
 import React from 'react';
-import { DragSource } from 'react-dnd'
+import { DragSource } from 'react-dnd';
 
 // {components && components.length ? (
 //   <Select
@@ -19,7 +19,6 @@ import { DragSource } from 'react-dnd'
 // ) : null}
 
 class Component extends React.PureComponent {
-
   constructor(props) {
     super(props);
   }
@@ -27,26 +26,23 @@ class Component extends React.PureComponent {
   render() {
     const { component, isDragging, dragSource } = this.props;
     return dragSource(
-      <div style={{opacity: isDragging ? 0.5 : 1}}>
-        {component.name}
-      </div>
+      <div style={{ opacity: isDragging ? 0.5 : 1 }}>{component.name}</div>
     );
   }
 }
-
 
 /**
  * Implement the drag source contract.
  */
 const cardSource = {
-  beginDrag: props => ({ component: props.component.name }),
-}
+  beginDrag: (props) => ({ component: props.component.name }),
+};
 
 function collect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
-  }
+  };
 }
 
 export default DragSource('COMPONENT', cardSource, collect)(Component);
