@@ -25,7 +25,7 @@ class ComponentAccordion extends React.PureComponent {
     const { category, components } = this.props;
 
     return (
-      <div>
+      <div style={{ margin: '0 -1em' }}>
         <button
           onClick={this.handleClick}
           style={{
@@ -33,15 +33,21 @@ class ComponentAccordion extends React.PureComponent {
             margin: 0,
             border: 'none',
             cursor: 'pointer',
+            width: '100%',
+            textAlign: 'left',
+            padding: '1em',
           }}
+          className='accordion-category'
         >
-          <h3>{category}</h3>
+          <h3 style={{ margin: 0 }}>{category}</h3>
         </button>
         <div
           style={{
             maxHeight: this.state.maxHeight,
             overflow: 'hidden',
             transition: 'max-height 0.2s ease-out',
+            width: '100%',
+            paddingLeft: '10%',
           }}
           ref={this._panelRef}
         >

@@ -26,7 +26,15 @@ class Component extends React.PureComponent {
   render() {
     const { component, isDragging, dragSource } = this.props;
     return dragSource(
-      <div style={{ opacity: isDragging ? 0.5 : 1 }}>{component.name}</div>
+      <div
+        style={{
+          opacity: isDragging ? 0.5 : 1,
+          cursor: 'grab',
+          padding: '0.25em 0',
+        }}
+      >
+        {component.name}
+      </div>
     );
   }
 }

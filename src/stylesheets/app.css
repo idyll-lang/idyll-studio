@@ -208,3 +208,7 @@ button.loader:hover {
   padding-left: 10px;
   border-left: solid 2px #ddd;
 }
+
+.accordion-category:hover {
+  background-color: #e5e5e5;
+}
