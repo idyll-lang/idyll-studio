@@ -29,9 +29,8 @@ class Component extends React.PureComponent {
       <div
         style={{
           opacity: isDragging ? 0.5 : 1,
-          cursor: 'grab',
-          padding: '0.25em 0',
         }}
+        className='component'
       >
         {component.name}
       </div>

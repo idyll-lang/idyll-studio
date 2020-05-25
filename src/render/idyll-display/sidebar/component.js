@@ -1,12 +1,5 @@
 import React from 'react';
-import AST from 'idyll-ast';
-import ComponentView from '../components/component-view.js';
-import DatasetView from '../components/dataset-view.js';
-import VariableView from '../components/variable-view';
 import Context from '../../context/context';
-
-import * as layouts from 'idyll-layouts';
-import * as themes from 'idyll-themes';
 
 class Component extends React.PureComponent {
   static contextType = Context;

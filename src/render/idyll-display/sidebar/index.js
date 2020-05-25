@@ -1,6 +1,6 @@
 import React from 'react';
 import AST from 'idyll-ast';
-import WrappedComponentView from '../components/component-view.js';
+import WrappedComponentView from '../components/component-view/component-view.js';
 import DatasetView from '../components/dataset-view.js';
 import VariableView from '../components/variable-view';
 import Deployment from '../components/deploy.js';
