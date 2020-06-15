@@ -7,10 +7,12 @@ import {
   LOGIC,
   PRESENTATION,
   HELPERS,
+  EXCLUDED_COMPONENTS,
 } from '../../../../constants';
 import ComponentAccordion from './component-accordion';
 import { withContext } from '../../../context/with-context';
 import Component from './component';
+import { SearchBarInput } from './search-bar';
 
 export const WrappedComponentView = withContext(
   class ComponentView extends React.PureComponent {
@@ -29,7 +31,7 @@ export const WrappedComponentView = withContext(
         [LOGIC]: [],
         [PRESENTATION]: [],
         [HELPERS]: [],
-        Other: [],
+        Custom: [],
       };
 
       if (
@@ -41,8 +43,8 @@ export const WrappedComponentView = withContext(
             this.categoriesMap[
               COMPONENTS_CATEGORY_MAP.get(component.name)
             ].push(component);
-          } else {
-            this.categoriesMap.Other.push(component);
+          } else if (!EXCLUDED_COMPONENTS.includes(component.name)) {
+            this.categoriesMap.Custom.push(component);
           }
         });
       }
@@ -51,7 +53,7 @@ export const WrappedComponentView = withContext(
     searchComponents = (e) => {
       const value = e.target.value;
       const filteredResults = this.props.context.components.filter(
-        (component) => component.name.startsWith(value)
+        (component) => component.name.startsWith(value.toLowerCase())
       );
 
       this.setState({
@@ -78,10 +80,13 @@ export const WrappedComponentView = withContext(
         return this.state.filteredComponents.map((component, i) => {
           return (
             <div
-              className='component-container'
-              key={'component-container:' + i}
-            >
-              <Component key={i} component={component} />
+              className="component-container"
+              key={'component-container:' + i}>
+              <Component
+                key={i}
+                component={component}
+                searchValue={this.state.searchValue}
+              />
             </div>
           );
         });
@@ -90,20 +95,13 @@ export const WrappedComponentView = withContext(
 
     render() {
       return (
-        <div className='component-view'>
-          <input
-            type='text'
-            placeholder='Search Components'
+        <div className="component-view">
+          <SearchBarInput
+            placeholder="Search Components"
             onChange={this.searchComponents}
             value={this.state.searchValue}
-            style={{
-              padding: '0.25em 1em',
-              border: 'none',
-              width: '100%',
-              borderBottom: '1px solid rgb(0, 0, 0, .33)',
-            }}
           />
-          <div className='component-container'>
+          <div className="component-container">
             {this.state.searchValue.length > 0
               ? this.renderFilteredResults()
               : this.renderAccordion()}

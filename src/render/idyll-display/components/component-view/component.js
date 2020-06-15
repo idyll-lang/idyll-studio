@@ -24,15 +24,28 @@ class Component extends React.PureComponent {
   }
 
   render() {
-    const { component, isDragging, dragSource } = this.props;
+    const { component, isDragging, dragSource, searchValue } = this.props;
+
+    let name = component.name;
+
+    if (searchValue && searchValue.length > 0) {
+      let boldIndex =
+        component.name.indexOf(searchValue.toLowerCase()) + searchValue.length;
+      name = (
+        <>
+          <strong>{name.substring(0, boldIndex)}</strong>
+          {name.substring(boldIndex)}
+        </>
+      );
+    }
+
     return dragSource(
       <div
         style={{
           opacity: isDragging ? 0.5 : 1,
         }}
-        className='component'
-      >
-        {component.name}
+        className="component">
+        {name}
       </div>
     );
   }
