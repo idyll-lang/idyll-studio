@@ -1,5 +1,6 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
+import { formatString } from '../../utils';
 
 // {components && components.length ? (
 //   <Select
@@ -26,11 +27,12 @@ class Component extends React.PureComponent {
   render() {
     const { component, isDragging, dragSource, searchValue } = this.props;
 
-    let name = component.name;
+    let name = formatString(component.name);
 
     if (searchValue && searchValue.length > 0) {
       let boldIndex =
-        component.name.indexOf(searchValue.toLowerCase()) + searchValue.length;
+        name.toLowerCase().indexOf(searchValue.toLowerCase()) +
+        searchValue.length;
       name = (
         <>
           <strong>{name.substring(0, boldIndex)}</strong>

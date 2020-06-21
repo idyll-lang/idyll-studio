@@ -13,6 +13,7 @@ import ComponentAccordion from './component-accordion';
 import { withContext } from '../../../context/with-context';
 import Component from './component';
 import { SearchBarInput } from './search-bar';
+import { formatString } from '../../utils';
 
 export const WrappedComponentView = withContext(
   class ComponentView extends React.PureComponent {
@@ -52,8 +53,12 @@ export const WrappedComponentView = withContext(
 
     searchComponents = (e) => {
       const value = e.target.value;
+
       const filteredResults = this.props.context.components.filter(
-        (component) => component.name.startsWith(value.toLowerCase())
+        (component) => {
+          const name = formatString(component.name).toLowerCase();
+          return name.startsWith(value.toLowerCase());
+        }
       );
 
       this.setState({
