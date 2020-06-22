@@ -67,6 +67,13 @@ export const WrappedComponentView = withContext(
       });
     };
 
+    clearSearch = () => {
+      this.setState({
+        searchValue: '',
+        filteredComponents: [],
+      });
+    };
+
     renderAccordion = () =>
       Object.keys(this.categoriesMap).map((category, i) => {
         return (
@@ -105,6 +112,7 @@ export const WrappedComponentView = withContext(
             placeholder="Search Components"
             onChange={this.searchComponents}
             value={this.state.searchValue}
+            onClick={this.clearSearch}
           />
           <div className="component-container">
             {this.state.searchValue.length > 0

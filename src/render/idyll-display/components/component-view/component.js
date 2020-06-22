@@ -2,23 +2,6 @@ import React from 'react';
 import { DragSource } from 'react-dnd';
 import { formatString } from '../../utils';
 
-// {components && components.length ? (
-//   <Select
-//     style={{width: `50px`}}
-//     placeholder='Select a component'
-//     ref='select'
-//     // on change callback
-//     options={components.map(component => {
-//       //console.log({ value: component, label: component.name });
-//       return { value: component, label: component.name };
-//     })}
-//     onChange={({ value }) => {
-//       const component = value;
-//       this.insertComponent(component.name);
-//     }}
-//   />
-// ) : null}
-
 class Component extends React.PureComponent {
   constructor(props) {
     super(props);

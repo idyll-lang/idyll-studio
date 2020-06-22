@@ -14,6 +14,9 @@ class ComponentAccordion extends React.PureComponent {
     this._panelRef = React.createRef();
   }
 
+  /**
+   * Collapses and opens the accordion panel containing all the components
+   */
   handleClick = () => {
     const scrollHeight = this._panelRef.current.scrollHeight;
     this.setState({
@@ -32,6 +35,7 @@ class ComponentAccordion extends React.PureComponent {
           <Arrow isClosed={isClosed} />
           <h3 style={{ margin: 0 }}>{category}</h3>
         </button>
+
         <div
           style={{
             maxHeight: this.state.maxHeight,
@@ -39,14 +43,11 @@ class ComponentAccordion extends React.PureComponent {
           className="accordion-panel-container"
           ref={this._panelRef}>
           <div
-            style={{
-              maxHeight: this.state.maxHeight,
-              borderLeft: '1px solid black',
-              opacity: '11%',
-              marginLeft: '2em',
-            }}
+            className="accordion-line"
+            style={{ maxHeight: this.state.maxHeight }}
           />
-          <div style={{ margin: '0 -2em', width: '100%' }}>
+
+          <div className="accordion-component">
             {(components || []).map((component, i) => {
               return <Component key={i} component={component} />;
             })}
