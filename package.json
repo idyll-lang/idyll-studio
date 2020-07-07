@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "draft-js": "^0.11.4",
-    "electron": "^8.0.0",
+    "electron": "^8.2.4",
     "idyll": "^4.10.2",
     "idyll-compiler": "^4.0.13",
     "idyll-components": "^3.12.0",
