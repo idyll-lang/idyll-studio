@@ -87,7 +87,7 @@ export const WrappedComponentView = withContext(
 
     renderFilteredResults = () => {
       if (this.state.filteredComponents.length === 0) {
-        return <p>No results found</p>;
+        return <p style={{ margin: '0.25em 1.5em' }}>No results found</p>;
       } else {
         return this.state.filteredComponents.map((component, i) => {
           return (

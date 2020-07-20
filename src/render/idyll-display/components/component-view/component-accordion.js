@@ -29,6 +29,8 @@ class ComponentAccordion extends React.PureComponent {
     const { category, components } = this.props;
     const { isClosed } = this.state;
 
+    console.log(components);
+
     return (
       <div className="component-category">
         <button onClick={this.handleClick} className="accordion-category">

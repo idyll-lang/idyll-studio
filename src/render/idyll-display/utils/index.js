@@ -81,13 +81,12 @@ const isDifferentActiveNode = (node1, node2) =>
  * @param {string} value the string to format
  */
 const formatString = (value) => {
-  if (!value) {
-    return null;
-  } else if (typeof value !== 'string') {
-    throw new Error('Value to format must be a string: ' + value);
+  if (!value || typeof value !== 'string') {
+    return '';
   }
+
   return value
-    .split('-')
+    .split(/[\s-]+/g)
     .map(
       (word) =>
         word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()

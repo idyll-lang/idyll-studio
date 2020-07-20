@@ -56,39 +56,3 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
 ]);
 
 export const EXCLUDED_COMPONENTS = ['generateHeaders'];
-
-// Input", ["
-// ]  'Action',
-//   'Boolean',
-//   'Button',
-//   'Dynamic',
-//   'Radio',
-//   'Range',
-//   'Select',
-//   'Text Input',
-// ],
-// Layout", ["
-// ]  'Aside',
-//   'Full Width',
-//   'Fixed',
-//   'Float',
-//   'Inline',
-//   'Scroller',
-//   'Stepper',
-// ],
-// Logic", ["'Con]ditional'", 'Loop'", 'Switch'],
-// Presentation", ["
-// ]  'Chart',
-//   'Cite',
-//   'Display',
-//   'Desmos',
-//   'Equation',
-//   'Gist',
-//   'Header',
-//   'Link',
-//   'SVG',
-//   'Table',
-//   'Tweet',
-//   'Youtube',
-// ],
-// Helpers", ["'Ana]lytics'", 'Meta'", 'Preload'],
