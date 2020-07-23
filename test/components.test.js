@@ -8,8 +8,10 @@ import { SearchBarInput } from '../src/render/idyll-display/components/component
 import ComponentAccordion from '../src/render/idyll-display/components/component-view/component-accordion';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import Component from '../src/render/idyll-display/components/property-list';
 import { Arrow } from '../src/render/idyll-display/components/component-view/icons/arrow';
+import Component from '../src/render/idyll-display/components/component-view/component';
+import WrappedComponentView from '../src/render/idyll-display/components/component-view/component-view';
+import Context from '../src/render/context/context';
 
 describe('<Property /> with props', () => {
   let component;
@@ -348,5 +350,55 @@ describe('<ComponentAccordion />', () => {
 
     const componentContents = component.find('div.component');
     expect(componentContents).toHaveLength(3);
+    expect(componentContents.at(0).text()).toBe('A');
+    expect(componentContents.at(1).text()).toBe('B');
+    expect(componentContents.at(2).text()).toBe('C');
+  });
+});
+
+describe('<Component />', () => {
+  let component;
+
+  it('should render the component name', () => {
+    component = mount(
+      <DndProvider backend={HTML5Backend}>
+        <Component component={{ name: 'abc' }} searchValue="" />
+      </DndProvider>
+    );
+
+    const componentName = component.find('div.component');
+    expect(componentName.text()).toBe('Abc');
+  });
+
+  it('should render the component name with the stylings', () => {
+    component = mount(
+      <DndProvider backend={HTML5Backend}>
+        <Component component={{ name: 'abc' }} searchValue="a" />
+      </DndProvider>
+    );
+
+    const componentBold = component.find('strong');
+    expect(componentBold.text()).toBe('A');
+
+    const componentName = component.find('div.component');
+    expect(componentName.text()).toBe('Abc');
+  });
+});
+
+describe('<ComonentView />', () => {
+  it('should render the ComponentView with a search bar and accordion', () => {
+    const component = mount(
+      <DndProvider backend={HTML5Backend}>
+        <WrappedComponentView
+          context={{
+            components: [{ name: 'abc' }, { name: 'bcd' }, { name: 'cde' }],
+          }}
+        />
+      </DndProvider>
+    );
+
+    expect(component.exists(SearchBarInput)).toBeTruthy();
+    expect(component.exists(ComponentAccordion)).toBeTruthy();
+    expect(component.exists('div#filtered-search-results')).toBeFalsy();
   });
 });

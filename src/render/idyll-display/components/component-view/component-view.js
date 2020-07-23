@@ -93,6 +93,7 @@ export const WrappedComponentView = withContext(
           return (
             <div
               className="component-container"
+              id="filtered-search-results"
               key={'component-container:' + i}>
               <Component
                 key={i}
