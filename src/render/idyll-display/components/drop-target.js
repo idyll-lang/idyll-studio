@@ -1,12 +1,12 @@
 import React from 'react';
-import { DropTarget } from 'react-dnd'
-import Context from '../../context';
+import { DropTarget } from 'react-dnd';
+import Context from '../../context/context';
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
 
 const getRandomId = () => {
-  return Math.floor(Math.random()*10000000000) + 100000000;
-}
+  return Math.floor(Math.random() * 10000000000) + 100000000;
+};
 class ComponentDropTarget extends React.PureComponent {
   static contextType = Context;
 
@@ -21,7 +21,7 @@ class ComponentDropTarget extends React.PureComponent {
     var tagInfo = this.context.propsMap.get(name);
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
-      tagInfo.props.forEach(prop => {
+      tagInfo.props.forEach((prop) => {
         tag += prop.name + ':' + prop.example + ' ';
       });
     }
@@ -51,7 +51,7 @@ class ComponentDropTarget extends React.PureComponent {
     }
 
     console.log('Searching for ', targetNode, position);
-    compile(componentMarkup).then(componentAST => {
+    compile(componentMarkup).then((componentAST) => {
       let componentNode = componentAST.children[0];
       if (componentNode.name === 'TextContainer') {
         componentNode = componentNode.children[0];
@@ -95,7 +95,7 @@ class ComponentDropTarget extends React.PureComponent {
         }
 
         return false;
-      }
+      };
 
       for (var i = 0; i < ast.children.length; i++) {
         const child = ast.children[i];
@@ -112,13 +112,16 @@ class ComponentDropTarget extends React.PureComponent {
   render() {
     const { isOver, dropTarget } = this.props;
     return dropTarget(
-      <div style={{width: '100%', height: 10, background: isOver ? 'black' : 'none'}}>
-
-      </div>
+      <div
+        style={{
+          width: '100%',
+          height: 10,
+          background: isOver ? 'black' : 'none',
+        }}
+      ></div>
     );
   }
 }
-
 
 const componentBlockTarget = {
   drop(props, monitor, component) {
@@ -127,14 +130,17 @@ const componentBlockTarget = {
     // console.log('dropped component', component);
     component.insertComponent(monitor.getItem().component);
   },
-}
+};
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-  }
+  };
 }
 
-
-export default DropTarget('COMPONENT', componentBlockTarget, collect)(ComponentDropTarget)
+export default DropTarget(
+  'COMPONENT',
+  componentBlockTarget,
+  collect
+)(ComponentDropTarget);

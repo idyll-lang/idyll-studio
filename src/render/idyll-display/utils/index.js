@@ -21,7 +21,7 @@ const getNodeById = (node, id) => {
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
 
-  Object.keys(newProps).forEach(key => {
+  Object.keys(newProps).forEach((key) => {
     if (key === 'id') {
       return;
     }
@@ -75,11 +75,31 @@ const isChildOf = (node, parent) => {
 const isDifferentActiveNode = (node1, node2) =>
   (node1 && !node2) || (node2 && !node1);
 
+/**
+ * Takes in a string and returns back a formatted version of it
+ * that replaces '-' with spaces and capitalizes every word
+ * @param {string} value the string to format
+ */
+const formatString = (value) => {
+  if (!value || typeof value !== 'string') {
+    return '';
+  }
+
+  return value
+    .split(/[\s-]+/g)
+    .map(
+      (word) =>
+        word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()
+    )
+    .join(' ');
+};
+
 module.exports = {
   getNodeById,
   deleteNodeById,
   updateNodeById,
   getRandomId,
   isChildOf,
-  isDifferentActiveNode
+  isDifferentActiveNode,
+  formatString,
 };

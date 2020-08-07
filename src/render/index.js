@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
-import Context from './context';
+import Context from './context/context';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
@@ -25,7 +25,7 @@ class App extends React.PureComponent {
       currentSidebarNode: null,
       url: '',
       currentProcess: null,
-      activeComponent: null
+      activeComponent: null,
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -48,27 +48,27 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currentProcess: '',
-          url: url // replace once sqlite db implemented
+          url: url, // replace once sqlite db implemented
         });
       }
     );
 
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
-        currentProcess: PUBLISHING
+        currentProcess: PUBLISHING,
       });
     });
 
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
-        currentProcess: PUBLISHING_ERROR + message
+        currentProcess: PUBLISHING_ERROR + message,
       });
     });
 
     ipcRenderer.on('published-url', (event, url) => {
       this.setState({
         url: url,
-        currentProcess: PUBLISHED
+        currentProcess: PUBLISHED,
       });
     });
 
@@ -92,7 +92,7 @@ class App extends React.PureComponent {
       components,
       url,
       currentProcess,
-      activeComponent
+      activeComponent,
     } = this.state;
     return {
       context: context,
@@ -106,28 +106,28 @@ class App extends React.PureComponent {
       url: url,
       currentProcess: currentProcess,
       activeComponent: activeComponent,
-      setSidebarNode: node => {
+      setSidebarNode: (node) => {
         this.setState({ currentSidebarNode: node });
       },
-      setTheme: theme => {
+      setTheme: (theme) => {
         this.setState({ theme: theme });
       },
-      setLayout: layout => {
+      setLayout: (layout) => {
         this.setState({ layout: layout });
       },
-      setAst: ast => {
+      setAst: (ast) => {
         console.log('set ast');
         this.setState({ ast: { ...ast } });
       },
-      setContext: context => {
+      setContext: (context) => {
         this.setState({ context: context });
       },
       deploy: () => {
         ipcRenderer.send('deploy', '');
       },
-      setActiveComponent: activeComponent => {
+      setActiveComponent: (activeComponent) => {
         this.setState({ activeComponent: { ...activeComponent } });
-      }
+      },
     };
   }
 
@@ -136,7 +136,7 @@ class App extends React.PureComponent {
   createComponentMap(components) {
     var componentProps = new Map();
 
-    components.forEach(component => {
+    components.forEach((component) => {
       var path;
       try {
         path = require(component.path);
@@ -152,7 +152,7 @@ class App extends React.PureComponent {
         componentProps.set(component.name, {
           name: component.name,
           tagType: 'closed',
-          props: []
+          props: [],
         });
       }
     });
@@ -174,7 +174,7 @@ class App extends React.PureComponent {
             alignItems: 'center',
             justifyContent: 'center',
             width: '100vw',
-            height: '100vh'
+            height: '100vh',
           }}
         >
           <div
@@ -182,7 +182,7 @@ class App extends React.PureComponent {
               background: '#efefef',
               fontFamily: 'Helvetica',
               borderRadius: 0,
-              padding: '4em'
+              padding: '4em',
             }}
           >
             Load an Idyll project

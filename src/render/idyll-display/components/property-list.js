@@ -4,11 +4,11 @@ import Property from './property';
 /**
  * Returns a list of properties for the given node
  */
-class Component extends React.PureComponent {
+class PropertyList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      newPropName: ''
+      newPropName: '',
     };
   }
 
@@ -21,7 +21,7 @@ class Component extends React.PureComponent {
     node.properties = node.properties || {};
     node.properties[this.state.newPropName] = {
       type: 'value',
-      value: ''
+      value: '',
     };
 
     this.setState({ newPropName: '' });
@@ -37,13 +37,13 @@ class Component extends React.PureComponent {
    */
   updateProperty(propName, propValue, e) {
     const propertiesCopy = {};
-    Object.keys(this.props.node.properties).forEach(property => {
+    Object.keys(this.props.node.properties).forEach((property) => {
       const propertyObject = this.props.node.properties[property];
 
       if (property === propName) {
         propertiesCopy[propName] = {
           ...propertyObject,
-          value: propValue
+          value: propValue,
         };
       } else {
         propertiesCopy[property] = { ...propertyObject };
@@ -68,22 +68,20 @@ class Component extends React.PureComponent {
     const properties = [];
     return (
       <div>
-        {Object.keys(ASTNode.properties || {}).map(propName => {
+        {Object.keys(ASTNode.properties || {}).map((propName) => {
           const prop = ASTNode.properties[propName];
 
           return (
             <div
               key={propName}
-              style={{ marginBottom: '1em', padding: '0 0.25em' }}
-            >
+              style={{ marginBottom: '1em', padding: '0 0.25em' }}>
               {/* <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propName}</div> */}
               <div
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between'
-                }}
-              >
+                  justifyContent: 'space-between',
+                }}>
                 <Property
                   updateProperty={this.updateProperty.bind(this)}
                   name={propName}
@@ -115,4 +113,4 @@ class Component extends React.PureComponent {
   }
 }
 
-export default Component;
+export default PropertyList;

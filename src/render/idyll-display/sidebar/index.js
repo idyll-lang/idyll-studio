@@ -1,11 +1,11 @@
 import React from 'react';
 import AST from 'idyll-ast';
-import ComponentView from '../components/component-view.js';
+import WrappedComponentView from '../components/component-view/component-view.js';
 import DatasetView from '../components/dataset-view.js';
 import VariableView from '../components/variable-view';
 import Deployment from '../components/deploy.js';
 import ComponentDetails from './component.js';
-import Context from '../../context';
+import Context from '../../context/context';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
@@ -15,7 +15,7 @@ console.log(layouts, themes);
 const tabs = {
   DOCUMENT: 'document',
   VARIABLES: 'variables',
-  COMPONENTS: 'components'
+  COMPONENTS: 'components',
 };
 
 class Sidebar extends React.PureComponent {
@@ -27,7 +27,7 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      selectedTab: tabs.DOCUMENT
+      selectedTab: tabs.DOCUMENT,
     };
   }
 
@@ -47,7 +47,7 @@ class Sidebar extends React.PureComponent {
             onChange={this.handleThemeChange.bind(this)}
             value={this.context.theme}
           >
-            {Object.keys(themes).map(themeName => {
+            {Object.keys(themes).map((themeName) => {
               return (
                 <option key={themeName} value={themeName}>
                   {themeName}
@@ -62,7 +62,7 @@ class Sidebar extends React.PureComponent {
             onChange={this.handleLayoutChange.bind(this)}
             value={this.context.layout}
           >
-            {Object.keys(layouts).map(layoutName => {
+            {Object.keys(layouts).map((layoutName) => {
               return (
                 <option key={layoutName} value={layoutName}>
                   {layoutName}
@@ -77,7 +77,7 @@ class Sidebar extends React.PureComponent {
 
   modifyAST() {
     const currentAST = this.context.ast;
-    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', node => {
+    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', (node) => {
       node.children[0].value = 'alan took over';
       return node;
     });
@@ -86,7 +86,7 @@ class Sidebar extends React.PureComponent {
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
-    return AST.getNodesByType(this.context.ast, 'var').map(variable => {
+    return AST.getNodesByType(this.context.ast, 'var').map((variable) => {
       const props = variable.properties;
       const name = props.name.value;
       const value = props.value.value;
@@ -136,8 +136,8 @@ class Sidebar extends React.PureComponent {
         return (
           <div>
             <div className='components-and-datasets'>
-              <h2>Components.</h2>
-              <ComponentView />
+              <h2>Components</h2>
+              <WrappedComponentView />
             </div>
           </div>
         );

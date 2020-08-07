@@ -3,7 +3,7 @@ import Render from './render.js';
 import Sidebar from './sidebar';
 import { ipcRenderer } from 'electron';
 import { WrappedAuthorView } from './components/author-view';
-import Context from '../context';
+import Context from '../context/context';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -12,7 +12,7 @@ class IdyllDisplay extends React.PureComponent {
     super(props);
     this.state = {
       // TODO - get these values from the project config!
-      collapsed: false
+      collapsed: false,
     };
   }
 
@@ -22,7 +22,7 @@ class IdyllDisplay extends React.PureComponent {
 
   handleToggle() {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
     });
   }
 

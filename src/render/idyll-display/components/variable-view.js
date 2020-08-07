@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import Context from '../../context';
+import Context from '../../context/context';
 import IdyllAST from 'idyll-ast';
-import { DragSource } from 'react-dnd'
+import { DragSource } from 'react-dnd';
 
 const columns = [
-  { key: 'type', name: "Type", editable: true },
-  { key: 'name', name: "Name", editable: true },
-  { key: 'initialValue', name: "Initial value", editable: true },
-  { key: 'currentValue', name: "Current value", editable: true }
+  { key: 'type', name: 'Type', editable: true },
+  { key: 'name', name: 'Name', editable: true },
+  { key: 'initialValue', name: 'Initial value', editable: true },
+  { key: 'currentValue', name: 'Current value', editable: true },
 ];
 
 class VariableFormatter extends React.PureComponent {
@@ -24,35 +24,37 @@ class VariableFormatter extends React.PureComponent {
   }
 }
 
-
-
 /**
  * Implement the drag source contract.
  */
 const variableSource = {
-  beginDrag: props => ({ name: props.value }),
-}
+  beginDrag: (props) => ({ name: props.value }),
+};
 
 function variableCollect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
     isDragging: monitor.isDragging(),
-  }
+  };
 }
 
-const DraggableFormatter = DragSource('VARIABLE', variableSource, variableCollect)(VariableFormatter);
+const DraggableFormatter = DragSource(
+  'VARIABLE',
+  variableSource,
+  variableCollect
+)(VariableFormatter);
 
- class VariableView extends React.PureComponent {
+class VariableView extends React.PureComponent {
   static contextType = Context;
 
   constructor(props) {
     super(props);
     this.addVariable = this.addVariable.bind(this);
     this.getRows = this.getRows.bind(this);
-    this.state = ({
+    this.state = {
       rows: [],
-      contextUpdates: 0
-    });
+      contextUpdates: 0,
+    };
   }
 
   componentDidMount() {
@@ -72,13 +74,13 @@ const DraggableFormatter = DragSource('VARIABLE', variableSource, variableCollec
       properties: {
         name: {
           type: 'value',
-          value: nameOfVar
+          value: nameOfVar,
         },
         value: {
           type: 'value',
-          value: valueOfVar
-        }
-      }
+          value: valueOfVar,
+        },
+      },
     };
     const updatedAST = IdyllAST.appendNode(ast, newVarNode);
     this.context.setAst(updatedAST);
@@ -88,19 +90,23 @@ const DraggableFormatter = DragSource('VARIABLE', variableSource, variableCollec
     const rows = [];
     const currentChildren = this.context.ast.children;
     const currentData = this.context.context.data();
-    this._rowsToVars = []
+    this._rowsToVars = [];
     currentChildren.map((child) => {
       const childType = child.type;
-      if (childType === 'var' || childType === 'data') { // allow for derivedVar types too
+      if (childType === 'var' || childType === 'data') {
+        // allow for derivedVar types too
         const properties = child.properties;
         const varName = properties.name.value;
         const varValue = currentData[varName];
-        const initialValue = childType === 'var' ? properties.value.value : properties.source.value;
+        const initialValue =
+          childType === 'var'
+            ? properties.value.value
+            : properties.source.value;
         rows.push({
           type: childType,
           name: varName,
           initialValue: initialValue,
-          currentValue: varValue
+          currentValue: varValue,
         });
         this._rowsToVars.push(child);
       }
@@ -112,7 +118,7 @@ const DraggableFormatter = DragSource('VARIABLE', variableSource, variableCollec
     if (update.action === 'CELL_UPDATE') {
       Object.keys(update.updated).forEach((key) => {
         const val = update.updated[key];
-        switch(key) {
+        switch (key) {
           case 'currentValue':
             this.context.context.update({ [update.fromRowData.name]: val });
             break;
@@ -124,39 +130,45 @@ const DraggableFormatter = DragSource('VARIABLE', variableSource, variableCollec
             break;
         }
       });
-
     }
 
     this.context.setAst(this.context.ast);
   }
 
-   // Returns a list of all variables in the AST
+  // Returns a list of all variables in the AST
   render() {
     const rows = this.getRows();
     //const variablesTable = this.getVariableTable(this.context.ast);
     const columns = [
-      { key: 'type', name: "Type", editable: true },
-      { key: 'name', name: "Name", editable: true, formatter: DraggableFormatter },
-      { key: 'initialValue', name: "Initial value", editable: true },
-      { key: 'currentValue', name: "Current value", editable: true }
+      { key: 'type', name: 'Type', editable: true },
+      {
+        key: 'name',
+        name: 'Name',
+        editable: true,
+        formatter: DraggableFormatter,
+      },
+      { key: 'initialValue', name: 'Initial value', editable: true },
+      { key: 'currentValue', name: 'Current value', editable: true },
     ];
     return (
       <div className='variables-view'>
         <div className='variables-table-view'>
           <ReactDataGrid
             columns={columns}
-            rowGetter={i => rows[i]}
+            rowGetter={(i) => rows[i]}
             rowsCount={rows.length}
             enableCellSelect={true}
             onGridRowsUpdated={this.handleGridUpdated.bind(this)}
           />
         </div>
         <div className='add-variable-button'>
-          <button onClick={() => this.addVariable(this.context.ast)}>Add variable</button>
+          <button onClick={() => this.addVariable(this.context.ast)}>
+            Add variable
+          </button>
         </div>
       </div>
-    )
+    );
   }
 }
 
- export default VariableView;
+export default VariableView;
