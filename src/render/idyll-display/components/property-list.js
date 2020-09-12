@@ -36,24 +36,10 @@ class PropertyList extends React.PureComponent {
    *                              with the node input change
    */
   updateProperty(propName, propValue, e) {
-    const propertiesCopy = {};
-    Object.keys(this.props.node.properties).forEach((property) => {
-      const propertyObject = this.props.node.properties[property];
-
-      if (property === propName) {
-        propertiesCopy[propName] = {
-          ...propertyObject,
-          value: propValue,
-        };
-      } else {
-        propertiesCopy[property] = { ...propertyObject };
-      }
-    });
-
     // send to author view with info
     this.props.updateNodeWithNewProperties(
       this.props.node,
-      propertiesCopy,
+      propValue,
       propName,
       e
     );
@@ -92,6 +78,9 @@ class PropertyList extends React.PureComponent {
                   showDetails={this.props.showPropDetailsMap[propName]}
                   activePropName={this.props.activePropName}
                   cursorPosition={this.props.cursorPosition}
+                  activePropInput={this.props.activePropInput}
+                  onPropFocus={this.props.onPropFocus}
+                  onPropBlur={this.props.onPropBlur}
                 />
               </div>
             </div>

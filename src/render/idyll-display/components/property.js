@@ -7,6 +7,7 @@ class Component extends React.PureComponent {
     super(props);
 
     this.handleUpdateValue = this.handleUpdateValue.bind(this);
+    this.cursor = null;
   }
 
   /**
@@ -15,7 +16,7 @@ class Component extends React.PureComponent {
    * @param {string} propName the name of prop being updated
    */
   handleUpdateValue(propName) {
-    return e => {
+    return (e) => {
       let val = e.target.value;
       if (val.trim() !== '') {
         val = Number(e.target.value);
@@ -27,6 +28,20 @@ class Component extends React.PureComponent {
       this.props.updateProperty(propName, val, e);
     };
   }
+
+  handleUpdateValueV2 = (e) => {
+    const propName = this.props.name;
+
+    let val = e.target.value;
+    if (val.trim() !== '') {
+      val = Number(e.target.value);
+    }
+    if (isNaN(val)) {
+      val = e.target.value;
+    }
+
+    this.props.updateProperty(propName, val, e);
+  };
 
   getBackgroundColor(propType) {
     switch (propType) {
@@ -55,10 +70,20 @@ class Component extends React.PureComponent {
    * @param {string} type the next type of the prop
    */
   updateNodeType(propName, type) {
-    return e => {
+    return (e) => {
       this.props.updateNodeType(propName, type);
     };
   }
+
+  onFocus = (e) => {
+    e.target.selectionStart = this.props.cursorPosition;
+    e.target.selectionEnd = this.props.cursorPosition;
+    this.props.onPropFocus(
+      this.props.name,
+      e.target.value,
+      e.target.selectionStart
+    );
+  };
 
   /**
    * Renders an input for the corresponding
@@ -69,6 +94,7 @@ class Component extends React.PureComponent {
    */
   renderPropInput(key, prop, nextType) {
     const isActiveProp = this.props.activePropName === key;
+    const inputValue = prop.value;
 
     return (
       <div>
@@ -76,14 +102,12 @@ class Component extends React.PureComponent {
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
-            onChange={this.handleUpdateValue(key, prop.type)}
-            type='text'
-            value={prop.value}
+            onChange={this.handleUpdateValueV2}
+            type="text"
+            value={isActiveProp ? this.props.activePropInput : inputValue}
             autoFocus={isActiveProp}
-            onFocus={e => {
-              e.target.selectionStart = this.props.cursorPosition;
-              e.target.selectionEnd = this.props.cursorPosition;
-            }}
+            onFocus={this.onFocus}
+            onBlur={this.props.onPropBlur}
           />
           <div
             className={'prop-type'}
@@ -92,9 +116,8 @@ class Component extends React.PureComponent {
               marginLeft: 0,
               borderRadius: '0 20px 20px 0',
               background: this.getBackgroundColor(prop.type),
-              color: this.getColor(prop.type)
-            }}
-          >
+              color: this.getColor(prop.type),
+            }}>
             {prop.type === 'value' ? typeof prop.value : prop.type}
           </div>
         </div>
@@ -127,6 +150,7 @@ class Component extends React.PureComponent {
   render() {
     const { name, value, isOver, dropTarget, showDetails } = this.props;
     let ret;
+
     if (!showDetails) {
       ret = (
         <div
@@ -137,9 +161,8 @@ class Component extends React.PureComponent {
             border: isOver ? 'solid 2px green' : undefined,
             borderRadius: '0 20px 20px 0',
             background: this.getBackgroundColor(value.type),
-            color: this.getColor(value.type)
-          }}
-        >
+            color: this.getColor(value.type),
+          }}>
           {name}
         </div>
       );
@@ -161,16 +184,16 @@ const variableTarget = {
     // node.properties[props.name].type = 'variable';
     // console.log('updating ast');
     updateNodeById(props.ast, node.id, {
-      properties: { [props.name]: { value: name, type: 'variable' } }
+      properties: { [props.name]: { value: name, type: 'variable' } },
     });
     props.setAst(props.ast);
-  }
+  },
 };
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
+    isOver: monitor.isOver(),
   };
 }
 

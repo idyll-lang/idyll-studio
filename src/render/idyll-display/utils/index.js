@@ -94,6 +94,35 @@ const formatString = (value) => {
     .join(' ');
 };
 
+const debounce = (func, waitTime) => {
+  let timeout;
+
+  console.log(waitTime);
+
+  return function functionToExecute(...args) {
+    const callbackFunc = () => {
+      timeout = null;
+
+      console.log(...args);
+      func(...args);
+    };
+
+    clearTimeout(timeout); // everytime functionToExecute is invoked, clears timeout
+
+    timeout = setTimeout(callbackFunc, waitTime);
+  };
+};
+
+const debounceHandler = (...args) => {
+  const debounced = debounce(...args);
+  return function (e) {
+    e.persist();
+
+    console.log(e.target.value);
+    return debounced(e);
+  };
+};
+
 module.exports = {
   getNodeById,
   deleteNodeById,
@@ -102,4 +131,6 @@ module.exports = {
   isChildOf,
   isDifferentActiveNode,
   formatString,
+  debounce,
+  debounceHandler,
 };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
-import { getNodeById, isDifferentActiveNode } from '../utils/';
+import { getNodeById, isDifferentActiveNode, debounce } from '../utils/';
 const AST = require('idyll-ast');
 import { withContext } from '../../context/with-context';
 
@@ -20,8 +20,16 @@ export const WrappedAuthorView = withContext(
         showPropDetailsMap: {}, // name of prop -> true if open, false if not
         activePropName: '',
         cursorPosition: -1,
+        activePropInput: '',
       };
     }
+
+    debouncedSetAst = debounce((node, propName, propValue) => {
+      const newPropList = getUpdatedPropList(node, propName, propValue);
+      node.properties = newPropList;
+      this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
+    }, 500);
 
     componentDidMount() {
       const { activeComponent } = this.props.context;
@@ -74,6 +82,7 @@ export const WrappedAuthorView = withContext(
           showPropDetailsMap: {},
           activePropName: '',
           cursorPosition: -1,
+          activePropInput: '',
         });
       }
     }
@@ -98,27 +107,36 @@ export const WrappedAuthorView = withContext(
      * @param {React.ChangeEvent} e the change event associated
      *                               w/ the prop change
      */
-    updateNodeWithNewProperties(idyllASTNode, newPropList, propName, e) {
+    updateNodeWithNewProperties(idyllASTNode, propValue, propName, e) {
       const selectionStart = e.target.selectionStart;
 
       this.setState({
-        activePropName: propName,
         cursorPosition: selectionStart,
+        activePropName: propName,
+        activePropInput: propValue,
       });
 
       // update node
       let node = getNodeById(this.props.context.ast, idyllASTNode.id);
 
-      const newNode = { ...node, properties: newPropList };
+      this.debouncedSetAst(node, propName, propValue);
+    }
 
-      const childrenCopy = AST.getChildren(node);
-      if (newNode.children) {
-        newNode.children = childrenCopy;
-      }
+    onPropFocus(propName, originalInput, cursorPosition) {
+      this.setState({
+        activePropName: propName,
+        activePropInput: originalInput,
+        cursorPosition: cursorPosition,
+      });
+    }
 
-      node.properties = newPropList;
-      this.props.context.setAst(this.props.context.ast);
-      this.props.context.setActiveComponent(node);
+    onPropBlur() {
+      console.log('BLUR');
+      this.setState({
+        activePropName: '',
+        activePropInput: '',
+        cursorPosition: -1,
+      });
     }
 
     /**
@@ -140,7 +158,7 @@ export const WrappedAuthorView = withContext(
 
       if (activeComponent) {
         const childComponent = (
-          <div className='author-view-overlay'>
+          <div className="author-view-overlay">
             <PropertyList
               node={activeComponent}
               updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
@@ -154,6 +172,9 @@ export const WrappedAuthorView = withContext(
               showPropDetailsMap={this.state.showPropDetailsMap}
               activePropName={this.state.activePropName}
               cursorPosition={this.state.cursorPosition}
+              activePropInput={this.state.activePropInput}
+              onPropFocus={this.onPropFocus.bind(this)}
+              onPropBlur={this.onPropBlur.bind(this)}
             />
           </div>
         );
@@ -174,3 +195,21 @@ export const WrappedAuthorView = withContext(
     }
   }
 );
+
+function getUpdatedPropList(node, propName, propValue) {
+  const propertiesCopy = {};
+  Object.keys(node.properties).forEach((property) => {
+    const propertyObject = node.properties[property];
+
+    if (property === propName) {
+      propertiesCopy[propName] = {
+        ...propertyObject,
+        value: propValue,
+      };
+    } else {
+      propertiesCopy[property] = { ...propertyObject };
+    }
+  });
+
+  return propertiesCopy;
+}
