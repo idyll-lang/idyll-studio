@@ -115,8 +115,11 @@ class ComponentDropTarget extends React.PureComponent {
       <div
         style={{
           width: '100%',
-          height: 10,
-          background: isOver ? 'black' : 'none',
+          height: isOver ? 65 : 10,
+          border: isOver ? '#999999'  :  'none',
+          borderWidth: isOver ? 2  :  0,
+          background: isOver ? '#666666' : 'none',
+          transition: 'all 1s'
         }}
       ></div>
     );

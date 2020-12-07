@@ -175,19 +175,17 @@ class App extends React.PureComponent {
             justifyContent: 'center',
             width: '100vw',
             height: '100vh',
+            background: '#efefef',
           }}
         >
           <div
             style={{
-              background: '#efefef',
               fontFamily: 'Helvetica',
-              borderRadius: 0,
-              padding: '4em',
+              borderRadius: 0
             }}
           >
-            Load an Idyll project
             <button className='loader' onClick={this.handleLoad.bind(this)}>
-              Select...
+              Load a project
             </button>
           </div>
         </div>
