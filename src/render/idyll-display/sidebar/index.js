@@ -163,13 +163,13 @@ class Sidebar extends React.PureComponent {
             <div className='sidebar-tab-container'>
               <div
                 className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
+                  this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
                 }`}
                 onClick={() => {
-                  this.setState({ selectedTab: tabs.DOCUMENT });
+                  this.setState({ selectedTab: tabs.COMPONENTS });
                 }}
               >
-                Document
+                Components
               </div>
               <div
                 className={`sidebar-tab ${
@@ -183,13 +183,13 @@ class Sidebar extends React.PureComponent {
               </div>
               <div
                 className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
+                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
                 }`}
                 onClick={() => {
-                  this.setState({ selectedTab: tabs.COMPONENTS });
+                  this.setState({ selectedTab: tabs.DOCUMENT });
                 }}
               >
-                Components
+                Publish
               </div>
             </div>
             <div className='sidebar-inner'>{this.renderInner()}</div>

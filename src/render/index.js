@@ -138,16 +138,22 @@ class App extends React.PureComponent {
 
     components.forEach((component) => {
       var path;
+      console.log('trying')
       try {
         path = require(component.path);
       } catch (error) {
         console.log(error);
         return; // skip next iteration
       }
+      console.log(path);
       // Stores {component name: props }
       if (typeof path === 'object' && path.default !== undefined) {
         var props = path.default._idyll;
+        console.log(component, props)
         componentProps.set(component.name, props);
+      } else if (path._idyll) {
+        console.log('hasidyll')
+        componentProps.set(component.name, path._idyll);
       } else if (typeof path === 'function') {
         componentProps.set(component.name, {
           name: component.name,

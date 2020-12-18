@@ -128,7 +128,7 @@ class AuthorToolButtons extends React.PureComponent {
         ) : null}
         <div className='author-view-container' id={this.domId}>
           <button
-            className='author-view-button'
+            className={`author-view-button ${this.context  && this.context.activeComponent && this.context.activeComponent.id === this.props.idyllASTNode.id ?  'selected' : ''}`}
             onClick={this.handleClickProps.bind(this)}
             data-tip
             data-for={props.uniqueKey}
@@ -136,7 +136,7 @@ class AuthorToolButtons extends React.PureComponent {
             Properties
           </button>
           <button
-            className='author-view-button'
+            className={`author-view-button ${this.state.showCode ? 'selected' : ''}`}
             onClick={this.handleClickCode.bind(this)}
             data-tip
             data-for={props.uniqueKey}

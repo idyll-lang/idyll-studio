@@ -73,6 +73,18 @@ class Component extends React.PureComponent {
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
+          <div
+            className={'prop-type'}
+            onClick={this.updateNodeType(key, nextType)}
+            style={{
+              marginLeft: 0,
+              // borderRadius: '0 20px 20px 0',
+              background: this.getBackgroundColor(prop.type),
+              color: this.getColor(prop.type)
+            }}
+          >
+            {prop.type === 'value' ? typeof prop.value : prop.type}
+          </div>
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
@@ -85,23 +97,11 @@ class Component extends React.PureComponent {
               e.target.selectionEnd = this.props.cursorPosition;
             }}
           />
-          <div
-            className={'prop-type'}
-            onClick={this.updateNodeType(key, nextType)}
-            style={{
-              marginLeft: 0,
-              borderRadius: '0 20px 20px 0',
-              background: this.getBackgroundColor(prop.type),
-              color: this.getColor(prop.type)
-            }}
-          >
-            {prop.type === 'value' ? typeof prop.value : prop.type}
-          </div>
         </div>
 
         {/* If variable, display current value */}
         {prop.type === 'variable' ? (
-          <div>Current Value: {this.props.variableData[prop.value]}</div>
+          <div className="current-value">Current Value: {this.props.variableData[prop.value]}</div>
         ) : (
           <></>
         )}
@@ -127,25 +127,27 @@ class Component extends React.PureComponent {
   render() {
     const { name, value, isOver, dropTarget, showDetails } = this.props;
     let ret;
-    if (!showDetails) {
+    // if (!showDetails) {
       ret = (
         <div
-          className={'prop-type'}
           onClick={this.updatePropDetails.bind(this)}
           style={{
             marginLeft: 0,
             border: isOver ? 'solid 2px green' : undefined,
-            borderRadius: '0 20px 20px 0',
-            background: this.getBackgroundColor(value.type),
-            color: this.getColor(value.type)
+            // background: this.getBackgroundColor(value.type),
+            // color: this.getColor(value.type)
           }}
         >
-          {name}
+          <div className="prop-name">
+            {name}
+          </div>
+          <div>
+            {this.renderProp(name, value)}
+          </div>
         </div>
       );
-    } else {
-      ret = this.renderProp(name, value);
-    }
+    // } else {
+    // }
     return dropTarget(<div>{ret}</div>);
   }
 }
