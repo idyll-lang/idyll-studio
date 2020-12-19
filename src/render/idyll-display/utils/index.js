@@ -97,13 +97,10 @@ const formatString = (value) => {
 const debounce = (func, waitTime) => {
   let timeout;
 
-  console.log(waitTime);
-
   return function functionToExecute(...args) {
     const callbackFunc = () => {
       timeout = null;
 
-      console.log(...args);
       func(...args);
     };
 
@@ -118,7 +115,6 @@ const debounceHandler = (...args) => {
   return function (e) {
     e.persist();
 
-    console.log(e.target.value);
     return debounced(e);
   };
 };

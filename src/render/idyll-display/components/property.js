@@ -6,30 +6,10 @@ class Component extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleUpdateValue = this.handleUpdateValue.bind(this);
     this.cursor = null;
   }
 
-  /**
-   * Returns a function that gets the input value
-   * and notifies the parent of a prop value change
-   * @param {string} propName the name of prop being updated
-   */
-  handleUpdateValue(propName) {
-    return (e) => {
-      let val = e.target.value;
-      if (val.trim() !== '') {
-        val = Number(e.target.value);
-      }
-      if (isNaN(val)) {
-        val = e.target.value;
-      }
-
-      this.props.updateProperty(propName, val, e);
-    };
-  }
-
-  handleUpdateValueV2 = (e) => {
+  handleUpdateValue = (e) => {
     const propName = this.props.name;
 
     let val = e.target.value;
@@ -76,8 +56,10 @@ class Component extends React.PureComponent {
   }
 
   onFocus = (e) => {
+    console.log("BEFORE: " + e.target.selectionEnd);
     e.target.selectionStart = this.props.cursorPosition;
     e.target.selectionEnd = this.props.cursorPosition;
+    console.log("AFTER: " + e.target.selectionEnd);
     this.props.onPropFocus(
       this.props.name,
       e.target.value,
@@ -114,7 +96,7 @@ class Component extends React.PureComponent {
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
-            onChange={this.handleUpdateValueV2}
+            onChange={this.handleUpdateValue}
             type="text"
             value={isActiveProp ? this.props.activePropInput : inputValue}
             autoFocus={isActiveProp}

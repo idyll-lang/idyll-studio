@@ -10,7 +10,6 @@ import Context from '../../context/context';
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
 
-console.log(layouts, themes);
 
 const tabs = {
   DOCUMENT: 'document',

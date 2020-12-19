@@ -65,7 +65,7 @@ button.loader {
   color: white;
   margin: 1em auto;
   cursor: pointer;
-  transition: all .5s;
+  transition: all 0.5s;
   outline: none;
   font-size: 48px;
   font-weight: bold;
@@ -89,7 +89,7 @@ button.loader:hover {
 }
 .idyll-text-container .author-view-container {
   top: -10px;
-  left: -100px;
+  left: -50px;
 }
 
 .author-view-button {
@@ -105,10 +105,10 @@ button.loader:hover {
   border: solid 1px #666;
   color: #222;
   opacity: 1 !important;
-  margin:  0 0 5px 0;
+  margin: 0 0 5px 0;
 }
 
-.author-view-button:hover  {
+.author-view-button:hover {
   background: #ccc !important;
 }
 .author-view-button.selected {
@@ -371,9 +371,6 @@ button.loader:hover {
   outline: none;
 }
 
-
-
-
 /* Sidebar */
 .sidebar-information {
   /* background: ; */
@@ -384,7 +381,7 @@ button.loader:hover {
   /* background: #eeeeee; */
 }
 
-.sidebar-tab-container .sidebar-tab  {
+.sidebar-tab-container .sidebar-tab {
   border-bottom: solid 1px #ccc;
   text-align: center;
   width: 100%;
@@ -417,7 +414,7 @@ button.loader:hover {
   padding: 0.5em;
 }
 
-input[type="radio"] {
+input[type='radio'] {
   margin-left: 1em;
   margin-right: 0.25em;
 }

@@ -36,7 +36,6 @@ class App extends React.PureComponent {
     ipcRenderer.on(
       'idyll:compile',
       (event, { datasets, ast, components, path, url }) => {
-        console.log(components);
         var componentProps = this.createComponentMap(components);
 
         this.setState({
@@ -75,7 +74,6 @@ class App extends React.PureComponent {
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
-      console.log(message);
       ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast));
     });
   }
@@ -138,18 +136,16 @@ class App extends React.PureComponent {
 
     components.forEach((component) => {
       var path;
-      console.log('trying')
       try {
         path = require(component.path);
       } catch (error) {
         console.log(error);
         return; // skip next iteration
       }
-      console.log(path);
       // Stores {component name: props }
       if (typeof path === 'object' && path.default !== undefined) {
         var props = path.default._idyll;
-        console.log(component, props)
+
         componentProps.set(component.name, props);
       } else if (path._idyll) {
         console.log('hasidyll')

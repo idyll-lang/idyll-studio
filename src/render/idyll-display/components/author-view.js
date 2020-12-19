@@ -29,7 +29,7 @@ export const WrappedAuthorView = withContext(
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
-    }, 500);
+    }, 100);
 
     componentDidMount() {
       const { activeComponent } = this.props.context;
@@ -126,12 +126,11 @@ export const WrappedAuthorView = withContext(
       this.setState({
         activePropName: propName,
         activePropInput: originalInput,
-        cursorPosition: cursorPosition,
+        // cursorPosition: cursorPosition,
       });
     }
 
     onPropBlur() {
-      console.log('BLUR');
       this.setState({
         activePropName: '',
         activePropInput: '',
