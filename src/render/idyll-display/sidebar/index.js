@@ -41,13 +41,13 @@ class Sidebar extends React.PureComponent {
   getStyleView() {
     return (
       <div>
-        <div>
-          Theme:{' '}
+        <div class="theme-container">
+          Theme
           <select
             onChange={this.handleThemeChange.bind(this)}
             value={this.context.theme}
           >
-            {Object.keys(themes).map((themeName) => {
+            {Object.keys(themes).filter(d => !['__esModule', 'none'].includes(d)).map((themeName) => {
               return (
                 <option key={themeName} value={themeName}>
                   {themeName}
@@ -56,13 +56,13 @@ class Sidebar extends React.PureComponent {
             })}
           </select>
         </div>
-        <div>
-          Layout:{' '}
+        <div class="layout-container">
+          Layout
           <select
             onChange={this.handleLayoutChange.bind(this)}
             value={this.context.layout}
           >
-            {Object.keys(layouts).map((layoutName) => {
+            {Object.keys(layouts).filter(d => !['__esModule', 'none'].includes(d)).map((layoutName) => {
               return (
                 <option key={layoutName} value={layoutName}>
                   {layoutName}
@@ -112,12 +112,11 @@ class Sidebar extends React.PureComponent {
       case tabs.DOCUMENT:
         return (
           <div>
+            <h2>Document Information</h2>
             <div className='look-and-feel'>
-              <h2>Look and Feel.</h2>
               {this.getStyleView()}
             </div>
             <div className='publish-view'>
-              <h2>Deployment</h2>
               <Deployment />
             </div>
           </div>
@@ -126,7 +125,7 @@ class Sidebar extends React.PureComponent {
         return (
           <div>
             <div className='components-and-datasets'>
-              <h2>Variables and Datasets.</h2>
+              <h2>Variables and Datasets</h2>
               <VariableView />
               <DatasetView />
             </div>
@@ -164,13 +163,13 @@ class Sidebar extends React.PureComponent {
             <div className='sidebar-tab-container'>
               <div
                 className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
+                  this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
                 }`}
                 onClick={() => {
-                  this.setState({ selectedTab: tabs.DOCUMENT });
+                  this.setState({ selectedTab: tabs.COMPONENTS });
                 }}
               >
-                Document
+                Components
               </div>
               <div
                 className={`sidebar-tab ${
@@ -184,13 +183,13 @@ class Sidebar extends React.PureComponent {
               </div>
               <div
                 className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
+                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
                 }`}
                 onClick={() => {
-                  this.setState({ selectedTab: tabs.COMPONENTS });
+                  this.setState({ selectedTab: tabs.DOCUMENT });
                 }}
               >
-                Components
+                Publish
               </div>
             </div>
             <div className='sidebar-inner'>{this.renderInner()}</div>

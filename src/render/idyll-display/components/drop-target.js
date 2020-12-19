@@ -19,6 +19,7 @@ class ComponentDropTarget extends React.PureComponent {
   // Generates the tag associated with the given component name
   insertComponent(name) {
     var tagInfo = this.context.propsMap.get(name);
+    console.log(tagInfo, tagInfo.children)
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
       tagInfo.props.forEach((prop) => {
@@ -51,6 +52,7 @@ class ComponentDropTarget extends React.PureComponent {
     }
 
     console.log('Searching for ', targetNode, position);
+    console.log('Compiling', componentMarkup);
     compile(componentMarkup).then((componentAST) => {
       let componentNode = componentAST.children[0];
       if (componentNode.name === 'TextContainer') {
@@ -115,8 +117,11 @@ class ComponentDropTarget extends React.PureComponent {
       <div
         style={{
           width: '100%',
-          height: 10,
-          background: isOver ? 'black' : 'none',
+          height: isOver ? 65 : 10,
+          border: isOver ? '#999999'  :  'none',
+          borderWidth: isOver ? 2  :  0,
+          background: isOver ? '#666666' : 'none',
+          transition: 'all 1s'
         }}
       ></div>
     );
@@ -125,9 +130,9 @@ class ComponentDropTarget extends React.PureComponent {
 
 const componentBlockTarget = {
   drop(props, monitor, component) {
-    // console.log('dropped', monitor.getItem());
-    // console.log('dropped props', props);
-    // console.log('dropped component', component);
+    console.log('dropped', monitor.getItem());
+    console.log('dropped props', props);
+    console.log('dropped component', component);
     component.insertComponent(monitor.getItem().component);
   },
 };
