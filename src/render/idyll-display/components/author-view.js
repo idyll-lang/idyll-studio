@@ -1,9 +1,9 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
-import { getNodeById, isDifferentActiveNode, debounce } from '../utils/';
-const AST = require('idyll-ast');
+import { getNodeById, debounce } from '../utils/';
 import { withContext } from '../../context/with-context';
+import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 
 /**
  * An AuthorView is associated with an active component.
@@ -17,83 +17,19 @@ export const WrappedAuthorView = withContext(
 
       this.state = {
         newPropName: '',
-        showPropDetailsMap: {}, // name of prop -> true if open, false if not
         activePropName: '',
         cursorPosition: -1,
         activePropInput: '',
       };
     }
 
-    debouncedSetAst = debounce((node, propName, propValue) => {
-      const newPropList = getUpdatedPropList(node, propName, propValue);
-      node.properties = newPropList;
-      this.props.context.setAst(this.props.context.ast);
-      this.props.context.setActiveComponent(node);
-    }, 100);
-
-    componentDidMount() {
-      const { activeComponent } = this.props.context;
-
-      const activeComponentProperties =
-        activeComponent && activeComponent.properties
-          ? activeComponent.properties
-          : {};
-
-      const resultMap = {};
-      for (const key of Object.keys(activeComponentProperties)) {
-        resultMap[key] = false;
-      }
-
-      this.setState({
-        showPropDetailsMap: resultMap,
-      });
-    }
-
     componentWillUnmount() {
       this.setState({
-        showPropDetailsMap: {},
         activePropName: '',
         cursorPosition: -1,
       });
 
       this.props.context.setActiveComponent(null);
-    }
-
-    /**
-     * Resets the state under two conditions:
-     *   1) if one node is null and the other is not
-     *   2) if both nodes are non-null but represent different
-     *      components
-     */
-    componentDidUpdate(previousProps) {
-      const previousActiveComponent = previousProps.context.activeComponent;
-      const currentActiveComponent = this.props.context.activeComponent;
-
-      if (
-        isDifferentActiveNode(
-          previousActiveComponent,
-          currentActiveComponent
-        ) ||
-        (previousActiveComponent &&
-          currentActiveComponent &&
-          previousActiveComponent.id !== currentActiveComponent.id)
-      ) {
-        this.setState({
-          showPropDetailsMap: {},
-          activePropName: '',
-          cursorPosition: -1,
-          activePropInput: '',
-        });
-      }
-    }
-
-    updateShowPropDetailsMap(propName) {
-      this.setState({
-        showPropDetailsMap: {
-          ...this.state.showPropDetailsMap,
-          [propName]: true,
-        },
-      });
     }
 
     /**
@@ -107,7 +43,7 @@ export const WrappedAuthorView = withContext(
      * @param {React.ChangeEvent} e the change event associated
      *                               w/ the prop change
      */
-    updateNodeWithNewProperties(idyllASTNode, propValue, propName, e) {
+    updateNodeWithNewProperties(idyllASTNode, propName, propValue, e) {
       const selectionStart = e.target.selectionStart;
 
       this.setState({
@@ -122,13 +58,12 @@ export const WrappedAuthorView = withContext(
       this.debouncedSetAst(node, propName, propValue);
     }
 
-    onPropFocus(propName, originalInput, cursorPosition) {
-      this.setState({
-        activePropName: propName,
-        activePropInput: originalInput,
-        // cursorPosition: cursorPosition,
-      });
-    }
+    debouncedSetAst = debounce((node, propName, propValue) => {
+      const newPropList = getUpdatedPropList(node, propName, propValue);
+      node.properties = newPropList;
+      this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
+    }, DEBOUNCE_PROPERTY_MILLISECONDS);
 
     onPropBlur() {
       this.setState({
@@ -164,15 +99,11 @@ export const WrappedAuthorView = withContext(
                 this
               )}
               updateNodeType={this.updateNodeType.bind(this)}
-              updateShowPropDetailsMap={this.updateShowPropDetailsMap.bind(
-                this
-              )}
+            
               variableData={this.props.context.context.data()}
-              showPropDetailsMap={this.state.showPropDetailsMap}
               activePropName={this.state.activePropName}
               cursorPosition={this.state.cursorPosition}
               activePropInput={this.state.activePropInput}
-              onPropFocus={this.onPropFocus.bind(this)}
               onPropBlur={this.onPropBlur.bind(this)}
             />
           </div>

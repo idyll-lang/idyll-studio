@@ -7,17 +7,31 @@ class Component extends React.PureComponent {
     super(props);
 
     this.cursor = null;
+    this._inputRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const { propertyObject, activePropName, cursorPosition, activePropInput, name } = this.props;
+
+    const input = this._inputRef.current;
+    input.value = propertyObject.value;
+
+    if(name === activePropName) {
+      input.focus();
+      input.value = activePropInput;
+      input.setSelectionRange(cursorPosition, cursorPosition);
+    }
   }
 
   handleUpdateValue = (e) => {
     const propName = this.props.name;
 
-    let val = e.target.value;
+    let val = this._inputRef.current.value;
     if (val.trim() !== '') {
-      val = Number(e.target.value);
+      val = Number(this._inputRef.current.value);
     }
     if (isNaN(val)) {
-      val = e.target.value;
+      val = this._inputRef.current.value;
     }
 
     this.props.updateProperty(propName, val, e);
@@ -55,18 +69,6 @@ class Component extends React.PureComponent {
     };
   }
 
-  onFocus = (e) => {
-    console.log("BEFORE: " + e.target.selectionEnd);
-    e.target.selectionStart = this.props.cursorPosition;
-    e.target.selectionEnd = this.props.cursorPosition;
-    console.log("AFTER: " + e.target.selectionEnd);
-    this.props.onPropFocus(
-      this.props.name,
-      e.target.value,
-      e.target.selectionStart
-    );
-  };
-
   /**
    * Renders an input for the corresponding
    * prop name
@@ -74,10 +76,7 @@ class Component extends React.PureComponent {
    * @param {string} prop the prop value
    * @param {string} nextType the next prop type
    */
-  renderPropInput(key, prop, nextType) {
-    const isActiveProp = this.props.activePropName === key;
-    const inputValue = prop.value;
-
+  renderPropInput(key, propertyObject, nextType) {
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -87,27 +86,25 @@ class Component extends React.PureComponent {
             style={{
               marginLeft: 0,
               // borderRadius: '0 20px 20px 0',
-              background: this.getBackgroundColor(prop.type),
-              color: this.getColor(prop.type)
+              background: this.getBackgroundColor(propertyObject.type),
+              color: this.getColor(propertyObject.type)
             }}
           >
-            {prop.type === 'value' ? typeof prop.value : prop.type}
+            {propertyObject.type === 'value' ? typeof propertyObject.value : propertyObject.type}
           </div>
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
-            onChange={this.handleUpdateValue}
             type="text"
-            value={isActiveProp ? this.props.activePropInput : inputValue}
-            autoFocus={isActiveProp}
-            onFocus={this.onFocus}
             onBlur={this.props.onPropBlur}
+            ref={this._inputRef}
+            onChange={this.handleUpdateValue}
           />
         </div>
 
         {/* If variable, display current value */}
-        {prop.type === 'variable' ? (
-          <div className="current-value">Current Value: {this.props.variableData[prop.value]}</div>
+        {propertyObject.type === 'variable' ? (
+          <div className="current-value">Current Value: {this.props.variableData[propertyObject.value]}</div>
         ) : (
           <></>
         )}
@@ -115,27 +112,22 @@ class Component extends React.PureComponent {
     );
   }
 
-  renderProp(key, prop) {
-    switch (prop.type) {
+  renderProp(key, propertyObject) {
+    switch (propertyObject.type) {
       case 'variable':
-        return this.renderPropInput(key, prop, 'value');
+        return this.renderPropInput(key, propertyObject, 'value');
       case 'value':
-        return this.renderPropInput(key, prop, 'expression');
+        return this.renderPropInput(key, propertyObject, 'expression');
       case 'expression':
-        return this.renderPropInput(key, prop, 'variable');
+        return this.renderPropInput(key, propertyObject, 'variable');
     }
   }
 
-  updatePropDetails() {
-    this.props.updateShowPropDetailsMap(this.props.name);
-  }
-
   render() {
-    const { name, value, isOver, dropTarget, showDetails } = this.props;
+    const { name, propertyObject, isOver, dropTarget } = this.props;
     let ret;
       ret = (
         <div
-          onClick={this.updatePropDetails.bind(this)}
           style={{
             marginLeft: 0,
             border: isOver ? 'solid 2px green' : undefined,
@@ -145,7 +137,7 @@ class Component extends React.PureComponent {
             {name}
           </div>
           <div>
-            {this.renderProp(name, value)}
+            {this.renderProp(name, propertyObject)}
           </div>
         </div>
       );

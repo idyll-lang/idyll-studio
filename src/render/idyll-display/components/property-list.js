@@ -39,8 +39,8 @@ class PropertyList extends React.PureComponent {
     // send to author view with info
     this.props.updateNodeWithNewProperties(
       this.props.node,
-      propValue,
       propName,
+      propValue,
       e
     );
   }
@@ -51,11 +51,10 @@ class PropertyList extends React.PureComponent {
 
   render() {
     const ASTNode = this.props.node;
-    const properties = [];
     return (
       <div>
         {Object.keys(ASTNode.properties || {}).map((propName) => {
-          const prop = ASTNode.properties[propName];
+          const propertyObject = ASTNode.properties[propName];
 
           return (
             <div
@@ -71,15 +70,12 @@ class PropertyList extends React.PureComponent {
                 <Property
                   updateProperty={this.updateProperty.bind(this)}
                   name={propName}
-                  value={prop}
+                  propertyObject={propertyObject}
                   variableData={this.props.variableData}
                   updateNodeType={this.updateNodeType.bind(this)}
-                  updateShowPropDetailsMap={this.props.updateShowPropDetailsMap}
-                  showDetails={this.props.showPropDetailsMap[propName]}
                   activePropName={this.props.activePropName}
                   cursorPosition={this.props.cursorPosition}
                   activePropInput={this.props.activePropInput}
-                  onPropFocus={this.props.onPropFocus}
                   onPropBlur={this.props.onPropBlur}
                 />
               </div>
