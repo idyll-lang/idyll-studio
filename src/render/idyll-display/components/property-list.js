@@ -8,8 +8,10 @@ class PropertyList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      newPropName: '',
+      newPropName: ''
     };
+
+    console.log('hi');
   }
 
   handleUpdateNewPropName(event) {
@@ -21,7 +23,7 @@ class PropertyList extends React.PureComponent {
     node.properties = node.properties || {};
     node.properties[this.state.newPropName] = {
       type: 'value',
-      value: '',
+      value: ''
     };
 
     this.setState({ newPropName: '' });
@@ -53,7 +55,7 @@ class PropertyList extends React.PureComponent {
     const ASTNode = this.props.node;
     return (
       <div>
-        {Object.keys(ASTNode.properties || {}).map((propName) => {
+        {Object.keys(ASTNode.properties || {}).map(propName => {
           const propertyObject = ASTNode.properties[propName];
 
           return (
@@ -65,7 +67,7 @@ class PropertyList extends React.PureComponent {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  justifyContent: 'space-between'
                 }}>
                 <Property
                   updateProperty={this.updateProperty.bind(this)}
@@ -74,9 +76,9 @@ class PropertyList extends React.PureComponent {
                   variableData={this.props.variableData}
                   updateNodeType={this.updateNodeType.bind(this)}
                   activePropName={this.props.activePropName}
-                  cursorPosition={this.props.cursorPosition}
+                  // cursorPosition={this.props.cursorPosition}
                   activePropInput={this.props.activePropInput}
-                  onPropBlur={this.props.onPropBlur}
+                  // onPropBlur={this.props.onPropBlur}
                 />
               </div>
             </div>

@@ -1,37 +1,22 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import PropertyList from './property-list';
-import { getNodeById, debounce } from '../utils/';
+import Context from '../../context/context';
 import { withContext } from '../../context/with-context';
+import { getNodeById, debounce } from '../utils/';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
+import PropertyList from './property-list';
 
-/**
- * An AuthorView is associated with an active component.
- * If a component is registered as active, renders
- * a property list of all the components properties for editing.
- */
-export const WrappedAuthorView = withContext(
+export const AuthorView2 = withContext(
   class AuthorView extends React.PureComponent {
+    static contextType = Context;
+
     constructor(props) {
       super(props);
 
       this.state = {
-        newPropName: '',
-        activePropName: '',
-        cursorPosition: -1,
-        activePropInput: '',
         activeDomNode: null,
         dimensions: null
       };
-    }
-
-    componentWillUnmount() {
-      this.setState({
-        activePropName: '',
-        cursorPosition: -1
-      });
-
-      this.props.context.setActiveComponent(null);
     }
 
     componentDidMount() {
@@ -67,8 +52,6 @@ export const WrappedAuthorView = withContext(
           activeDomNode: activeComponentDomNode,
           dimensions: activeComponentDomNode.getClientRects()[0]
         });
-
-        console.log('PUT');
       } else if (!isValidActiveComponent) {
         this.setState({
           activeDomNode: null,
@@ -89,11 +72,6 @@ export const WrappedAuthorView = withContext(
      *                               w/ the prop change
      */
     updateNodeWithNewProperties(idyllASTNode, propName, propValue) {
-      this.setState({
-        activePropName: propName,
-        activePropInput: propValue
-      });
-
       // update node
       let node = getNodeById(this.props.context.ast, idyllASTNode.id);
 
@@ -122,10 +100,11 @@ export const WrappedAuthorView = withContext(
     }
 
     render() {
-      const { activeComponent } = this.props.context;
-      const { dimensions } = this.state;
+      const { dimensions, activeDomNode } = this.state;
+      const componentDomNode = document.getElementById('app');
 
-      if (activeComponent && dimensions) {
+      if (activeDomNode) {
+        console.log('WHAT');
         const childComponent = (
           <div
             className="author-view-overlay"
@@ -136,31 +115,19 @@ export const WrappedAuthorView = withContext(
               left: dimensions.left - 75
             }}>
             <PropertyList
-              node={activeComponent}
+              node={this.props.context.activeComponent}
               updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
                 this
               )}
               updateNodeType={this.updateNodeType.bind(this)}
               variableData={this.props.context.context.data()}
-              activePropName={this.state.activePropName}
-              activePropInput={this.state.activePropInput}
             />
           </div>
         );
 
-        const componentDomNode = activeComponent
-          ? document.getElementById(
-              // this.props.context.activeComponent.name +
-              //   '-' +
-              //   this.props.context.activeComponent.id
-              'app'
-            )
-          : null;
-
-        if (componentDomNode) {
-          return ReactDOM.createPortal(childComponent, componentDomNode);
-        }
+        return ReactDOM.createPortal(childComponent, componentDomNode);
       }
+
       return <></>;
     }
   }
@@ -180,6 +147,12 @@ function getUpdatedPropList(node, propName, propValue) {
       propertiesCopy[property] = { ...propertyObject };
     }
   });
-
-  return propertiesCopy;
 }
+
+// {/* <div style={{
+// top: dimensions.top + 75,
+// bottom: dimensions.bottom,
+// right: dimensions.right,
+// left: dimensions.left - 75,
+// position: 'absolute'
+//                 }}>HELLLO </div> */}

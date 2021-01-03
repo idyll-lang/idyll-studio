@@ -52,7 +52,7 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
   ['code-highlight', PRESENTATION],
   ['analytics', HELPERS],
   ['meta', HELPERS],
-  ['preload', HELPERS],
+  ['preload', HELPERS]
 ]);
 
 export const EXCLUDED_COMPONENTS = ['generateHeaders'];

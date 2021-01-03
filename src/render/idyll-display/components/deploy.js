@@ -18,12 +18,12 @@ class Deploy extends React.PureComponent {
     let node = idyllAST.getNodesByType(this.context.ast, 'meta')[0];
     this.setState(
       {
-        metaNode: node,
+        metaNode: node
       },
       () => {
         if (!this.state.metaNode) {
           // if doesn't exist insert into tree
-          compile('[meta /]').then((metaAST) => {
+          compile('[meta /]').then(metaAST => {
             let ast = this.context.ast;
             let lastChild = ast.children[ast.children.length - 1];
 
@@ -63,10 +63,10 @@ class Deploy extends React.PureComponent {
   renderProps(propName) {
     return (
       <input
-        onChange={(e) => {
+        onChange={e => {
           this.handleUpdateValue(propName, e);
         }}
-        type='text'
+        type="text"
         defaultValue={
           this.state.metaNode && propName in this.state.metaNode.properties
             ? this.state.metaNode.properties[propName].value
@@ -79,24 +79,24 @@ class Deploy extends React.PureComponent {
   render() {
     return (
       // Meta View
-      <div className='deploy-view'>
-        <div className='meta-container'>
+      <div className="deploy-view">
+        <div className="meta-container">
           <div>Title {this.renderProps('title')}</div>
           <div>Description {this.renderProps('description')}</div>
           <div>Share Image {this.renderProps('shareImageUrl')}</div>
-          {
-            this.context.url ? <div class="url-display">URL: <a href={this.context.url}>{this.context.url}</a></div> : null
-          }
-
+          {this.context.url ? (
+            <div class="url-display">
+              URL: <a href={this.context.url}>{this.context.url}</a>
+            </div>
+          ) : null}
         </div>
 
         {/* Publish Button */}
-        <div className='publish-button-container'>
+        <div className="publish-button-container">
           <button
-            id='publish-button'
+            id="publish-button"
             onClick={this.context.deploy}
-            disabled={this.context.currentProcess === 'publishing'}
-          >
+            disabled={this.context.currentProcess === 'publishing'}>
             Publish
           </button>
           <div>{this.context.currentProcess}</div>

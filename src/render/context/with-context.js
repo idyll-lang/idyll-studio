@@ -7,8 +7,8 @@ import Context from './context';
  * @param {React.PureComponent} WrappedConsumer a component that will consume
  *                                              the context
  */
-export const withContext = (WrappedConsumer) => (props) => (
+export const withContext = WrappedConsumer => props => (
   <Context.Consumer>
-    {(context) => <WrappedConsumer {...props} context={context} />}
+    {context => <WrappedConsumer {...props} context={context} />}
   </Context.Consumer>
 );

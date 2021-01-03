@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export const SearchIcon = (props) => {
+export const SearchIcon = props => {
   const { ...rest } = props;
 
   return (
@@ -21,14 +21,15 @@ export const SearchIcon = (props) => {
         fillRule="evenodd"
         fillOpacity="0">
         <g id="Group-2" fill="#D8D8D8" stroke="#131313">
-          <circle id="Oval" cx="3" cy="3" r="2.5"></circle>
+          <circle id="Oval" cx="3" cy="3" r="2.5" />
           <line
             x1="5"
             y1="5"
             x2="7"
             y2="7"
             id="Line-2"
-            strokeLinecap="square"></line>
+            strokeLinecap="square"
+          />
         </g>
       </g>
     </svg>

@@ -32,12 +32,12 @@ class VariableForm extends React.PureComponent {
         <label>
           Update value to:
           <input
-            type='text'
+            type="text"
             value={this.state.value}
             onChange={this.handleChange}
           />
         </label>
-        <input type='submit' value='Submit' />
+        <input type="submit" value="Submit" />
       </form>
     );
   }

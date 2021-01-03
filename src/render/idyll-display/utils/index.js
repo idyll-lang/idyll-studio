@@ -21,7 +21,7 @@ const getNodeById = (node, id) => {
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
 
-  Object.keys(newProps).forEach((key) => {
+  Object.keys(newProps).forEach(key => {
     if (key === 'id') {
       return;
     }
@@ -80,7 +80,7 @@ const isDifferentActiveNode = (node1, node2) =>
  * that replaces '-' with spaces and capitalizes every word
  * @param {string} value the string to format
  */
-const formatString = (value) => {
+const formatString = value => {
   if (!value || typeof value !== 'string') {
     return '';
   }
@@ -88,7 +88,7 @@ const formatString = (value) => {
   return value
     .split(/[\s-]+/g)
     .map(
-      (word) =>
+      word =>
         word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()
     )
     .join(' ');
@@ -112,7 +112,7 @@ const debounce = (func, waitTime) => {
 
 const debounceHandler = (...args) => {
   const debounced = debounce(...args);
-  return function (e) {
+  return function(e) {
     e.persist();
 
     return debounced(e);
@@ -128,5 +128,5 @@ module.exports = {
   isDifferentActiveNode,
   formatString,
   debounce,
-  debounceHandler,
+  debounceHandler
 };

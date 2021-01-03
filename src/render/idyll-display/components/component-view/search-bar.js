@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SearchIcon } from './icons/search-icon';
 import { XIcon } from './icons/x-icon';
 
-export const SearchBarInput = (props) => {
+export const SearchBarInput = props => {
   const { onChange, value, placeholder, onClick } = props;
 
   return (

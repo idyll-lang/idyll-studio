@@ -18,14 +18,14 @@ class Renderer extends React.PureComponent {
 
   componentDidCatch(e) {
     this.setState({
-      error: e,
+      error: e
     });
   }
 
   injectDropTargets(ast) {
     // deep copy
     const astCopy = JSON.parse(JSON.stringify(ast));
-    astCopy.children = (astCopy.children || []).map((node) => {
+    astCopy.children = (astCopy.children || []).map(node => {
       if (node.type !== 'component') {
         return node;
       }
@@ -44,9 +44,9 @@ class Renderer extends React.PureComponent {
                 properties: {
                   insertBefore: {
                     type: 'value',
-                    value: child.id,
-                  },
-                },
+                    value: child.id
+                  }
+                }
               },
               child,
               {
@@ -56,10 +56,10 @@ class Renderer extends React.PureComponent {
                 properties: {
                   insertAfter: {
                     type: 'value',
-                    value: child.id,
-                  },
-                },
-              },
+                    value: child.id
+                  }
+                }
+              }
             ];
           }
           return [
@@ -72,10 +72,10 @@ class Renderer extends React.PureComponent {
               properties: {
                 insertAfter: {
                   type: 'value',
-                  value: child.id,
-                },
-              },
-            },
+                  value: child.id
+                }
+              }
+            }
           ];
         }, []);
       }
@@ -109,19 +109,19 @@ class Renderer extends React.PureComponent {
     });
 
     return (
-      <div className='renderer'>
-        <div className='renderer-container' contentEditable={false}>
+      <div className="renderer">
+        <div className="renderer-container" contentEditable={false}>
           <IdyllDocument
             //markup={markup}
             // key={JSON.stringify(ast)}
             ast={this.injectDropTargets(ast)}
             components={{
               IdyllEditorDropTarget: DropTarget,
-              ...this.loadedComponents,
+              ...this.loadedComponents
             }}
             layout={this.context.layout}
             theme={this.context.theme}
-            context={(context) => {
+            context={context => {
               this.context.setContext(context);
             }}
             datasets={{}}

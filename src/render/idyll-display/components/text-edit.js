@@ -11,7 +11,7 @@ class TextEdit extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      showMarkup: false,
+      showMarkup: false
     };
     this._markup = this.getMarkup(props);
   }
@@ -22,14 +22,14 @@ class TextEdit extends React.PureComponent {
         id: -1,
         type: 'component',
         name: 'div',
-        children: props.idyllASTNode.children,
+        children: props.idyllASTNode.children
       });
     }
     return AST.toMarkup({
       id: -1,
       type: 'component',
       name: 'div',
-      children: [props.idyllASTNode],
+      children: [props.idyllASTNode]
     });
   }
 
@@ -41,7 +41,7 @@ class TextEdit extends React.PureComponent {
     }
 
     this.setState({
-      showMarkup: !this.state.showMarkup,
+      showMarkup: !this.state.showMarkup
     });
   }
 
@@ -70,7 +70,7 @@ class TextEdit extends React.PureComponent {
         this.context.ast,
         this.props.idyllASTNode.id
       );
-      Object.keys(node).forEach((key) => {
+      Object.keys(node).forEach(key => {
         if (key === 'id') {
           return;
         }
@@ -80,7 +80,7 @@ class TextEdit extends React.PureComponent {
 
     this.context.setAst(this.context.ast);
     this.setState({
-      showMarkup: false,
+      showMarkup: false
     });
   }
 
@@ -89,23 +89,22 @@ class TextEdit extends React.PureComponent {
     if (this.state.showMarkup) {
       return (
         <div
-          ref={(ref) => (this._markupRef = ref)}
+          ref={ref => (this._markupRef = ref)}
           style={{
             whiteSpace: 'pre-wrap',
             marginLeft: -10,
             paddingLeft: 10,
             borderLeft: 'solid 2px #222',
-            fontFamily: 'monospace',
+            fontFamily: 'monospace'
           }}
-          contentEditable='true'
-          onBlur={this.toggleMarkup.bind(this)}
-        >
+          contentEditable="true"
+          onBlur={this.toggleMarkup.bind(this)}>
           {this.getMarkup(this.props)}
         </div>
       );
     }
     return (
-      <div className='editable-text' onClick={this.toggleMarkup.bind(this)}>
+      <div className="editable-text" onClick={this.toggleMarkup.bind(this)}>
         {props.children}
       </div>
     );

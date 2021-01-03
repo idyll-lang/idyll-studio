@@ -11,19 +11,19 @@ class Component extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { propertyObject, activePropName, cursorPosition, activePropInput, name } = this.props;
+    const { propertyObject } = this.props;
 
     const input = this._inputRef.current;
     input.value = propertyObject.value;
 
-    if(name === activePropName) {
-      input.focus();
-      input.value = activePropInput;
-      input.setSelectionRange(cursorPosition, cursorPosition);
-    }
+    // if(name === activePropName) {
+    //   input.focus();
+    //   input.value = activePropInput;
+    //   input.setSelectionRange(cursorPosition, cursorPosition);
+    // }
   }
 
-  handleUpdateValue = (e) => {
+  handleUpdateValue = e => {
     const propName = this.props.name;
 
     let val = this._inputRef.current.value;
@@ -34,7 +34,7 @@ class Component extends React.PureComponent {
       val = this._inputRef.current.value;
     }
 
-    this.props.updateProperty(propName, val, e);
+    this.props.updateProperty(propName, val);
   };
 
   getBackgroundColor(propType) {
@@ -64,7 +64,7 @@ class Component extends React.PureComponent {
    * @param {string} type the next type of the prop
    */
   updateNodeType(propName, type) {
-    return (e) => {
+    return e => {
       this.props.updateNodeType(propName, type);
     };
   }
@@ -88,15 +88,15 @@ class Component extends React.PureComponent {
               // borderRadius: '0 20px 20px 0',
               background: this.getBackgroundColor(propertyObject.type),
               color: this.getColor(propertyObject.type)
-            }}
-          >
-            {propertyObject.type === 'value' ? typeof propertyObject.value : propertyObject.type}
+            }}>
+            {propertyObject.type === 'value'
+              ? typeof propertyObject.value
+              : propertyObject.type}
           </div>
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
             type="text"
-            onBlur={this.props.onPropBlur}
             ref={this._inputRef}
             onChange={this.handleUpdateValue}
           />
@@ -104,7 +104,9 @@ class Component extends React.PureComponent {
 
         {/* If variable, display current value */}
         {propertyObject.type === 'variable' ? (
-          <div className="current-value">Current Value: {this.props.variableData[propertyObject.value]}</div>
+          <div className="current-value">
+            Current Value: {this.props.variableData[propertyObject.value]}
+          </div>
         ) : (
           <></>
         )}
@@ -126,21 +128,16 @@ class Component extends React.PureComponent {
   render() {
     const { name, propertyObject, isOver, dropTarget } = this.props;
     let ret;
-      ret = (
-        <div
-          style={{
-            marginLeft: 0,
-            border: isOver ? 'solid 2px green' : undefined,
-          }}
-        >
-          <div className="prop-name">
-            {name}
-          </div>
-          <div>
-            {this.renderProp(name, propertyObject)}
-          </div>
-        </div>
-      );
+    ret = (
+      <div
+        style={{
+          marginLeft: 0,
+          border: isOver ? 'solid 2px green' : undefined
+        }}>
+        <div className="prop-name">{name}</div>
+        <div>{this.renderProp(name, propertyObject)}</div>
+      </div>
+    );
     return dropTarget(<div>{ret}</div>);
   }
 }
@@ -150,18 +147,18 @@ const variableTarget = {
     console.log('dropped on property!!');
     const name = monitor.getItem().name;
     const node = props.node;
-    
+
     updateNodeById(props.ast, node.id, {
-      properties: { [props.name]: { value: name, type: 'variable' } },
+      properties: { [props.name]: { value: name, type: 'variable' } }
     });
     props.setAst(props.ast);
-  },
+  }
 };
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
+    isOver: monitor.isOver()
   };
 }
 

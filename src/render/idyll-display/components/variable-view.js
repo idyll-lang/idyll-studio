@@ -8,7 +8,7 @@ const columns = [
   { key: 'type', name: 'Type', editable: true },
   { key: 'name', name: 'Name', editable: true },
   { key: 'initialValue', name: 'Initial value', editable: true },
-  { key: 'currentValue', name: 'Current value', editable: true },
+  { key: 'currentValue', name: 'Current value', editable: true }
 ];
 
 class VariableFormatter extends React.PureComponent {
@@ -28,13 +28,13 @@ class VariableFormatter extends React.PureComponent {
  * Implement the drag source contract.
  */
 const variableSource = {
-  beginDrag: (props) => ({ name: props.value }),
+  beginDrag: props => ({ name: props.value })
 };
 
 function variableCollect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
+    isDragging: monitor.isDragging()
   };
 }
 
@@ -53,7 +53,7 @@ class VariableView extends React.PureComponent {
     this.getRows = this.getRows.bind(this);
     this.state = {
       rows: [],
-      contextUpdates: 0,
+      contextUpdates: 0
     };
   }
 
@@ -74,13 +74,13 @@ class VariableView extends React.PureComponent {
       properties: {
         name: {
           type: 'value',
-          value: nameOfVar,
+          value: nameOfVar
         },
         value: {
           type: 'value',
-          value: valueOfVar,
-        },
-      },
+          value: valueOfVar
+        }
+      }
     };
     const updatedAST = IdyllAST.appendNode(ast, newVarNode);
     this.context.setAst(updatedAST);
@@ -91,7 +91,7 @@ class VariableView extends React.PureComponent {
     const currentChildren = this.context.ast.children;
     const currentData = this.context.context.data();
     this._rowsToVars = [];
-    currentChildren.map((child) => {
+    currentChildren.map(child => {
       const childType = child.type;
       if (childType === 'var' || childType === 'data') {
         // allow for derivedVar types too
@@ -106,7 +106,7 @@ class VariableView extends React.PureComponent {
           type: childType,
           name: varName,
           initialValue: initialValue,
-          currentValue: varValue,
+          currentValue: varValue
         });
         this._rowsToVars.push(child);
       }
@@ -116,7 +116,7 @@ class VariableView extends React.PureComponent {
 
   handleGridUpdated(update) {
     if (update.action === 'CELL_UPDATE') {
-      Object.keys(update.updated).forEach((key) => {
+      Object.keys(update.updated).forEach(key => {
         const val = update.updated[key];
         switch (key) {
           case 'currentValue':
@@ -145,23 +145,23 @@ class VariableView extends React.PureComponent {
         key: 'name',
         name: 'Name',
         editable: true,
-        formatter: DraggableFormatter,
+        formatter: DraggableFormatter
       },
       { key: 'initialValue', name: 'Initial value', editable: true },
-      { key: 'currentValue', name: 'Current value', editable: true },
+      { key: 'currentValue', name: 'Current value', editable: true }
     ];
     return (
-      <div className='variables-view'>
-        <div className='variables-table-view'>
+      <div className="variables-view">
+        <div className="variables-table-view">
           <ReactDataGrid
             columns={columns}
-            rowGetter={(i) => rows[i]}
+            rowGetter={i => rows[i]}
             rowsCount={rows.length}
             enableCellSelect={true}
             onGridRowsUpdated={this.handleGridUpdated.bind(this)}
           />
         </div>
-        <div className='add-variable-button'>
+        <div className="add-variable-button">
           <button onClick={() => this.addVariable(this.context.ast)}>
             Add variable
           </button>

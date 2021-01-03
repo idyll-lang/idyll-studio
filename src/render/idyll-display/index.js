@@ -4,6 +4,7 @@ import Sidebar from './sidebar';
 import { ipcRenderer } from 'electron';
 import { WrappedAuthorView } from './components/author-view';
 import Context from '../context/context';
+import { AuthorView2 } from './components/author-view-v2.js';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -12,7 +13,7 @@ class IdyllDisplay extends React.PureComponent {
     super(props);
     this.state = {
       // TODO - get these values from the project config!
-      collapsed: false,
+      collapsed: false
     };
   }
 
@@ -22,7 +23,7 @@ class IdyllDisplay extends React.PureComponent {
 
   handleToggle() {
     this.setState({
-      collapsed: !this.state.collapsed,
+      collapsed: !this.state.collapsed
     });
   }
 
@@ -30,12 +31,14 @@ class IdyllDisplay extends React.PureComponent {
     return (
       <>
         <div
-          className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}
-        >
+          className={
+            'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')
+          }>
           <Sidebar />
-          <div className='output-container'>
+          <div className="output-container">
             <Render />
             <WrappedAuthorView />
+            {/* <AuthorView2 /> */}
           </div>
         </div>
       </>

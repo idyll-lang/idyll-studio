@@ -8,7 +8,7 @@ class ComponentAccordion extends React.PureComponent {
 
     this.state = {
       maxHeight: '0px',
-      isClosed: true,
+      isClosed: true
     };
 
     this._panelRef = React.createRef();
@@ -21,7 +21,7 @@ class ComponentAccordion extends React.PureComponent {
     const scrollHeight = this._panelRef.current.scrollHeight;
     this.setState({
       maxHeight: this.state.maxHeight === '0px' ? `${scrollHeight}px` : '0px',
-      isClosed: !this.state.isClosed,
+      isClosed: !this.state.isClosed
     });
   };
 
@@ -38,7 +38,7 @@ class ComponentAccordion extends React.PureComponent {
 
         <div
           style={{
-            maxHeight: this.state.maxHeight,
+            maxHeight: this.state.maxHeight
           }}
           className="accordion-panel-container"
           ref={this._panelRef}>

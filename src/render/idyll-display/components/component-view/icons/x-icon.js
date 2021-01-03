@@ -21,14 +21,15 @@ export const XIcon = () => {
           id="Group-3"
           transform="translate(1.000000, 1.000000)"
           stroke="#000000">
-          <line x1="0.5" y1="0.5" x2="3.5" y2="3.5" id="Line-3"></line>
+          <line x1="0.5" y1="0.5" x2="3.5" y2="3.5" id="Line-3" />
           <line
             x1="0.5"
             y1="0.5"
             x2="3.5"
             y2="3.5"
             id="Line-3"
-            transform="translate(2.000000, 2.000000) scale(-1, 1) translate(-2.000000, -2.000000) "></line>
+            transform="translate(2.000000, 2.000000) scale(-1, 1) translate(-2.000000, -2.000000) "
+          />
         </g>
       </g>
     </svg>

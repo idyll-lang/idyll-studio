@@ -21,14 +21,15 @@ export const ArrowDown = () => {
           id="Group"
           transform="translate(1.000000, 1.000000)"
           stroke="#000000">
-          <line x1="0.5" y1="0.5" x2="4.5" y2="4.5" id="Line"></line>
+          <line x1="0.5" y1="0.5" x2="4.5" y2="4.5" id="Line" />
           <line
             x1="4.5"
             y1="0.5"
             x2="8.5"
             y2="4.5"
             id="Line"
-            transform="translate(6.500000, 2.500000) scale(-1, 1) translate(-6.500000, -2.500000) "></line>
+            transform="translate(6.500000, 2.500000) scale(-1, 1) translate(-6.500000, -2.500000) "
+          />
         </g>
       </g>
     </svg>

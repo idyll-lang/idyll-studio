@@ -7,7 +7,7 @@ import {
   LOGIC,
   PRESENTATION,
   HELPERS,
-  EXCLUDED_COMPONENTS,
+  EXCLUDED_COMPONENTS
 } from '../../../../constants';
 import ComponentAccordion from './component-accordion';
 import { withContext } from '../../../context/with-context';
@@ -23,7 +23,7 @@ export const WrappedComponentView = withContext(
 
       this.state = {
         searchValue: '',
-        filteredComponents: [],
+        filteredComponents: []
       };
 
       this.categoriesMap = {
@@ -32,14 +32,14 @@ export const WrappedComponentView = withContext(
         [LOGIC]: [],
         [PRESENTATION]: [],
         [HELPERS]: [],
-        Custom: [],
+        Custom: []
       };
 
       if (
         this.props.context.components &&
         this.props.context.components.length > 0
       ) {
-        this.props.context.components.map((component) => {
+        this.props.context.components.map(component => {
           if (COMPONENTS_CATEGORY_MAP.has(component.name)) {
             this.categoriesMap[
               COMPONENTS_CATEGORY_MAP.get(component.name)
@@ -51,11 +51,11 @@ export const WrappedComponentView = withContext(
       }
     }
 
-    searchComponents = (e) => {
+    searchComponents = e => {
       const value = e.target.value;
 
       const filteredResults = this.props.context.components.filter(
-        (component) => {
+        component => {
           const name = formatString(component.name).toLowerCase();
           return name.startsWith(value.toLowerCase());
         }
@@ -63,14 +63,14 @@ export const WrappedComponentView = withContext(
 
       this.setState({
         searchValue: value,
-        filteredComponents: filteredResults,
+        filteredComponents: filteredResults
       });
     };
 
     clearSearch = () => {
       this.setState({
         searchValue: '',
-        filteredComponents: [],
+        filteredComponents: []
       });
     };
 
