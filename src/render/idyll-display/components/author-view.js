@@ -82,11 +82,6 @@ export const WrappedAuthorView = withContext(
      *                               w/ the prop change
      */
     updateNodeWithNewProperties(propName, propValue) {
-      this.setState({
-        activePropName: propName,
-        activePropInput: propValue
-      });
-
       // update node
       let node = getNodeById(this.props.context.ast, this.props.context.activeComponent.id);
 
@@ -97,6 +92,7 @@ export const WrappedAuthorView = withContext(
       const newPropList = getUpdatedPropList(node, propName, propValue);
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
     }, DEBOUNCE_PROPERTY_MILLISECONDS);
 
     /**
