@@ -15,12 +15,6 @@ class Component extends React.PureComponent {
 
     const input = this._inputRef.current;
     input.value = propertyObject.value;
-
-    // if(name === activePropName) {
-    //   input.focus();
-    //   input.value = activePropInput;
-    //   input.setSelectionRange(cursorPosition, cursorPosition);
-    // }
   }
 
   handleUpdateValue = e => {
@@ -85,7 +79,6 @@ class Component extends React.PureComponent {
             onClick={this.updateNodeType(key, nextType)}
             style={{
               marginLeft: 0,
-              // borderRadius: '0 20px 20px 0',
               background: this.getBackgroundColor(propertyObject.type),
               color: this.getColor(propertyObject.type)
             }}>

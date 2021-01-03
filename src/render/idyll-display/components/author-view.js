@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
 import { getNodeById, debounce } from '../utils/';
 import { withContext } from '../../context/with-context';
@@ -17,31 +16,29 @@ export const WrappedAuthorView = withContext(
 
       this.state = {
         newPropName: '',
-        activePropName: '',
-        cursorPosition: -1,
-        activePropInput: '',
         activeDomNode: null,
         dimensions: null
       };
     }
 
     componentWillUnmount() {
-      this.setState({
-        activePropName: '',
-        cursorPosition: -1
-      });
-
       this.props.context.setActiveComponent(null);
+      window.removeEventListener('resize', this.handleResize);
+
+      const parent = document.getElementsByClassName('output-container')[0];
+      parent.removeEventListener('scroll', this.handleResize);
     }
 
     componentDidMount() {
       window.addEventListener('resize', this.handleResize);
+
+      const parent = document.getElementsByClassName('output-container')[0];
+      parent.addEventListener('scroll', this.handleResize);
     }
 
     handleResize = e => {
       if (this.state.activeDomNode) {
         const activeComponentDimensions = this.state.activeDomNode.getClientRects();
-        console.log(activeComponentDimensions[0]);
 
         this.setState({
           dimensions: activeComponentDimensions[0]
@@ -55,10 +52,8 @@ export const WrappedAuthorView = withContext(
         context.activeComponent &&
         Object.keys(context.activeComponent).length != 0;
 
-      if (
-        prevProps.context.activeComponent != context.activeComponent &&
-        isValidActiveComponent
-      ) {
+      if (prevProps.context.activeComponent != context.activeComponent 
+          && isValidActiveComponent) {
         const activeComponentDomNode = document.getElementById(
           context.activeComponent.name + '-' + context.activeComponent.id
         );
@@ -67,9 +62,7 @@ export const WrappedAuthorView = withContext(
           activeDomNode: activeComponentDomNode,
           dimensions: activeComponentDomNode.getClientRects()[0]
         });
-
-        console.log('PUT');
-      } else if (!isValidActiveComponent) {
+      } else if (!isValidActiveComponent && prevProps.context.activeComponent) {
         this.setState({
           activeDomNode: null,
           dimensions: null
@@ -88,14 +81,14 @@ export const WrappedAuthorView = withContext(
      * @param {React.ChangeEvent} e the change event associated
      *                               w/ the prop change
      */
-    updateNodeWithNewProperties(idyllASTNode, propName, propValue) {
+    updateNodeWithNewProperties(propName, propValue) {
       this.setState({
         activePropName: propName,
         activePropInput: propValue
       });
 
       // update node
-      let node = getNodeById(this.props.context.ast, idyllASTNode.id);
+      let node = getNodeById(this.props.context.ast, this.props.context.activeComponent.id);
 
       this.debouncedSetAst(node, propName, propValue);
     }
@@ -104,7 +97,6 @@ export const WrappedAuthorView = withContext(
       const newPropList = getUpdatedPropList(node, propName, propValue);
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
-      this.props.context.setActiveComponent(node);
     }, DEBOUNCE_PROPERTY_MILLISECONDS);
 
     /**
@@ -114,8 +106,8 @@ export const WrappedAuthorView = withContext(
      * @param {string} propType the next type of the prop
      *                      (value, variable, expression)
      */
-    updateNodeType(propName, propType, idyllASTNode) {
-      const node = getNodeById(this.props.context.ast, idyllASTNode.id);
+    updateNodeType(propName, propType) {
+      const node = getNodeById(this.props.context.ast, this.props.context.activeComponent);
       node.properties[propName].type = propType;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
@@ -126,14 +118,12 @@ export const WrappedAuthorView = withContext(
       const { dimensions } = this.state;
 
       if (activeComponent && dimensions) {
-        const childComponent = (
+        return (
           <div
             className="author-view-overlay"
             style={{
-              top: dimensions.top + 75,
-              bottom: dimensions.bottom,
-              right: dimensions.right,
-              left: dimensions.left - 75
+              top: dimensions.top + 60,
+              left: dimensions.left - 110
             }}>
             <PropertyList
               node={activeComponent}
@@ -142,24 +132,9 @@ export const WrappedAuthorView = withContext(
               )}
               updateNodeType={this.updateNodeType.bind(this)}
               variableData={this.props.context.context.data()}
-              activePropName={this.state.activePropName}
-              activePropInput={this.state.activePropInput}
             />
           </div>
         );
-
-        const componentDomNode = activeComponent
-          ? document.getElementById(
-              // this.props.context.activeComponent.name +
-              //   '-' +
-              //   this.props.context.activeComponent.id
-              'app'
-            )
-          : null;
-
-        if (componentDomNode) {
-          return ReactDOM.createPortal(childComponent, componentDomNode);
-        }
       }
       return <></>;
     }

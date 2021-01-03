@@ -10,8 +10,6 @@ class PropertyList extends React.PureComponent {
     this.state = {
       newPropName: ''
     };
-
-    console.log('hi');
   }
 
   handleUpdateNewPropName(event) {
@@ -27,28 +25,6 @@ class PropertyList extends React.PureComponent {
     };
 
     this.setState({ newPropName: '' });
-  }
-
-  /**
-   * Makes a copy of the node's properties with the
-   * new property value and notifies parent
-   * @param {string} propName the name of the prop
-   * @param {string} propValue the value of the prop
-   * @param {React.ChangeEvent} e the change event associated
-   *                              with the node input change
-   */
-  updateProperty(propName, propValue, e) {
-    // send to author view with info
-    this.props.updateNodeWithNewProperties(
-      this.props.node,
-      propName,
-      propValue,
-      e
-    );
-  }
-
-  updateNodeType(propName, propType) {
-    this.props.updateNodeType(propName, propType, this.props.node);
   }
 
   render() {
@@ -70,15 +46,11 @@ class PropertyList extends React.PureComponent {
                   justifyContent: 'space-between'
                 }}>
                 <Property
-                  updateProperty={this.updateProperty.bind(this)}
+                  updateProperty={this.props.updateNodeWithNewProperties}
                   name={propName}
                   propertyObject={propertyObject}
                   variableData={this.props.variableData}
-                  updateNodeType={this.updateNodeType.bind(this)}
-                  activePropName={this.props.activePropName}
-                  // cursorPosition={this.props.cursorPosition}
-                  activePropInput={this.props.activePropInput}
-                  // onPropBlur={this.props.onPropBlur}
+                  updateNodeType={this.props.updateNodeType}
                 />
               </div>
             </div>
