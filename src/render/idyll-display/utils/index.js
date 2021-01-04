@@ -110,15 +110,6 @@ const debounce = (func, waitTime) => {
   };
 };
 
-const debounceHandler = (...args) => {
-  const debounced = debounce(...args);
-  return function(e) {
-    e.persist();
-
-    return debounced(e);
-  };
-};
-
 module.exports = {
   getNodeById,
   deleteNodeById,
@@ -127,6 +118,5 @@ module.exports = {
   isChildOf,
   isDifferentActiveNode,
   formatString,
-  debounce,
-  debounceHandler
+  debounce
 };

@@ -4,7 +4,6 @@ import Sidebar from './sidebar';
 import { ipcRenderer } from 'electron';
 import { WrappedAuthorView } from './components/author-view';
 import Context from '../context/context';
-import { AuthorView2 } from './components/author-view-v2.js';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -38,7 +37,6 @@ class IdyllDisplay extends React.PureComponent {
           <div className="output-container">
             <Render />
             <WrappedAuthorView />
-            {/* <AuthorView2 /> */}
           </div>
         </div>
       </>

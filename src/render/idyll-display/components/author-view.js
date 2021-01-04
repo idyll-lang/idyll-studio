@@ -23,40 +23,29 @@ export const WrappedAuthorView = withContext(
 
     componentWillUnmount() {
       this.props.context.setActiveComponent(null);
-      window.removeEventListener('resize', this.handleResize);
+      window.removeEventListener('resize', this.handleWindowEvent);
 
       const parent = document.getElementsByClassName('output-container')[0];
-      parent.removeEventListener('scroll', this.handleResize);
+      parent.removeEventListener('scroll', this.handleWindowEvent);
     }
 
     componentDidMount() {
-      window.addEventListener('resize', this.handleResize);
+      window.addEventListener('resize', this.handleWindowEvent);
 
       const parent = document.getElementsByClassName('output-container')[0];
-      parent.addEventListener('scroll', this.handleResize);
+      parent.addEventListener('scroll', this.handleWindowEvent);
     }
-
-    handleResize = e => {
-      if (this.state.activeDomNode) {
-        const activeComponentDimensions = this.state.activeDomNode.getClientRects();
-
-        this.setState({
-          dimensions: activeComponentDimensions[0]
-        });
-      }
-    };
 
     componentDidUpdate(prevProps) {
       const { context } = this.props;
       const isValidActiveComponent =
-        context.activeComponent &&
-        Object.keys(context.activeComponent).length != 0;
+        context.activeComponent && Object.keys(context.activeComponent).length != 0;
 
+      // update which dom node represents the "active" component being worked on
       if (prevProps.context.activeComponent != context.activeComponent 
           && isValidActiveComponent) {
         const activeComponentDomNode = document.getElementById(
-          context.activeComponent.name + '-' + context.activeComponent.id
-        );
+          context.activeComponent.name + '-' + context.activeComponent.id);
 
         this.setState({
           activeDomNode: activeComponentDomNode,
@@ -69,6 +58,20 @@ export const WrappedAuthorView = withContext(
         });
       }
     }
+
+    /**
+     * On scroll or resize events, stores the new dimensions 
+     * of the active component  
+     */
+    handleWindowEvent = () => {
+      if (this.state.activeDomNode) {
+        const activeComponentDimensions = this.state.activeDomNode.getClientRects();
+
+        this.setState({
+          dimensions: activeComponentDimensions[0]
+        });
+      }
+    };
 
     /**
      * On a prop change for the given active node,
@@ -88,6 +91,11 @@ export const WrappedAuthorView = withContext(
       this.debouncedSetAst(node, propName, propValue);
     }
 
+    /**
+     * Returns a function that will update the context with the new 
+     * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
+     * amount of time has passed since the last function invoke
+     */
     debouncedSetAst = debounce((node, propName, propValue) => {
       const newPropList = getUpdatedPropList(node, propName, propValue);
       node.properties = newPropList;
@@ -119,7 +127,7 @@ export const WrappedAuthorView = withContext(
             className="author-view-overlay"
             style={{
               top: dimensions.top + 60,
-              left: dimensions.left - 110
+              left: dimensions.left
             }}>
             <PropertyList
               node={activeComponent}

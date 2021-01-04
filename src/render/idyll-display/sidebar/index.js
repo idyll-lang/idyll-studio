@@ -39,7 +39,7 @@ class Sidebar extends React.PureComponent {
   getStyleView() {
     return (
       <div>
-        <div class="theme-container">
+        <div className="theme-container">
           Theme
           <select
             onChange={this.handleThemeChange.bind(this)}
@@ -55,7 +55,7 @@ class Sidebar extends React.PureComponent {
               })}
           </select>
         </div>
-        <div class="layout-container">
+        <div className="layout-container">
           Layout
           <select
             onChange={this.handleLayoutChange.bind(this)}

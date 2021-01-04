@@ -17,7 +17,7 @@ class Component extends React.PureComponent {
     input.value = propertyObject.value;
   }
 
-  handleUpdateValue = e => {
+  handleUpdateValue = () => {
     const propName = this.props.name;
 
     let val = this._inputRef.current.value;
