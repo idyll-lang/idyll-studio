@@ -11,14 +11,12 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { Arrow } from '../src/render/idyll-display/components/component-view/icons/arrow';
 import Component from '../src/render/idyll-display/components/component-view/component';
 import WrappedComponentView from '../src/render/idyll-display/components/component-view/component-view';
-import Context from '../src/render/context/context';
 
 describe('<Property /> with props', () => {
   let component;
   let updateProperty;
 
   let updateNodeType;
-  let updateShowPropDetailsMap;
 
   const dropTarget = jest.fn((jsxElement) => jsxElement);
 
@@ -26,139 +24,93 @@ describe('<Property /> with props', () => {
     updateProperty = jest.fn((propertyName, value, e) => [propertyName, value]);
 
     updateNodeType = jest.fn((name, nextType) => [name, nextType]);
-
-    updateShowPropDetailsMap = jest.fn();
   });
 
-  it('renders with just the returned div with the prop name and color and opens div on click', () => {
-    component = shallow(
+  it('renders with property "value" input with initial value', () => {
+    component = mount(
       <Property
         updateProperty={updateProperty}
         name={'author'}
-        value={{ value: '', type: 'variable' }}
+        propertyObject={{type:'value', value:'Deirdre'}}
         updateNodeType={updateNodeType}
         variableData={{}}
-        updateShowPropDetailsMap={updateShowPropDetailsMap}
-        showDetails={false}
-        activePropName={''}
-        cursorPosition={-1}
         dropTarget={dropTarget}
       />
     );
 
-    expect(component.text()).toBe('author');
+    expect(component.find('div.prop-name').text()).toBe('author');
 
-    expect(component.find('div.prop-type').hasClass('prop-type')).toBeTruthy();
+    const typeDiv = component.find('div.prop-type');
+    expect(typeDiv.text()).toBe('string');
+    expect(typeDiv.props().style.background).toBe('#4A90E2');
 
-    const style = component.find('div').get(0).props.children.props.style;
-    expect(style.background).toBe('#50E3C2');
-    expect(style.color).toBe('#222');
-
-    component.find('div.prop-type').simulate('click');
-    expect(updateShowPropDetailsMap).toHaveBeenCalledTimes(1);
+    const input = component.find('input').instance();
+    expect(input.value).toBe('Deirdre');
   });
 
-  it('renders with the details shown', () => {
-    component = shallow(
+  it('should call props.updateProperty on input change', () => {
+    component = mount(
       <Property
         updateProperty={updateProperty}
         name={'author'}
-        value={{ value: '', type: 'variable' }}
+        propertyObject={{type:'variable', value:'state'}}
         updateNodeType={updateNodeType}
         variableData={{}}
-        updateShowPropDetailsMap={updateShowPropDetailsMap}
-        showDetails={true}
-        activePropName={''}
-        cursorPosition={-1}
         dropTarget={dropTarget}
       />
     );
+      
+    expect(component.find('div.prop-name').text()).toBe('author');
 
-    // div part of property
-    const div = component.find('div.prop-type').props();
-    const style = div.style;
-    expect(style.background).toBe('#50E3C2');
-    expect(style.color).toBe('#222');
-    expect(div.children).toBe('variable');
+    const typeDiv = component.find('div.prop-type');
+    expect(typeDiv.text()).toBe('variable');
+    expect(typeDiv.props().style.background).toBe('#50E3C2');
 
-    // input part of property
-    const input = component.find('input').props();
-    expect(input.type).toBe('text');
-    expect(input.value).toBe('');
-    expect(input.autoFocus).toBe(false);
-  });
-
-  it('autofocuses the input', () => {
-    component = shallow(
-      <Property
-        updateProperty={updateProperty}
-        name={'author'}
-        value={{ value: 'a', type: 'variable' }}
-        updateNodeType={updateNodeType}
-        variableData={{}}
-        updateShowPropDetailsMap={updateShowPropDetailsMap}
-        showDetails={true}
-        activePropName={'author'}
-        cursorPosition={1}
-        dropTarget={dropTarget}
-      />
-    );
-
-    // div part of property
-    const div = component.find('div.prop-type').props();
-    const style = div.style;
-    expect(style.background).toBe('#50E3C2');
-    expect(style.color).toBe('#222');
-    expect(div.children).toBe('variable');
-
-    // input part of property
-    const input = component.find('input').props();
-    expect(input.type).toBe('text');
-    expect(input.value).toBe('a');
-    expect(input.autoFocus).toBe(true);
-  });
-
-  it('triggers the right function calls', () => {
-    component = shallow(
-      <Property
-        updateProperty={updateProperty}
-        name={'author'}
-        value={{ value: 'a', type: 'variable' }}
-        updateNodeType={updateNodeType}
-        variableData={{}}
-        updateShowPropDetailsMap={updateShowPropDetailsMap}
-        showDetails={true}
-        activePropName={'author'}
-        cursorPosition={1}
-        dropTarget={dropTarget}
-      />
-    );
-
-    // input part of property
     const input = component.find('input');
-    expect(input.props().type).toBe('text');
-    expect(input.props().value).toBe('a');
-    expect(input.props().autoFocus).toBe(true);
+    expect(input.instance().value).toBe('state');
 
     expect(updateProperty).toHaveBeenCalledTimes(0);
     input.simulate('change', { target: { value: 'abc' } });
     expect(updateProperty).toHaveBeenCalledTimes(1);
-    expect(updateProperty.mock.results[0].value).toEqual(['author', 'abc']);
   });
+
+  it('should call props.updateNodeType', () => {
+    component = mount(
+      <Property
+        updateProperty={updateProperty}
+        name={'date'}
+        propertyObject={{type:'expression', value:'new Date()'}}
+        updateNodeType={updateNodeType}
+        variableData={{}}
+        dropTarget={dropTarget}
+      />
+    );
+      
+    expect(component.find('div.prop-name').text()).toBe('date');
+
+    const typeDiv = component.find('div.prop-type');
+    expect(typeDiv.text()).toBe('expression');
+    expect(typeDiv.props().style.background).toBe('#B8E986');
+
+    // on click
+    expect(updateNodeType).toHaveBeenCalledTimes(0);
+    typeDiv.simulate('click');
+    expect(updateNodeType).toHaveBeenCalledTimes(1);
+
+    const input = component.find('input');
+    expect(input.instance().value).toBe('new Date()');
+  })
 });
 
 describe('<PropertyList />', () => {
   let component;
   let updateNodeWithNewProperties;
   let updateNodeType;
-  let updateShowPropDetailsMap;
   let variableData = {};
-  let showPropDetailsMap = { author: false, link: true };
 
   beforeEach(() => {
     updateNodeWithNewProperties = jest.fn();
     updateNodeType = jest.fn();
-    updateShowPropDetailsMap = jest.fn();
   });
 
   it('should render two Properties', () => {
@@ -167,15 +119,11 @@ describe('<PropertyList />', () => {
         node={{ properties: { author: 'my-cat-deirdre', link: 'link' } }}
         updateNodeWithNewProperties={updateNodeWithNewProperties}
         updateNodeType={updateNodeType}
-        updateShowPropDetailsMap={updateShowPropDetailsMap}
         variableData={variableData}
-        showPropDetailsMap={showPropDetailsMap}
-        activePropName="link"
-        cursorPosition={-1}
       />
     );
 
-    const div = component.find('div').get(0);
+    const div = component.find('div.property-list').get(0);
 
     // 2 props (author and link)
     expect(div.props.children).toHaveLength(2);

@@ -1,3 +1,5 @@
+const { InvalidParameterError } = require("../../../error");
+
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
 };
@@ -98,27 +100,32 @@ const formatString = value => {
  * Given an idyll AST node, one of its property names,
  * and the corresponding property value, returns an 
  * updated copy of its properties object with the new 
- * property value
- * @param {*} node the idyll AST node 
- * @param {*} propName the property name to update
- * @param {*} propValue the property value
+ * property value. Returns null if any of the parameters
+ * are null or empty
+ * @param {IdyllAstNode} node the idyll AST node 
+ * @param {string} propertyName the property name to update
+ * @param {string} propertyValue the property value
  */
-function getUpdatedPropList(node, propName, propValue) {
-  const propertiesCopy = {};
-  Object.keys(node.properties).forEach(property => {
-    const propertyObject = node.properties[property];
-
-    if (property === propName) {
-      propertiesCopy[propName] = {
-        ...propertyObject,
-        value: propValue
-      };
-    } else {
-      propertiesCopy[property] = { ...propertyObject };
-    }
-  });
-
-  return propertiesCopy;
+function getUpdatedPropList(node, propertyName, propertyValue) {
+  if(node && propertyName) {
+    console.log(node);
+    const propertiesCopy = {};
+    Object.keys(node.properties).forEach(property => {
+      const propertyObject = node.properties[property];
+  
+      if (property === propertyName) {
+        propertiesCopy[propertyName] = {
+          ...propertyObject,
+          value: propertyValue
+        };
+      } else {
+        propertiesCopy[property] = { ...propertyObject };
+      }
+    });
+  
+    return propertiesCopy; 
+  } 
+  return null;
 }
 
 /**
@@ -129,6 +136,10 @@ function getUpdatedPropList(node, propName, propValue) {
  * @param {number} waitTime the wait time in ms before executing the func 
  */
 const debounce = (func, waitTime) => {
+  if(!func || !waitTime || waitTime < 0) {
+    throw new InvalidParameterError("Debounce function and waitTime passed in must not be null");
+  }
+
   let timeout;
 
   return function functionToExecute(...args) {

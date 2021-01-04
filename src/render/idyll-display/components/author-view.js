@@ -15,7 +15,6 @@ export const WrappedAuthorView = withContext(
       super(props);
 
       this.state = {
-        newPropName: '',
         activeDomNode: null,
         dimensions: null
       };
@@ -80,15 +79,15 @@ export const WrappedAuthorView = withContext(
      * changed node
      * @param {IdyllAstNode} idyllASTNode the current active node
      * @param {Object} newPropList the new properties list
-     * @param {string} propName the prop name changed
+     * @param {string} propertyName the prop name changed
      * @param {React.ChangeEvent} e the change event associated
      *                               w/ the prop change
      */
-    updateNodeWithNewProperties(propName, propValue) {
+    updateNodeWithNewProperties(propertyName, propertyValue) {
       // update node
       let node = getNodeById(this.props.context.ast, this.props.context.activeComponent.id);
 
-      this.debouncedSetAst(node, propName, propValue);
+      this.debouncedSetAst(node, propertyName, propertyValue);
     }
 
     /**
@@ -96,8 +95,8 @@ export const WrappedAuthorView = withContext(
      * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
      * amount of time has passed since the last function invoke
      */
-    debouncedSetAst = debounce((node, propName, propValue) => {
-      const newPropList = getUpdatedPropList(node, propName, propValue);
+    debouncedSetAst = debounce((node, propertyName, propertyValue) => {
+      const newPropList = getUpdatedPropList(node, propertyName, propertyValue);
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
@@ -106,13 +105,13 @@ export const WrappedAuthorView = withContext(
     /**
      * Updates the prop type to the given one
      * in the ast
-     * @param {string} propName the name of the prop
+     * @param {string} propertyName the name of the prop
      * @param {string} propType the next type of the prop
      *                      (value, variable, expression)
      */
-    updateNodeType(propName, propType) {
-      const node = getNodeById(this.props.context.ast, this.props.context.activeComponent);
-      node.properties[propName].type = propType;
+    updateNodeType(propertyName, propType) {
+      const node = getNodeById(this.props.context.ast, this.props.context.activeComponent.id);
+      node.properties[propertyName].type = propType;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
     }

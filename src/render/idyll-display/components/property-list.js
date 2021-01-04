@@ -8,37 +8,36 @@ class PropertyList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      newPropName: ''
+      newPropertyName: ''
     };
   }
 
-  handleUpdateNewPropName(event) {
-    this.setState({ newPropName: event.target.value });
+  handleUpdateNewPropertyName(event) {
+    this.setState({ newPropertyName: event.target.value });
   }
 
   addProperty() {
     const node = this.props.node;
     node.properties = node.properties || {};
-    node.properties[this.state.newPropName] = {
+    node.properties[this.state.newPropertyName] = {
       type: 'value',
       value: ''
     };
 
-    this.setState({ newPropName: '' });
+    this.setState({ newPropertyName: '' });
   }
 
   render() {
     const ASTNode = this.props.node;
     return (
-      <div>
-        {Object.keys(ASTNode.properties || {}).map(propName => {
-          const propertyObject = ASTNode.properties[propName];
-
+      <div className='property-list'>
+        {Object.keys(ASTNode.properties || {}).map(propertyName => {
+          const propertyObject = ASTNode.properties[propertyName];
           return (
             <div
-              key={propName}
+              key={propertyName}
               style={{ marginBottom: '5px', padding: '0 0.25em' }}>
-              {/* <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propName}</div> */}
+              {/* <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propertyName}</div> */}
               <div
                 style={{
                   display: 'flex',
@@ -47,7 +46,7 @@ class PropertyList extends React.PureComponent {
                 }}>
                 <Property
                   updateProperty={this.props.updateNodeWithNewProperties}
-                  name={propName}
+                  name={propertyName}
                   propertyObject={propertyObject}
                   variableData={this.props.variableData}
                   updateNodeType={this.props.updateNodeType}
@@ -60,7 +59,7 @@ class PropertyList extends React.PureComponent {
           Add property
 
           <div style={{display: 'flex', flexDirection: 'row'}}>
-            <input type="text" placeholder="Property Name" value={this.state.newPropName} onChange={this.handleUpdateNewPropName.bind(this)} />
+            <input type="text" placeholder="Property Name" value={this.state.newpropertyName} onChange={this.handleUpdateNewpropertyName.bind(this)} />
             <button onClick={this.addProperty.bind(this)}>
               Add
             </button>

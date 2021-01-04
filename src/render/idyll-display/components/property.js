@@ -18,7 +18,7 @@ class Component extends React.PureComponent {
   }
 
   handleUpdateValue = () => {
-    const propName = this.props.name;
+    const propertyName = this.props.name;
 
     let val = this._inputRef.current.value;
     if (val.trim() !== '') {
@@ -28,7 +28,7 @@ class Component extends React.PureComponent {
       val = this._inputRef.current.value;
     }
 
-    this.props.updateProperty(propName, val);
+    this.props.updateProperty(propertyName, val);
   };
 
   getBackgroundColor(propType) {
@@ -54,12 +54,12 @@ class Component extends React.PureComponent {
 
   /**
    * Updates the prop type
-   * @param {string} propName the prop name
+   * @param {string} propertyName the prop name
    * @param {string} type the next type of the prop
    */
-  updateNodeType(propName, type) {
+  updateNodeType(propertyName, type) {
     return e => {
-      this.props.updateNodeType(propName, type);
+      this.props.updateNodeType(propertyName, type);
     };
   }
 
