@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropertyList from './property-list';
-import { getNodeById, debounce } from '../utils/';
+import { getNodeById, debounce, getUpdatedPropList } from '../utils/';
 import { withContext } from '../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 
@@ -144,21 +144,3 @@ export const WrappedAuthorView = withContext(
     }
   }
 );
-
-function getUpdatedPropList(node, propName, propValue) {
-  const propertiesCopy = {};
-  Object.keys(node.properties).forEach(property => {
-    const propertyObject = node.properties[property];
-
-    if (property === propName) {
-      propertiesCopy[propName] = {
-        ...propertyObject,
-        value: propValue
-      };
-    } else {
-      propertiesCopy[property] = { ...propertyObject };
-    }
-  });
-
-  return propertiesCopy;
-}

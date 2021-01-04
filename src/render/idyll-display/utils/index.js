@@ -94,6 +94,40 @@ const formatString = value => {
     .join(' ');
 };
 
+/**
+ * Given an idyll AST node, one of its property names,
+ * and the corresponding property value, returns an 
+ * updated copy of its properties object with the new 
+ * property value
+ * @param {*} node the idyll AST node 
+ * @param {*} propName the property name to update
+ * @param {*} propValue the property value
+ */
+function getUpdatedPropList(node, propName, propValue) {
+  const propertiesCopy = {};
+  Object.keys(node.properties).forEach(property => {
+    const propertyObject = node.properties[property];
+
+    if (property === propName) {
+      propertiesCopy[propName] = {
+        ...propertyObject,
+        value: propValue
+      };
+    } else {
+      propertiesCopy[property] = { ...propertyObject };
+    }
+  });
+
+  return propertiesCopy;
+}
+
+/**
+ * Returns a function that will execute 
+ * the given function after waitTime number 
+ * of milliseconds passes after the last invoke
+ * @param {function} func the function to execute 
+ * @param {number} waitTime the wait time in ms before executing the func 
+ */
 const debounce = (func, waitTime) => {
   let timeout;
 
@@ -118,5 +152,6 @@ module.exports = {
   isChildOf,
   isDifferentActiveNode,
   formatString,
+  getUpdatedPropList,
   debounce
 };
