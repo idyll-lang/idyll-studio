@@ -49,13 +49,13 @@ class DatasetView extends React.PureComponent {
   render() {
     const { datasets } = this.context;
     return (
-      <div className="dataset-view">
-        <div className="label">Datasets</div>
-        <div className="dataset-container">
+      <div className='dataset-view'>
+        <div className='label'>Datasets</div>
+        <div className='dataset-container'>
           {datasets && datasets.length ? (
             <Select
-              placeholder="Select a dataset"
-              ref="select"
+              placeholder='Select a dataset'
+              ref='select'
               // on change callback
               options={datasets.map(dataset => {
                 return { value: dataset, label: dataset.name };

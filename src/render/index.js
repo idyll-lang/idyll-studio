@@ -184,7 +184,7 @@ class App extends React.PureComponent {
               fontFamily: 'Helvetica',
               borderRadius: 0
             }}>
-            <button className="loader" onClick={this.handleLoad.bind(this)}>
+            <button className='loader' onClick={this.handleLoad.bind(this)}>
               Load a project
             </button>
           </div>

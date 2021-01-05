@@ -29,7 +29,7 @@ class Component extends React.PureComponent {
         style={{
           opacity: isDragging ? 0.5 : 1
         }}
-        className="component">
+        className='component'>
         {name}
       </div>
     );

@@ -151,8 +151,8 @@ class VariableView extends React.PureComponent {
       { key: 'currentValue', name: 'Current value', editable: true }
     ];
     return (
-      <div className="variables-view">
-        <div className="variables-table-view">
+      <div className='variables-view'>
+        <div className='variables-table-view'>
           <ReactDataGrid
             columns={columns}
             rowGetter={i => rows[i]}
@@ -161,7 +161,7 @@ class VariableView extends React.PureComponent {
             onGridRowsUpdated={this.handleGridUpdated.bind(this)}
           />
         </div>
-        <div className="add-variable-button">
+        <div className='add-variable-button'>
           <button onClick={() => this.addVariable(this.context.ast)}>
             Add variable
           </button>

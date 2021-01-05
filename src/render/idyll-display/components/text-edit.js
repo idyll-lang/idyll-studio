@@ -97,14 +97,14 @@ class TextEdit extends React.PureComponent {
             borderLeft: 'solid 2px #222',
             fontFamily: 'monospace'
           }}
-          contentEditable="true"
+          contentEditable='true'
           onBlur={this.toggleMarkup.bind(this)}>
           {this.getMarkup(this.props)}
         </div>
       );
     }
     return (
-      <div className="editable-text" onClick={this.toggleMarkup.bind(this)}>
+      <div className='editable-text' onClick={this.toggleMarkup.bind(this)}>
         {props.children}
       </div>
     );

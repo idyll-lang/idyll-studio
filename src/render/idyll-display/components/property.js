@@ -89,7 +89,7 @@ class Component extends React.PureComponent {
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
-            type="text"
+            type='text'
             ref={this._inputRef}
             onChange={this.handleUpdateValue}
           />
@@ -97,7 +97,7 @@ class Component extends React.PureComponent {
 
         {/* If variable, display current value */}
         {propertyObject.type === 'variable' ? (
-          <div className="current-value">
+          <div className='current-value'>
             Current Value: {this.props.variableData[propertyObject.value]}
           </div>
         ) : (
@@ -127,7 +127,7 @@ class Component extends React.PureComponent {
           marginLeft: 0,
           border: isOver ? 'solid 2px green' : undefined
         }}>
-        <div className="prop-name">{name}</div>
+        <div className='prop-name'>{name}</div>
         <div>{this.renderProp(name, propertyObject)}</div>
       </div>
     );

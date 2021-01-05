@@ -34,7 +34,7 @@ class IdyllDisplay extends React.PureComponent {
             'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')
           }>
           <Sidebar />
-          <div className="output-container">
+          <div className='output-container'>
             <Render />
             <WrappedAuthorView />
           </div>

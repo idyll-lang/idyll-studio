@@ -6,17 +6,17 @@ export const SearchBarInput = props => {
   const { onChange, value, placeholder, onClick } = props;
 
   return (
-    <div className="component-search-bar-container">
-      <SearchIcon className="search-icon" />
+    <div className='component-search-bar-container'>
+      <SearchIcon className='search-icon' />
       <input
-        type="text"
+        type='text'
         placeholder={placeholder}
         onChange={onChange}
         value={value}
-        className="search-input"
+        className='search-input'
       />
       {value && value.length > 0 ? (
-        <button className="search-cancel-button" onClick={onClick}>
+        <button className='search-cancel-button' onClick={onClick}>
           <XIcon />
         </button>
       ) : (

@@ -30,8 +30,8 @@ class ComponentAccordion extends React.PureComponent {
     const { isClosed } = this.state;
 
     return (
-      <div className="component-category">
-        <button onClick={this.handleClick} className="accordion-category">
+      <div className='component-category'>
+        <button onClick={this.handleClick} className='accordion-category'>
           <Arrow isClosed={isClosed} />
           <h3 style={{ margin: 0 }}>{category}</h3>
         </button>
@@ -40,14 +40,14 @@ class ComponentAccordion extends React.PureComponent {
           style={{
             maxHeight: this.state.maxHeight
           }}
-          className="accordion-panel-container"
+          className='accordion-panel-container'
           ref={this._panelRef}>
           <div
-            className="accordion-line"
+            className='accordion-line'
             style={{ maxHeight: this.state.maxHeight }}
           />
 
-          <div className="accordion-component">
+          <div className='accordion-component'>
             {(components || []).map((component, i) => {
               return <Component key={i} component={component} />;
             })}

@@ -1,4 +1,4 @@
-const { InvalidParameterError } = require("../../../error");
+const { InvalidParameterError } = require('../../../error');
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -98,21 +98,21 @@ const formatString = value => {
 
 /**
  * Given an idyll AST node, one of its property names,
- * and the corresponding property value, returns an 
- * updated copy of its properties object with the new 
+ * and the corresponding property value, returns an
+ * updated copy of its properties object with the new
  * property value. Returns null if any of the parameters
  * are null or empty
- * @param {IdyllAstNode} node the idyll AST node 
+ * @param {IdyllAstNode} node the idyll AST node
  * @param {string} propertyName the property name to update
  * @param {string} propertyValue the property value
  */
 function getUpdatedPropList(node, propertyName, propertyValue) {
-  if(node && propertyName) {
+  if (node && propertyName) {
     console.log(node);
     const propertiesCopy = {};
     Object.keys(node.properties).forEach(property => {
       const propertyObject = node.properties[property];
-  
+
       if (property === propertyName) {
         propertiesCopy[propertyName] = {
           ...propertyObject,
@@ -122,22 +122,24 @@ function getUpdatedPropList(node, propertyName, propertyValue) {
         propertiesCopy[property] = { ...propertyObject };
       }
     });
-  
-    return propertiesCopy; 
-  } 
+
+    return propertiesCopy;
+  }
   return null;
 }
 
 /**
- * Returns a function that will execute 
- * the given function after waitTime number 
+ * Returns a function that will execute
+ * the given function after waitTime number
  * of milliseconds passes after the last invoke
- * @param {function} func the function to execute 
- * @param {number} waitTime the wait time in ms before executing the func 
+ * @param {function} func the function to execute
+ * @param {number} waitTime the wait time in ms before executing the func
  */
 const debounce = (func, waitTime) => {
-  if(!func || !waitTime || waitTime < 0) {
-    throw new InvalidParameterError("Debounce function and waitTime passed in must not be null");
+  if (!func || !waitTime || waitTime < 0) {
+    throw new InvalidParameterError(
+      'Debounce function and waitTime passed in must not be null'
+    );
   }
 
   let timeout;

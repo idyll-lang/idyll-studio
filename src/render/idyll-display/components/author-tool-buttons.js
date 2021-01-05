@@ -109,7 +109,7 @@ class AuthorToolButtons extends React.PureComponent {
     const { dropTarget } = this.props;
 
     return dropTarget(
-      <div className="component-debug-view">
+      <div className='component-debug-view'>
         <div
           contentEditable={true}
           suppressContentEditableWarning={true}
@@ -125,7 +125,7 @@ class AuthorToolButtons extends React.PureComponent {
             />
           </div>
         ) : null}
-        <div className="author-view-container" id={this.domId}>
+        <div className='author-view-container' id={this.domId}>
           <button
             className={`author-view-button ${
               this.context &&

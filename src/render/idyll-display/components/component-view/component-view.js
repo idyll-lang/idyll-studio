@@ -92,8 +92,8 @@ export const WrappedComponentView = withContext(
         return this.state.filteredComponents.map((component, i) => {
           return (
             <div
-              className="component-container"
-              id="filtered-search-results"
+              className='component-container'
+              id='filtered-search-results'
               key={'component-container:' + i}>
               <Component
                 key={i}
@@ -108,14 +108,14 @@ export const WrappedComponentView = withContext(
 
     render() {
       return (
-        <div className="component-view">
+        <div className='component-view'>
           <SearchBarInput
-            placeholder="Search Components"
+            placeholder='Search Components'
             onChange={this.searchComponents}
             value={this.state.searchValue}
             onClick={this.clearSearch}
           />
-          <div className="component-container">
+          <div className='component-container'>
             {this.state.searchValue.length > 0
               ? this.renderFilteredResults()
               : this.renderAccordion()}

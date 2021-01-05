@@ -38,13 +38,17 @@ export const WrappedAuthorView = withContext(
     componentDidUpdate(prevProps) {
       const { context } = this.props;
       const isValidActiveComponent =
-        context.activeComponent && Object.keys(context.activeComponent).length != 0;
+        context.activeComponent &&
+        Object.keys(context.activeComponent).length != 0;
 
       // update which dom node represents the "active" component being worked on
-      if (prevProps.context.activeComponent != context.activeComponent 
-          && isValidActiveComponent) {
+      if (
+        prevProps.context.activeComponent != context.activeComponent &&
+        isValidActiveComponent
+      ) {
         const activeComponentDomNode = document.getElementById(
-          context.activeComponent.name + '-' + context.activeComponent.id);
+          context.activeComponent.name + '-' + context.activeComponent.id
+        );
 
         this.setState({
           activeDomNode: activeComponentDomNode,
@@ -59,8 +63,8 @@ export const WrappedAuthorView = withContext(
     }
 
     /**
-     * On scroll or resize events, stores the new dimensions 
-     * of the active component  
+     * On scroll or resize events, stores the new dimensions
+     * of the active component
      */
     handleWindowEvent = () => {
       if (this.state.activeDomNode) {
@@ -85,13 +89,16 @@ export const WrappedAuthorView = withContext(
      */
     updateNodeWithNewProperties(propertyName, propertyValue) {
       // update node
-      let node = getNodeById(this.props.context.ast, this.props.context.activeComponent.id);
+      let node = getNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
 
       this.debouncedSetAst(node, propertyName, propertyValue);
     }
 
     /**
-     * Returns a function that will update the context with the new 
+     * Returns a function that will update the context with the new
      * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
      * amount of time has passed since the last function invoke
      */
@@ -110,7 +117,10 @@ export const WrappedAuthorView = withContext(
      *                      (value, variable, expression)
      */
     updateNodeType(propertyName, propType) {
-      const node = getNodeById(this.props.context.ast, this.props.context.activeComponent.id);
+      const node = getNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
       node.properties[propertyName].type = propType;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
@@ -123,7 +133,7 @@ export const WrappedAuthorView = withContext(
       if (activeComponent && dimensions) {
         return (
           <div
-            className="author-view-overlay"
+            className='author-view-overlay'
             style={{
               top: dimensions.top + 60,
               left: dimensions.left

@@ -39,7 +39,7 @@ class Sidebar extends React.PureComponent {
   getStyleView() {
     return (
       <div>
-        <div className="theme-container">
+        <div className='theme-container'>
           Theme
           <select
             onChange={this.handleThemeChange.bind(this)}
@@ -55,7 +55,7 @@ class Sidebar extends React.PureComponent {
               })}
           </select>
         </div>
-        <div className="layout-container">
+        <div className='layout-container'>
           Layout
           <select
             onChange={this.handleLayoutChange.bind(this)}
@@ -91,7 +91,7 @@ class Sidebar extends React.PureComponent {
       const name = props.name.value;
       const value = props.value.value;
       return (
-        <div className="variables-view" key={name}>
+        <div className='variables-view' key={name}>
           <li key={variable}>
             {name}, whose current value is {value}
           </li>
@@ -113,8 +113,8 @@ class Sidebar extends React.PureComponent {
         return (
           <div>
             <h2>Document Information</h2>
-            <div className="look-and-feel">{this.getStyleView()}</div>
-            <div className="publish-view">
+            <div className='look-and-feel'>{this.getStyleView()}</div>
+            <div className='publish-view'>
               <Deployment />
             </div>
           </div>
@@ -122,7 +122,7 @@ class Sidebar extends React.PureComponent {
       case tabs.VARIABLES:
         return (
           <div>
-            <div className="components-and-datasets">
+            <div className='components-and-datasets'>
               <h2>Variables and Datasets</h2>
               <VariableView />
               <DatasetView />
@@ -132,7 +132,7 @@ class Sidebar extends React.PureComponent {
       case tabs.COMPONENTS:
         return (
           <div>
-            <div className="components-and-datasets">
+            <div className='components-and-datasets'>
               <h2>Components</h2>
               <WrappedComponentView />
             </div>
@@ -153,12 +153,12 @@ class Sidebar extends React.PureComponent {
     }
 
     return (
-      <div className="sidebar-information">
+      <div className='sidebar-information'>
         {currentSidebarNode ? (
           <ComponentDetails />
         ) : (
           <div>
-            <div className="sidebar-tab-container">
+            <div className='sidebar-tab-container'>
               <div
                 className={`sidebar-tab ${
                   this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
@@ -187,7 +187,7 @@ class Sidebar extends React.PureComponent {
                 Publish
               </div>
             </div>
-            <div className="sidebar-inner">{this.renderInner()}</div>
+            <div className='sidebar-inner'>{this.renderInner()}</div>
           </div>
         )}
       </div>

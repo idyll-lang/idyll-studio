@@ -109,8 +109,8 @@ class Renderer extends React.PureComponent {
     });
 
     return (
-      <div className="renderer">
-        <div className="renderer-container" contentEditable={false}>
+      <div className='renderer'>
+        <div className='renderer-container' contentEditable={false}>
           <IdyllDocument
             //markup={markup}
             // key={JSON.stringify(ast)}

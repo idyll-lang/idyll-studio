@@ -58,7 +58,7 @@ class Component extends React.PureComponent {
           className={'prop-input'}
           style={{ fontFamily: 'monospace' }}
           onChange={this.handleUpdateValue(key)}
-          type="text"
+          type='text'
           value={prop.value}
         />
         <div
@@ -81,7 +81,7 @@ class Component extends React.PureComponent {
         <input
           className={'prop-input'}
           onChange={this.handleUpdateValue(key)}
-          type="text"
+          type='text'
           value={prop.value}
         />
         <div
@@ -108,7 +108,7 @@ class Component extends React.PureComponent {
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
             onChange={this.handleUpdateValue(key)}
-            type="text"
+            type='text'
             value={prop.value}
           />
           <div
@@ -170,8 +170,8 @@ class Component extends React.PureComponent {
             Add property
             <div style={{ display: 'flex', flexDirection: 'row' }}>
               <input
-                type="text"
-                placeholder="Property Name"
+                type='text'
+                placeholder='Property Name'
                 value={this.state.newPropName}
                 onChange={this.handleUpdateNewPropName.bind(this)}
               />
