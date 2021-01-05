@@ -3,7 +3,7 @@ import {
   isDifferentActiveNode,
   formatString,
   debounce,
-  getUpdatedPropList,
+  getUpdatedPropertyList,
 } from '../src/render/idyll-display/utils';
 const expect = require('expect');
 
@@ -46,19 +46,19 @@ describe('formatString tests', () => {
   });
 });
 
-describe('getUpdatedPropList tests', () => {
+describe('getUpdatedPropertyList tests', () => {
   it('should return null with invalid parameters', () => {
-    expect(getUpdatedPropList(null, 'valid', '')).toBe(null);
-    expect(getUpdatedPropList('', "valid", '')).toBe(null);
-    expect(getUpdatedPropList('valid', null, '')).toBe(null);
-    expect(getUpdatedPropList('valid', '', '')).toBe(null);
-    expect(getUpdatedPropList(null, null, '')).toBe(null);
+    expect(getUpdatedPropertyList(null, 'valid', '')).toBe(null);
+    expect(getUpdatedPropertyList('', "valid", '')).toBe(null);
+    expect(getUpdatedPropertyList('valid', null, '')).toBe(null);
+    expect(getUpdatedPropertyList('valid', '', '')).toBe(null);
+    expect(getUpdatedPropertyList(null, null, '')).toBe(null);
   });
 
   it('should return an updated properties list', () => {
     const node = {id:1, properties: {title: {type:'value', value:'Title'}, author: {type:'value', value:'Deirdre'}}};
 
-    const result = getUpdatedPropList(node, 'title', 'updated!');
+    const result = getUpdatedPropertyList(node, 'title', 'updated!');
     const expected = { ...node.properties, title: {type:'value', value:'updated!'}};
 
     expect(result).toEqual(expected);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropertyList from './property-list';
-import { getNodeById, debounce, getUpdatedPropList } from '../utils/';
+import { getNodeById, debounce, getUpdatedPropertyList } from '../utils/';
 import { withContext } from '../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 
@@ -103,7 +103,7 @@ export const WrappedAuthorView = withContext(
      * amount of time has passed since the last function invoke
      */
     debouncedSetAst = debounce((node, propertyName, propertyValue) => {
-      const newPropList = getUpdatedPropList(node, propertyName, propertyValue);
+      const newPropList = getUpdatedPropertyList(node, propertyName, propertyValue);
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
@@ -113,15 +113,15 @@ export const WrappedAuthorView = withContext(
      * Updates the prop type to the given one
      * in the ast
      * @param {string} propertyName the name of the prop
-     * @param {string} propType the next type of the prop
+     * @param {string} propertyType the next type of the prop
      *                      (value, variable, expression)
      */
-    updateNodeType(propertyName, propType) {
+    updateNodeType(propertyName, propertyType) {
       const node = getNodeById(
         this.props.context.ast,
         this.props.context.activeComponent.id
       );
-      node.properties[propertyName].type = propType;
+      node.properties[propertyName].type = propertyType;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
     }

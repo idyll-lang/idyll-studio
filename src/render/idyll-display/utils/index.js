@@ -106,7 +106,7 @@ const formatString = value => {
  * @param {string} propertyName the property name to update
  * @param {string} propertyValue the property value
  */
-function getUpdatedPropList(node, propertyName, propertyValue) {
+function getUpdatedPropertyList(node, propertyName, propertyValue) {
   if (node && propertyName) {
     const propertiesCopy = {};
     Object.keys(node.properties).forEach(property => {
@@ -164,6 +164,6 @@ module.exports = {
   isChildOf,
   isDifferentActiveNode,
   formatString,
-  getUpdatedPropList,
+  getUpdatedPropertyList,
   debounce
 };

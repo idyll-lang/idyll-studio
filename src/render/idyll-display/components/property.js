@@ -30,8 +30,8 @@ class Component extends React.PureComponent {
     this.props.updateProperty(propertyName, val);
   };
 
-  getBackgroundColor(propType) {
-    switch (propType) {
+  getBackgroundColor(propertyType) {
+    switch (propertyType) {
       case 'expression':
         return '#B8E986';
       case 'variable':
@@ -40,8 +40,8 @@ class Component extends React.PureComponent {
         return '#4A90E2';
     }
   }
-  getColor(propType) {
-    switch (propType) {
+  getColor(propertyType) {
+    switch (propertyType) {
       case 'expression':
         return '#222';
       case 'variable':
