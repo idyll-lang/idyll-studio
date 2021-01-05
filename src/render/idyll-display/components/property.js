@@ -6,7 +6,6 @@ class Component extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.cursor = null;
     this._inputRef = React.createRef();
   }
 
