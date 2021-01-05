@@ -37,7 +37,6 @@ class PropertyList extends React.PureComponent {
             <div
               key={propertyName}
               style={{ marginBottom: '5px', padding: '0 0.25em' }}>
-              {/* <div style={{fontFamily: 'monospace' ,fontWeight: 'bold'}}>{propertyName}</div> */}
               <div
                 style={{
                   display: 'flex',
