@@ -108,7 +108,6 @@ const formatString = value => {
  */
 function getUpdatedPropList(node, propertyName, propertyValue) {
   if (node && propertyName) {
-    console.log(node);
     const propertiesCopy = {};
     Object.keys(node.properties).forEach(property => {
       const propertyObject = node.properties[property];
