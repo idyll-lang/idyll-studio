@@ -8,7 +8,7 @@ class ComponentAccordion extends React.PureComponent {
 
     this.state = {
       maxHeight: '0px',
-      isClosed: true,
+      isClosed: true
     };
 
     this._panelRef = React.createRef();
@@ -21,7 +21,7 @@ class ComponentAccordion extends React.PureComponent {
     const scrollHeight = this._panelRef.current.scrollHeight;
     this.setState({
       maxHeight: this.state.maxHeight === '0px' ? `${scrollHeight}px` : '0px',
-      isClosed: !this.state.isClosed,
+      isClosed: !this.state.isClosed
     });
   };
 
@@ -30,24 +30,24 @@ class ComponentAccordion extends React.PureComponent {
     const { isClosed } = this.state;
 
     return (
-      <div className="component-category">
-        <button onClick={this.handleClick} className="accordion-category">
+      <div className='component-category'>
+        <button onClick={this.handleClick} className='accordion-category'>
           <Arrow isClosed={isClosed} />
           <h3 style={{ margin: 0 }}>{category}</h3>
         </button>
 
         <div
           style={{
-            maxHeight: this.state.maxHeight,
+            maxHeight: this.state.maxHeight
           }}
-          className="accordion-panel-container"
+          className='accordion-panel-container'
           ref={this._panelRef}>
           <div
-            className="accordion-line"
+            className='accordion-line'
             style={{ maxHeight: this.state.maxHeight }}
           />
 
-          <div className="accordion-component">
+          <div className='accordion-component'>
             {(components || []).map((component, i) => {
               return <Component key={i} component={component} />;
             })}

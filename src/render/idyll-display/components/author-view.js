@@ -1,9 +1,8 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import PropertyList from './property-list';
-import { getNodeById, isDifferentActiveNode } from '../utils/';
-const AST = require('idyll-ast');
+import { getNodeById, throttle, getUpdatedPropertyList } from '../utils/';
 import { withContext } from '../../context/with-context';
+import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 
 /**
  * An AuthorView is associated with an active component.
@@ -16,76 +15,66 @@ export const WrappedAuthorView = withContext(
       super(props);
 
       this.state = {
-        newPropName: '',
-        showPropDetailsMap: {}, // name of prop -> true if open, false if not
-        activePropName: '',
-        cursorPosition: -1,
+        activeDomNode: null,
+        dimensions: null
       };
     }
 
-    componentDidMount() {
-      const { activeComponent } = this.props.context;
-
-      const activeComponentProperties =
-        activeComponent && activeComponent.properties
-          ? activeComponent.properties
-          : {};
-
-      const resultMap = {};
-      for (const key of Object.keys(activeComponentProperties)) {
-        resultMap[key] = false;
-      }
-
-      this.setState({
-        showPropDetailsMap: resultMap,
-      });
-    }
-
     componentWillUnmount() {
-      this.setState({
-        showPropDetailsMap: {},
-        activePropName: '',
-        cursorPosition: -1,
-      });
-
       this.props.context.setActiveComponent(null);
+      window.removeEventListener('resize', this.handleWindowEvent);
+
+      const parent = document.getElementsByClassName('output-container')[0];
+      parent.removeEventListener('scroll', this.handleWindowEvent);
     }
 
-    /**
-     * Resets the state under two conditions:
-     *   1) if one node is null and the other is not
-     *   2) if both nodes are non-null but represent different
-     *      components
-     */
-    componentDidUpdate(previousProps) {
-      const previousActiveComponent = previousProps.context.activeComponent;
-      const currentActiveComponent = this.props.context.activeComponent;
+    componentDidMount() {
+      window.addEventListener('resize', this.handleWindowEvent);
 
+      const parent = document.getElementsByClassName('output-container')[0];
+      parent.addEventListener('scroll', this.handleWindowEvent);
+    }
+
+    componentDidUpdate(prevProps) {
+      const { context } = this.props;
+      const isValidActiveComponent =
+        context.activeComponent &&
+        Object.keys(context.activeComponent).length != 0;
+
+      // update which dom node represents the "active" component being worked on
       if (
-        isDifferentActiveNode(
-          previousActiveComponent,
-          currentActiveComponent
-        ) ||
-        (previousActiveComponent &&
-          currentActiveComponent &&
-          previousActiveComponent.id !== currentActiveComponent.id)
+        prevProps.context.activeComponent != context.activeComponent &&
+        isValidActiveComponent
       ) {
+        const activeComponentDomNode = document.getElementById(
+          context.activeComponent.name + '-' + context.activeComponent.id
+        );
+
         this.setState({
-          showPropDetailsMap: {},
-          activePropName: '',
-          cursorPosition: -1,
+          activeDomNode: activeComponentDomNode,
+          dimensions: activeComponentDomNode.getClientRects()[0]
+        });
+      } else if (!isValidActiveComponent && prevProps.context.activeComponent) {
+        this.setState({
+          activeDomNode: null,
+          dimensions: null
         });
       }
     }
 
-    updateShowPropDetailsMap(propName) {
-      this.setState({
-        showPropDetailsMap: {
-          ...this.state.showPropDetailsMap,
-          [propName]: true,
-        },
-      });
-    }
+    /**
+     * On scroll or resize events, stores the new dimensions
+     * of the active component
+     */
+    handleWindowEvent = () => {
+      if (this.state.activeDomNode) {
+        const activeComponentDimensions = this.state.activeDomNode.getClientRects();
+
+        this.setState({
+          dimensions: activeComponentDimensions[0]
+        });
+      }
+    };
 
     /**
      * On a prop change for the given active node,
@@ -94,81 +83,71 @@ export const WrappedAuthorView = withContext(
      * changed node
      * @param {IdyllAstNode} idyllASTNode the current active node
      * @param {Object} newPropList the new properties list
-     * @param {string} propName the prop name changed
+     * @param {string} propertyName the prop name changed
      * @param {React.ChangeEvent} e the change event associated
      *                               w/ the prop change
      */
-    updateNodeWithNewProperties(idyllASTNode, newPropList, propName, e) {
-      const selectionStart = e.target.selectionStart;
-
-      this.setState({
-        activePropName: propName,
-        cursorPosition: selectionStart,
-      });
-
+    updateNodeWithNewProperties(propertyName, propertyValue) {
       // update node
-      let node = getNodeById(this.props.context.ast, idyllASTNode.id);
+      let node = getNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
 
-      const newNode = { ...node, properties: newPropList };
+      this.debouncedSetAst(node, propertyName, propertyValue);
+    }
 
-      const childrenCopy = AST.getChildren(node);
-      if (newNode.children) {
-        newNode.children = childrenCopy;
-      }
-
+    /**
+     * Returns a function that will update the context with the new
+     * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
+     * amount of time has passed since the last function invoke
+     */
+    debouncedSetAst = throttle((node, propertyName, propertyValue) => {
+      const newPropList = getUpdatedPropertyList(node, propertyName, propertyValue);
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
-    }
+    }, DEBOUNCE_PROPERTY_MILLISECONDS, { leading: true, trailing: true });
 
     /**
      * Updates the prop type to the given one
      * in the ast
-     * @param {string} propName the name of the prop
-     * @param {string} propType the next type of the prop
+     * @param {string} propertyName the name of the prop
+     * @param {string} propertyType the next type of the prop
      *                      (value, variable, expression)
      */
-    updateNodeType(propName, propType, idyllASTNode) {
-      const node = getNodeById(this.props.context.ast, idyllASTNode.id);
-      node.properties[propName].type = propType;
+    updateNodeType(propertyName, propertyType) {
+      const node = getNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
+      node.properties[propertyName].type = propertyType;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
     }
 
     render() {
       const { activeComponent } = this.props.context;
+      const { dimensions } = this.state;
 
-      if (activeComponent) {
-        const childComponent = (
-          <div className='author-view-overlay'>
+      if (activeComponent && dimensions) {
+        return (
+          <div
+            className='author-view-overlay'
+            style={{
+              top: dimensions.top + 60,
+              left: dimensions.left
+            }}>
             <PropertyList
               node={activeComponent}
               updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
                 this
               )}
               updateNodeType={this.updateNodeType.bind(this)}
-              updateShowPropDetailsMap={this.updateShowPropDetailsMap.bind(
-                this
-              )}
               variableData={this.props.context.context.data()}
-              showPropDetailsMap={this.state.showPropDetailsMap}
-              activePropName={this.state.activePropName}
-              cursorPosition={this.state.cursorPosition}
             />
           </div>
         );
-
-        const componentDomNode = activeComponent
-          ? document.getElementById(
-              this.props.context.activeComponent.name +
-                '-' +
-                this.props.context.activeComponent.id
-            )
-          : null;
-
-        if (componentDomNode) {
-          return ReactDOM.createPortal(childComponent, componentDomNode);
-        }
       }
       return <></>;
     }

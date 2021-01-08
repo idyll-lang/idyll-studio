@@ -6,30 +6,32 @@ class Component extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.handleUpdateValue = this.handleUpdateValue.bind(this);
+    this._inputRef = React.createRef();
   }
 
-  /**
-   * Returns a function that gets the input value
-   * and notifies the parent of a prop value change
-   * @param {string} propName the name of prop being updated
-   */
-  handleUpdateValue(propName) {
-    return e => {
-      let val = e.target.value;
-      if (val.trim() !== '') {
-        val = Number(e.target.value);
-      }
-      if (isNaN(val)) {
-        val = e.target.value;
-      }
+  componentDidMount() {
+    const { propertyObject } = this.props;
 
-      this.props.updateProperty(propName, val, e);
-    };
+    const input = this._inputRef.current;
+    input.value = propertyObject.value;
   }
 
-  getBackgroundColor(propType) {
-    switch (propType) {
+  handleUpdateValue = () => {
+    const propertyName = this.props.name;
+
+    let val = this._inputRef.current.value;
+    if (val.trim() !== '') {
+      val = Number(this._inputRef.current.value);
+    }
+    if (isNaN(val)) {
+      val = this._inputRef.current.value;
+    }
+
+    this.props.updateProperty(propertyName, val);
+  };
+
+  getBackgroundColor(propertyType) {
+    switch (propertyType) {
       case 'expression':
         return '#B8E986';
       case 'variable':
@@ -38,8 +40,8 @@ class Component extends React.PureComponent {
         return '#4A90E2';
     }
   }
-  getColor(propType) {
-    switch (propType) {
+  getColor(propertyType) {
+    switch (propertyType) {
       case 'expression':
         return '#222';
       case 'variable':
@@ -51,12 +53,12 @@ class Component extends React.PureComponent {
 
   /**
    * Updates the prop type
-   * @param {string} propName the prop name
+   * @param {string} propertyName the prop name
    * @param {string} type the next type of the prop
    */
-  updateNodeType(propName, type) {
+  updateNodeType(propertyName, type) {
     return e => {
-      this.props.updateNodeType(propName, type);
+      this.props.updateNodeType(propertyName, type);
     };
   }
 
@@ -67,9 +69,7 @@ class Component extends React.PureComponent {
    * @param {string} prop the prop value
    * @param {string} nextType the next prop type
    */
-  renderPropInput(key, prop, nextType) {
-    const isActiveProp = this.props.activePropName === key;
-
+  renderPropInput(key, propertyObject, nextType) {
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -78,30 +78,27 @@ class Component extends React.PureComponent {
             onClick={this.updateNodeType(key, nextType)}
             style={{
               marginLeft: 0,
-              // borderRadius: '0 20px 20px 0',
-              background: this.getBackgroundColor(prop.type),
-              color: this.getColor(prop.type)
-            }}
-          >
-            {prop.type === 'value' ? typeof prop.value : prop.type}
+              background: this.getBackgroundColor(propertyObject.type),
+              color: this.getColor(propertyObject.type)
+            }}>
+            {propertyObject.type === 'value'
+              ? typeof propertyObject.value
+              : propertyObject.type}
           </div>
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
-            onChange={this.handleUpdateValue(key, prop.type)}
             type='text'
-            value={prop.value}
-            autoFocus={isActiveProp}
-            onFocus={e => {
-              e.target.selectionStart = this.props.cursorPosition;
-              e.target.selectionEnd = this.props.cursorPosition;
-            }}
+            ref={this._inputRef}
+            onChange={this.handleUpdateValue}
           />
         </div>
 
         {/* If variable, display current value */}
-        {prop.type === 'variable' ? (
-          <div className="current-value">Current Value: {this.props.variableData[prop.value]}</div>
+        {propertyObject.type === 'variable' ? (
+          <div className='current-value'>
+            Current Value: {this.props.variableData[propertyObject.value]}
+          </div>
         ) : (
           <></>
         )}
@@ -109,59 +106,40 @@ class Component extends React.PureComponent {
     );
   }
 
-  renderProp(key, prop) {
-    switch (prop.type) {
+  renderProp(key, propertyObject) {
+    switch (propertyObject.type) {
       case 'variable':
-        return this.renderPropInput(key, prop, 'value');
+        return this.renderPropInput(key, propertyObject, 'value');
       case 'value':
-        return this.renderPropInput(key, prop, 'expression');
+        return this.renderPropInput(key, propertyObject, 'expression');
       case 'expression':
-        return this.renderPropInput(key, prop, 'variable');
+        return this.renderPropInput(key, propertyObject, 'variable');
     }
   }
 
-  updatePropDetails() {
-    this.props.updateShowPropDetailsMap(this.props.name);
-  }
-
   render() {
-    const { name, value, isOver, dropTarget, showDetails } = this.props;
+    const { name, propertyObject, isOver, dropTarget } = this.props;
     let ret;
-    // if (!showDetails) {
-      ret = (
-        <div
-          onClick={this.updatePropDetails.bind(this)}
-          style={{
-            marginLeft: 0,
-            border: isOver ? 'solid 2px green' : undefined,
-            // background: this.getBackgroundColor(value.type),
-            // color: this.getColor(value.type)
-          }}
-        >
-          <div className="prop-name">
-            {name}
-          </div>
-          <div>
-            {this.renderProp(name, value)}
-          </div>
-        </div>
-      );
-    // } else {
-    // }
+    ret = (
+      <div
+        style={{
+          marginLeft: 0,
+          border: isOver ? 'solid 2px green' : undefined
+        }}>
+        <div className='prop-name'>{name}</div>
+        <div>{this.renderProp(name, propertyObject)}</div>
+      </div>
+    );
     return dropTarget(<div>{ret}</div>);
   }
 }
 
 const variableTarget = {
   drop(props, monitor, component) {
-    // component.insertComponent(monitor.getItem().component);
     console.log('dropped on property!!');
     const name = monitor.getItem().name;
     const node = props.node;
 
-    // node.properties[props.name].value = name;
-    // node.properties[props.name].type = 'variable';
-    // console.log('updating ast');
     updateNodeById(props.ast, node.id, {
       properties: { [props.name]: { value: name, type: 'variable' } }
     });

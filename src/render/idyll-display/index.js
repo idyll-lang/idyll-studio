@@ -12,7 +12,7 @@ class IdyllDisplay extends React.PureComponent {
     super(props);
     this.state = {
       // TODO - get these values from the project config!
-      collapsed: false,
+      collapsed: false
     };
   }
 
@@ -22,7 +22,7 @@ class IdyllDisplay extends React.PureComponent {
 
   handleToggle() {
     this.setState({
-      collapsed: !this.state.collapsed,
+      collapsed: !this.state.collapsed
     });
   }
 
@@ -30,8 +30,9 @@ class IdyllDisplay extends React.PureComponent {
     return (
       <>
         <div
-          className={'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')}
-        >
+          className={
+            'grid ' + (this.state.collapsed ? 'sidebar-collapse' : '')
+          }>
           <Sidebar />
           <div className='output-container'>
             <Render />

@@ -7,7 +7,7 @@ class Component extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      newPropName: '',
+      newPropName: ''
     };
   }
 
@@ -20,7 +20,7 @@ class Component extends React.PureComponent {
     node.properties = node.properties || {};
     node.properties[this.state.newPropName] = {
       type: 'value',
-      value: '',
+      value: ''
     };
 
     this.setState({ newPropName: '' });
@@ -28,7 +28,7 @@ class Component extends React.PureComponent {
   }
 
   handleUpdateValue(propName) {
-    return (e) => {
+    return e => {
       const node = this.context.currentSidebarNode;
       let val = e.target.value;
       if (val.trim() !== '') {
@@ -60,19 +60,18 @@ class Component extends React.PureComponent {
           onChange={this.handleUpdateValue(key)}
           type='text'
           value={prop.value}
-        ></input>
+        />
         <div
           className={'prop-type'}
           onClick={this.handleUpdateType(key, 'variable')}
           style={{
             marginLeft: 0,
             borderRadius: '0 20px 20px 0',
-            background: '#B8E986',
-          }}
-        >
+            background: '#B8E986'
+          }}>
           {prop.type}
         </div>
-        <div></div>
+        <div />
       </div>
     );
   }
@@ -84,7 +83,7 @@ class Component extends React.PureComponent {
           onChange={this.handleUpdateValue(key)}
           type='text'
           value={prop.value}
-        ></input>
+        />
         <div
           className={'prop-type'}
           onClick={this.handleUpdateType(key, 'expression')}
@@ -92,9 +91,8 @@ class Component extends React.PureComponent {
             marginLeft: 0,
             borderRadius: '0 20px 20px 0',
             background: '#4A90E2',
-            color: '#fff',
-          }}
-        >
+            color: '#fff'
+          }}>
           {typeof prop.value}
         </div>
         <div>{/* Current Value: {idyllState[prop.value]} */}</div>
@@ -112,16 +110,15 @@ class Component extends React.PureComponent {
             onChange={this.handleUpdateValue(key)}
             type='text'
             value={prop.value}
-          ></input>
+          />
           <div
             className={'prop-type'}
             onClick={this.handleUpdateType(key, 'value')}
             style={{
               marginLeft: 0,
               borderRadius: '0 20px 20px 0',
-              background: '#50E3C2',
-            }}
-          >
+              background: '#50E3C2'
+            }}>
             {prop.type}
           </div>
         </div>
@@ -150,7 +147,7 @@ class Component extends React.PureComponent {
         <a onClick={() => this.context.setSidebarNode(null)}>← Back</a>
         <h2>{ASTNode.name} component</h2>
         <div>
-          {Object.keys(ASTNode.properties || {}).map((propName) => {
+          {Object.keys(ASTNode.properties || {}).map(propName => {
             const prop = ASTNode.properties[propName];
             return (
               <div style={{ marginBottom: '1em', padding: '0 1em' }}>
@@ -162,9 +159,8 @@ class Component extends React.PureComponent {
                   style={{
                     display: 'flex',
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  }}
-                >
+                    justifyContent: 'space-between'
+                  }}>
                   {this.renderProp(propName, prop)}
                 </div>
               </div>

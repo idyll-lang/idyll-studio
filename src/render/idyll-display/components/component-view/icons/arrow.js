@@ -6,7 +6,7 @@ import { ArrowDown } from './arrow-down';
  * Displays an svg arrow
  * @param {{isClosed: boolean}} props
  */
-export const Arrow = (props) => {
+export const Arrow = props => {
   const { isClosed } = props;
 
   return (

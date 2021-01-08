@@ -25,7 +25,7 @@ class App extends React.PureComponent {
       currentSidebarNode: null,
       url: '',
       currentProcess: null,
-      activeComponent: null,
+      activeComponent: null
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -36,7 +36,6 @@ class App extends React.PureComponent {
     ipcRenderer.on(
       'idyll:compile',
       (event, { datasets, ast, components, path, url }) => {
-        console.log(components);
         var componentProps = this.createComponentMap(components);
 
         this.setState({
@@ -48,34 +47,33 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currentProcess: '',
-          url: url, // replace once sqlite db implemented
+          url: url // replace once sqlite db implemented
         });
       }
     );
 
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
-        currentProcess: PUBLISHING,
+        currentProcess: PUBLISHING
       });
     });
 
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
-        currentProcess: PUBLISHING_ERROR + message,
+        currentProcess: PUBLISHING_ERROR + message
       });
     });
 
     ipcRenderer.on('published-url', (event, url) => {
       this.setState({
         url: url,
-        currentProcess: PUBLISHED,
+        currentProcess: PUBLISHED
       });
     });
 
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
-      console.log(message);
       ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast));
     });
   }
@@ -92,7 +90,7 @@ class App extends React.PureComponent {
       components,
       url,
       currentProcess,
-      activeComponent,
+      activeComponent
     } = this.state;
     return {
       context: context,
@@ -106,28 +104,27 @@ class App extends React.PureComponent {
       url: url,
       currentProcess: currentProcess,
       activeComponent: activeComponent,
-      setSidebarNode: (node) => {
+      setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },
-      setTheme: (theme) => {
+      setTheme: theme => {
         this.setState({ theme: theme });
       },
-      setLayout: (layout) => {
+      setLayout: layout => {
         this.setState({ layout: layout });
       },
-      setAst: (ast) => {
-        console.log('set ast');
+      setAst: ast => {
         this.setState({ ast: { ...ast } });
       },
-      setContext: (context) => {
+      setContext: context => {
         this.setState({ context: context });
       },
       deploy: () => {
         ipcRenderer.send('deploy', '');
       },
-      setActiveComponent: (activeComponent) => {
+      setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
-      },
+      }
     };
   }
 
@@ -136,29 +133,26 @@ class App extends React.PureComponent {
   createComponentMap(components) {
     var componentProps = new Map();
 
-    components.forEach((component) => {
+    components.forEach(component => {
       var path;
-      console.log('trying')
       try {
         path = require(component.path);
       } catch (error) {
         console.log(error);
         return; // skip next iteration
       }
-      console.log(path);
       // Stores {component name: props }
       if (typeof path === 'object' && path.default !== undefined) {
         var props = path.default._idyll;
-        console.log(component, props)
+
         componentProps.set(component.name, props);
       } else if (path._idyll) {
-        console.log('hasidyll')
         componentProps.set(component.name, path._idyll);
       } else if (typeof path === 'function') {
         componentProps.set(component.name, {
           name: component.name,
           tagType: 'closed',
-          props: [],
+          props: []
         });
       }
     });
@@ -181,15 +175,13 @@ class App extends React.PureComponent {
             justifyContent: 'center',
             width: '100vw',
             height: '100vh',
-            background: '#efefef',
-          }}
-        >
+            background: '#efefef'
+          }}>
           <div
             style={{
               fontFamily: 'Helvetica',
               borderRadius: 0
-            }}
-          >
+            }}>
             <button className='loader' onClick={this.handleLoad.bind(this)}>
               Load a project
             </button>

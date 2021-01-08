@@ -1,3 +1,6 @@
+const { InvalidParameterError } = require('../../../error');
+import throttle from 'lodash.throttle';
+
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
 };
@@ -21,7 +24,7 @@ const getNodeById = (node, id) => {
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
 
-  Object.keys(newProps).forEach((key) => {
+  Object.keys(newProps).forEach(key => {
     if (key === 'id') {
       return;
     }
@@ -80,7 +83,7 @@ const isDifferentActiveNode = (node1, node2) =>
  * that replaces '-' with spaces and capitalizes every word
  * @param {string} value the string to format
  */
-const formatString = (value) => {
+const formatString = value => {
   if (!value || typeof value !== 'string') {
     return '';
   }
@@ -88,10 +91,70 @@ const formatString = (value) => {
   return value
     .split(/[\s-]+/g)
     .map(
-      (word) =>
+      word =>
         word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()
     )
     .join(' ');
+};
+
+/**
+ * Given an idyll AST node, one of its property names,
+ * and the corresponding property value, returns an
+ * updated copy of its properties object with the new
+ * property value. Returns null if any of the parameters
+ * are null or empty
+ * @param {IdyllAstNode} node the idyll AST node
+ * @param {string} propertyName the property name to update
+ * @param {string} propertyValue the property value
+ */
+function getUpdatedPropertyList(node, propertyName, propertyValue) {
+  if (node && propertyName) {
+    const propertiesCopy = {};
+    Object.keys(node.properties).forEach(property => {
+      const propertyObject = node.properties[property];
+
+      if (property === propertyName) {
+        propertiesCopy[propertyName] = {
+          ...propertyObject,
+          value: propertyValue
+        };
+      } else {
+        propertiesCopy[property] = { ...propertyObject };
+      }
+    });
+
+    return propertiesCopy;
+  }
+  return null;
+}
+
+/**
+ * Returns a function that will execute
+ * the given function after waitTime number
+ * of milliseconds passes after the last invoke
+ * @param {function} func the function to execute
+ * @param {number} waitTime the wait time in ms before executing the func
+ */
+const debounce = (func, waitTime) => {
+  if (!func || !waitTime || waitTime < 0) {
+    throw new InvalidParameterError(
+      'Debounce function and waitTime passed in must not be null'
+    );
+  }
+
+  let timeout;
+
+  return function functionToExecute(...args) {
+    const callbackFunc = () => {
+      timeout = null;
+
+      func(...args);
+    };
+
+    clearTimeout(timeout); // everytime functionToExecute is invoked, clears timeout
+
+    timeout = setTimeout(callbackFunc, waitTime);
+  };
 };
 
 module.exports = {
@@ -102,4 +165,7 @@ module.exports = {
   isChildOf,
   isDifferentActiveNode,
   formatString,
+  getUpdatedPropertyList,
+  debounce,
+  throttle
 };

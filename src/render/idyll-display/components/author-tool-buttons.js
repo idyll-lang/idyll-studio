@@ -16,7 +16,7 @@ class AuthorToolButtons extends React.PureComponent {
     super(props);
     this.state = {
       showCode: false,
-      markup: this.getMarkup(props),
+      markup: this.getMarkup(props)
     };
 
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
@@ -32,14 +32,14 @@ class AuthorToolButtons extends React.PureComponent {
 
       if (shouldClose) {
         this.setState({
-          showCode: false,
+          showCode: false
         });
       }
     } else {
       // get the latest
       this.setState({
         markup: this.getMarkup(this.props),
-        showCode: true,
+        showCode: true
       });
     }
   }
@@ -60,14 +60,14 @@ class AuthorToolButtons extends React.PureComponent {
       id: -1,
       type: 'component',
       name: 'div',
-      children: [props.idyllASTNode],
+      children: [props.idyllASTNode]
     });
   }
 
   onExecute(newMarkup) {
     this.setState(
       {
-        markup: newMarkup,
+        markup: newMarkup
       },
       () => {
         this.updateAst();
@@ -77,7 +77,7 @@ class AuthorToolButtons extends React.PureComponent {
 
   onBlur(newMarkup) {
     this.setState({
-      markup: newMarkup,
+      markup: newMarkup
     });
   }
 
@@ -91,7 +91,7 @@ class AuthorToolButtons extends React.PureComponent {
       this.context.ast,
       this.props.idyllASTNode.id
     );
-    Object.keys(node).forEach((key) => {
+    Object.keys(node).forEach(key => {
       if (key === 'id') {
         return;
       }
@@ -113,8 +113,7 @@ class AuthorToolButtons extends React.PureComponent {
         <div
           contentEditable={true}
           suppressContentEditableWarning={true}
-          ref={(ref) => (this._componentRef = ref)}
-        >
+          ref={ref => (this._componentRef = ref)}>
           {props.component}
         </div>
         {this.state.showCode ? (
@@ -128,19 +127,25 @@ class AuthorToolButtons extends React.PureComponent {
         ) : null}
         <div className='author-view-container' id={this.domId}>
           <button
-            className={`author-view-button ${this.context  && this.context.activeComponent && this.context.activeComponent.id === this.props.idyllASTNode.id ?  'selected' : ''}`}
+            className={`author-view-button ${
+              this.context &&
+              this.context.activeComponent &&
+              this.context.activeComponent.id === this.props.idyllASTNode.id
+                ? 'selected'
+                : ''
+            }`}
             onClick={this.handleClickProps.bind(this)}
             data-tip
-            data-for={props.uniqueKey}
-          >
+            data-for={props.uniqueKey}>
             Properties
           </button>
           <button
-            className={`author-view-button ${this.state.showCode ? 'selected' : ''}`}
+            className={`author-view-button ${
+              this.state.showCode ? 'selected' : ''
+            }`}
             onClick={this.handleClickCode.bind(this)}
             data-tip
-            data-for={props.uniqueKey}
-          >
+            data-for={props.uniqueKey}>
             Code
           </button>
         </div>
@@ -152,18 +157,16 @@ class AuthorToolButtons extends React.PureComponent {
 const variableTarget = {
   drop(props, monitor, component) {
     // component.insertComponent(monitor.getItem().component);
-  },
+  }
 };
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver(),
+    isOver: monitor.isOver()
   };
 }
 
-export default DropTarget(
-  'VARIABLE',
-  variableTarget,
-  collect
-)(AuthorToolButtons);
+export default DropTarget('VARIABLE', variableTarget, collect)(
+  AuthorToolButtons
+);

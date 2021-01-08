@@ -10,12 +10,10 @@ import Context from '../../context/context';
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
 
-console.log(layouts, themes);
-
 const tabs = {
   DOCUMENT: 'document',
   VARIABLES: 'variables',
-  COMPONENTS: 'components',
+  COMPONENTS: 'components'
 };
 
 class Sidebar extends React.PureComponent {
@@ -27,7 +25,7 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      selectedTab: tabs.DOCUMENT,
+      selectedTab: tabs.DOCUMENT
     };
   }
 
@@ -41,34 +39,36 @@ class Sidebar extends React.PureComponent {
   getStyleView() {
     return (
       <div>
-        <div class="theme-container">
+        <div className='theme-container'>
           Theme
           <select
             onChange={this.handleThemeChange.bind(this)}
-            value={this.context.theme}
-          >
-            {Object.keys(themes).filter(d => !['__esModule', 'none'].includes(d)).map((themeName) => {
-              return (
-                <option key={themeName} value={themeName}>
-                  {themeName}
-                </option>
-              );
-            })}
+            value={this.context.theme}>
+            {Object.keys(themes)
+              .filter(d => !['__esModule', 'none'].includes(d))
+              .map(themeName => {
+                return (
+                  <option key={themeName} value={themeName}>
+                    {themeName}
+                  </option>
+                );
+              })}
           </select>
         </div>
-        <div class="layout-container">
+        <div className='layout-container'>
           Layout
           <select
             onChange={this.handleLayoutChange.bind(this)}
-            value={this.context.layout}
-          >
-            {Object.keys(layouts).filter(d => !['__esModule', 'none'].includes(d)).map((layoutName) => {
-              return (
-                <option key={layoutName} value={layoutName}>
-                  {layoutName}
-                </option>
-              );
-            })}
+            value={this.context.layout}>
+            {Object.keys(layouts)
+              .filter(d => !['__esModule', 'none'].includes(d))
+              .map(layoutName => {
+                return (
+                  <option key={layoutName} value={layoutName}>
+                    {layoutName}
+                  </option>
+                );
+              })}
           </select>
         </div>
       </div>
@@ -77,7 +77,7 @@ class Sidebar extends React.PureComponent {
 
   modifyAST() {
     const currentAST = this.context.ast;
-    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', (node) => {
+    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', node => {
       node.children[0].value = 'alan took over';
       return node;
     });
@@ -86,7 +86,7 @@ class Sidebar extends React.PureComponent {
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
-    return AST.getNodesByType(this.context.ast, 'var').map((variable) => {
+    return AST.getNodesByType(this.context.ast, 'var').map(variable => {
       const props = variable.properties;
       const name = props.name.value;
       const value = props.value.value;
@@ -113,9 +113,7 @@ class Sidebar extends React.PureComponent {
         return (
           <div>
             <h2>Document Information</h2>
-            <div className='look-and-feel'>
-              {this.getStyleView()}
-            </div>
+            <div className='look-and-feel'>{this.getStyleView()}</div>
             <div className='publish-view'>
               <Deployment />
             </div>
@@ -167,8 +165,7 @@ class Sidebar extends React.PureComponent {
                 }`}
                 onClick={() => {
                   this.setState({ selectedTab: tabs.COMPONENTS });
-                }}
-              >
+                }}>
                 Components
               </div>
               <div
@@ -177,8 +174,7 @@ class Sidebar extends React.PureComponent {
                 }`}
                 onClick={() => {
                   this.setState({ selectedTab: tabs.VARIABLES });
-                }}
-              >
+                }}>
                 Variables
               </div>
               <div
@@ -187,8 +183,7 @@ class Sidebar extends React.PureComponent {
                 }`}
                 onClick={() => {
                   this.setState({ selectedTab: tabs.DOCUMENT });
-                }}
-              >
+                }}>
                 Publish
               </div>
             </div>

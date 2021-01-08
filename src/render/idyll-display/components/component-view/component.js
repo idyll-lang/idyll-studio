@@ -27,9 +27,9 @@ class Component extends React.PureComponent {
     return dragSource(
       <div
         style={{
-          opacity: isDragging ? 0.5 : 1,
+          opacity: isDragging ? 0.5 : 1
         }}
-        className="component">
+        className='component'>
         {name}
       </div>
     );
@@ -40,13 +40,13 @@ class Component extends React.PureComponent {
  * Implement the drag source contract.
  */
 const cardSource = {
-  beginDrag: (props) => ({ component: props.component.name }),
+  beginDrag: props => ({ component: props.component.name })
 };
 
 function collect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
-    isDragging: monitor.isDragging(),
+    isDragging: monitor.isDragging()
   };
 }
 

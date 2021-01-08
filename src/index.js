@@ -12,14 +12,14 @@ function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     webPreferences: {
-      nodeIntegration: true,
+      nodeIntegration: true
     },
     width: 1300,
     height: 1000,
     minWidth: 600,
     minHeight: 400,
     title: 'Data Writer',
-    show: false,
+    show: false
   });
 
   const store = new DataStore();
@@ -41,7 +41,7 @@ function createWindow() {
       url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
-        slashes: true,
+        slashes: true
       })
     );
 
@@ -52,7 +52,7 @@ function createWindow() {
       url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
-        slashes: true,
+        slashes: true
       })
     );
   }
