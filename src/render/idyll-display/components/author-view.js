@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropertyList from './property-list';
-import { getNodeById, debounce, getUpdatedPropertyList } from '../utils/';
+import { getNodeById, throttle, getUpdatedPropertyList } from '../utils/';
 import { withContext } from '../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 
@@ -102,12 +102,12 @@ export const WrappedAuthorView = withContext(
      * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
      * amount of time has passed since the last function invoke
      */
-    debouncedSetAst = debounce((node, propertyName, propertyValue) => {
+    debouncedSetAst = throttle((node, propertyName, propertyValue) => {
       const newPropList = getUpdatedPropertyList(node, propertyName, propertyValue);
       node.properties = newPropList;
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
-    }, DEBOUNCE_PROPERTY_MILLISECONDS);
+    }, DEBOUNCE_PROPERTY_MILLISECONDS, { leading: true, trailing: true });
 
     /**
      * Updates the prop type to the given one

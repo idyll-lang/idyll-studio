@@ -114,7 +114,6 @@ class App extends React.PureComponent {
         this.setState({ layout: layout });
       },
       setAst: ast => {
-        console.log('set ast');
         this.setState({ ast: { ...ast } });
       },
       setContext: context => {
@@ -148,7 +147,6 @@ class App extends React.PureComponent {
 
         componentProps.set(component.name, props);
       } else if (path._idyll) {
-        console.log('hasidyll');
         componentProps.set(component.name, path._idyll);
       } else if (typeof path === 'function') {
         componentProps.set(component.name, {

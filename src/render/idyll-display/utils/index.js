@@ -1,4 +1,5 @@
 const { InvalidParameterError } = require('../../../error');
+import throttle from 'lodash.throttle';
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -165,5 +166,6 @@ module.exports = {
   isDifferentActiveNode,
   formatString,
   getUpdatedPropertyList,
-  debounce
+  debounce,
+  throttle
 };

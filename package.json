@@ -23,6 +23,7 @@
     "idyll-compiler": "^4.0.14",
     "idyll-components": "^4.0.2",
     "idyll-document": "^3.2.3",
+    "lodash.throttle": "^4.1.1",
     "react": "^16.14.0",
     "react-data-grid": "^6.1.0",
     "react-dnd": "^10.0.2",

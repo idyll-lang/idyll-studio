@@ -57,4 +57,4 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
 
 export const EXCLUDED_COMPONENTS = ['generateHeaders'];
 
-export const DEBOUNCE_PROPERTY_MILLISECONDS = 100;
+export const DEBOUNCE_PROPERTY_MILLISECONDS = 250;
