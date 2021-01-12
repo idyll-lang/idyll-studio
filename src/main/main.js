@@ -182,7 +182,7 @@ class Main {
           const localURL = url.replace(
             this.electronWorkingDir,
             this.workingDir
-            );
+          );
           callback({
             cancel: false,
             redirectURL: encodeURI(localURL)
