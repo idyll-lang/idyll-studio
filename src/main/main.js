@@ -175,16 +175,14 @@ class Main {
     });
 
     // filter to catch all requests to static folder
-    const staticContentFilter = { urls: ['*://*/static/*'] };
     this.mainWindow.webContents.session.webRequest.onBeforeRequest(
-      staticContentFilter,
       (details, callback) => {
         const { url } = details;
         if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
           const localURL = url.replace(
             this.electronWorkingDir,
             this.workingDir
-          );
+            );
           callback({
             cancel: false,
             redirectURL: encodeURI(localURL)

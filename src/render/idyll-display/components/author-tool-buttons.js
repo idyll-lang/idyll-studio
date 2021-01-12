@@ -111,8 +111,6 @@ class AuthorToolButtons extends React.PureComponent {
     return dropTarget(
       <div className='component-debug-view'>
         <div
-          contentEditable={true}
-          suppressContentEditableWarning={true}
           ref={ref => (this._componentRef = ref)}>
           {props.component}
         </div>
