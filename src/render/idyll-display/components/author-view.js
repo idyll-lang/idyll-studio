@@ -50,10 +50,18 @@ export const WrappedAuthorView = withContext(
           context.activeComponent.name + '-' + context.activeComponent.id
         );
 
-        this.setState({
-          activeDomNode: activeComponentDomNode,
-          dimensions: activeComponentDomNode.getClientRects()[0]
-        });
+        if (activeComponentDomNode) {
+          this.setState({
+            activeDomNode: activeComponentDomNode,
+            dimensions: activeComponentDomNode.getClientRects()[0]
+          });
+        } else {
+          this.setState({
+            activeDomNode: null,
+            dimensions: null
+          });
+        }
+
       } else if (!isValidActiveComponent && prevProps.context.activeComponent) {
         this.setState({
           activeDomNode: null,
