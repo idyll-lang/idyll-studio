@@ -1,10 +1,8 @@
 import React from 'react';
 import Select from 'react-select';
 import Context from '../../context/context';
+import { getRandomId } from '../utils'
 
-const getRandomId = () => {
-  return Math.floor(Math.random() * 10000000000) + 100000000;
-};
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
 
@@ -21,14 +19,13 @@ class DatasetView extends React.PureComponent {
   // Generates the tag associated with the given dataset
   // [data name:'myData' source:'myData.csv' /]
   insertData(dataset) {
-    var tag =
-      "[data name:'" + dataset.name + "' source:'" + dataset.path + "' /]";
+    var tag = `[data name:'${dataset.name}' source:'${dataset.path}' /]`;
 
     // Handle the ast change
-    compile(tag).then(dataAST => {
-      var ast = this.context.ast;
-      var dataNode = dataAST.children[0];
-      dataNode.id = getRandomId();
+    compile(tag).then(datasetAST => {
+      const ast = this.context.ast;
+      const datasetNode = datasetAST.children[0];
+      datasetNode.id = getRandomId();
 
       // Insert into ast's root children before the first text container
       // or non-variable/dataset child
@@ -39,7 +36,7 @@ class DatasetView extends React.PureComponent {
       ) {
         currNodeIndex++;
       }
-      ast.children.splice(currNodeIndex, 0, dataNode);
+      ast.children.splice(currNodeIndex, 0, datasetNode);
 
       const { setAst } = this.context;
       setAst(ast); // must pass info up level
@@ -48,6 +45,8 @@ class DatasetView extends React.PureComponent {
 
   render() {
     const { datasets } = this.context;
+
+    console.log(this.context.ast);
     return (
       <div className='dataset-view'>
         <div className='label'>Datasets</div>
