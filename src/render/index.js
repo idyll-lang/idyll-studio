@@ -30,6 +30,7 @@ class App extends React.PureComponent {
 
     this.createComponentMap = this.createComponentMap.bind(this);
     this.undoStack = [];
+    this.redoStack = [];
   }
 
   componentDidMount() {
@@ -131,7 +132,15 @@ class App extends React.PureComponent {
         if (!this.undoStack.length) {
           return;
         }
+        this.redoStack.push(this.state.ast);
         this.setState({ ast: this.undoStack.pop() });
+      },
+      redo: () => {
+        if (!this.redoStack.length) {
+          return;
+        }
+        this.undoStack.push(this.state.ast);
+        this.setState({ ast: this.redoStack.pop() });
       }
     };
   }
