@@ -29,6 +29,7 @@ class App extends React.PureComponent {
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
+    this.undoStack = [];
   }
 
   componentDidMount() {
@@ -114,6 +115,7 @@ class App extends React.PureComponent {
         this.setState({ layout: layout });
       },
       setAst: ast => {
+        this.undoStack.push(this.state.ast);
         this.setState({ ast: { ...ast } });
       },
       setContext: context => {
@@ -124,6 +126,12 @@ class App extends React.PureComponent {
       },
       setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
+      },
+      undo: () => {
+        if (!this.undoStack.length) {
+          return;
+        }
+        this.setState({ ast: this.undoStack.pop() });
       }
     };
   }
@@ -162,6 +170,7 @@ class App extends React.PureComponent {
 
   handleLoad() {
     console.log('handleLoad');
+    this.undoStack = [];
     ipcRenderer.send('client:openProject');
   }
 
