@@ -2,14 +2,8 @@ import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import Context from '../../context/context';
 import IdyllAST from 'idyll-ast';
+import fs from 'fs';
 import { DragSource } from 'react-dnd';
-
-const columns = [
-  { key: 'type', name: 'Type', editable: true },
-  { key: 'name', name: 'Name', editable: true },
-  { key: 'initialValue', name: 'Initial value', editable: true },
-  { key: 'currentValue', name: 'Current value', editable: true }
-];
 
 class VariableFormatter extends React.PureComponent {
   constructor(props) {
@@ -86,10 +80,11 @@ class VariableView extends React.PureComponent {
     this.context.setAst(updatedAST);
   }
 
-  getRows(ast) {
+  getRows() {
     const rows = [];
     const currentChildren = this.context.ast.children;
     const currentData = this.context.context.data();
+    console.log(currentData);
     this._rowsToVars = [];
     currentChildren.map(child => {
       const childType = child.type;
@@ -97,11 +92,20 @@ class VariableView extends React.PureComponent {
         // allow for derivedVar types too
         const properties = child.properties;
         const varName = properties.name.value;
-        const varValue = currentData[varName];
-        const initialValue =
-          childType === 'var'
-            ? properties.value.value
-            : properties.source.value;
+        let varValue;
+        let initialValue;
+        if(childType === 'data') {
+          initialValue =  this.readDatasetFile(properties);
+          varValue = initialValue;
+        } else {
+          initialValue = properties.value.value;
+          varValue = currentData[varName];
+        }
+
+        // const initialValue =
+        //   childType === 'var'
+        //     ? properties.value.value
+        //     : properties.source.value;
         rows.push({
           type: childType,
           name: varName,
@@ -114,6 +118,16 @@ class VariableView extends React.PureComponent {
     return rows;
   }
 
+  readDatasetFile(properties) {
+    try {
+      const data = fs.readFileSync(properties.source.value, 'utf8');
+      return data;
+    } catch(err) {
+      console.error(err);
+      return null;
+    }
+  }
+
   handleGridUpdated(update) {
     if (update.action === 'CELL_UPDATE') {
       Object.keys(update.updated).forEach(key => {
@@ -123,7 +137,11 @@ class VariableView extends React.PureComponent {
             this.context.context.update({ [update.fromRowData.name]: val });
             break;
           case 'initialValue':
-            this._rowsToVars[update.fromRow].properties.value.value = val;
+            // should changing data initial value change the file itself?
+            // or null this out and only be able to change current value
+            if(this._rowsToVars[update.fromRow].type !== 'data') {
+              this._rowsToVars[update.fromRow].properties.value.value = val;
+            }
             break;
           case 'name':
             this._rowsToVars[update.fromRow].properties.name.value = val;
