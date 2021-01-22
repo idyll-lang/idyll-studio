@@ -1,14 +1,6 @@
 import * as React from 'react';
-import PropertyList from './property-list';
-import { getNodeById, throttle, getUpdatedPropertyList } from '../utils/';
 import { withContext } from '../../context/with-context';
-import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 
-/**
- * An UndoRedo is associated with an active component.
- * If a component is registered as active, renders
- * a property list of all the components properties for editing.
- */
 export const WrappedUndoRedo = withContext(
   class UndoRedo extends React.PureComponent {
     constructor(props) {
