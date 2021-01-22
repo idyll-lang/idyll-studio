@@ -9,6 +9,7 @@ import Context from '../../context/context';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
+import { VariableViewV2 } from '../components/variable-view-v2.js';
 
 const tabs = {
   DOCUMENT: 'document',
@@ -124,7 +125,8 @@ class Sidebar extends React.PureComponent {
           <div>
             <div className='components-and-datasets'>
               <h2>Variables and Datasets</h2>
-              <VariableView />
+              {/* <VariableView /> */}
+              <VariableViewV2 />
               <DatasetView />
             </div>
           </div>

@@ -4,6 +4,7 @@ import Context from '../../context/context';
 import IdyllAST from 'idyll-ast';
 import fs from 'fs';
 import { DragSource } from 'react-dnd';
+import { stringify } from '../utils';
 
 class VariableFormatter extends React.PureComponent {
   constructor(props) {
@@ -84,7 +85,6 @@ class VariableView extends React.PureComponent {
     const rows = [];
     const currentChildren = this.context.ast.children;
     const currentData = this.context.context.data();
-    console.log(currentData);
     this._rowsToVars = [];
     currentChildren.map(child => {
       const childType = child.type;
@@ -99,18 +99,16 @@ class VariableView extends React.PureComponent {
           varValue = initialValue;
         } else {
           initialValue = properties.value.value;
+
+          // current value updates should propagate to ast
           varValue = currentData[varName];
         }
-
-        // const initialValue =
-        //   childType === 'var'
-        //     ? properties.value.value
-        //     : properties.source.value;
+        
         rows.push({
           type: childType,
           name: varName,
-          initialValue: initialValue,
-          currentValue: varValue
+          initialValue: stringify(initialValue),
+          currentValue: stringify(varValue)
         });
         this._rowsToVars.push(child);
       }
@@ -134,6 +132,7 @@ class VariableView extends React.PureComponent {
         const val = update.updated[key];
         switch (key) {
           case 'currentValue':
+            // TODO: update ast
             this.context.context.update({ [update.fromRowData.name]: val });
             break;
           case 'initialValue':
@@ -165,9 +164,12 @@ class VariableView extends React.PureComponent {
         editable: true,
         formatter: DraggableFormatter
       },
-      { key: 'initialValue', name: 'Initial value', editable: true },
+      // make some way so not editable but viewable
+      { key: 'initialValue', name: 'Initial value', editable: false },
       { key: 'currentValue', name: 'Current value', editable: true }
     ];
+
+    console.log(this.context.ast);
     return (
       <div className='variables-view'>
         <div className='variables-table-view'>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { updateNodeById } from '../utils';
+import { stringify, numberfy } from '../utils'
 
 class Component extends React.PureComponent {
   constructor(props) {
@@ -19,15 +20,9 @@ class Component extends React.PureComponent {
   handleUpdateValue = () => {
     const propertyName = this.props.name;
 
-    let val = this._inputRef.current.value;
-    if (val.trim() !== '') {
-      val = Number(this._inputRef.current.value);
-    }
-    if (isNaN(val)) {
-      val = this._inputRef.current.value;
-    }
+    const value = numberfy(this._inputRef.current.value);
 
-    this.props.updateProperty(propertyName, val);
+    this.props.updateProperty(propertyName, value);
   };
 
   getBackgroundColor(propertyType) {
@@ -70,6 +65,8 @@ class Component extends React.PureComponent {
    * @param {string} nextType the next prop type
    */
   renderPropInput(key, propertyObject, nextType) {
+    const { variableData } = this.props;
+    
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
@@ -97,7 +94,7 @@ class Component extends React.PureComponent {
         {/* If variable, display current value */}
         {propertyObject.type === 'variable' ? (
           <div className='current-value'>
-            Current Value: {this.props.variableData[propertyObject.value]}
+            Current Value: {stringify(variableData[propertyObject.value])}
           </div>
         ) : (
           <></>

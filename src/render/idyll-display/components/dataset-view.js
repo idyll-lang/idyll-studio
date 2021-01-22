@@ -46,7 +46,6 @@ class DatasetView extends React.PureComponent {
   render() {
     const { datasets } = this.context;
 
-    console.log(this.context.ast);
     return (
       <div className='dataset-view'>
         <div className='label'>Datasets</div>

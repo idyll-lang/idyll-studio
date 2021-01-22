@@ -157,6 +157,46 @@ const debounce = (func, waitTime) => {
   };
 };
 
+const stringify = (object) => 
+    typeof object === 'string' ? object : JSON.stringify(object);
+
+const numberfy = (originalValue) => {
+  if(!originalValue) {
+    return originalValue;
+  }
+
+  let value = originalValue;
+  if(value.trim() !== '') {
+    value = Number(originalValue);
+  }
+
+  if(isNaN(value)) {
+    value = originalValue;
+  }
+
+  return value;
+}
+
+const formatVariableValue = (value, type) => {
+  if(typeof value === 'number') {
+    return value; 
+  }
+
+  let enclosingCharacter = type === 'expression' ? '\`' :'\"';
+  
+  let newValue = String(value);
+
+  if(newValue.startsWith('\'') && newValue.endsWith('\'') || 
+      !newValue.startsWith(enclosingCharacter) || 
+      !newValue.endsWith(enclosingCharacter)) {
+
+        newValue = enclosingCharacter + newValue.substring(1, newValue.length - 1) +
+                    enclosingCharacter;
+  }
+
+  return newValue;
+}
+
 module.exports = {
   getNodeById,
   deleteNodeById,
@@ -167,5 +207,8 @@ module.exports = {
   formatString,
   getUpdatedPropertyList,
   debounce,
-  throttle
+  throttle,
+  stringify,
+  numberfy,
+  formatVariableValue
 };
