@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
 import Context from './context/context';
+import copy from "fast-copy";
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
@@ -29,8 +30,11 @@ class App extends React.PureComponent {
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
+    this.handleRedo = this.handleRedo.bind(this);
+    this.handleUndo = this.handleUndo.bind(this);
     this.undoStack = [];
     this.redoStack = [];
+    this._undoStash = null;
   }
 
   componentDidMount() {
@@ -39,6 +43,8 @@ class App extends React.PureComponent {
       'idyll:compile',
       (event, { datasets, ast, components, path, url }) => {
         var componentProps = this.createComponentMap(components);
+
+        this._undoStash  = copy(ast);
 
         this.setState({
           datasets: datasets,
@@ -53,6 +59,14 @@ class App extends React.PureComponent {
         });
       }
     );
+
+    window.addEventListener('keydown', (event) => {
+      if (event.shiftKey && (event.ctrlKey || event.metaKey) && event.key === 'z') {
+        this.handleRedo();
+      } else if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+        this.handleUndo();
+      }
+    }, true)
 
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
@@ -78,6 +92,26 @@ class App extends React.PureComponent {
     ipcRenderer.on('idyll:save', (event, message) => {
       ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast));
     });
+  }
+
+  handleRedo() {
+    if (!this.redoStack.length) {
+      return;
+    }
+    const popped = copy(this.redoStack.pop());
+    this.undoStack.push(copy(this.state.ast));
+    this._undoStash = popped;
+    this.setState({ ast: popped });
+  }
+
+  handleUndo() {
+    if (!this.undoStack.length) {
+      return;
+    }
+    const popped = copy(this.undoStack.pop());
+    this.redoStack.push(copy(this.state.ast));
+    this._undoStash = popped;
+    this.setState({ ast: popped });
   }
 
   getContext() {
@@ -116,8 +150,10 @@ class App extends React.PureComponent {
         this.setState({ layout: layout });
       },
       setAst: ast => {
-        this.undoStack.push(this.state.ast);
-        this.setState({ ast: { ...ast } });
+        this.redoStack = [];
+        this.undoStack.push(this._undoStash);
+        this._undoStash = copy(ast);
+        this.setState({ ast: {...ast} });
       },
       setContext: context => {
         this.setState({ context: context });
@@ -128,19 +164,17 @@ class App extends React.PureComponent {
       setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
       },
+      canUndo: () =>  {
+        return !!this.undoStack.length
+      },
+      canRedo: () =>  {
+        return !!this.redoStack.length
+      },
       undo: () => {
-        if (!this.undoStack.length) {
-          return;
-        }
-        this.redoStack.push(this.state.ast);
-        this.setState({ ast: this.undoStack.pop() });
+        this.handleUndo();
       },
       redo: () => {
-        if (!this.redoStack.length) {
-          return;
-        }
-        this.undoStack.push(this.state.ast);
-        this.setState({ ast: this.redoStack.pop() });
+        this.handleRedo();
       }
     };
   }
@@ -178,7 +212,6 @@ class App extends React.PureComponent {
   }
 
   handleLoad() {
-    console.log('handleLoad');
     this.undoStack = [];
     ipcRenderer.send('client:openProject');
   }

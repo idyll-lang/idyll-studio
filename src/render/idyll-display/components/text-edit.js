@@ -1,7 +1,9 @@
 import React from 'react';
 import Context from '../../context/context';
+import copy from "fast-copy";
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
+
 
 const { getNodeById, deleteNodeById } = require('../utils');
 
@@ -34,7 +36,6 @@ class TextEdit extends React.PureComponent {
   }
 
   toggleMarkup() {
-    console.log('toggling markup');
     if (this.state.showMarkup) {
       this.updateAST();
       return;
@@ -46,18 +47,17 @@ class TextEdit extends React.PureComponent {
   }
 
   updateAST() {
-    console.log('updating AST');
     if (!this._markupRef) {
       return;
     }
-    // console.log('hasRef');
+
     const markup = this._markupRef.textContent;
 
     if (markup.trim() === '') {
       // If it is empty, delete the existing node
       deleteNodeById(this.context.ast, this.props.idyllASTNode.id);
     } else {
-      console.log(markup);
+      // console.log(markup);
       const output = compile(markup, { async: false });
       let node = output.children[0];
 
@@ -98,6 +98,7 @@ class TextEdit extends React.PureComponent {
             fontFamily: 'monospace'
           }}
           contentEditable='true'
+          suppressContentEditableWarning={true}
           onBlur={this.toggleMarkup.bind(this)}>
           {this.getMarkup(this.props)}
         </div>
