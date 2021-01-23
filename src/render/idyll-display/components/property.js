@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { updateNodeById } from '../utils';
-import { stringify, numberfy } from '../utils'
+import { stringify, numberfy } from '../utils';
 
 class Component extends React.PureComponent {
   constructor(props) {
@@ -66,7 +66,6 @@ class Component extends React.PureComponent {
    */
   renderPropInput(key, propertyObject, nextType) {
     const { variableData } = this.props;
-    
     return (
       <div>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>

@@ -9,7 +9,7 @@ import Context from '../../context/context';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
-import { VariableViewV2 } from '../components/variable-view-v2.js';
+import VariableViewV2 from '../components/variable-view-v2.js';
 
 const tabs = {
   DOCUMENT: 'document',

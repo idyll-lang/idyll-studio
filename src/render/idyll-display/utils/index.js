@@ -69,6 +69,18 @@ const isChildOf = (node, parent) => {
   return false;
 };
 
+const getTextContainerIndex = node => {
+  let currentNodeIndex = 0;
+  while (
+    node.children[currentNodeIndex].type === 'data' ||
+    node.children[currentNodeIndex].type === 'var'
+  ) {
+    currentNodeIndex++;
+  }
+
+  return currentNodeIndex;
+};
+
 /**
  * Returns true if one node is null / undefined and the other
  * is not.
@@ -157,45 +169,49 @@ const debounce = (func, waitTime) => {
   };
 };
 
-const stringify = (object) => 
-    typeof object === 'string' ? object : JSON.stringify(object);
+/**
+ * Takes in an object and returns the string
+ * version of it.
+ * @param {any} object the object to turn into a string
+ */
+const stringify = object =>
+  typeof object === 'string' ? object : JSON.stringify(object);
 
-const numberfy = (originalValue) => {
-  if(!originalValue) {
+/**
+ * Takes in a value and returns it as a number
+ * if the value is a valid number. If not,
+ * returns the original value as is
+ * @param {any} originalValue the value to turn into a number
+ */
+const numberfy = originalValue => {
+  if (originalValue === undefined || originalValue === null) {
     return originalValue;
   }
 
   let value = originalValue;
-  if(value.trim() !== '') {
+  if (value.trim() !== '') {
     value = Number(originalValue);
   }
 
-  if(isNaN(value)) {
+  if (isNaN(value)) {
     value = originalValue;
   }
 
   return value;
-}
+};
 
-const formatVariableValue = (value, type) => {
-  if(typeof value === 'number') {
-    return value; 
+const formatVariable = value => {
+  if (!value || typeof value === 'number') {
+    return value;
   }
 
-  let enclosingCharacter = type === 'expression' ? '\`' :'\"';
-  
-  let newValue = String(value);
-
-  if(newValue.startsWith('\'') && newValue.endsWith('\'') || 
-      !newValue.startsWith(enclosingCharacter) || 
-      !newValue.endsWith(enclosingCharacter)) {
-
-        newValue = enclosingCharacter + newValue.substring(1, newValue.length - 1) +
-                    enclosingCharacter;
+  try {
+    return JSON.parse(value);
+  } catch (e) {
+    // a string
+    return value;
   }
-
-  return newValue;
-}
+};
 
 module.exports = {
   getNodeById,
@@ -203,6 +219,7 @@ module.exports = {
   updateNodeById,
   getRandomId,
   isChildOf,
+  getTextContainerIndex,
   isDifferentActiveNode,
   formatString,
   getUpdatedPropertyList,
@@ -210,5 +227,5 @@ module.exports = {
   throttle,
   stringify,
   numberfy,
-  formatVariableValue
+  formatVariable
 };

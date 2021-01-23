@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import Context from '../../context/context';
-import { getRandomId } from '../utils'
+import { getRandomId, getTextContainerIndex } from '../utils';
 
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
@@ -23,20 +23,14 @@ class DatasetView extends React.PureComponent {
 
     // Handle the ast change
     compile(tag).then(datasetAST => {
-      const ast = this.context.ast;
+      const ast = JSON.parse(JSON.stringify(this.context.ast));
       const datasetNode = datasetAST.children[0];
       datasetNode.id = getRandomId();
 
       // Insert into ast's root children before the first text container
       // or non-variable/dataset child
-      var currNodeIndex = 0;
-      while (
-        ast.children[currNodeIndex].type === 'data' ||
-        ast.children[currNodeIndex].type === 'var'
-      ) {
-        currNodeIndex++;
-      }
-      ast.children.splice(currNodeIndex, 0, datasetNode);
+      const currentNodeIndex = getTextContainerIndex(ast);
+      ast.children.splice(currentNodeIndex, 0, datasetNode);
 
       const { setAst } = this.context;
       setAst(ast); // must pass info up level

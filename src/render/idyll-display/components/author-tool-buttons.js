@@ -110,10 +110,7 @@ class AuthorToolButtons extends React.PureComponent {
 
     return dropTarget(
       <div className='component-debug-view'>
-        <div
-          ref={ref => (this._componentRef = ref)}>
-          {props.component}
-        </div>
+        <div ref={ref => (this._componentRef = ref)}>{props.component}</div>
         {this.state.showCode ? (
           <div className={'idyll-code-editor'}>
             <EditableCodeCell

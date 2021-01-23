@@ -94,8 +94,8 @@ class VariableView extends React.PureComponent {
         const varName = properties.name.value;
         let varValue;
         let initialValue;
-        if(childType === 'data') {
-          initialValue =  this.readDatasetFile(properties);
+        if (childType === 'data') {
+          initialValue = this.readDatasetFile(properties);
           varValue = initialValue;
         } else {
           initialValue = properties.value.value;
@@ -103,7 +103,7 @@ class VariableView extends React.PureComponent {
           // current value updates should propagate to ast
           varValue = currentData[varName];
         }
-        
+
         rows.push({
           type: childType,
           name: varName,
@@ -120,7 +120,7 @@ class VariableView extends React.PureComponent {
     try {
       const data = fs.readFileSync(properties.source.value, 'utf8');
       return data;
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       return null;
     }
@@ -138,7 +138,7 @@ class VariableView extends React.PureComponent {
           case 'initialValue':
             // should changing data initial value change the file itself?
             // or null this out and only be able to change current value
-            if(this._rowsToVars[update.fromRow].type !== 'data') {
+            if (this._rowsToVars[update.fromRow].type !== 'data') {
               this._rowsToVars[update.fromRow].properties.value.value = val;
             }
             break;
