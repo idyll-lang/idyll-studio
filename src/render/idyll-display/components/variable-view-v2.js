@@ -13,7 +13,13 @@ import {
   readFile
 } from '../utils';
 
-const ALLOWED_TYPES = ['var', 'data', 'derived'];
+const TYPE_OPTIONS = [
+    {id: 'var', value: 'var'},
+    {id: 'data', value: 'data'},
+    {id: 'derived', value: 'derived'}
+];
+
+const ALLOWED_TYPES = TYPE_OPTIONS.map((type) => type.id);
 
 const VariableViewV2 = withContext(
   class VariableView extends React.PureComponent {
@@ -105,23 +111,34 @@ const VariableViewV2 = withContext(
       } else {
         initialValue = this.readDatasetFile(properties);
 
-        if (initialValue && !currentData[name]) {
-          currentValue = initialValue;
-          this.props.context.context.update({
-            [name]: formatVariable(currentValue)
-          });
+        if (initialValue) {
+            currentValue = this.getCurrentDatasetValue(initialValue, currentData, name);
         } else {
-          currentValue = currentData[name];
+            return null;
         }
       }
 
       return {
         type: child.type,
         name: name,
-        initialValue: stringify(initialValue),
-        currentValue: stringify(currentValue),
+        initialValue: stringify(formatVariable(initialValue)),
+        currentValue: stringify(formatVariable(currentValue)),
         id: child.id
       };
+    }
+
+    getCurrentDatasetValue(initialValue, currentData, name) {
+        let currentValue;
+        if(!currentData[name]) {
+            currentValue = initialValue;
+            this.props.context.context.update({
+              [name]: formatVariable(currentValue)
+            });
+        } else {
+            currentValue = currentData[name];
+        }
+
+        return currentValue;
     }
 
     readDatasetFile(properties) {
@@ -139,28 +156,71 @@ const VariableViewV2 = withContext(
       if (update.action === 'CELL_UPDATE') {
         Object.keys(update.updated).forEach(key => {
           const newValue = formatVariable(numberfy(update.updated[key]));
-
-          if (key === 'currentValue') {
-            this.props.context.context.update({
-              [update.fromRowData.name]: newValue
-            });
-          } else {
-            const node = getNodeById(this.props.context.ast, update.fromRowId);
-            const nodeProperty = key === 'name' ? key : 'value';
-            node.properties[nodeProperty].value = newValue;
-
-            this.props.context.setAst(this.props.context.ast);
+            
+          switch(key) {
+              case 'currentValue':
+                  this.handleCurrentValueUpdate(update, newValue);
+                  break;
+              case 'name':
+                  this.handleNameUpdate(update, newValue);
+                  break;
+              case 'initialValue':
+                  this.handleNodeUpdate(update, newValue, 'value');
+                  break;
+              case 'type':
+                  this.handleTypeUpdate(update, newValue);
+                  break;
           }
         });
-
         this.getRows();
       }
+    }
+
+    handleCurrentValueUpdate(update, newValue) {
+        this.props.context.context.update({
+            [update.fromRowData.name]: newValue
+        });
+    }
+
+    handleNameUpdate(update, newValue) {
+        this.handleNodeUpdate(update, newValue, 'name');
+
+        // delete old variable name TODO: from ast as well
+        const contextDataCopy = this.props.context.context.data();
+        contextDataCopy[newValue] = contextDataCopy[update.fromRowData.name];
+
+        console.log(update.fromRowData.name);
+        delete contextDataCopy[update.fromRowData.name];
+        this.props.context.context.update(contextDataCopy)
+    }
+
+    handleNodeUpdate(update, newValue, propertyName) {
+        const { ast } = this.props.context;
+        const node = getNodeById(ast, update.fromRowId);
+        node.properties[propertyName].value = newValue;
+
+        this.props.context.setAst(ast);
+    }
+
+    handleTypeUpdate(update, newValue) {
+        if((update.fromRowData.type === 'var' || 
+            update.fromRowData.type === 'derived') && newValue !== 'data') {
+            const { ast } = this.props.context;
+            const node = getNodeById(ast, update.fromRowId);
+            const typeOfValue = newValue === 'var' ? 'value' : 'expression';
+
+            if(ALLOWED_TYPES.includes(newValue)) {
+                node.type = newValue;
+                node.properties.value.type = typeOfValue;
+                this.props.context.setAst(ast);
+            }
+        }
     }
 
     render() {
       const { error, rows } = this.state;
       const columns = [
-        { key: 'type', name: 'Type', editable: true },
+        { key: 'type', name: 'Type', editable: row => row.type !== 'data' },
         {
           key: 'name',
           name: 'Name',
@@ -176,7 +236,7 @@ const VariableViewV2 = withContext(
         { key: 'currentValue', name: 'Current value', editable: true }
       ];
 
-      console.log(this.props.context.context.data());
+      console.log(this.props.context.context.data(), this.props.context.ast);
       return (
         <div className='variables-view'>
           <div className='variables-table-view'>
