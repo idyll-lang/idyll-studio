@@ -1,5 +1,6 @@
 const { InvalidParameterError } = require('../../../error');
 import throttle from 'lodash.throttle';
+import fs from 'fs';
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -213,6 +214,15 @@ const formatVariable = value => {
   }
 };
 
+const readFile = source => {
+  try {
+    const data = fs.readFileSync(source, 'utf8');
+    return { content: data, error: null };
+  } catch (err) {
+    return { content: null, error: err };
+  }
+};
+
 module.exports = {
   getNodeById,
   deleteNodeById,
@@ -227,5 +237,6 @@ module.exports = {
   throttle,
   stringify,
   numberfy,
-  formatVariable
+  formatVariable,
+  readFile
 };

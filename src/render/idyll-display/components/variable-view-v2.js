@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
-import IdyllAST from 'idyll-ast';
-import fs from 'fs';
 import { DragSource } from 'react-dnd';
 import { withContext } from '../../context/with-context';
 import Context from '../../context/context';
@@ -11,7 +9,8 @@ import {
   getNodeById,
   numberfy,
   formatVariable,
-  getTextContainerIndex
+  getTextContainerIndex,
+  readFile
 } from '../utils';
 
 const ALLOWED_TYPES = ['var', 'data', 'derived'];
@@ -37,10 +36,13 @@ const VariableViewV2 = withContext(
       this.getRows();
     }
 
-    componentDidUpdate(prevProps) {        
-        if(prevProps.context.ast.children.length !== this.props.context.ast.children.length) {
-            this.getRows();
-        }
+    componentDidUpdate(prevProps) {
+      if (
+        prevProps.context.ast.children.length !==
+        this.props.context.ast.children.length
+      ) {
+        this.getRows();
+      }
     }
 
     addVariable() {
@@ -105,8 +107,9 @@ const VariableViewV2 = withContext(
 
         if (initialValue && !currentData[name]) {
           currentValue = initialValue;
-          this.props.context.context.update({ [name]: formatVariable(currentValue) });
-          console.log('hi', name, currentData[name], this.props.context.context.data())
+          this.props.context.context.update({
+            [name]: formatVariable(currentValue)
+          });
         } else {
           currentValue = currentData[name];
         }
@@ -122,14 +125,14 @@ const VariableViewV2 = withContext(
     }
 
     readDatasetFile(properties) {
-      try {
-        const data = fs.readFileSync(properties.source.value, 'utf8');
-        return data;
-      } catch (err) {
-        console.error(err);
-        this.setState({ error: err });
+      const { content, error } = readFile(properties.source.value);
+
+      if (error) {
+        this.setState({ error: error });
         return null;
       }
+
+      return content;
     }
 
     handleGridUpdate(update) {

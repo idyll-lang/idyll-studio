@@ -1,7 +1,12 @@
 import React from 'react';
 import Select from 'react-select';
 import Context from '../../context/context';
-import { getRandomId, getTextContainerIndex } from '../utils';
+import {
+  getRandomId,
+  getTextContainerIndex,
+  readFile,
+  formatVariable
+} from '../utils';
 
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
@@ -32,7 +37,9 @@ class DatasetView extends React.PureComponent {
       const currentNodeIndex = getTextContainerIndex(ast);
       ast.children.splice(currentNodeIndex, 0, datasetNode);
 
-      const { setAst } = this.context;
+      const { setAst, context } = this.context;
+      const { content, error } = readFile(dataset.path);
+      context.update({ [dataset.name]: formatVariable(content) });
       setAst(ast); // must pass info up level
     });
   }
