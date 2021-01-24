@@ -3,6 +3,7 @@ import Render from './render.js';
 import Sidebar from './sidebar';
 import { ipcRenderer } from 'electron';
 import { WrappedAuthorView } from './components/author-view';
+import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
 
 class IdyllDisplay extends React.PureComponent {
@@ -37,6 +38,7 @@ class IdyllDisplay extends React.PureComponent {
           <div className='output-container'>
             <Render />
             <WrappedAuthorView />
+            <WrappedUndoRedo />
           </div>
         </div>
       </>
