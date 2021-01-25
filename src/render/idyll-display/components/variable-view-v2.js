@@ -24,7 +24,7 @@ const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
 
 /**
  * 1. quotes on strings, everything else expression - DONE
- * 2. initial value is state re-evalue current value
+ * 2. initial value is state re-evalue current value - DONE
  * 3. delete derived variables
  * 4. null
  * 5. csv
@@ -53,7 +53,9 @@ const VariableViewV2 = withContext(
     componentDidUpdate(prevProps) {
       if (
         prevProps.context.ast.children.length !==
-        this.props.context.ast.children.length
+          this.props.context.ast.children.length ||
+        JSON.stringify(prevProps.context.context.data()) !==
+          JSON.stringify(this.props.context.context.data())
       ) {
         this.getRows();
       }
@@ -182,12 +184,13 @@ const VariableViewV2 = withContext(
 
       this.props.context.setAst(ast);
 
-      // delete old variable name TODO: from ast as well
-      const contextDataCopy = this.props.context.context.data();
-      contextDataCopy[newValue] = contextDataCopy[update.fromRowData.name];
+      if (update.fromRowData.name !== newValue) {
+        const contextDataCopy = this.props.context.context.data();
+        contextDataCopy[newValue] = contextDataCopy[update.fromRowData.name];
 
-      delete contextDataCopy[update.fromRowData.name];
-      this.props.context.context.update(contextDataCopy);
+        delete contextDataCopy[update.fromRowData.name];
+        this.props.context.context.update(contextDataCopy);
+      }
     }
 
     handleInitialValueUpdate(update, newValue, type) {
@@ -198,9 +201,6 @@ const VariableViewV2 = withContext(
         type === 'expression' ? 'expression' : 'value';
 
       this.props.context.setAst(ast);
-      if (type === 'expression') {
-        this.props.context.context.update({ state: 'hi' });
-      }
     }
 
     handleTypeUpdate(update, newValue) {
@@ -240,7 +240,7 @@ const VariableViewV2 = withContext(
         { key: 'currentValue', name: 'Current value', editable: true }
       ];
 
-      //   console.log(this.props.context.context.data(), this.props.context.ast);
+      console.log(this.props.context.context.data(), this.props.context.ast);
       return (
         <div className='variables-view'>
           <div className='variables-table-view'>
