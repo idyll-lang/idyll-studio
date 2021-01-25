@@ -106,16 +106,16 @@ class ComponentDropTarget extends React.PureComponent {
   }
 
   render() {
-    const { isOver, dropTarget } = this.props;
+    const { canDrop, isOver, dropTarget } = this.props;
     return dropTarget(
       <div
         style={{
           width: '100%',
-          height: isOver ? 65 : 10,
+          height: (isOver) ? 65 : (canDrop ? 30 : 10),
           border: isOver ? '#999999' : 'none',
           borderWidth: isOver ? 2 : 0,
-          background: isOver ? '#666666' : 'none',
-          transition: 'all 1s'
+          background: isOver ? '#999' : (canDrop ? '#ccc' : 'none'),
+          transition: 'all 0.5s'
         }}
       />
     );
@@ -131,7 +131,8 @@ const componentBlockTarget = {
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop()
   };
 }
 
