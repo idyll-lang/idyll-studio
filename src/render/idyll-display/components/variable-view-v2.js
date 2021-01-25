@@ -9,7 +9,7 @@ import {
   getNodeById,
   formatInitialVariableValue,
   formatCurrentVariableValue,
-  getIdyllVariableValue,
+  convertInputToIdyllValue,
   getTextContainerIndex,
   readFile
 } from '../utils';
@@ -148,7 +148,7 @@ const VariableViewV2 = withContext(
     handleGridUpdate(update) {
       if (update.action === 'CELL_UPDATE') {
         Object.keys(update.updated).forEach(key => {
-          const { type, value } = getIdyllVariableValue(update.updated[key]);
+          const { type, value } = convertInputToIdyllValue(update.updated[key]);
 
           switch (key) {
             case 'currentValue':

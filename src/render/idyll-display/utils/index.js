@@ -250,7 +250,7 @@ const jsonParser = value => {
   }
 };
 
-const getIdyllVariableValue = value => {
+const convertInputToIdyllValue = value => {
   const quotes = ["'", '"'];
 
   value = numberfy(value);
@@ -307,6 +307,6 @@ module.exports = {
   numberfy,
   formatInitialVariableValue,
   formatCurrentVariableValue,
-  getIdyllVariableValue,
+  convertInputToIdyllValue,
   readFile
 };
