@@ -201,6 +201,18 @@ const numberfy = originalValue => {
   return value;
 };
 
+/**
+ * Given an idyll ast node, formats and returns the node's 
+ * value to its corresponding variable-view display
+ * value. If the value is an expression, it will wrap it 
+ * in backticks (`). If the value is a string, it will 
+ * wrap it in double quotes ("). Otherwise, will treat the
+ * value as a number. If the node type is 'data', it will try 
+ * to parse the data into a JSON object. Otherwise, it will 
+ * encase in double quotes. If the node is undefined or null,
+ * returns null
+ * @param {IdyllAstNode} node the var/data/derived node
+ */
 const formatInitialVariableValue = node => {
   if (!node) {
     return null;
@@ -226,6 +238,14 @@ const formatInitialVariableValue = node => {
   return value;
 };
 
+/**
+ * Given the current value of a variable, 
+ * returns its corresponding variable-view display
+ * value. If the value is a string, it will wrap it
+ * in double quotes ("). Otherwise, the value will be
+ * displayed as is
+ * @param {any} value the current value of a variable
+ */
 const formatCurrentVariableValue = value => {
   if (typeof value === 'string') {
     return wrapValue(value, '"');
@@ -234,14 +254,28 @@ const formatCurrentVariableValue = value => {
   }
 };
 
+/**
+ * Given a value, wraps the value with the given 
+ * character wrapper and returns it. If no wrapper is 
+ * given, returns the value
+ * @param {any} value the value to wrap
+ * @param {string} wrapper a quote wrapper (`, "", '')
+ */
 const wrapValue = (value, wrapper) => {
   if (!wrapper) {
     return value;
-  } else {
+  } else if(wrapper && value) {
     return wrapper + value + wrapper;
+  } else {
+    return '';
   }
 };
 
+/**
+ * Given a value, parses the value into JSON and returns.
+ * If the value cannot be parsed, returns the value as is
+ * @param {any} value the value to parse
+ */
 const jsonParser = value => {
   try {
     return JSON.parse(value);
@@ -250,7 +284,19 @@ const jsonParser = value => {
   }
 };
 
+/**
+ * Given a user input value for a variable,
+ * returns an object with keys [type, value] where
+ * type is the type of user input (number, string, expression),
+ * and value is the converted user input into the correct type.
+ * Essentially, VariableView display -> Idyll value
+ * @param {any} value the user input
+ */
 const convertInputToIdyllValue = value => {
+  if(!value) {
+    return { type: 'string', value: ''};
+  }
+
   const quotes = ["'", '"'];
 
   value = numberfy(value);
@@ -261,8 +307,12 @@ const convertInputToIdyllValue = value => {
     quotes.includes(value.charAt(value.length - 1)) &&
     value.charAt(0) === value.charAt(value.length - 1)
   ) {
-    value = trimVariableValue(value, '"');
-    value = trimVariableValue(value, "'");
+    let trimmed = trimVariableValue(value, '"')
+    if(trimmed !== value) {
+      value = trimmed;
+    } else {
+      value = trimVariableValue(value, "'");
+    }
     return { type: 'string', value: value };
   }
 
@@ -274,6 +324,13 @@ const convertInputToIdyllValue = value => {
   }
 };
 
+/**
+ * Trims the wrapper character off the start and end 
+ * of the given value and returns it
+ * @param {string} value the string value to trim
+ * @param {string} wrapper a quote wrapper to exclude 
+ *                         from start and end (', ", `)
+ */
 const trimVariableValue = (value, wrapper) => {
   if (value && value.startsWith(wrapper) && value.endsWith(wrapper)) {
     return value.substring(1, value.length - 1);
@@ -282,6 +339,13 @@ const trimVariableValue = (value, wrapper) => {
   }
 };
 
+/**
+ * Given a path source, tries to synchronously read 
+ * the file and return an object with its contents. 
+ * If an error occurs, returns an object with null content 
+ * and its error. 
+ * @param {string} source the path to the file
+ */
 const readFile = source => {
   try {
     const data = fs.readFileSync(source, 'utf8');

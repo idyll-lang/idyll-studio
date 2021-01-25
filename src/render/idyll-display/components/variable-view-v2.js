@@ -56,7 +56,7 @@ const VariableViewV2 = withContext(
           this.props.context.ast.children.length ||
         JSON.stringify(prevProps.context.context.data()) !==
           JSON.stringify(this.props.context.context.data())
-      ) {
+      ) { // when a var/data node is added or the context has changed
         this.getRows();
       }
     }
@@ -240,7 +240,6 @@ const VariableViewV2 = withContext(
         { key: 'currentValue', name: 'Current value', editable: true }
       ];
 
-      console.log(this.props.context.context.data(), this.props.context.ast);
       return (
         <div className='variables-view'>
           <div className='variables-table-view'>

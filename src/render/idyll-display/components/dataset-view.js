@@ -9,7 +9,6 @@ import {
 } from '../utils';
 
 const compile = require('idyll-compiler');
-const idyllAST = require('idyll-ast');
 
 // {extension: ".json", name: "example-data.json", path: "/Users/meganvo/projects/deploy-test/data/example-data.json"}
 

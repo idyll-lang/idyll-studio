@@ -2,7 +2,6 @@ import React from 'react';
 import AST from 'idyll-ast';
 import WrappedComponentView from '../components/component-view/component-view.js';
 import DatasetView from '../components/dataset-view.js';
-import VariableView from '../components/variable-view';
 import Deployment from '../components/deploy.js';
 import ComponentDetails from './component.js';
 import Context from '../../context/context';
@@ -125,7 +124,6 @@ class Sidebar extends React.PureComponent {
           <div>
             <div className='components-and-datasets'>
               <h2>Variables and Datasets</h2>
-              {/* <VariableView /> */}
               <VariableViewV2 />
               <DatasetView />
             </div>
