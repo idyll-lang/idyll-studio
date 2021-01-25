@@ -5,7 +5,7 @@ import {
   getRandomId,
   getTextContainerIndex,
   readFile,
-  formatVariable
+  getIdyllVariableValue
 } from '../utils';
 
 const compile = require('idyll-compiler');
@@ -39,7 +39,7 @@ class DatasetView extends React.PureComponent {
 
       const { setAst, context } = this.context;
       const { content, error } = readFile(dataset.path);
-      context.update({ [dataset.name]: formatVariable(content) });
+      context.update({ [dataset.name]: getIdyllVariableValue(content).value });
       setAst(ast); // must pass info up level
     });
   }

@@ -189,7 +189,7 @@ const numberfy = originalValue => {
     return originalValue;
   }
 
-  let value = originalValue;
+  let value = stringify(originalValue);
   if (value.trim() !== '') {
     value = Number(originalValue);
   }
@@ -201,15 +201,83 @@ const numberfy = originalValue => {
   return value;
 };
 
-const formatVariable = value => {
-  if (!value || typeof value === 'number') {
+const formatInitialVariableValue = node => {
+  if (!node) {
+    return null;
+  }
+
+  let value;
+  if (node.type === 'data') {
+    const fileContent = readFile(node.properties.source.value).content;
+    value = jsonParser(fileContent);
+  } else {
+    value = numberfy(node.properties.value.value);
+    if (typeof value !== 'number') {
+      let wrapper = '"';
+
+      if (node.properties.value.type === 'expression') {
+        wrapper = '`';
+      }
+
+      value = wrapValue(value, wrapper);
+    }
+  }
+
+  return value;
+};
+
+const formatCurrentVariableValue = value => {
+  if (typeof value === 'string') {
+    return wrapValue(value, '"');
+  } else {
     return value;
+  }
+};
+
+const wrapValue = (value, wrapper) => {
+  if (!wrapper) {
+    return value;
+  } else {
+    return wrapper + value + wrapper;
+  }
+};
+
+const jsonParser = value => {
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    return value;
+  }
+};
+
+const getIdyllVariableValue = value => {
+  const quotes = ["'", '"'];
+
+  value = numberfy(value);
+  if (typeof value === 'number') {
+    return { type: 'number', value: value };
+  } else if (
+    quotes.includes(value.charAt(0)) &&
+    quotes.includes(value.charAt(value.length - 1)) &&
+    value.charAt(0) === value.charAt(value.length - 1)
+  ) {
+    value = trimVariableValue(value, '"');
+    value = trimVariableValue(value, "'");
+    return { type: 'string', value: value };
   }
 
   try {
-    return JSON.parse(value);
+    return { type: 'expression', value: JSON.parse(value) };
   } catch (e) {
-    // a string
+    // an expression
+    return { type: 'expression', value: trimVariableValue(value, '`') };
+  }
+};
+
+const trimVariableValue = (value, wrapper) => {
+  if (value && value.startsWith(wrapper) && value.endsWith(wrapper)) {
+    return value.substring(1, value.length - 1);
+  } else {
     return value;
   }
 };
@@ -237,6 +305,8 @@ module.exports = {
   throttle,
   stringify,
   numberfy,
-  formatVariable,
+  formatInitialVariableValue,
+  formatCurrentVariableValue,
+  getIdyllVariableValue,
   readFile
 };

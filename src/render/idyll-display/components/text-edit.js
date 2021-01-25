@@ -1,9 +1,8 @@
 import React from 'react';
 import Context from '../../context/context';
-import copy from "fast-copy";
+import copy from 'fast-copy';
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
-
 
 const { getNodeById, deleteNodeById } = require('../utils');
 
