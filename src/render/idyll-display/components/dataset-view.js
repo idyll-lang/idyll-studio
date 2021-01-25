@@ -61,6 +61,7 @@ class DatasetView extends React.PureComponent {
               })}
               onChange={({ value }) => {
                 const dataset = value;
+                dataset.name = dataset.name.replace('.csv', '').replace('.json', '');
                 this.insertData(dataset);
               }}
             />

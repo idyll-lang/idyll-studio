@@ -154,10 +154,12 @@ export const WrappedAuthorView = withContext(
               left: dimensions.left
             }}>
             <PropertyList
+              ast={this.props.context.ast}
               node={activeComponent}
               updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
                 this
               )}
+              setAst={this.props.context.setAst}
               updateNodeType={this.updateNodeType.bind(this)}
               variableData={this.props.context.context.data()}
             />

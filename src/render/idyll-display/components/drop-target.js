@@ -130,9 +130,6 @@ class ComponentDropTarget extends React.PureComponent {
 
 const componentBlockTarget = {
   drop(props, monitor, component) {
-    console.log('dropped', monitor.getItem());
-    console.log('dropped props', props);
-    console.log('dropped component', component);
     component.insertComponent(monitor.getItem().component);
   }
 };

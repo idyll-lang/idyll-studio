@@ -132,10 +132,8 @@ class Component extends React.PureComponent {
 
 const variableTarget = {
   drop(props, monitor, component) {
-    console.log('dropped on property!!');
     const name = monitor.getItem().name;
     const node = props.node;
-
     updateNodeById(props.ast, node.id, {
       properties: { [props.name]: { value: name, type: 'variable' } }
     });
