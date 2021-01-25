@@ -39,7 +39,9 @@ class DatasetView extends React.PureComponent {
 
       const { setAst, context } = this.context;
       const { content, error } = readFile(dataset.path);
-      context.update({ [dataset.name]: convertInputToIdyllValue(content).value });
+      context.update({
+        [dataset.name]: convertInputToIdyllValue(content).value
+      });
       setAst(ast); // must pass info up level
     });
   }
@@ -61,7 +63,9 @@ class DatasetView extends React.PureComponent {
               })}
               onChange={({ value }) => {
                 const dataset = value;
-                dataset.name = dataset.name.replace('.csv', '').replace('.json', '');
+                dataset.name = dataset.name
+                  .replace('.csv', '')
+                  .replace('.json', '');
                 this.insertData(dataset);
               }}
             />
