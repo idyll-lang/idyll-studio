@@ -223,11 +223,9 @@ const formatInitialVariableValue = (node, rowData) => {
   let value;
   if (node.type === 'data') {
     if(!rowData) {
-      console.log("first");
       const fileContent = readFile(node.properties.source.value).content;
       value = jsonParser(fileContent);
     } else {
-      console.log('consecutive', rowData.initialValue);
       value = rowData.initialValue;
     } 
   } else {
