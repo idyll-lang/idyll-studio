@@ -215,15 +215,21 @@ const numberfy = originalValue => {
  * returns null
  * @param {IdyllAstNode} node the var/data/derived node
  */
-const formatInitialVariableValue = node => {
+const formatInitialVariableValue = (node, rowData) => {
   if (!node) {
     return null;
   }
 
   let value;
   if (node.type === 'data') {
-    const fileContent = readFile(node.properties.source.value).content;
-    value = jsonParser(fileContent);
+    if(!rowData) {
+      console.log("first");
+      const fileContent = readFile(node.properties.source.value).content;
+      value = jsonParser(fileContent);
+    } else {
+      console.log('consecutive', rowData.initialValue);
+      value = rowData.initialValue;
+    } 
   } else {
     value = numberfy(node.properties.value.value);
     if (typeof value !== 'number') {

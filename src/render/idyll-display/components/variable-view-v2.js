@@ -114,7 +114,8 @@ const VariableViewV2 = withContext(
       const properties = child.properties;
       const name = properties.name.value;
 
-      const initialValue = formatInitialVariableValue(child);
+      const initialValue = formatInitialVariableValue(child, 
+        (this.state.rows.filter((row) => row.name === name)[0] || null));
       let currentValue = formatCurrentVariableValue(currentData[name]);
 
       if (child.type === 'data') {
