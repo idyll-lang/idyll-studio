@@ -10,7 +10,6 @@ import {
 
 const compile = require('idyll-compiler');
 
-// {extension: ".json", name: "example-data.json", path: "/Users/meganvo/projects/deploy-test/data/example-data.json"}
 
 class DatasetView extends React.PureComponent {
   static contextType = Context;
@@ -37,7 +36,8 @@ class DatasetView extends React.PureComponent {
       ast.children.splice(currentNodeIndex, 0, datasetNode);
 
       const { setAst, context } = this.context;
-      const { content, error } = readFile(dataset.path);
+      const { content } = readFile(dataset.path);
+
       context.update({
         [dataset.name]: convertInputToIdyllValue(content).value
       });

@@ -28,6 +28,8 @@ const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
  * 3. delete derived variables
  * 4. null
  * 5. csv
+ * 6. saved
+ * 7. delete
  */
 const VariableViewV2 = withContext(
   class VariableView extends React.PureComponent {
@@ -136,17 +138,6 @@ const VariableViewV2 = withContext(
       };
     }
 
-    readDatasetFile(properties) {
-      const { content, error } = readFile(properties.source.value);
-
-      if (error) {
-        this.setState({ error: error });
-        return null;
-      }
-
-      return content;
-    }
-
     handleGridUpdate(update) {
       if (update.action === 'CELL_UPDATE') {
         Object.keys(update.updated).forEach(key => {
@@ -231,7 +222,6 @@ const VariableViewV2 = withContext(
           editable: true,
           formatter: DraggableFormatter
         },
-        // make some way so not editable but viewable
         {
           key: 'initialValue',
           name: 'Initial value',

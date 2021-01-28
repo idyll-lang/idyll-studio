@@ -1,6 +1,8 @@
 const { InvalidParameterError } = require('../../../error');
 import throttle from 'lodash.throttle';
 import fs from 'fs';
+import path from 'path';
+import parse from 'csv-parse/lib/sync';
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -346,13 +348,28 @@ const trimVariableValue = (value, wrapper) => {
  * and its error. 
  * @param {string} source the path to the file
  */
-const readFile = source => {
+const readFile = (source) => {
+  if(!source) {
+    return null;
+  }
+
+  const fileType = path.extname(source);
+
+  let data = '';
+
   try {
-    const data = fs.readFileSync(source, 'utf8');
-    return { content: data, error: null };
+    data = fs.readFileSync(source, 'utf8');
   } catch (err) {
     return { content: null, error: err };
   }
+
+  if(fileType === ".csv") {
+    data = stringify(parse(data, {
+      columns: true,
+      skip_empty_lines: true
+    }));
+  } 
+  return { content: data, error: null };
 };
 
 module.exports = {
