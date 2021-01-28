@@ -373,10 +373,10 @@ button.loader:hover {
 .sidebar-information {
   /* background: ; */
   font-family: Helvetica, sans-serif;
-  background-color: #fff;
+  background-color: #efefef;
 }
 .sidebar-tab-container {
-  /* background: #eeeeee; */
+  background: #fff;
 }
 
 .sidebar-tab-container .sidebar-tab {
@@ -394,7 +394,7 @@ button.loader:hover {
 }
 
 .sidebar-inner {
-  background-color: #fff;
+  background-color: #efefef;
 }
 
 .sidebar-inner select {
