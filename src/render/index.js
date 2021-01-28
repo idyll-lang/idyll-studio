@@ -76,6 +76,20 @@ class App extends React.PureComponent {
       true
     );
 
+    // Overwrite default copy/paste behavior so it
+    // doesn't include any weird HTML/styles/linebreaks,
+    // text only!
+    window.addEventListener("paste", function(e) {
+      // cancel paste
+      e.preventDefault();
+
+      // get text representation of clipboard
+      var text = (e.originalEvent || e).clipboardData.getData('text/plain').trim();
+
+      // insert text manually
+      document.execCommand("insertHTML", false, text);
+    });
+
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
         currentProcess: PUBLISHING
