@@ -400,13 +400,13 @@ button.loader:hover {
 .sidebar-inner select {
   display: block;
   width: 100%;
-  height: 30px;
+  height: 35px;
 }
 
 .sidebar-inner input {
   display: block;
   width: 100%;
-  height: 30px;
+  height: 35px;
   margin: 0;
   border: solid 1px #999;
   padding: 0.5em;
