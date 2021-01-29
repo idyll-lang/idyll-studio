@@ -4,6 +4,7 @@ import { withContext } from '../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 import Properties from './component-editor/properties';
 import Code from './component-editor/code';
+import Styles from './component-editor/styles';
 
 /**
  * An AuthorView is associated with an active component.
@@ -96,6 +97,7 @@ export const WrappedAuthorView = withContext(
         case 'code':
           return <Code />;
         case 'style':
+          return <Styles />;
         default:
           return  null;
       }

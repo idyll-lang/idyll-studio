@@ -26,6 +26,8 @@
     "idyll-components": "^4.0.4",
     "idyll-document": "^3.2.5",
     "lodash.throttle": "^4.1.1",
+    "postcss": "^8.2.4",
+    "postcss-js": "^3.0.3",
     "react": "^16.14.0",
     "react-data-grid": "^6.1.0",
     "react-dnd": "^10.0.2",

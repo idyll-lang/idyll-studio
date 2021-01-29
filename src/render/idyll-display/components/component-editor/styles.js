@@ -7,6 +7,8 @@ import EditableCodeCell from './code-cell';
 
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
+const postcss = require('postcss')
+const postcssJs = require('postcss-js')
 
 /**
  * An AuthorView is associated with an active component.
@@ -14,45 +16,45 @@ const compile = require('idyll-compiler');
  * a property list of all the components properties for editing.
  */
 export default withContext(
-  class Code extends React.PureComponent {
+  class Styles extends React.PureComponent {
     constructor(props) {
       super(props);
     }
 
-    getMarkup(props) {
-      return AST.toMarkup({
-        id: -1,
-        type: 'component',
-        name: 'div',
-        children: [props.context.activeComponent]
-      });
+    getStyles(props) {
+      const _props =  props.context.activeComponent.properties || {};
+      const _stylesProp =  _props.style || {};
+      const _styles =  eval(`(function() { return ${_stylesProp.value  || ''} })()`);
+      return  postcss().process(_styles, { parser: postcssJs }).css;
     }
 
-    onExecute(newMarkup) {
-      this.updateAst();
-    }
-
-    onBlur(newMarkup) {
-    }
-
-    updateAst() {
-      const output = compile(this.getMarkup(this.props), { async: false });
-      let node = output.children[0];
-      if (node.children && node.children.length) {
-        node = node.children[0];
-      }
+    onExecute(cssString) {
+      // todo  - update the styles
       const targetNode = getNodeById(
         this.props.context.ast,
         this.props.context.activeComponent.id
       );
-      Object.keys(node).forEach(key => {
-        if (key === 'id') {
-          return;
-        }
-        targetNode[key] = node[key];
-      });
 
+      const root = postcss.parse(cssString);
+      if (!targetNode.properties)  {
+        targetNode.properties = {};
+      }
+      if (targetNode.properties.style)  {
+        targetNode.properties.style.value = JSON.stringify(postcssJs.objectify(root));
+      } else {
+        targetNode.properties.style =  {
+          type: 'expression',
+          value: JSON.stringify(postcssJs.objectify(root))
+        }
+      }
       this.props.context.setAst(this.props.context.ast);
+    }
+
+    onBlur(newMarkup) {
+      // maybe don't need?
+    }
+
+    updateAst() {
     }
 
     render() {
@@ -61,11 +63,11 @@ export default withContext(
           <EditableCodeCell
             onExecute={this.onExecute.bind(this)}
             onBlur={this.onBlur.bind(this)}
-            markup={this.getMarkup(this.props)}
+            markup={this.getStyles(this.props)}
           />
           <div className={'code-instructions'} style={{color: '#ccc',  fontSize: 10, fontStyle: 'italic', margin: '5px 16px', display: 'flex', justifyContent: 'space-between'}}>
             <div>shift + enter to execute</div>
-            <div><a style={{color: '#ccc', textDecoration:  'underline'}} href={'https://idyll-lang.org/docs/syntax'}>Syntax Guide</a></div>
+            <div><a style={{color: '#ccc', textDecoration:  'underline'}}>CSS Syntax</a></div>
           </div>
         </div>
       )
