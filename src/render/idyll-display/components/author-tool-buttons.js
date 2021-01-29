@@ -1,47 +1,14 @@
 import React from 'react';
 import Context from '../../context/context';
 import { DropTarget } from 'react-dnd';
-import { getNodeById } from '../utils/';
-import EditableCodeCell from './code-cell';
-import { EditingWarning } from '../../../error';
-import { EDITING_WARNING_MESSAGE } from '../../../error-constants';
-
-const AST = require('idyll-ast');
-const compile = require('idyll-compiler');
 
 class AuthorToolButtons extends React.PureComponent {
   static contextType = Context;
 
   constructor(props) {
     super(props);
-    this.state = {
-      showCode: false,
-      markup: this.getMarkup(props)
-    };
 
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
-  }
-
-  // Flips between whether we are in the author view of a component
-  handleClickCode() {
-    if (this.state.showCode) {
-      let shouldClose = true;
-      if (this.getMarkup(this.props) !== this.state.markup) {
-        shouldClose = confirm(new EditingWarning(EDITING_WARNING_MESSAGE));
-      }
-
-      if (shouldClose) {
-        this.setState({
-          showCode: false
-        });
-      }
-    } else {
-      // get the latest
-      this.setState({
-        markup: this.getMarkup(this.props),
-        showCode: true
-      });
-    }
   }
 
   handleClickProps() {
@@ -55,50 +22,11 @@ class AuthorToolButtons extends React.PureComponent {
     }
   }
 
-  getMarkup(props) {
-    return AST.toMarkup({
-      id: -1,
-      type: 'component',
-      name: 'div',
-      children: [props.idyllASTNode]
-    });
-  }
-
-  onExecute(newMarkup) {
-    this.setState(
-      {
-        markup: newMarkup
-      },
-      () => {
-        this.updateAst();
-      }
-    );
-  }
 
   onBlur(newMarkup) {
     this.setState({
       markup: newMarkup
     });
-  }
-
-  updateAst() {
-    const output = compile(this.state.markup, { async: false });
-    let node = output.children[0];
-    if (node.children && node.children.length) {
-      node = node.children[0];
-    }
-    const targetNode = getNodeById(
-      this.context.ast,
-      this.props.idyllASTNode.id
-    );
-    Object.keys(node).forEach(key => {
-      if (key === 'id') {
-        return;
-      }
-      targetNode[key] = node[key];
-    });
-
-    this.context.setAst(this.context.ast);
   }
 
   // Returns an entire author view, including the component itself,
@@ -111,37 +39,15 @@ class AuthorToolButtons extends React.PureComponent {
     return dropTarget(
       <div className='component-debug-view'>
         <div ref={ref => (this._componentRef = ref)}>{props.component}</div>
-        {this.state.showCode ? (
-          <div className={'idyll-code-editor'}>
-            <EditableCodeCell
-              onExecute={this.onExecute.bind(this)}
-              onBlur={this.onBlur.bind(this)}
-              markup={this.state.markup}
-            />
-          </div>
-        ) : null}
         <div className='author-view-container' id={this.domId}>
           <button
-            className={`author-view-button ${
-              this.context &&
-              this.context.activeComponent &&
-              this.context.activeComponent.id === this.props.idyllASTNode.id
-                ? 'selected'
-                : ''
-            }`}
+            className={`author-view-button`}
             onClick={this.handleClickProps.bind(this)}
             data-tip
             data-for={props.uniqueKey}>
-            Properties
-          </button>
-          <button
-            className={`author-view-button ${
-              this.state.showCode ? 'selected' : ''
-            }`}
-            onClick={this.handleClickCode.bind(this)}
-            data-tip
-            data-for={props.uniqueKey}>
-            Code
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 4.07099V5.90814L1.125 6.09604C1.20832 6.40919 1.33332 6.70148 1.47918 6.952L0.8125 7.87056L2.10418 9.1858L3.04168 8.53863C3.3125 8.68476 3.60418 8.81002 3.89582 8.89355L4.08332 10H5.91668L6.10418 8.87265C6.41668 8.78915 6.6875 8.66389 6.95832 8.51777L7.875 9.16494L9.1875 7.87056L8.52082 6.952C8.66664 6.68058 8.79164 6.38832 8.875 6.07517L10 5.90814V4.07099L8.875 3.8831C8.79168 3.56995 8.66668 3.29852 8.52082 3.02713L9.1875 2.08767L7.89582 0.793297L6.95832 1.46137C6.6875 1.31524 6.39582 1.18998 6.08332 1.10645L5.89582 0H4.0625L3.875 1.12735C3.58332 1.21085 3.29168 1.33611 3.02082 1.48223L2.08332 0.814198L0.791677 2.10854L1.45832 3.048C1.3125 3.31942 1.1875 3.59081 1.10418 3.90396L0 4.07099ZM5 3.0689C6.0625 3.0689 6.91668 3.92483 6.91668 4.98955C6.91668 6.05427 6.04168 6.91023 5 6.91023C3.95832 6.91023 3.08332 6.05427 3.08332 4.98955C3.08332 3.92483 3.9375 3.0689 5 3.0689Z" fill="white"/>
+            </svg>
           </button>
         </div>
       </div>

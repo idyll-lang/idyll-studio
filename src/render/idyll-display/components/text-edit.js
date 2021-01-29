@@ -93,8 +93,7 @@ class TextEdit extends React.PureComponent {
             whiteSpace: 'pre-wrap',
             marginLeft: -10,
             paddingLeft: 10,
-            borderLeft: 'solid 2px #222',
-            fontFamily: 'monospace'
+            borderLeft: 'solid 2px #222'
           }}
           contentEditable='true'
           suppressContentEditableWarning={true}
