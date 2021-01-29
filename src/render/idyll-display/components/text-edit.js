@@ -19,12 +19,7 @@ class TextEdit extends React.PureComponent {
 
   getMarkup(props) {
     if (props.idyllASTNode.name === 'p') {
-      return AST.toMarkup({
-        id: -1,
-        type: 'component',
-        name: 'div',
-        children: props.idyllASTNode.children
-      });
+      return AST.toMarkup(props.idyllASTNode);
     }
     return AST.toMarkup({
       id: -1,
