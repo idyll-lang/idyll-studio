@@ -1,47 +1,14 @@
 import React from 'react';
 import Context from '../../context/context';
 import { DropTarget } from 'react-dnd';
-import { getNodeById } from '../utils/';
-import EditableCodeCell from './code-cell';
-import { EditingWarning } from '../../../error';
-import { EDITING_WARNING_MESSAGE } from '../../../error-constants';
-
-const AST = require('idyll-ast');
-const compile = require('idyll-compiler');
 
 class AuthorToolButtons extends React.PureComponent {
   static contextType = Context;
 
   constructor(props) {
     super(props);
-    this.state = {
-      showCode: false,
-      markup: this.getMarkup(props)
-    };
 
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
-  }
-
-  // Flips between whether we are in the author view of a component
-  handleClickCode() {
-    if (this.state.showCode) {
-      let shouldClose = true;
-      if (this.getMarkup(this.props) !== this.state.markup) {
-        shouldClose = confirm(new EditingWarning(EDITING_WARNING_MESSAGE));
-      }
-
-      if (shouldClose) {
-        this.setState({
-          showCode: false
-        });
-      }
-    } else {
-      // get the latest
-      this.setState({
-        markup: this.getMarkup(this.props),
-        showCode: true
-      });
-    }
   }
 
   handleClickProps() {
@@ -55,50 +22,11 @@ class AuthorToolButtons extends React.PureComponent {
     }
   }
 
-  getMarkup(props) {
-    return AST.toMarkup({
-      id: -1,
-      type: 'component',
-      name: 'div',
-      children: [props.idyllASTNode]
-    });
-  }
-
-  onExecute(newMarkup) {
-    this.setState(
-      {
-        markup: newMarkup
-      },
-      () => {
-        this.updateAst();
-      }
-    );
-  }
 
   onBlur(newMarkup) {
     this.setState({
       markup: newMarkup
     });
-  }
-
-  updateAst() {
-    const output = compile(this.state.markup, { async: false });
-    let node = output.children[0];
-    if (node.children && node.children.length) {
-      node = node.children[0];
-    }
-    const targetNode = getNodeById(
-      this.context.ast,
-      this.props.idyllASTNode.id
-    );
-    Object.keys(node).forEach(key => {
-      if (key === 'id') {
-        return;
-      }
-      targetNode[key] = node[key];
-    });
-
-    this.context.setAst(this.context.ast);
   }
 
   // Returns an entire author view, including the component itself,
@@ -111,37 +39,13 @@ class AuthorToolButtons extends React.PureComponent {
     return dropTarget(
       <div className='component-debug-view'>
         <div ref={ref => (this._componentRef = ref)}>{props.component}</div>
-        {this.state.showCode ? (
-          <div className={'idyll-code-editor'}>
-            <EditableCodeCell
-              onExecute={this.onExecute.bind(this)}
-              onBlur={this.onBlur.bind(this)}
-              markup={this.state.markup}
-            />
-          </div>
-        ) : null}
         <div className='author-view-container' id={this.domId}>
           <button
-            className={`author-view-button ${
-              this.context &&
-              this.context.activeComponent &&
-              this.context.activeComponent.id === this.props.idyllASTNode.id
-                ? 'selected'
-                : ''
-            }`}
+            className={`author-view-button`}
             onClick={this.handleClickProps.bind(this)}
             data-tip
             data-for={props.uniqueKey}>
-            Properties
-          </button>
-          <button
-            className={`author-view-button ${
-              this.state.showCode ? 'selected' : ''
-            }`}
-            onClick={this.handleClickCode.bind(this)}
-            data-tip
-            data-for={props.uniqueKey}>
-            Code
+            Edit
           </button>
         </div>
       </div>

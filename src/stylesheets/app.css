@@ -122,10 +122,29 @@ button.loader:hover {
 .author-view-overlay {
   position: absolute;
   z-index: 100;
-  background: white;
-  border: solid 0.5px #666;
-  padding: 0.5em;
+  background: #222222;
+  color: #fff;
+  padding: 0;
   width: 300px;
+  border-radius: 10px;
+  padding-bottom: 10px;
+}
+
+.author-view-overlay-header-button {
+  padding: 0.5em;
+  color: #999999;
+  cursor: pointer;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.author-view-overlay-header {
+  padding: 0.5em 1em;
+}
+
+.author-view-overlay-header .selected {
+  font-weight: bold;
+  color: #fff;
 }
 
 .component-debug-view:hover > .author-view-container {
@@ -229,7 +248,7 @@ button.loader:hover {
 
 .prop-name {
   font-size: 12px;
-  color: #666;
+  color: #fff;
 }
 .prop-input {
   font-size: 12px;
@@ -237,12 +256,18 @@ button.loader:hover {
   width: 100%;
   /* border-radius: 20px 0 0 20px; */
   border: solid 1px #ddd;
-  padding-left: 0.5em;
+  padding: 6px 0.5em 5px 0.5em;
+  background: #666;
+  border: 0;
+  box-shadow: none;
+  color: #fff;
+  border-radius: 5px;
+
 }
 
 .prop-type {
   font-size: 12px;
-  width: 150px;
+  margin-left: 1em;
   text-align: center;
   cursor: pointer;
 }
@@ -257,7 +282,8 @@ button.loader:hover {
 }
 
 .idyll-code-editor pre {
-  border: solid 0.5px #666;
+  /* border: solid 0.5px #666; */
+  background-color: #666666;
 }
 
 .editable-text:hover {
