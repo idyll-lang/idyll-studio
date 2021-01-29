@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { shallow, mount } from 'enzyme';
-import { Property } from '../src/render/idyll-display/components/property';
+import { Property } from '../src/render/idyll-display/components/component-editor/property';
 import expect from 'expect';
-import PropertyList from '../src/render/idyll-display/components/property-list';
-import EditableCodeCell from '../src/render/idyll-display/components/code-cell';
+import PropertyList from '../src/render/idyll-display/components/component-editor/property-list';
+import EditableCodeCell from '../src/render/idyll-display/components/component-editor/code-cell';
 import { SearchBarInput } from '../src/render/idyll-display/components/component-view/search-bar';
 import ComponentAccordion from '../src/render/idyll-display/components/component-view/component-accordion';
 import { DndProvider } from 'react-dnd';
@@ -59,7 +59,7 @@ describe('<Property /> with props', () => {
         dropTarget={dropTarget}
       />
     );
-      
+
     expect(component.find('div.prop-name').text()).toBe('author');
 
     const typeDiv = component.find('div.prop-type');
@@ -85,7 +85,7 @@ describe('<Property /> with props', () => {
         dropTarget={dropTarget}
       />
     );
-      
+
     expect(component.find('div.prop-name').text()).toBe('date');
 
     const typeDiv = component.find('div.prop-type');
