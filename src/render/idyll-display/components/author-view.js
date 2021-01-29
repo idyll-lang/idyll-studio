@@ -61,7 +61,6 @@ export const WrappedAuthorView = withContext(
             dimensions: null
           });
         }
-
       } else if (!isValidActiveComponent && prevProps.context.activeComponent) {
         this.setState({
           activeDomNode: null,
@@ -110,12 +109,20 @@ export const WrappedAuthorView = withContext(
      * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
      * amount of time has passed since the last function invoke
      */
-    debouncedSetAst = throttle((node, propertyName, propertyValue) => {
-      const newPropList = getUpdatedPropertyList(node, propertyName, propertyValue);
-      node.properties = newPropList;
-      this.props.context.setAst(this.props.context.ast);
-      this.props.context.setActiveComponent(node);
-    }, DEBOUNCE_PROPERTY_MILLISECONDS, { leading: true, trailing: true });
+    debouncedSetAst = throttle(
+      (node, propertyName, propertyValue) => {
+        const newPropList = getUpdatedPropertyList(
+          node,
+          propertyName,
+          propertyValue
+        );
+        node.properties = newPropList;
+        this.props.context.setAst(this.props.context.ast);
+        this.props.context.setActiveComponent(node);
+      },
+      DEBOUNCE_PROPERTY_MILLISECONDS,
+      { leading: true, trailing: true }
+    );
 
     /**
      * Updates the prop type to the given one
@@ -147,10 +154,12 @@ export const WrappedAuthorView = withContext(
               left: dimensions.left
             }}>
             <PropertyList
+              ast={this.props.context.ast}
               node={activeComponent}
               updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
                 this
               )}
+              setAst={this.props.context.setAst}
               updateNodeType={this.updateNodeType.bind(this)}
               variableData={this.props.context.context.data()}
             />

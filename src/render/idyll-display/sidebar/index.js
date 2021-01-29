@@ -2,13 +2,13 @@ import React from 'react';
 import AST from 'idyll-ast';
 import WrappedComponentView from '../components/component-view/component-view.js';
 import DatasetView from '../components/dataset-view.js';
-import VariableView from '../components/variable-view';
 import Deployment from '../components/deploy.js';
 import ComponentDetails from './component.js';
 import Context from '../../context/context';
 
 import * as layouts from 'idyll-layouts';
 import * as themes from 'idyll-themes';
+import VariableViewV2 from '../components/variable-view-v2.js';
 
 const tabs = {
   DOCUMENT: 'document',
@@ -124,7 +124,7 @@ class Sidebar extends React.PureComponent {
           <div>
             <div className='components-and-datasets'>
               <h2>Variables and Datasets</h2>
-              <VariableView />
+              <VariableViewV2 />
               <DatasetView />
             </div>
           </div>
@@ -161,6 +161,15 @@ class Sidebar extends React.PureComponent {
             <div className='sidebar-tab-container'>
               <div
                 className={`sidebar-tab ${
+                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
+                }`}
+                onClick={() => {
+                  this.setState({ selectedTab: tabs.DOCUMENT });
+                }}>
+                Document
+              </div>
+              <div
+                className={`sidebar-tab ${
                   this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
                 }`}
                 onClick={() => {
@@ -176,15 +185,6 @@ class Sidebar extends React.PureComponent {
                   this.setState({ selectedTab: tabs.VARIABLES });
                 }}>
                 Variables
-              </div>
-              <div
-                className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
-                }`}
-                onClick={() => {
-                  this.setState({ selectedTab: tabs.DOCUMENT });
-                }}>
-                Publish
               </div>
             </div>
             <div className='sidebar-inner'>{this.renderInner()}</div>

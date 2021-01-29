@@ -46,6 +46,9 @@ class PropertyList extends React.PureComponent {
                 <Property
                   updateProperty={this.props.updateNodeWithNewProperties}
                   name={propertyName}
+                  ast={this.props.ast}
+                  setAst={this.props.setAst}
+                  node={ASTNode}
                   propertyObject={propertyObject}
                   variableData={this.props.variableData}
                   updateNodeType={this.props.updateNodeType}

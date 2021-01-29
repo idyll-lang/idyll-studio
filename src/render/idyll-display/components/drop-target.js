@@ -51,15 +51,13 @@ class ComponentDropTarget extends React.PureComponent {
       position = 'AFTER';
     }
 
-    console.log('Searching for ', targetNode, position);
-    console.log('Compiling', componentMarkup);
     compile(componentMarkup).then(componentAST => {
+
       let componentNode = componentAST.children[0];
-      if (componentNode.name === 'TextContainer') {
+      while (componentNode.name === 'TextContainer') {
         componentNode = componentNode.children[0];
       }
       componentNode.id = getRandomId();
-      console.log('component node', componentNode);
 
       const handleNode = node => {
         let foundMatch = false;
@@ -77,14 +75,10 @@ class ComponentDropTarget extends React.PureComponent {
         }
 
         if (foundMatch) {
-          console.log('Found match in node', node);
           const idx = position === 'BEFORE' ? matchIndex : matchIndex + 1;
           const before = node.children.slice(0, idx);
           const after = node.children.slice(idx);
-          console.log('before', before);
-          console.log('after', after);
           node.children = [...before, componentNode, ...after];
-          console.log('New children', node.children);
           return true;
         }
 
@@ -112,16 +106,16 @@ class ComponentDropTarget extends React.PureComponent {
   }
 
   render() {
-    const { isOver, dropTarget } = this.props;
+    const { canDrop, isOver, dropTarget } = this.props;
     return dropTarget(
       <div
         style={{
           width: '100%',
-          height: isOver ? 65 : 10,
+          height: (isOver) ? 65 : (canDrop ? 30 : 10),
           border: isOver ? '#999999' : 'none',
           borderWidth: isOver ? 2 : 0,
-          background: isOver ? '#666666' : 'none',
-          transition: 'all 1s'
+          background: isOver ? '#999' : (canDrop ? '#ccc' : 'none'),
+          transition: 'all 0.5s'
         }}
       />
     );
@@ -130,9 +124,6 @@ class ComponentDropTarget extends React.PureComponent {
 
 const componentBlockTarget = {
   drop(props, monitor, component) {
-    console.log('dropped', monitor.getItem());
-    console.log('dropped props', props);
-    console.log('dropped component', component);
     component.insertComponent(monitor.getItem().component);
   }
 };
@@ -140,7 +131,8 @@ const componentBlockTarget = {
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop()
   };
 }
 

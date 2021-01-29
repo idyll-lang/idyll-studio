@@ -17,6 +17,7 @@
     ]
   },
   "dependencies": {
+    "csv-parse": "^4.15.0",
     "draft-js": "^0.11.7",
     "electron": "^11.1.1",
     "fast-copy": "^2.1.1",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-stage-2": "^7.8.3",

@@ -1,14 +1,15 @@
 import React from 'react';
 import Select from 'react-select';
 import Context from '../../context/context';
+import {
+  getRandomId,
+  getTextContainerIndex,
+  readFile,
+  convertInputToIdyllValue
+} from '../utils';
 
-const getRandomId = () => {
-  return Math.floor(Math.random() * 10000000000) + 100000000;
-};
 const compile = require('idyll-compiler');
-const idyllAST = require('idyll-ast');
 
-// {extension: ".json", name: "example-data.json", path: "/Users/meganvo/projects/deploy-test/data/example-data.json"}
 
 class DatasetView extends React.PureComponent {
   static contextType = Context;
@@ -21,33 +22,32 @@ class DatasetView extends React.PureComponent {
   // Generates the tag associated with the given dataset
   // [data name:'myData' source:'myData.csv' /]
   insertData(dataset) {
-    var tag =
-      "[data name:'" + dataset.name + "' source:'" + dataset.path + "' /]";
+    var tag = `[data name:'${dataset.name}' source:'${dataset.path}' /]`;
 
     // Handle the ast change
-    compile(tag).then(dataAST => {
-      var ast = this.context.ast;
-      var dataNode = dataAST.children[0];
-      dataNode.id = getRandomId();
+    compile(tag).then(datasetAST => {
+      const ast = JSON.parse(JSON.stringify(this.context.ast));
+      const datasetNode = datasetAST.children[0];
+      datasetNode.id = getRandomId();
 
       // Insert into ast's root children before the first text container
       // or non-variable/dataset child
-      var currNodeIndex = 0;
-      while (
-        ast.children[currNodeIndex].type === 'data' ||
-        ast.children[currNodeIndex].type === 'var'
-      ) {
-        currNodeIndex++;
-      }
-      ast.children.splice(currNodeIndex, 0, dataNode);
+      const currentNodeIndex = getTextContainerIndex(ast);
+      ast.children.splice(currentNodeIndex, 0, datasetNode);
 
-      const { setAst } = this.context;
+      const { setAst, context } = this.context;
+      const { content } = readFile(dataset.path);
+
+      context.update({
+        [dataset.name]: convertInputToIdyllValue(content).value
+      });
       setAst(ast); // must pass info up level
     });
   }
 
   render() {
     const { datasets } = this.context;
+
     return (
       <div className='dataset-view'>
         <div className='label'>Datasets</div>
@@ -62,6 +62,9 @@ class DatasetView extends React.PureComponent {
               })}
               onChange={({ value }) => {
                 const dataset = value;
+                dataset.name = dataset.name
+                  .replace('.csv', '')
+                  .replace('.json', '');
                 this.insertData(dataset);
               }}
             />

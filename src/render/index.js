@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
 import Context from './context/context';
-import copy from "fast-copy";
+import copy from 'fast-copy';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
@@ -44,7 +44,7 @@ class App extends React.PureComponent {
       (event, { datasets, ast, components, path, url }) => {
         var componentProps = this.createComponentMap(components);
 
-        this._undoStash  = copy(ast);
+        this._undoStash = copy(ast);
 
         this.setState({
           datasets: datasets,
@@ -60,13 +60,35 @@ class App extends React.PureComponent {
       }
     );
 
-    window.addEventListener('keydown', (event) => {
-      if (event.shiftKey && (event.ctrlKey || event.metaKey) && event.key === 'z') {
-        this.handleRedo();
-      } else if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
-        this.handleUndo();
-      }
-    }, true)
+    window.addEventListener(
+      'keydown',
+      event => {
+        if (
+          event.shiftKey &&
+          (event.ctrlKey || event.metaKey) &&
+          event.key === 'z'
+        ) {
+          this.handleRedo();
+        } else if ((event.ctrlKey || event.metaKey) && event.key === 'z') {
+          this.handleUndo();
+        }
+      },
+      true
+    );
+
+    // Overwrite default copy/paste behavior so it
+    // doesn't include any weird HTML/styles/linebreaks,
+    // text only!
+    window.addEventListener("paste", function(e) {
+      // cancel paste
+      e.preventDefault();
+
+      // get text representation of clipboard
+      var text = (e.originalEvent || e).clipboardData.getData('text/plain').trim();
+
+      // insert text manually
+      document.execCommand("insertHTML", false, text);
+    });
 
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
@@ -153,7 +175,7 @@ class App extends React.PureComponent {
         this.redoStack = [];
         this.undoStack.push(this._undoStash);
         this._undoStash = copy(ast);
-        this.setState({ ast: {...ast} });
+        this.setState({ ast: { ...ast } });
       },
       setContext: context => {
         this.setState({ context: context });
@@ -164,11 +186,11 @@ class App extends React.PureComponent {
       setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
       },
-      canUndo: () =>  {
-        return !!this.undoStack.length
+      canUndo: () => {
+        return !!this.undoStack.length;
       },
-      canRedo: () =>  {
-        return !!this.redoStack.length
+      canRedo: () => {
+        return !!this.redoStack.length;
       },
       undo: () => {
         this.handleUndo();
