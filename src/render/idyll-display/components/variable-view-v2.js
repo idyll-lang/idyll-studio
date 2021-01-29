@@ -10,8 +10,7 @@ import {
   formatInitialVariableValue,
   formatCurrentVariableValue,
   convertInputToIdyllValue,
-  getTextContainerIndex,
-  readFile
+  getTextContainerIndex
 } from '../utils';
 
 const TYPE_OPTIONS = [
@@ -27,7 +26,7 @@ const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
  * 2. initial value is state re-evalue current value - DONE
  * 3. delete derived variables
  * 4. null
- * 5. csv
+ * 5. csv - DONE
  * 6. saved
  * 7. delete
  */

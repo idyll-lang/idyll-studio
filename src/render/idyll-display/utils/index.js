@@ -370,7 +370,8 @@ const readFile = (source) => {
   if(fileType === ".csv") {
     data = stringify(parse(data, {
       columns: true,
-      skip_empty_lines: true
+      skip_empty_lines: true,
+      cast: true
     }));
   } 
   return { content: data, error: null };
