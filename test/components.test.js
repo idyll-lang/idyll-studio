@@ -42,7 +42,7 @@ describe('<Property /> with props', () => {
 
     const typeDiv = component.find('div.prop-type');
     expect(typeDiv.text()).toBe('string');
-    expect(typeDiv.props().style.background).toBe('#4A90E2');
+    expect(typeDiv.props().style.color).toBe('#4A90E2');
 
     const input = component.find('input').instance();
     expect(input.value).toBe('Deirdre');
@@ -64,7 +64,7 @@ describe('<Property /> with props', () => {
 
     const typeDiv = component.find('div.prop-type');
     expect(typeDiv.text()).toBe('variable');
-    expect(typeDiv.props().style.background).toBe('#50E3C2');
+    expect(typeDiv.props().style.color).toBe('#50E3C2');
 
     const input = component.find('input');
     expect(input.instance().value).toBe('state');
@@ -90,7 +90,7 @@ describe('<Property /> with props', () => {
 
     const typeDiv = component.find('div.prop-type');
     expect(typeDiv.text()).toBe('expression');
-    expect(typeDiv.props().style.background).toBe('#B8E986');
+    expect(typeDiv.props().style.color).toBe('#B8E986');
 
     // on click
     expect(updateNodeType).toHaveBeenCalledTimes(0);
