@@ -110,12 +110,12 @@ export const WrappedAuthorView = withContext(
           <div
             className='author-view-overlay'
             style={{
-              top: dimensions.top + 60,
-              left: dimensions.left
+              top: dimensions.top - 10,
+              left: dimensions.left - 10
             }}>
               <div className="author-view-overlay-header">
                 <div  style={{display: 'flex', justifyContent: 'space-between'}}>
-                  <div className={'author-view-overlay-header-button'} onClick={() => { this.close() }}>Close</div>
+                  <div className={'author-view-overlay-header-button author-view-overlay-header-close-button'} onClick={() => { this.close() }}>×</div>
                   <div className={`author-view-overlay-header-button ${selectedView === 'properties' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'properties' }) }}>Properties</div>
                   <div className={`author-view-overlay-header-button ${selectedView === 'code' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'code' }) }}>Markup</div>
                   <div className={`author-view-overlay-header-button ${selectedView === 'style' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'style' }) }}>Styles</div>

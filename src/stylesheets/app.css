@@ -81,14 +81,14 @@ button.loader:hover {
 
 .author-view-container {
   position: absolute;
-  top: 10px;
+  bottom: 10px;
   left: 10px;
   /* opacity: .33; */
   display: flex;
   flex-direction: column;
 }
 .idyll-text-container .author-view-container {
-  top: -10px;
+  bottom: -10px;
   left: -50px;
 }
 
@@ -101,8 +101,8 @@ button.loader:hover {
   border: none;
   width: auto !important;
   background-image: none !important;
-  background: #fff !important;
-  border: solid 1px #666;
+  background: #333333 !important;
+  border: none;
   color: #222;
   opacity: 1 !important;
   margin: 0 0 5px 0;
@@ -138,6 +138,10 @@ button.loader:hover {
   text-transform: uppercase;
 }
 
+.author-view-overlay-header-close-button {
+  color:  #fff;
+  font-weight: bold;
+}
 .author-view-overlay-header {
   padding: 0.5em 1em;
 }
@@ -284,6 +288,7 @@ button.loader:hover {
 .idyll-code-editor pre {
   /* border: solid 0.5px #666; */
   background-color: #666666;
+  margin: 0 1em;
 }
 
 .editable-text:hover {

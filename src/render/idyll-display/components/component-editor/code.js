@@ -77,6 +77,10 @@ export default withContext(
             onBlur={this.onBlur.bind(this)}
             markup={this.state.markup}
           />
+          <div className={'code-instructions'} style={{color: '#ccc',  fontSize: 10, fontStyle: 'italic', margin: '5px 1em', display: 'flex', justifyContent: 'space-between'}}>
+            <div>shift + enter to execute</div>
+            <div><a style={{color: 'white', textDecoration:  'underline'}} href={'https://idyll-lang.org/docs/syntax'}>Syntax Guide</a></div>
+          </div>
         </div>
       )
     }
