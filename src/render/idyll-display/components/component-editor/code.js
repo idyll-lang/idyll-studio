@@ -29,14 +29,14 @@ export default withContext(
     }
 
     onExecute(newMarkup) {
-      this.updateAst();
+      this.updateAst(newMarkup);
     }
 
     onBlur(newMarkup) {
     }
 
-    updateAst() {
-      const output = compile(this.getMarkup(this.props), { async: false });
+    updateAst(newMarkup) {
+      const output = compile(newMarkup ||  this.getMarkup(this.props), { async: false });
       let node = output.children[0];
       if (node.children && node.children.length) {
         node = node.children[0];
