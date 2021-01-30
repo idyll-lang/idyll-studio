@@ -27,8 +27,9 @@ const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
  * 3. delete derived variables
  * 4. null
  * 5. csv - DONE
- * 6. saved
+ * 6. saved (on open do values persist)
  * 7. delete
+ * 8. initial value error
  */
 const VariableViewV2 = withContext(
   class VariableView extends React.PureComponent {
@@ -57,7 +58,8 @@ const VariableViewV2 = withContext(
           this.props.context.ast.children.length ||
         JSON.stringify(prevProps.context.context.data()) !==
           JSON.stringify(this.props.context.context.data())
-      ) { // when a var/data node is added or the context has changed
+      ) {
+        // when a var/data node is added or the context has changed
         this.getRows();
       }
     }
@@ -113,8 +115,10 @@ const VariableViewV2 = withContext(
       const properties = child.properties;
       const name = properties.name.value;
 
-      const initialValue = formatInitialVariableValue(child, 
-        (this.state.rows.filter((row) => row.name === name)[0] || null));
+      const initialValue = formatInitialVariableValue(
+        child,
+        this.state.rows.filter(row => row.name === name)[0] || null
+      );
       let currentValue = formatCurrentVariableValue(currentData[name]);
 
       if (child.type === 'data') {
@@ -244,7 +248,7 @@ const VariableViewV2 = withContext(
           <div className='add-variable-button'>
             <button onClick={this.addVariable}>Add variable</button>
           </div>
-          {error ? <div>{error}</div> : <></>}
+          {/* {error ? <div>{error}</div> : <></>} */}
         </div>
       );
     }

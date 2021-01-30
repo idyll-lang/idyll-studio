@@ -93,7 +93,18 @@ class Component extends React.PureComponent {
         {/* If variable, display current value */}
         {propertyObject.type === 'variable' ? (
           <div className='current-value'>
-            Current Value: <pre style={{maxWidth: "100%", overflowX: 'auto', margin: 6, fontSize:  12, padding: 6, width: 262}}>{stringify(variableData[propertyObject.value])}</pre>
+            Current Value:{' '}
+            <pre
+              style={{
+                maxWidth: '100%',
+                overflowX: 'auto',
+                margin: 6,
+                fontSize: 12,
+                padding: 6,
+                width: 262
+              }}>
+              {stringify(variableData[propertyObject.value])}
+            </pre>
           </div>
         ) : (
           <></>

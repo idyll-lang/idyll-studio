@@ -204,13 +204,13 @@ const numberfy = originalValue => {
 };
 
 /**
- * Given an idyll ast node, formats and returns the node's 
+ * Given an idyll ast node, formats and returns the node's
  * value to its corresponding variable-view display
- * value. If the value is an expression, it will wrap it 
- * in backticks (`). If the value is a string, it will 
+ * value. If the value is an expression, it will wrap it
+ * in backticks (`). If the value is a string, it will
  * wrap it in double quotes ("). Otherwise, will treat the
- * value as a number. If the node type is 'data', it will try 
- * to parse the data into a JSON object. Otherwise, it will 
+ * value as a number. If the node type is 'data', it will try
+ * to parse the data into a JSON object. Otherwise, it will
  * encase in double quotes. If the node is undefined or null,
  * returns null
  * @param {IdyllAstNode} node the var/data/derived node
@@ -222,12 +222,12 @@ const formatInitialVariableValue = (node, rowData) => {
 
   let value;
   if (node.type === 'data') {
-    if(!rowData) {
+    if (!rowData) {
       const fileContent = readFile(node.properties.source.value).content;
       value = jsonParser(fileContent);
     } else {
       value = rowData.initialValue;
-    } 
+    }
   } else {
     value = numberfy(node.properties.value.value);
     if (typeof value !== 'number') {
@@ -245,7 +245,7 @@ const formatInitialVariableValue = (node, rowData) => {
 };
 
 /**
- * Given the current value of a variable, 
+ * Given the current value of a variable,
  * returns its corresponding variable-view display
  * value. If the value is a string, it will wrap it
  * in double quotes ("). Otherwise, the value will be
@@ -261,8 +261,8 @@ const formatCurrentVariableValue = value => {
 };
 
 /**
- * Given a value, wraps the value with the given 
- * character wrapper and returns it. If no wrapper is 
+ * Given a value, wraps the value with the given
+ * character wrapper and returns it. If no wrapper is
  * given, returns the value
  * @param {any} value the value to wrap
  * @param {string} wrapper a quote wrapper (`, "", '')
@@ -270,7 +270,7 @@ const formatCurrentVariableValue = value => {
 const wrapValue = (value, wrapper) => {
   if (!wrapper) {
     return value;
-  } else if(wrapper && value) {
+  } else if (wrapper && value) {
     return wrapper + value + wrapper;
   } else {
     return '';
@@ -299,8 +299,8 @@ const jsonParser = value => {
  * @param {any} value the user input
  */
 const convertInputToIdyllValue = value => {
-  if(!value) {
-    return { type: 'string', value: ''};
+  if (!value) {
+    return { type: 'string', value: '' };
   }
 
   const quotes = ["'", '"'];
@@ -313,12 +313,13 @@ const convertInputToIdyllValue = value => {
     quotes.includes(value.charAt(value.length - 1)) &&
     value.charAt(0) === value.charAt(value.length - 1)
   ) {
-    let trimmed = trimVariableValue(value, '"')
-    if(trimmed !== value) {
+    let trimmed = trimVariableValue(value, '"');
+    if (trimmed !== value) {
       value = trimmed;
     } else {
       value = trimVariableValue(value, "'");
     }
+
     return { type: 'string', value: value };
   }
 
@@ -331,10 +332,10 @@ const convertInputToIdyllValue = value => {
 };
 
 /**
- * Trims the wrapper character off the start and end 
+ * Trims the wrapper character off the start and end
  * of the given value and returns it
  * @param {string} value the string value to trim
- * @param {string} wrapper a quote wrapper to exclude 
+ * @param {string} wrapper a quote wrapper to exclude
  *                         from start and end (', ", `)
  */
 const trimVariableValue = (value, wrapper) => {
@@ -346,14 +347,14 @@ const trimVariableValue = (value, wrapper) => {
 };
 
 /**
- * Given a path source, tries to synchronously read 
- * the file and return an object with its contents. 
- * If an error occurs, returns an object with null content 
- * and its error. 
+ * Given a path source, tries to synchronously read
+ * the file and return an object with its contents.
+ * If an error occurs, returns an object with null content
+ * and its error.
  * @param {string} source the path to the file
  */
-const readFile = (source) => {
-  if(!source) {
+const readFile = source => {
+  if (!source) {
     return null;
   }
 
@@ -367,13 +368,15 @@ const readFile = (source) => {
     return { content: null, error: err };
   }
 
-  if(fileType === ".csv") {
-    data = stringify(parse(data, {
-      columns: true,
-      skip_empty_lines: true,
-      cast: true
-    }));
-  } 
+  if (fileType === '.csv') {
+    data = stringify(
+      parse(data, {
+        columns: true,
+        skip_empty_lines: true,
+        cast: true
+      })
+    );
+  }
   return { content: data, error: null };
 };
 
@@ -394,5 +397,6 @@ module.exports = {
   formatInitialVariableValue,
   formatCurrentVariableValue,
   convertInputToIdyllValue,
-  readFile
+  readFile,
+  jsonParser
 };

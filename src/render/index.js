@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
 import Context from './context/context';
 import copy from 'fast-copy';
+import { readFile, jsonParser } from './idyll-display/utils';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
@@ -44,8 +45,6 @@ class App extends React.PureComponent {
       (event, { datasets, ast, components, path, url }) => {
         var componentProps = this.createComponentMap(components);
 
-        this._undoStash = copy(ast);
-
         this.setState({
           datasets: datasets,
           ast: ast,
@@ -55,8 +54,11 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currentProcess: '',
-          url: url // replace once sqlite db implemented
+          url: url
         });
+
+        // load up datasets in context
+        this.handleDatasetLoading(ast);
       }
     );
 
@@ -79,15 +81,17 @@ class App extends React.PureComponent {
     // Overwrite default copy/paste behavior so it
     // doesn't include any weird HTML/styles/linebreaks,
     // text only!
-    window.addEventListener("paste", function(e) {
+    window.addEventListener('paste', function(e) {
       // cancel paste
       e.preventDefault();
 
       // get text representation of clipboard
-      var text = (e.originalEvent || e).clipboardData.getData('text/plain').trim();
+      var text = (e.originalEvent || e).clipboardData
+        .getData('text/plain')
+        .trim();
 
       // insert text manually
-      document.execCommand("insertHTML", false, text);
+      document.execCommand('insertHTML', false, text);
     });
 
     ipcRenderer.on('publishing', (event, message) => {
@@ -114,6 +118,22 @@ class App extends React.PureComponent {
     ipcRenderer.on('idyll:save', (event, message) => {
       ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast));
     });
+  }
+
+  handleDatasetLoading(ast) {
+    const dataNodes = ast.children.filter(child => child.type === 'data');
+    if (dataNodes && dataNodes.length > 0) {
+      dataNodes.forEach(node => {
+        const { name, source } = node.properties;
+        const { content } = readFile(source.value);
+
+        if (content) {
+          this.getContext().context.update({
+            [name.value]: jsonParser(content)
+          });
+        }
+      });
+    }
   }
 
   handleRedo() {
