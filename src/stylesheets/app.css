@@ -99,7 +99,6 @@ button.loader:hover {
   border-radius: 12px;
   cursor: pointer;
   border: none;
-  width: auto !important;
   background-image: none !important;
   background: #333333 !important;
   border: none;
