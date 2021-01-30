@@ -19,12 +19,7 @@ class TextEdit extends React.PureComponent {
 
   getMarkup(props) {
     if (props.idyllASTNode.name === 'p') {
-      return AST.toMarkup({
-        id: -1,
-        type: 'component',
-        name: 'div',
-        children: props.idyllASTNode.children
-      });
+      return AST.toMarkup(props.idyllASTNode);
     }
     return AST.toMarkup({
       id: -1,
@@ -93,8 +88,7 @@ class TextEdit extends React.PureComponent {
             whiteSpace: 'pre-wrap',
             marginLeft: -10,
             paddingLeft: 10,
-            borderLeft: 'solid 2px #222',
-            fontFamily: 'monospace'
+            borderLeft: 'solid 2px #222'
           }}
           contentEditable='true'
           suppressContentEditableWarning={true}

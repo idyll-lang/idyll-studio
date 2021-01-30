@@ -1,4 +1,4 @@
-const { dialog, ipcMain } = require('electron');
+const { dialog, ipcMain, shell } = require('electron');
 const Menu = require('./menu');
 const fs = require('fs');
 const Idyll = require('idyll');

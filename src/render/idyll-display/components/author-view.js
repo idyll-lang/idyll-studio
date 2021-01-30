@@ -1,8 +1,10 @@
 import * as React from 'react';
-import PropertyList from './property-list';
 import { getNodeById, throttle, getUpdatedPropertyList } from '../utils/';
 import { withContext } from '../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
+import Properties from './component-editor/properties';
+import Code from './component-editor/code';
+import Styles from './component-editor/styles';
 
 /**
  * An AuthorView is associated with an active component.
@@ -16,7 +18,8 @@ export const WrappedAuthorView = withContext(
 
       this.state = {
         activeDomNode: null,
-        dimensions: null
+        dimensions: null,
+        selectedView: 'properties'
       };
     }
 
@@ -83,86 +86,44 @@ export const WrappedAuthorView = withContext(
       }
     };
 
-    /**
-     * On a prop change for the given active node,
-     * updates the ast with its new prop values and
-     * updates the context's active component to the
-     * changed node
-     * @param {IdyllAstNode} idyllASTNode the current active node
-     * @param {Object} newPropList the new properties list
-     * @param {string} propertyName the prop name changed
-     * @param {React.ChangeEvent} e the change event associated
-     *                               w/ the prop change
-     */
-    updateNodeWithNewProperties(propertyName, propertyValue) {
-      // update node
-      let node = getNodeById(
-        this.props.context.ast,
-        this.props.context.activeComponent.id
-      );
-
-      this.debouncedSetAst(node, propertyName, propertyValue);
+    close() {
+      this.props.context.setActiveComponent(null);
     }
 
-    /**
-     * Returns a function that will update the context with the new
-     * property values for the active component after DEBOUNCE_PROPERTY_MILLISECONDS
-     * amount of time has passed since the last function invoke
-     */
-    debouncedSetAst = throttle(
-      (node, propertyName, propertyValue) => {
-        const newPropList = getUpdatedPropertyList(
-          node,
-          propertyName,
-          propertyValue
-        );
-        node.properties = newPropList;
-        this.props.context.setAst(this.props.context.ast);
-        this.props.context.setActiveComponent(node);
-      },
-      DEBOUNCE_PROPERTY_MILLISECONDS,
-      { leading: true, trailing: true }
-    );
-
-    /**
-     * Updates the prop type to the given one
-     * in the ast
-     * @param {string} propertyName the name of the prop
-     * @param {string} propertyType the next type of the prop
-     *                      (value, variable, expression)
-     */
-    updateNodeType(propertyName, propertyType) {
-      const node = getNodeById(
-        this.props.context.ast,
-        this.props.context.activeComponent.id
-      );
-      node.properties[propertyName].type = propertyType;
-      this.props.context.setAst(this.props.context.ast);
-      this.props.context.setActiveComponent(node);
+    renderInner() {
+      switch(this.state.selectedView) {
+        case 'properties':
+          return <Properties />;
+        case 'code':
+          return <Code />;
+        case 'style':
+          return <Styles />;
+        default:
+          return  null;
+      }
     }
 
     render() {
       const { activeComponent } = this.props.context;
-      const { dimensions } = this.state;
+      const { dimensions, selectedView } = this.state;
 
       if (activeComponent && dimensions) {
         return (
           <div
             className='author-view-overlay'
             style={{
-              top: dimensions.top + 60,
-              left: dimensions.left
+              top: dimensions.top - 10,
+              left: dimensions.left - 10
             }}>
-            <PropertyList
-              ast={this.props.context.ast}
-              node={activeComponent}
-              updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
-                this
-              )}
-              setAst={this.props.context.setAst}
-              updateNodeType={this.updateNodeType.bind(this)}
-              variableData={this.props.context.context.data()}
-            />
+              <div className="author-view-overlay-header">
+                <div  style={{display: 'flex', justifyContent: 'space-between'}}>
+                  <div className={'author-view-overlay-header-button author-view-overlay-header-close-button'} onClick={() => { this.close() }}>×</div>
+                  <div className={`author-view-overlay-header-button ${selectedView === 'properties' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'properties' }) }}>Properties</div>
+                  <div className={`author-view-overlay-header-button ${selectedView === 'code' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'code' }) }}>Markup</div>
+                  <div className={`author-view-overlay-header-button ${selectedView === 'style' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'style' }) }}>Styles</div>
+                </div>
+              </div>
+              {this.renderInner()}
           </div>
         );
       }

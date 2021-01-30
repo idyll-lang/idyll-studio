@@ -27,7 +27,7 @@ const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
  * 3. delete derived variables
  * 4. null
  * 5. csv - DONE
- * 6. saved (on open do values persist)
+ * 6. saved (on open do values persist) - DONE
  * 7. delete
  * 8. initial value error
  */

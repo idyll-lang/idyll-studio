@@ -1,7 +1,7 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import { updateNodeById } from '../utils';
-import { stringify, numberfy } from '../utils';
+import { updateNodeById } from '../../utils';
+import { stringify, numberfy } from '../../utils';
 
 class Component extends React.PureComponent {
   constructor(props) {
@@ -65,22 +65,8 @@ class Component extends React.PureComponent {
    * @param {string} nextType the next prop type
    */
   renderPropInput(key, propertyObject, nextType) {
-    const { variableData } = this.props;
     return (
       <div>
-        <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-          <div
-            className={'prop-type'}
-            onClick={this.updateNodeType(key, nextType)}
-            style={{
-              marginLeft: 0,
-              background: this.getBackgroundColor(propertyObject.type),
-              color: this.getColor(propertyObject.type)
-            }}>
-            {propertyObject.type === 'value'
-              ? typeof propertyObject.value
-              : propertyObject.type}
-          </div>
           <input
             className={'prop-input'}
             style={{ fontFamily: 'monospace' }}
@@ -88,27 +74,6 @@ class Component extends React.PureComponent {
             ref={this._inputRef}
             onChange={this.handleUpdateValue}
           />
-        </div>
-
-        {/* If variable, display current value */}
-        {propertyObject.type === 'variable' ? (
-          <div className='current-value'>
-            Current Value:{' '}
-            <pre
-              style={{
-                maxWidth: '100%',
-                overflowX: 'auto',
-                margin: 6,
-                fontSize: 12,
-                padding: 6,
-                width: 262
-              }}>
-              {stringify(variableData[propertyObject.value])}
-            </pre>
-          </div>
-        ) : (
-          <></>
-        )}
       </div>
     );
   }
@@ -125,19 +90,45 @@ class Component extends React.PureComponent {
   }
 
   render() {
-    const { name, propertyObject, isOver, dropTarget } = this.props;
+    const { name, propertyObject, isOver, dropTarget, variableData } = this.props;
+    const  nextProps = {
+      variable: 'value',
+      value: 'expression',
+      expression: 'variable',
+    }
     let ret;
     ret = (
       <div
         style={{
           marginLeft: 0,
-          border: isOver ? 'solid 2px green' : undefined
+          border: isOver ? 'solid 2px green' : undefined,
+          width: '100%',
+          marginBottom: '1em'
         }}>
-        <div className='prop-name'>{name}</div>
-        <div>{this.renderProp(name, propertyObject)}</div>
+        <div style={{display:'flex'}}>
+          <div className='prop-name'>{name}</div>
+          <div
+            className={'prop-type'}
+            onClick={this.updateNodeType(name, nextProps[propertyObject.type])}
+            style={{
+              color: this.getBackgroundColor(propertyObject.type)
+            }}>
+            {propertyObject.type === 'value'
+              ? typeof propertyObject.value
+              : propertyObject.type}
+          </div>
+          {propertyObject.type === 'variable' ? (
+              <div className='current-value' style={{maxWidth: 100, fontSize: 12, fontFamily: 'monospace', xoverflowX: 'auto', marginLeft: 8, whiteSpace: 'nowrap', textOverflow:'ellipsis' }}>
+                {stringify(variableData[propertyObject.value])}
+              </div>
+            ) : (
+              <></>
+            )}
+        </div>
+        <div style={{width: '100%'}}>{this.renderProp(name, propertyObject)}</div>
       </div>
     );
-    return dropTarget(<div>{ret}</div>);
+    return dropTarget(ret);
   }
 }
 
