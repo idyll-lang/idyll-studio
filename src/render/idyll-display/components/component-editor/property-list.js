@@ -35,7 +35,7 @@ class PropertyList extends React.PureComponent {
           const propertyObject = ASTNode.properties[propertyName];
           return (
             <div
-              key={propertyName + (this.props.variableData[propertyName] ? JSON.stringify(this.props.variableData[propertyName]) : '')}
+              key={propertyName + (propertyObject ? JSON.stringify(propertyObject) : '')}
               style={{ padding: '0 0.25em' }}>
               <div
                 style={{
@@ -44,7 +44,7 @@ class PropertyList extends React.PureComponent {
                   justifyContent: 'space-between'
                 }}>
                 <Property
-                  key={'prop-' + propertyName + (this.props.variableData[propertyName] ? JSON.stringify(this.props.variableData[propertyName]) : '')}
+                  key={'prop-' + propertyName + (propertyObject ? JSON.stringify(propertyObject) : '')}
                   updateProperty={this.props.updateNodeWithNewProperties}
                   name={propertyName}
                   ast={this.props.ast}
@@ -52,6 +52,7 @@ class PropertyList extends React.PureComponent {
                   node={ASTNode}
                   propertyObject={propertyObject}
                   variableData={this.props.variableData}
+                  setActiveComponent={this.props.setActiveComponent}
                   updateNodeType={this.props.updateNodeType}
                   deleteProperty={this.props.deleteProperty}
                 />

@@ -128,7 +128,7 @@ export default withContext(
 
 
     render() {
-      const { ast, activeComponent, setAst, context } = this.props.context;
+      const { ast, activeComponent, setAst, setActiveComponent, context } = this.props.context;
       return  (
         <div style={{margin: "0 1em"}}>
         <PropertyList
@@ -138,6 +138,7 @@ export default withContext(
             this
           )}
           setAst={setAst}
+          setActiveComponent={setActiveComponent}
           updateNodeType={this.updateNodeType.bind(this)}
           variableData={this.state.variableData}
           deleteProperty={this.deleteProperty.bind(this)}

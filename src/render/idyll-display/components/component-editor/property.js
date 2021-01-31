@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import { updateNodeById } from '../../utils';
+import { updateNodeById, getNodeById } from '../../utils';
 import { stringify, numberfy } from '../../utils';
 
 class Component extends React.PureComponent {
@@ -123,7 +123,7 @@ class Component extends React.PureComponent {
                 : propertyObject.type}
             </div>
             {propertyObject.type === 'variable' ? (
-                <div className='current-value' style={{maxWidth: 100, fontSize: 12, fontFamily: 'monospace', xoverflowX: 'auto', marginLeft: 8, whiteSpace: 'nowrap', textOverflow:'ellipsis', overflow: 'hidden' }}>
+                <div className='current-value' style={{maxWidth: 100, fontSize: 12, fontFamily: 'monospace', marginLeft: 8, whiteSpace: 'nowrap', textOverflow:'ellipsis', overflow: 'hidden' }}>
                   {stringify(variableData[propertyObject.value])}
                 </div>
               ) : (
@@ -144,11 +144,18 @@ class Component extends React.PureComponent {
 const variableTarget = {
   drop(props, monitor, component) {
     const name = monitor.getItem().name;
-    const node = props.node;
-    updateNodeById(props.ast, node.id, {
+
+    updateNodeById(props.ast, props.node.id, {
       properties: { [props.name]: { value: name, type: 'variable' } }
     });
-    props.setAst(props.ast);
+
+    const node = getNodeById(
+      props.ast,
+      props.node.id
+    );
+
+    props.setAst({...props.ast});
+    props.setActiveComponent(node);
   }
 };
 
