@@ -52,6 +52,7 @@ class PropertyList extends React.PureComponent {
                   propertyObject={propertyObject}
                   variableData={this.props.variableData}
                   updateNodeType={this.props.updateNodeType}
+                  deleteProperty={this.props.deleteProperty}
                 />
               </div>
             </div>
