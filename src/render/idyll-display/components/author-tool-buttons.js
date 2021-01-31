@@ -11,7 +11,8 @@ class AuthorToolButtons extends React.PureComponent {
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
   }
 
-  handleClickProps() {
+  handleClickProps(e) {
+    e.stopPropagation();
     if (
       this.context.activeComponent &&
       this.context.activeComponent.id === this.props.idyllASTNode.id
