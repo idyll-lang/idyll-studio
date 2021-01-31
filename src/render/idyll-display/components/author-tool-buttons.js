@@ -30,6 +30,14 @@ class AuthorToolButtons extends React.PureComponent {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.isOver !== prevProps.isOver) {
+      if (this.props.isOver) {
+        this.context.setActiveComponent({ ...this.props.idyllASTNode });
+      }
+    }
+  }
+
   // Returns an entire author view, including the component itself,
   // a quill icon to indicate whether we're hovering in the component,
   // and debugging information when the icon is pressed

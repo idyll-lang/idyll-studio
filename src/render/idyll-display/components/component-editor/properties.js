@@ -15,8 +15,15 @@ export default withContext(
       super(props);
 
       this.state = {
-        newProp: ''
+        newProp: '',
+        variableData: props.context.context.data()
       }
+
+      props.context.context.onUpdate((newData) => {
+        this.setState({
+          variableData: { ...props.context.context.data(), ...newData }
+        })
+      })
     }
 
     /**
@@ -132,7 +139,7 @@ export default withContext(
           )}
           setAst={setAst}
           updateNodeType={this.updateNodeType.bind(this)}
-          variableData={context.data()}
+          variableData={this.state.variableData}
           deleteProperty={this.deleteProperty.bind(this)}
         />
         <div>
