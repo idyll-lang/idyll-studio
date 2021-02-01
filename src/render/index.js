@@ -128,7 +128,7 @@ class App extends React.PureComponent {
         })
         return ast;
       };
-      ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast, { insertFullWidth: true }));
+      ipcRenderer.send('save', idyllAST.toMarkup(relativeDataPaths(this.state.ast), { insertFullWidth: true }));
     });
   }
 

@@ -35,7 +35,7 @@ class PropertyList extends React.PureComponent {
           const propertyObject = ASTNode.properties[propertyName];
           return (
             <div
-              key={propertyName + (propertyObject ? JSON.stringify(propertyObject) : '')}
+              key={propertyName}
               style={{ padding: '0 0.25em' }}>
               <div
                 style={{
@@ -44,7 +44,6 @@ class PropertyList extends React.PureComponent {
                   justifyContent: 'space-between'
                 }}>
                 <Property
-                  key={'prop-' + propertyName + (propertyObject ? JSON.stringify(propertyObject) : '')}
                   updateProperty={this.props.updateNodeWithNewProperties}
                   name={propertyName}
                   ast={this.props.ast}
