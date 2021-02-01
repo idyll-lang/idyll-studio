@@ -392,21 +392,23 @@ input.prop-input[type="text"] {
 
 .search-icon {
   position: absolute;
-  bottom: 10px;
+  bottom: 13px;
   right: 10px;
   transform: scale(1.5);
 }
 
 .search-cancel-button {
   position: absolute;
-  bottom: 15px;
+  bottom: -2px;
   right: 10px;
   border: none;
   cursor: pointer;
   height: 20px;
   width: 20px;
   border-radius: 20px;
+  padding: 0;
   transition: background-color 0.1s ease-in;
+  line-height: unset;
 }
 
 .search-cancel-button svg {

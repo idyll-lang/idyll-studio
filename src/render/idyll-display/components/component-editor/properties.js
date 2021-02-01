@@ -16,7 +16,8 @@ export default withContext(
 
       this.state = {
         newProp: '',
-        variableData: props.context.context.data()
+        variableData: props.context.context.data(),
+        deleteConfirm: false
       }
     }
 
@@ -85,6 +86,16 @@ export default withContext(
     }
 
     handleDeleteComponent() {
+      if (!this.state.deleteConfirm) {
+        this.setState({
+          deleteConfirm: true
+        })
+        return;
+      } else {
+        this.setState({
+          deleteConfirm: false
+        })
+      }
       deleteNodeById(
         this.props.context.ast,
         this.props.context.activeComponent.id
@@ -150,12 +161,12 @@ export default withContext(
         <div>
           <div className='prop-name'>Add new property</div>
           <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
-            <input style={{margin: 0, fontSize: 12, paddingLeft: 10, width: '100%'}} placeholder={'Enter name'} value={this.state.newProp} onChange={this.handleUpdateNewPropName.bind(this)} />
-            <div style={{paddingLeft: '0.5em', textAlign: 'center', width: '50%', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, background: '#666', padding: '3px 0'}} onClick={this.handleSubmitProp.bind(this)}>Submit</div>
+            <input style={{margin: 0, fontSize: 12, paddingLeft: 10, width: '100%', height: 38}} placeholder={'Enter name'} value={this.state.newProp} onChange={this.handleUpdateNewPropName.bind(this)} />
+            <div style={{textAlign: 'center', width: '50%', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, background: '#666', padding: 0, height: 38, lineHeight: '38px', border: 'none'}} onClick={this.handleSubmitProp.bind(this)}>Submit</div>
           </div>
         </div><div>
           <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
-            <button style={{paddingLeft: '0.5em', textAlign: 'center', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, padding: '3px 0', background: '#cc0000', color: 'white', lineHeight: 'unset', width: '100%', border: 'none'}} onClick={this.handleDeleteComponent.bind(this)}>Delete Component</button>
+            <button style={{paddingLeft: '0.5em', textAlign: 'center', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, padding: '3px 0', background: this.state.deleteConfirm ? '#cc0000' : '#999999', color: 'white', lineHeight: 'unset', width: '100%', border: 'none'}} onClick={this.handleDeleteComponent.bind(this)}>{this.state.deleteConfirm ? 'Confirm Remove' : 'Remove Component'}</button>
           </div>
         </div>
       </div>

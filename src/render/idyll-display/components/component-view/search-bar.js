@@ -7,7 +7,10 @@ export const SearchBarInput = props => {
 
   return (
     <div className='component-search-bar-container'>
-      <SearchIcon className='search-icon' />
+      {
+        !value || value.length === 0 ?
+        <SearchIcon className='search-icon' /> : null
+      }
       <input
         type='text'
         placeholder={placeholder}
