@@ -11,7 +11,8 @@ class AuthorToolButtons extends React.PureComponent {
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
   }
 
-  handleClickProps() {
+  handleClickProps(e) {
+    e.stopPropagation();
     if (
       this.context.activeComponent &&
       this.context.activeComponent.id === this.props.idyllASTNode.id
@@ -27,6 +28,14 @@ class AuthorToolButtons extends React.PureComponent {
     this.setState({
       markup: newMarkup
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.isOver !== prevProps.isOver) {
+      if (this.props.isOver) {
+        this.context.setActiveComponent({ ...this.props.idyllASTNode });
+      }
+    }
   }
 
   // Returns an entire author view, including the component itself,

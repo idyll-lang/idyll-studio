@@ -29,7 +29,8 @@ class App extends React.PureComponent {
       currentSidebarNode: null,
       url: '',
       currentProcess: null,
-      activeComponent: null
+      activeComponent: null,
+      onUpdateCallbacks: []
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -178,7 +179,8 @@ class App extends React.PureComponent {
       components,
       url,
       currentProcess,
-      activeComponent
+      activeComponent,
+      onUpdateCallbacks
     } = this.state;
     return {
       context: context,
@@ -209,6 +211,14 @@ class App extends React.PureComponent {
       },
       setContext: context => {
         this.setState({ context: context });
+        context.onUpdate((newData) => {
+          onUpdateCallbacks.forEach((cb) => {
+            cb(newData);
+          });
+        })
+      },
+      onUpdate: (cb) => {
+        onUpdateCallbacks.push(cb);
       },
       deploy: () => {
         ipcRenderer.send('deploy', '');

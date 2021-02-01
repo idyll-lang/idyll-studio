@@ -46,6 +46,10 @@ const VariableViewV2 = withContext(
       this.addVariable = this.addVariable.bind(this);
       this.getRows = this.getRows.bind(this);
       this.handleGridUpdate = this.handleGridUpdate.bind(this);
+
+      props.context.onUpdate(() => {
+        this.getRows();
+      })
     }
 
     componentDidMount() {

@@ -122,13 +122,15 @@ const formatString = value => {
  * @param {string} propertyName the property name to update
  * @param {string} propertyValue the property value
  */
-function getUpdatedPropertyList(node, propertyName, propertyValue) {
+function getUpdatedPropertyList(node, propertyName, propertyValue, propertyType) {
   if (node && propertyName) {
     const propertiesCopy = {};
+    let _hasUpdated = false;
     Object.keys(node.properties).forEach(property => {
       const propertyObject = node.properties[property];
 
       if (property === propertyName) {
+        _hasUpdated = true;
         propertiesCopy[propertyName] = {
           ...propertyObject,
           value: propertyValue
@@ -137,6 +139,12 @@ function getUpdatedPropertyList(node, propertyName, propertyValue) {
         propertiesCopy[property] = { ...propertyObject };
       }
     });
+    if (!_hasUpdated) {
+      propertiesCopy[propertyName] = {
+        type: propertyType || 'value',
+        value: propertyValue
+      }
+    }
 
     return propertiesCopy;
   }

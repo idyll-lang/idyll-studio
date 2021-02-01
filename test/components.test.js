@@ -127,8 +127,8 @@ describe('<PropertyList />', () => {
 
     // 2 props (author and link)
     expect(div.props.children).toHaveLength(2);
-    expect(div.props.children[0].key).toBe('author');
-    expect(div.props.children[1].key).toBe('link');
+    expect(div.props.children[0].key).toBe('author"my-cat-deirdre"');
+    expect(div.props.children[1].key).toBe('link"link"');
   });
 });
 

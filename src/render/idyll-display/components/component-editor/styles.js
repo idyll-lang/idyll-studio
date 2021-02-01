@@ -25,7 +25,12 @@ export default withContext(
       const _props =  props.context.activeComponent.properties || {};
       const _stylesProp =  _props.style || {};
       const _styles =  eval(`(function() { return ${_stylesProp.value  || ''} })()`);
-      return  postcss().process(_styles, { parser: postcssJs }).css;
+      let cssString = postcss().process(_styles, { parser: postcssJs }).css || '';
+      cssString = cssString.trim();
+      if (cssString.length && cssString[cssString.length - 1] !== ';') {
+        cssString += ';';
+      }
+      return cssString;
     }
 
     onExecute(cssString) {

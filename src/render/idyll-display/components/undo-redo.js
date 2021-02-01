@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { unstable_batchedUpdates } from 'react-dom';
 import { withContext } from '../../context/with-context';
 
 export const WrappedUndoRedo = withContext(
@@ -12,8 +13,8 @@ export const WrappedUndoRedo = withContext(
       const buttonStyles = {
         background: 'rgba(0, 0, 0, 0.8)',
         color: '#ffffff',
-        padding: '5px 0.5em 3px  0.5em',
-        width: 50,
+        padding: '0 10px',
+        lineHeight: 'unset',
         display: 'block',
         fontSize: 12,
         marginRight: '0.5em',

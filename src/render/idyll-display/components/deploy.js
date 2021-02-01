@@ -85,7 +85,7 @@ class Deploy extends React.PureComponent {
           <div>Description {this.renderProps('description')}</div>
           <div>Share Image {this.renderProps('shareImageUrl')}</div>
           {this.context.url ? (
-            <div class='url-display'>
+            <div className='url-display'>
               URL: <a href={this.context.url}>{this.context.url}</a>
             </div>
           ) : null}
