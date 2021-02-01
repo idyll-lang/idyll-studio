@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import { updateNodeById } from '../../utils';
+import { updateNodeById, getNodeById } from '../../utils';
 import { stringify, numberfy } from '../../utils';
 
 class Component extends React.PureComponent {
@@ -89,6 +89,10 @@ class Component extends React.PureComponent {
     }
   }
 
+  deleteProperty(key) {
+
+  }
+
   render() {
     const { name, propertyObject, isOver, dropTarget, variableData } = this.props;
     const  nextProps = {
@@ -105,25 +109,30 @@ class Component extends React.PureComponent {
           width: '100%',
           marginBottom: '1em'
         }}>
-        <div style={{display:'flex'}}>
-          <div className='prop-name'>{name}</div>
-          <div
-            className={'prop-type'}
-            onClick={this.updateNodeType(name, nextProps[propertyObject.type])}
-            style={{
-              color: this.getBackgroundColor(propertyObject.type)
-            }}>
-            {propertyObject.type === 'value'
-              ? typeof propertyObject.value
-              : propertyObject.type}
+        <div style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <div style={{display:'flex'}}>
+            <div className='prop-name'>{name}</div>
+            <div
+              className={'prop-type'}
+              onClick={this.updateNodeType(name, nextProps[propertyObject.type])}
+              style={{
+                color: this.getBackgroundColor(propertyObject.type)
+              }}>
+              {propertyObject.type === 'value'
+                ? typeof propertyObject.value
+                : propertyObject.type}
+            </div>
+            {propertyObject.type === 'variable' ? (
+                <div className='current-value' style={{maxWidth: 100, fontSize: 12, fontFamily: 'monospace', marginLeft: 8, whiteSpace: 'nowrap', textOverflow:'ellipsis', overflow: 'hidden' }}>
+                  {stringify(variableData[propertyObject.value])}
+                </div>
+              ) : (
+                <></>
+              )}
           </div>
-          {propertyObject.type === 'variable' ? (
-              <div className='current-value' style={{maxWidth: 100, fontSize: 12, fontFamily: 'monospace', xoverflowX: 'auto', marginLeft: 8, whiteSpace: 'nowrap', textOverflow:'ellipsis' }}>
-                {stringify(variableData[propertyObject.value])}
-              </div>
-            ) : (
-              <></>
-            )}
+          <div onClick={() => this.props.deleteProperty(name)} style={{cursor: 'pointer', color: '#999', fontSize: 12, fontWeight: 'bold'}}>
+            ×
+          </div>
         </div>
         <div style={{width: '100%'}}>{this.renderProp(name, propertyObject)}</div>
       </div>
@@ -135,11 +144,18 @@ class Component extends React.PureComponent {
 const variableTarget = {
   drop(props, monitor, component) {
     const name = monitor.getItem().name;
-    const node = props.node;
-    updateNodeById(props.ast, node.id, {
+
+    updateNodeById(props.ast, props.node.id, {
       properties: { [props.name]: { value: name, type: 'variable' } }
     });
-    props.setAst(props.ast);
+
+    const node = getNodeById(
+      props.ast,
+      props.node.id
+    );
+
+    props.setAst({...props.ast});
+    props.setActiveComponent(node);
   }
 };
 

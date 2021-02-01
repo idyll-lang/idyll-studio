@@ -279,15 +279,15 @@ input.prop-input[type="text"] {
   font-size: 12px;
   margin: 0;
   width: 100%;
-  /* border-radius: 20px 0 0 20px; */
   border: solid 1px #ddd;
-  padding: 6px 0.5em 5px 0.5em;
+  padding: 5px 0.5em;
   background: #666;
   border: 0;
   box-shadow: none;
   color: #fff;
   border-radius: 5px;
-
+  height: auto;
+  margin-top: 0.25em;
 }
 
 .prop-type {
@@ -310,6 +310,7 @@ input.prop-input[type="text"] {
   /* border: solid 0.5px #666; */
   background-color: #666666;
   margin: 0 1em;
+  padding: 0.66em 0.66em;
 }
 
 .editable-text:hover {

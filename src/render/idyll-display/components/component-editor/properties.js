@@ -13,6 +13,17 @@ export default withContext(
   class Properties extends React.PureComponent {
     constructor(props) {
       super(props);
+
+      this.state = {
+        newProp: '',
+        variableData: props.context.context.data()
+      }
+
+      props.context.onUpdate((newData) => {
+        this.setState({
+          variableData: { ...props.context.context.data(), ...newData }
+        })
+      })
     }
 
     /**
@@ -73,8 +84,51 @@ export default withContext(
       this.props.context.setActiveComponent(node);
     }
 
+    handleClickAddProp() {
+      this.setState({
+        newProp: ''
+      })
+    }
+
+    handleSubmitProp() {
+      let node = getNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
+
+      const newPropList = getUpdatedPropertyList(
+        node,
+        this.state.newProp,
+        '',
+      );
+      node.properties = newPropList;
+      this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
+      this.setState({
+        newProp: ''
+      })
+    }
+
+    deleteProperty(key) {
+      let node = getNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
+      delete node.properties[key];
+      this.props.context.setAst(this.props.context.ast);
+      this.props.context.setActiveComponent(node);
+    }
+
+    handleUpdateNewPropName(event) {
+      this.setState({
+        newProp: event.target.value
+      })
+    }
+
+
+
     render() {
-      const { ast, activeComponent, setAst, context } = this.props.context;
+      const { ast, activeComponent, setAst, setActiveComponent, context } = this.props.context;
       return  (
         <div style={{margin: "0 1em"}}>
         <PropertyList
@@ -84,9 +138,18 @@ export default withContext(
             this
           )}
           setAst={setAst}
+          setActiveComponent={setActiveComponent}
           updateNodeType={this.updateNodeType.bind(this)}
-          variableData={context.data()}
+          variableData={this.state.variableData}
+          deleteProperty={this.deleteProperty.bind(this)}
         />
+        <div>
+          <div className='prop-name'>Add new property</div>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
+            <input style={{margin: 0, fontSize: 12, paddingLeft: 10, width: '100%'}} placeholder={'Enter name'} value={this.state.newProp} onChange={this.handleUpdateNewPropName.bind(this)} />
+            <div style={{paddingLeft: '0.5em', textAlign: 'center', width: '50%', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, background: '#666', padding: '3px 0'}} onClick={this.handleSubmitProp.bind(this)}>Submit</div>
+          </div>
+        </div>
       </div>
       )
     }

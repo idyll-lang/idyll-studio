@@ -123,7 +123,9 @@ export const WrappedAuthorView = withContext(
                   <div className={`author-view-overlay-header-button ${selectedView === 'style' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'style' }) }}>Styles</div>
                 </div>
               </div>
-              {this.renderInner()}
+              <div style={{maxHeight: 200, overflowY: 'auto'}}>
+                {this.renderInner()}
+              </div>
           </div>
         );
       }
