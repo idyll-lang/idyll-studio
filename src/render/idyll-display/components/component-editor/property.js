@@ -14,7 +14,7 @@ export const WrappedComponent = withContext(
       this.state = {
         variableData: props.variableData
       }
-      props.context.onUpdate((newData) => {
+      props.context && props.context.onUpdate && props.context.onUpdate((newData) => {
         this.setState({
           variableData: { ...this.props.context.context.data(), ...newData }
         })
