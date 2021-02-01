@@ -19,7 +19,7 @@ export default withContext(
         variableData: props.context.context.data()
       }
 
-      props.context.context.onUpdate((newData) => {
+      props.context.onUpdate((newData) => {
         this.setState({
           variableData: { ...props.context.context.data(), ...newData }
         })
