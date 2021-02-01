@@ -147,7 +147,6 @@ class App extends React.PureComponent {
         }
 
         const { content, error } = readFile(datasetFilePath);
-        console.log(content, error);
         if(content) {
           datasets[name.value] = jsonParser(content);
         }
