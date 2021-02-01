@@ -4,11 +4,13 @@ import IdyllDisplay from './idyll-display';
 import Context from './context/context';
 import copy from 'fast-copy';
 import { readFile, jsonParser } from './idyll-display/utils';
+import { DndProvider } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
-import { DndProvider } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+const p = require('path');
+
 
 const PUBLISHING_ERROR = 'Error occurred while publishing: ';
 const PUBLISHING = 'Publishing your project...';
@@ -58,7 +60,7 @@ class App extends React.PureComponent {
         });
 
         // load up datasets in context
-        this.handleDatasetLoading(ast);
+        this.handleDatasetLoading(ast, path);
       }
     );
 
@@ -120,19 +122,27 @@ class App extends React.PureComponent {
     });
   }
 
-  handleDatasetLoading(ast) {
+  handleDatasetLoading(ast, projectPath) {
     const dataNodes = ast.children.filter(child => child.type === 'data');
+    const workingDir = p.dirname(projectPath);
+
     if (dataNodes && dataNodes.length > 0) {
+      const datasets = {};
       dataNodes.forEach(node => {
         const { name, source } = node.properties;
-        const { content } = readFile(source.value);
 
-        if (content) {
-          this.getContext().context.update({
-            [name.value]: jsonParser(content)
-          });
+        let datasetFilePath = source.value;
+        if(!p.isAbsolute(datasetFilePath)) {
+          datasetFilePath = `${workingDir}/${datasetFilePath}`;
+        }
+
+        const { content } = readFile(datasetFilePath);
+        if(content) {
+          datasets[name.value] = jsonParser(content);
         }
       });
+
+      this.getContext().context.update(datasets);
     }
   }
 
