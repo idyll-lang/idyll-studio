@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropertyList from './property-list';
-import { getNodeById, throttle, getUpdatedPropertyList } from '../../utils/';
+import { getNodeById, throttle, getUpdatedPropertyList, deleteNodeById } from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../../constants';
 
@@ -84,6 +84,16 @@ export default withContext(
       })
     }
 
+    handleDeleteComponent() {
+      deleteNodeById(
+        this.props.context.ast,
+        this.props.context.activeComponent.id
+      );
+      this.props.context.setActiveComponent(null);
+      this.props.context.setAst(this.props.context.ast);
+    }
+
+
     handleSubmitProp() {
       let node = getNodeById(
         this.props.context.ast,
@@ -142,6 +152,10 @@ export default withContext(
           <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
             <input style={{margin: 0, fontSize: 12, paddingLeft: 10, width: '100%'}} placeholder={'Enter name'} value={this.state.newProp} onChange={this.handleUpdateNewPropName.bind(this)} />
             <div style={{paddingLeft: '0.5em', textAlign: 'center', width: '50%', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, background: '#666', padding: '3px 0'}} onClick={this.handleSubmitProp.bind(this)}>Submit</div>
+          </div>
+        </div><div>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
+            <button style={{paddingLeft: '0.5em', textAlign: 'center', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, padding: '3px 0', background: '#cc0000', color: 'white', lineHeight: 'unset', width: '100%', border: 'none'}} onClick={this.handleDeleteComponent.bind(this)}>Delete Component</button>
           </div>
         </div>
       </div>

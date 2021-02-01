@@ -112,7 +112,7 @@ export const WrappedAuthorView = withContext(
           <div
             className='author-view-overlay'
             style={{
-              top: dimensions.top - 10,
+              top: dimensions.top + 30,
               left: dimensions.left - 10
             }}>
               <div className="author-view-overlay-header">
