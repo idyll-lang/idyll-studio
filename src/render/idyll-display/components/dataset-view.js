@@ -10,7 +10,6 @@ import {
 
 const compile = require('idyll-compiler');
 
-
 class DatasetView extends React.PureComponent {
   static contextType = Context;
   constructor(props) {

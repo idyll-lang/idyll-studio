@@ -5,10 +5,6 @@ import TextEdit from './components/text-edit.js';
 import Context from '../context/context';
 import DropTarget from './components/drop-target';
 
-const getRandomId = () => {
-  return Math.floor(Math.random() * 10000000000) + 100000000;
-};
-
 class Renderer extends React.PureComponent {
   static contextType = Context;
   constructor(props) {
@@ -85,12 +81,22 @@ class Renderer extends React.PureComponent {
     return astCopy;
   }
 
+  ackError(e) {
+    this.setState({
+      error: null
+    });
+    this.context.undo();
+  }
+
   render() {
+    // show error in more subtle way and reverse
     if (this.state.error) {
       return (
         <div>
-          Error
-          <pre>{this.state.error}</pre>
+          <pre>{this.state.error.toString()}</pre>
+          <button onClick={this.ackError.bind(this)}>
+            Restore most recent state
+          </button>
         </div>
       );
     }

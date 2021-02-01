@@ -18,12 +18,6 @@ export default withContext(
         newProp: '',
         variableData: props.context.context.data()
       }
-
-      props.context.onUpdate((newData) => {
-        this.setState({
-          variableData: { ...props.context.context.data(), ...newData }
-        })
-      })
     }
 
     /**

@@ -230,7 +230,7 @@ const formatInitialVariableValue = (node, rowData) => {
 
   let value;
   if (node.type === 'data') {
-    if(!rowData) {
+    if (!rowData) {
       const fileContent = readFile(node.properties.source.value).content;
       value = jsonParser(fileContent);
     } else {
@@ -278,7 +278,7 @@ const formatCurrentVariableValue = value => {
 const wrapValue = (value, wrapper) => {
   if (!wrapper) {
     return value;
-  } else if(wrapper && value) {
+  } else if (wrapper && value) {
     return wrapper + value + wrapper;
   } else {
     return '';
@@ -307,8 +307,8 @@ const jsonParser = value => {
  * @param {any} value the user input
  */
 const convertInputToIdyllValue = value => {
-  if(!value) {
-    return { type: 'string', value: ''};
+  if (!value) {
+    return { type: 'string', value: '' };
   }
 
   const quotes = ["'", '"'];
@@ -321,12 +321,13 @@ const convertInputToIdyllValue = value => {
     quotes.includes(value.charAt(value.length - 1)) &&
     value.charAt(0) === value.charAt(value.length - 1)
   ) {
-    let trimmed = trimVariableValue(value, '"')
-    if(trimmed !== value) {
+    let trimmed = trimVariableValue(value, '"');
+    if (trimmed !== value) {
       value = trimmed;
     } else {
       value = trimVariableValue(value, "'");
     }
+
     return { type: 'string', value: value };
   }
 
@@ -360,8 +361,8 @@ const trimVariableValue = (value, wrapper) => {
  * and its error.
  * @param {string} source the path to the file
  */
-const readFile = (source) => {
-  if(!source) {
+const readFile = source => {
+  if (!source) {
     return null;
   }
 
@@ -375,11 +376,14 @@ const readFile = (source) => {
     return { content: null, error: err };
   }
 
-  if(fileType === ".csv") {
-    data = stringify(parse(data, {
-      columns: true,
-      skip_empty_lines: true
-    }));
+  if (fileType === '.csv') {
+    data = stringify(
+      parse(data, {
+        columns: true,
+        skip_empty_lines: true,
+        cast: true
+      })
+    );
   }
   return { content: data, error: null };
 };
@@ -401,5 +405,6 @@ module.exports = {
   formatInitialVariableValue,
   formatCurrentVariableValue,
   convertInputToIdyllValue,
-  readFile
+  readFile,
+  jsonParser
 };

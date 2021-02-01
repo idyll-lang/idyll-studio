@@ -52,7 +52,6 @@ class ComponentDropTarget extends React.PureComponent {
     }
 
     compile(componentMarkup).then(componentAST => {
-
       let componentNode = componentAST.children[0];
       while (componentNode.name === 'TextContainer') {
         componentNode = componentNode.children[0];
@@ -111,10 +110,10 @@ class ComponentDropTarget extends React.PureComponent {
       <div
         style={{
           width: '100%',
-          height: (isOver) ? 65 : (canDrop ? 30 : 10),
+          height: isOver ? 65 : canDrop ? 30 : 10,
           border: isOver ? '#999999' : 'none',
           borderWidth: isOver ? 2 : 0,
-          background: isOver ? '#999' : (canDrop ? '#ccc' : 'none'),
+          background: isOver ? '#999' : canDrop ? '#ccc' : 'none',
           transition: 'all 0.5s'
         }}
       />
