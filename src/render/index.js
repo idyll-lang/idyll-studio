@@ -6,6 +6,7 @@ import copy from 'fast-copy';
 import { readFile, jsonParser } from './idyll-display/utils';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { basename } from 'path';
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
@@ -119,6 +120,14 @@ class App extends React.PureComponent {
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
+
+      const relativeDataPaths = (ast) => {
+        const dataNodes = idyllAST.getNodesByType(ast, 'data');
+        dataNodes.forEach((node) => {
+          node.properties.source.value = basename(node.properties.source.value);
+        })
+        return ast;
+      };
       ipcRenderer.send('save', idyllAST.toMarkup(this.state.ast, { insertFullWidth: true }));
     });
   }
@@ -134,10 +143,11 @@ class App extends React.PureComponent {
 
         let datasetFilePath = source.value;
         if(!p.isAbsolute(datasetFilePath)) {
-          datasetFilePath = `${workingDir}/${datasetFilePath}`;
+          datasetFilePath = `${workingDir}/data/${datasetFilePath}`;
         }
 
-        const { content } = readFile(datasetFilePath);
+        const { content, error } = readFile(datasetFilePath);
+        console.log(content, error);
         if(content) {
           datasets[name.value] = jsonParser(content);
         }
