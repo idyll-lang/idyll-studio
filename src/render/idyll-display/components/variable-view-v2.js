@@ -121,7 +121,8 @@ const VariableViewV2 = withContext(
 
       const initialValue = formatInitialVariableValue(
         child,
-        this.state.rows.filter(row => row.name === name)[0] || null
+        this.state.rows.filter(row => row.name === name)[0] || null,
+        this.props.context.projectPath
       );
       let currentValue = formatCurrentVariableValue(currentData[name]);
 
@@ -133,6 +134,7 @@ const VariableViewV2 = withContext(
           });
         } else if (!initialValue) {
           // file unable to load
+          console.log('hi', initialValue)
           return null;
         }
       }
@@ -208,7 +210,7 @@ const VariableViewV2 = withContext(
           update.fromRowData.type === 'derived') &&
         newValue !== 'data'
       ) {
-        const { ast } = this.props.context; // try copying it and then removing and re-adding node
+        const { ast } = this.props.context; 
         const node = getNodeById(ast, update.fromRowId);
         const typeOfValue = newValue === 'var' ? 'value' : 'expression';
 

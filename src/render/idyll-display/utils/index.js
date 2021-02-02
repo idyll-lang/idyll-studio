@@ -223,7 +223,7 @@ const numberfy = originalValue => {
  * returns null
  * @param {IdyllAstNode} node the var/data/derived node
  */
-const formatInitialVariableValue = (node, rowData) => {
+const formatInitialVariableValue = (node, rowData, projectPath) => {
   if (!node) {
     return null;
   }
@@ -231,7 +231,7 @@ const formatInitialVariableValue = (node, rowData) => {
   let value;
   if (node.type === 'data') {
     if (!rowData) {
-      const fileContent = readFile(node.properties.source.value).content;
+      const fileContent = readFile(path.join(projectPath, 'data', node.properties.source.value)).content;
       value = jsonParser(fileContent);
     } else {
       value = rowData.initialValue;

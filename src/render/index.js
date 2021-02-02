@@ -189,7 +189,8 @@ class App extends React.PureComponent {
       url,
       currentProcess,
       activeComponent,
-      onUpdateCallbacks
+      onUpdateCallbacks,
+      pathKey
     } = this.state;
     return {
       context: context,
@@ -203,6 +204,7 @@ class App extends React.PureComponent {
       url: url,
       currentProcess: currentProcess,
       activeComponent: activeComponent,
+      projectPath: p.dirname(pathKey),
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },

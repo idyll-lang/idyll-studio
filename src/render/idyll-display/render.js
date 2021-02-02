@@ -85,7 +85,7 @@ class Renderer extends React.PureComponent {
     this.setState({
       error: null
     });
-    this.context.undo();
+    // this.context.undo();
   }
 
   render() {
@@ -94,9 +94,9 @@ class Renderer extends React.PureComponent {
       return (
         <div>
           <pre>{this.state.error.toString()}</pre>
-          <button onClick={this.ackError.bind(this)}>
+          {/* <button onClick={this.ackError.bind(this)}>
             Restore most recent state
-          </button>
+          </button> */}
         </div>
       );
     }
