@@ -13,6 +13,7 @@ import {
   getTextContainerIndex
 } from '../utils';
 
+
 const TYPE_OPTIONS = [
   { id: 'var', value: 'var' },
   { id: 'data', value: 'data' },
@@ -134,7 +135,6 @@ const VariableViewV2 = withContext(
           });
         } else if (!initialValue) {
           // file unable to load
-          console.log('hi', initialValue)
           return null;
         }
       }
@@ -239,6 +239,8 @@ const VariableViewV2 = withContext(
         },
         { key: 'currentValue', name: 'Current value', editable: true }
       ];
+
+      console.log(this.props.context.context.data(), this.props.context.ast)
 
       return (
         <div className='variables-view'>

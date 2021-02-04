@@ -7,6 +7,7 @@ import {
   readFile,
   convertInputToIdyllValue
 } from '../utils';
+import copy from 'fast-copy';
 
 const compile = require('idyll-compiler');
 
@@ -25,7 +26,7 @@ class DatasetView extends React.PureComponent {
 
     // Handle the ast change
     compile(tag).then(datasetAST => {
-      const ast = JSON.parse(JSON.stringify(this.context.ast));
+      const ast = copy(this.context.ast);
       const datasetNode = datasetAST.children[0];
       datasetNode.id = getRandomId();
 

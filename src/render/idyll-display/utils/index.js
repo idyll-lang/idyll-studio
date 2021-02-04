@@ -231,7 +231,10 @@ const formatInitialVariableValue = (node, rowData, projectPath) => {
   let value;
   if (node.type === 'data') {
     if (!rowData) {
-      const fileContent = readFile(path.join(projectPath, 'data', node.properties.source.value)).content;
+      const { source } = node.properties;
+      const filePath = path.isAbsolute(source.value) ? source.value :
+        path.join(projectPath, 'data', source.value);
+      const fileContent = readFile(filePath).content;
       value = jsonParser(fileContent);
     } else {
       value = rowData.initialValue;
