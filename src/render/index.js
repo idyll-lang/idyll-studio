@@ -31,7 +31,10 @@ class App extends React.PureComponent {
       url: '',
       currentProcess: null,
       activeComponent: null,
-      onUpdateCallbacks: []
+      onUpdateCallbacks: [],
+      requestCreateProject: false,
+      isCreatingProject: false,
+      createProjectName: ''
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -47,6 +50,14 @@ class App extends React.PureComponent {
     ipcRenderer.on(
       'idyll:compile',
       (event, { datasets, ast, components, path, url }) => {
+
+        if (!ast) {
+          this.setState({
+            ast
+          });
+          return;
+        }
+
         var componentProps = this.createComponentMap(components);
 
         this.setState({
@@ -58,7 +69,9 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currentProcess: '',
-          url: url
+          url: url,
+          requestCreateProject: false,
+          isCreatingProject: false
         });
 
         // load up datasets in context
@@ -287,6 +300,36 @@ class App extends React.PureComponent {
     ipcRenderer.send('client:openProject');
   }
 
+  handleCreate() {
+    this.undoStack = [];
+    // const name = prompt('Project name', 'my-idyll-project');
+    ipcRenderer.send('client:createProject', this.state.createProjectName);
+    this.setState({
+      isCreatingProject: true,
+    })
+  }
+
+  handleCreateCancel() {
+    this.undoStack = [];
+
+    this.setState({
+      isCreatingProject: false,
+      requestCreateProject: false
+    })
+  }
+
+  requestCreateProject() {
+    this.setState({
+      requestCreateProject: true
+    })
+  }
+
+  handleChangeCreateProjectName(e) {
+    this.setState({
+      createProjectName: e.target.value
+    });
+  }
+
   render() {
     if (!this.state.ast) {
       return (
@@ -304,9 +347,36 @@ class App extends React.PureComponent {
               fontFamily: 'Helvetica',
               borderRadius: 0
             }}>
-            <button className='loader' onClick={this.handleLoad.bind(this)}>
-              Load a project
-            </button>
+              { this.state.requestCreateProject ? (
+                <div>
+                  { this.state.isCreatingProject ? (<div>
+                    Creating project. This may take a minute or two.
+                  </div>) : (
+                    <div>
+                      <div style={{fontWeight: 'bold'}}>Enter project name, and then choose a folder to put it:</div>
+                      <input style={{padding: '1em', display: 'block', width: '100%', marginTop: '1em', boxSizing: 'border-box'}} value={this.state.createProjectName} onChange={this.handleChangeCreateProjectName.bind(this)} placeholder={'My project'} />
+                      <button style={{display: 'block', width: '100%', padding: '1em', margin: '1em auto', height: 'auto', lineHeight: 'unset'}} onClick={this.handleCreate.bind(this)}>
+                        Select folder
+                      </button>
+
+                      <button style={{display: 'block', width: '100%', padding: '1em', margin: '1em auto', height: 'auto', lineHeight: 'unset'}} onClick={this.handleCreateCancel.bind(this)}>
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <button className='creator' onClick={this.requestCreateProject.bind(this)}>
+                    Create a project
+                  </button>
+                  <button className='loader' onClick={this.handleLoad.bind(this)}>
+                    Load a project
+                  </button>
+                </div>
+              )
+              }
+
           </div>
         </div>
       );
