@@ -6,12 +6,21 @@ import Properties from './component-editor/properties';
 import Code from './component-editor/code';
 import Styles from './component-editor/styles';
 
+const registeredEditors = {};
+
+const registerEditor = (componentName, { editorTitle, editorComponent }) => {
+  if (!registeredEditors[componentName]) {
+    registeredEditors[componentName] = [];
+  }
+  registeredEditors[componentName].push({ editorTitle, editorComponent });
+}
+
 /**
  * An AuthorView is associated with an active component.
  * If a component is registered as active, renders
  * a property list of all the components properties for editing.
  */
-export const WrappedAuthorView = withContext(
+const WrappedAuthorView = withContext(
   class AuthorView extends React.PureComponent {
     constructor(props) {
       super(props);
@@ -99,6 +108,13 @@ export const WrappedAuthorView = withContext(
         case 'style':
           return <Styles />;
         default:
+          if (this.props.context.activeComponent) {
+            const found = (registeredEditors[(this.props.context.activeComponent.name || '').toLowerCase()] || []).find(({ editorTitle }) => editorTitle === this.state.selectedView);
+            if (found) {
+              const  Component = found.editorComponent;
+              return <Component />;
+            }
+          }
           return  null;
       }
     }
@@ -115,15 +131,18 @@ export const WrappedAuthorView = withContext(
               top: dimensions.top + 30,
               left: dimensions.left - 10
             }}>
-              <div className="author-view-overlay-header">
+              <div className="author-view-overlay-header" style={{overflowX: 'auto'}}>
                 <div  style={{display: 'flex', justifyContent: 'space-between'}}>
                   <div className={'author-view-overlay-header-button author-view-overlay-header-close-button'} onClick={() => { this.close() }}>×</div>
                   <div className={`author-view-overlay-header-button ${selectedView === 'properties' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'properties' }) }}>Properties</div>
                   <div className={`author-view-overlay-header-button ${selectedView === 'code' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'code' }) }}>Markup</div>
                   <div className={`author-view-overlay-header-button ${selectedView === 'style' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'style' }) }}>Styles</div>
+                  {(registeredEditors[(activeComponent.name || '').toLowerCase()] || []).map(({editorTitle}) => {
+                    return <div key={editorTitle} className={`author-view-overlay-header-button ${selectedView === editorTitle ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: editorTitle }) }}>{editorTitle}</div>
+                  })}
                 </div>
               </div>
-              <div style={{maxHeight: 200, overflowY: 'auto'}}>
+              <div>
                 {this.renderInner()}
               </div>
           </div>
@@ -133,3 +152,6 @@ export const WrappedAuthorView = withContext(
     }
   }
 );
+
+export { registerEditor };
+export { WrappedAuthorView };

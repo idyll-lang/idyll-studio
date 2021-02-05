@@ -145,28 +145,30 @@ export default withContext(
     render() {
       const { ast, activeComponent, setAst, setActiveComponent, context } = this.props.context;
       return  (
-        <div style={{margin: "0 1em"}}>
-        <PropertyList
-          ast={ast}
-          node={activeComponent}
-          updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
-            this
-          )}
-          setAst={setAst}
-          setActiveComponent={setActiveComponent}
-          updateNodeType={this.updateNodeType.bind(this)}
-          variableData={this.state.variableData}
-          deleteProperty={this.deleteProperty.bind(this)}
-        />
-        <div>
-          <div className='prop-name'>Add new property</div>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
-            <input style={{margin: 0, fontSize: 12, paddingLeft: 10, width: '100%', height: 38}} placeholder={'Enter name'} value={this.state.newProp} onChange={this.handleUpdateNewPropName.bind(this)} />
-            <div style={{textAlign: 'center', width: '50%', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, background: '#666', padding: 0, height: 38, lineHeight: '38px', border: 'none'}} onClick={this.handleSubmitProp.bind(this)}>Submit</div>
-          </div>
-        </div><div>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
-            <button style={{paddingLeft: '0.5em', textAlign: 'center', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, padding: '3px 0', background: this.state.deleteConfirm ? '#cc0000' : '#999999', color: 'white', lineHeight: 'unset', width: '100%', border: 'none'}} onClick={this.handleDeleteComponent.bind(this)}>{this.state.deleteConfirm ? 'Confirm Remove' : 'Remove Component'}</button>
+        <div style={{maxHeight: 200, overflowY: 'auto'}}>
+          <div style={{margin: "0 1em"}}>
+          <PropertyList
+            ast={ast}
+            node={activeComponent}
+            updateNodeWithNewProperties={this.updateNodeWithNewProperties.bind(
+              this
+            )}
+            setAst={setAst}
+            setActiveComponent={setActiveComponent}
+            updateNodeType={this.updateNodeType.bind(this)}
+            variableData={this.state.variableData}
+            deleteProperty={this.deleteProperty.bind(this)}
+          />
+          <div>
+            <div className='prop-name'>Add new property</div>
+            <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
+              <input style={{margin: 0, fontSize: 12, paddingLeft: 10, width: '100%', height: 38}} placeholder={'Enter name'} value={this.state.newProp} onChange={this.handleUpdateNewPropName.bind(this)} />
+              <div style={{textAlign: 'center', width: '50%', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, background: '#666', padding: 0, height: 38, lineHeight: '38px', border: 'none'}} onClick={this.handleSubmitProp.bind(this)}>Submit</div>
+            </div>
+          </div><div>
+            <div style={{display: 'flex', alignItems: 'center', marginBottom: '1em', fontSize: 12}}>
+              <button style={{paddingLeft: '0.5em', textAlign: 'center', cursor: 'pointer', textTransform: 'uppercase', fontSize: 12, padding: '3px 0', background: this.state.deleteConfirm ? '#cc0000' : '#999999', color: 'white', lineHeight: 'unset', width: '100%', border: 'none'}} onClick={this.handleDeleteComponent.bind(this)}>{this.state.deleteConfirm ? 'Confirm Remove' : 'Remove Component'}</button>
+            </div>
           </div>
         </div>
       </div>

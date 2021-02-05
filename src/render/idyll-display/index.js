@@ -6,6 +6,8 @@ import { WrappedAuthorView } from './components/author-view';
 import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
 
+import './components/custom-editors/bitmap';
+
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
 
