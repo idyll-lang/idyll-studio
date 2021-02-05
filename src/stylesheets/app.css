@@ -57,7 +57,7 @@ html {
   color: black;
 }
 
-button.loader {
+button.loader, button.creator {
   display: block;
   padding: 1em 2em;
   border-radius: 75px;
@@ -69,8 +69,12 @@ button.loader {
   outline: none;
   font-size: 48px;
   font-weight: bold;
+  line-height: unset;
+  border: none;
+  height: auto;
 }
-button.loader:hover {
+
+button.loader:hover, button.creator:hover {
   transform: scale(1.1) rotate(0.5deg);
 }
 
