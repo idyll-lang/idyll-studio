@@ -123,7 +123,7 @@ class Sidebar extends React.PureComponent {
         return (
           <div>
             <div className='components-and-datasets'>
-              <h2>Variables and Datasets</h2>
+              <h2>Variables</h2>
               <VariableViewV2 />
               <DatasetView />
             </div>

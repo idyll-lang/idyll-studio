@@ -48,6 +48,12 @@ class Main {
           });
       }
     });
+    // import dataset
+    ipcMain.on('importDataset', (event, message) => {
+      fs.copyFileSync(message, `${this.workingDir}/data/${p.basename(message)}`);
+      this.mainWindow.webContents.send('data:import');
+    });
+
   }
 
   async handleFileOpen() {

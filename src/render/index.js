@@ -43,6 +43,7 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
+
     // Load in datasets
     ipcRenderer.on(
       'idyll:compile',
@@ -65,6 +66,14 @@ class App extends React.PureComponent {
         this.handleDatasetLoading(ast, path);
       }
     );
+
+    // handle dataset import
+
+    ipcRenderer.on(
+      'data:import',
+      () => {
+        this._dataImportCb && this._dataImportCb();
+      })
 
     window.addEventListener(
       'keydown',
@@ -231,6 +240,10 @@ class App extends React.PureComponent {
       },
       deploy: () => {
         ipcRenderer.send('deploy', '');
+      },
+      importDataset: (path, cb) => {
+        ipcRenderer.send('importDataset', path);
+        this._dataImportCb = cb;
       },
       setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
