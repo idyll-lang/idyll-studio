@@ -473,3 +473,8 @@ input[type='radio'] {
   margin-left: 1em;
   margin-right: 0.25em;
 }
+
+
+.add-variable-button button {
+  width: 100%;
+}
