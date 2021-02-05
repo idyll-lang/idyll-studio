@@ -72,7 +72,6 @@ class App extends React.PureComponent {
     ipcRenderer.on(
       'data:import',
       () => {
-        console.log('data:import callback')
         this._dataImportCb && this._dataImportCb();
       })
 
