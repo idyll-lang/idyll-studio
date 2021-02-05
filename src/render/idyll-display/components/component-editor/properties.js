@@ -3,6 +3,7 @@ import PropertyList from './property-list';
 import { getNodeById, throttle, getUpdatedPropertyList, deleteNodeById } from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../../constants';
+import * as IdyllComponents from 'idyll-components';
 
 /**
  * An AuthorView is associated with an active component.
@@ -146,6 +147,14 @@ export default withContext(
       const { ast, activeComponent, setAst, setActiveComponent, context } = this.props.context;
       return  (
         <div style={{margin: "0 1em"}}>
+          <div style={{ margin: '0 5px 1em 0', fontSize: 14, display: 'flex', justifyContent: 'space-between'}}>
+            <div>{activeComponent.name} component</div>
+            <div>
+              {
+                IdyllComponents[activeComponent.name] ? <a target="_blank" style={{color: '#ccc', textDecoration:  'underline'}} href={`https://idyll-lang.org/docs/component/${activeComponent.name.toLowerCase()}`}>docs</a> : null
+              }
+            </div>
+          </div>
         <PropertyList
           ast={ast}
           node={activeComponent}

@@ -47,6 +47,11 @@ class Main {
       });
     })
 
+    this.mainWindow.webContents.on('new-window', function(e, url) {
+      e.preventDefault();
+      shell.openExternal(url);
+    });
+
     // Deploy methods
     this.publish = this.publish.bind(this);
     this.getProjectToken = this.getProjectToken.bind(this);

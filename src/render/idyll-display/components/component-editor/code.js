@@ -65,7 +65,7 @@ export default withContext(
           />
           <div className={'code-instructions'} style={{color: '#ccc',  fontSize: 10, fontStyle: 'italic', margin: '5px 16px', display: 'flex', justifyContent: 'space-between'}}>
             <div>shift + enter to execute</div>
-            <div><a style={{color: '#ccc', textDecoration:  'underline'}} href={'https://idyll-lang.org/docs/syntax'}>Syntax Guide</a></div>
+            <div><a target="_blank" style={{color: '#ccc', textDecoration:  'underline'}} href={'https://idyll-lang.org/docs/syntax'}>Syntax Guide</a></div>
           </div>
         </div>
       )
