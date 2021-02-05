@@ -46,9 +46,7 @@ class DatasetView extends React.PureComponent {
 
   handleDrop(e) {
     const { importDataset } = this.context;
-    console.log(e.dataTransfer.files);
     if (e.dataTransfer.files.length) {
-      console.log(e.dataTransfer.files[0]);
       const f = e.dataTransfer.files[0]
       importDataset(f.path, () => {
         this.insertData({
