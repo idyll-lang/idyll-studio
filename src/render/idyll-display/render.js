@@ -136,7 +136,7 @@ class Renderer extends React.PureComponent {
             injectLayoutCSS={true}
             userViewComponent={AuthorToolButtons}
             userInlineViewComponent={InlineAuthorToolButtons}
-            textEditComponent={TextEdit}
+            textEditComponent={this.context.showPreview ? null : TextEdit}
             authorView={!this.context.showPreview}
           />
         </div>
