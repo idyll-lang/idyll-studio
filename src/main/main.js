@@ -41,6 +41,7 @@ class Main {
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
     menu.on('toggle:sidebar', this.handleToggleSidebar.bind(this));
+    menu.on('toggle:devtools', this.handleToggleDevtools.bind(this));
     menu.on('file:new', () => {
       this.mainWindow.webContents.send('idyll:compile', {
         ast: null
@@ -151,6 +152,9 @@ class Main {
 
   handleToggleSidebar() {
     this.mainWindow.webContents.send('toggleSidebar');
+  }
+  handleToggleDevtools() {
+    this.mainWindow.webContents.toggleDevTools();
   }
 
   async publish() {

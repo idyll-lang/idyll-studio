@@ -40,6 +40,12 @@ class IdyllDesktopMenu extends EventEmitter {
             click: () => {
               this.emit('toggle:sidebar');
             }
+          },
+          {
+            label: 'Toggle Devtools',
+            click: () => {
+              this.emit('toggle:devtools');
+            }
           }
         ]
       },

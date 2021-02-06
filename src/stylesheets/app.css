@@ -207,7 +207,7 @@ button {
   outline: none;
 }
 
-#publish-button {
+#publish-button, #preview-button  {
   border: none;
   background-color: #333;
   color: white;
@@ -217,6 +217,11 @@ button {
   line-height: unset;
   cursor: pointer;
   margin: 10px 0;
+}
+
+#preview-button{
+  background-color: #999;
+  color: #333;
 }
 
 #publish-button:disabled {
@@ -267,12 +272,17 @@ button {
   display: grid;
 }
 
-#publish-button {
+#publish-button, #preview-button {
   min-width: 150px;
   width: 100%;
   background-color: #333;
   font-weight: bold;
   text-align: center;
+}
+
+#preview-button  {
+  background-color: #999;
+  color: #333;
 }
 
 .publish-process {

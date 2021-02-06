@@ -61,6 +61,7 @@ class App extends React.PureComponent {
 
         var componentProps = this.createComponentMap(components);
 
+        this._undoStash = copy(ast);
         this.setState({
           datasets: datasets,
           ast: ast,
@@ -211,7 +212,8 @@ class App extends React.PureComponent {
       url,
       currentProcess,
       activeComponent,
-      onUpdateCallbacks
+      onUpdateCallbacks,
+      showPreview
     } = this.state;
     return {
       context: context,
@@ -225,6 +227,13 @@ class App extends React.PureComponent {
       url: url,
       currentProcess: currentProcess,
       activeComponent: activeComponent,
+      showPreview: showPreview,
+      toggleShowPreview: () => {
+        console.log('toggling showPreview', this);
+        this.setState({
+          showPreview: !this.state.showPreview
+        })
+      },
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },

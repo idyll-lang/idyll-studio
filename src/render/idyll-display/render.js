@@ -120,7 +120,7 @@ class Renderer extends React.PureComponent {
         <div className='renderer-container' contentEditable={false}>
           <IdyllDocument
             //markup={markup}
-            // key={JSON.stringify(ast)}
+            key={!this.context.showPreview}
             ast={this.injectDropTargets(ast)}
             components={{
               IdyllEditorDropTarget: DropTarget,
@@ -137,7 +137,7 @@ class Renderer extends React.PureComponent {
             userViewComponent={AuthorToolButtons}
             userInlineViewComponent={InlineAuthorToolButtons}
             textEditComponent={TextEdit}
-            authorView={true}
+            authorView={!this.context.showPreview}
           />
         </div>
       </div>
