@@ -96,8 +96,9 @@ button.loader:hover, button.creator:hover {
   left: -50px;
 }
 .idyll-text-container .inline-author-view-container {
-  bottom: -5px;
+  top: 25px;
   left: 0;
+  position: absolute;
 }
 
 button {

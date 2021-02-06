@@ -15,7 +15,7 @@ const p = require('path');
 
 const PUBLISHING_ERROR = 'Error occurred while publishing: ';
 const PUBLISHING = 'Publishing your project...';
-const PUBLISHED = 'Published!';
+const PUBLISHED = 'Published! It may take up to a minute for the latest changes to be reflected.';
 
 class App extends React.PureComponent {
   constructor(props) {
