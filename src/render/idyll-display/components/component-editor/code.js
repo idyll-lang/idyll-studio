@@ -1,7 +1,7 @@
 
 
 import * as React from 'react';
-import { getNodeById } from '../../utils/';
+import { getNodeById, getParentNodeById, getRandomId  } from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import EditableCodeCell from './code-cell';
 
@@ -38,19 +38,44 @@ export default withContext(
     updateAst(newMarkup) {
       const output = compile(newMarkup || this.getMarkup(this.props), { async: false });
       let node = output.children[0];
-      if (node.children && node.children.length) {
-        node = node.children[0];
+
+      while (node.type === 'component' && node.name === 'TextContainer') {
+        node = node.children;
       }
-      const targetNode = getNodeById(
-        this.props.context.ast,
-        this.props.context.activeComponent.id
-      );
-      Object.keys(node).forEach(key => {
-        if (key === 'id') {
+
+      if (node.length === 1) {
+        node = node[0];
+
+        const targetNode = getNodeById(
+          this.props.context.ast,
+          this.props.context.activeComponent.id
+        );
+
+        Object.keys(node).forEach(key => {
+          if (key === 'id') {
+            return;
+          }
+          targetNode[key] = node[key];
+        });
+      } else {
+        const parentNode = getParentNodeById(
+          this.props.context.ast,
+          this.props.context.activeComponent.id
+        );
+        if (!parentNode) {
+          console.warn('Could not identify parent node');
           return;
         }
-        targetNode[key] = node[key];
-      });
+
+        const childIdx = (parentNode.children || []).findIndex(c => c.id === this.props.context.activeComponent.id);
+
+        node.forEach((n) => {
+          n.id = getRandomId();
+        })
+
+        // parentNode.children.splice(childIdx, 0, ...node);
+        parentNode.children = parentNode.children.slice(0, childIdx).concat(node).concat(parentNode.children.slice(childIdx + 1));
+      }
 
       this.props.context.setAst(this.props.context.ast);
     }
