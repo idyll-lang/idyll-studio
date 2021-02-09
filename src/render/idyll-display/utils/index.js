@@ -24,6 +24,25 @@ const getNodeById = (node, id) => {
   return false;
 };
 
+
+const getParentNodeById = (node, id) => {
+  if (!node.children || !node.children.length) {
+    return false;
+  }
+  for (var i = 0; i < node.children.length; i++) {
+    if (node.children[i].id === id) {
+      return node;
+    }
+  }
+  for (var i = 0; i < node.children.length; i++) {
+    const _parent = getParentNodeById(node.children[i], id);
+    if (_parent) {
+      return _parent;
+    }
+  }
+  return false;
+};
+
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
 
@@ -393,6 +412,7 @@ const readFile = source => {
 
 module.exports = {
   getNodeById,
+  getParentNodeById,
   deleteNodeById,
   updateNodeById,
   getRandomId,

@@ -39,13 +39,13 @@ export default class EditableCodeCell extends React.Component {
 
   // Executes code change
   execute = () => {
-    this.props.onExecute(this._cellCodeRef.current.textContent);
+    this.props.onExecute(this._cellCodeRef.current.innerText);
   };
 
   // Updates markup on blur
   onBlur = e => {
     this.toggleEdit(e);
-    this.props.onBlur(this._cellCodeRef.current.textContent);
+    this.props.onBlur(this._cellCodeRef.current.innerText);
   };
 
   handleKeyDown = e => {

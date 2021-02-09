@@ -1,6 +1,7 @@
 import React from 'react';
 import IdyllDocument from 'idyll-document';
 import AuthorToolButtons from './components/author-tool-buttons';
+import InlineAuthorToolButtons from './components/inline-author-tool-buttons';
 import TextEdit from './components/text-edit.js';
 import Context from '../context/context';
 import DropTarget from './components/drop-target';
@@ -119,7 +120,7 @@ class Renderer extends React.PureComponent {
         <div className='renderer-container' contentEditable={false}>
           <IdyllDocument
             //markup={markup}
-            // key={JSON.stringify(ast)}
+            key={!this.context.showPreview}
             ast={this.injectDropTargets(ast)}
             components={{
               IdyllEditorDropTarget: DropTarget,
@@ -134,8 +135,9 @@ class Renderer extends React.PureComponent {
             injectThemeCSS={true}
             injectLayoutCSS={true}
             userViewComponent={AuthorToolButtons}
-            textEditComponent={TextEdit}
-            authorView={true}
+            userInlineViewComponent={InlineAuthorToolButtons}
+            textEditComponent={this.context.showPreview ? null : TextEdit}
+            authorView={!this.context.showPreview}
           />
         </div>
       </div>

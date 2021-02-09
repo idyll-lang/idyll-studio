@@ -81,18 +81,24 @@ class Deploy extends React.PureComponent {
       // Meta View
       <div className='deploy-view'>
         <div className='meta-container'>
+          <h4>Social media metadata</h4>
           <div>Title {this.renderProps('title')}</div>
           <div>Description {this.renderProps('description')}</div>
           <div>Share Image {this.renderProps('shareImageUrl')}</div>
           {this.context.url ? (
             <div className='url-display'>
-              URL: <a href={this.context.url}>{this.context.url}</a>
+              URL: <a href={this.context.url} style={{textTransform: 'none'}} target="_blank">{this.context.url}</a>
             </div>
           ) : null}
         </div>
 
         {/* Publish Button */}
         <div className='publish-button-container'>
+          <button
+            id='preview-button'
+            onClick={this.context.toggleShowPreview}>
+            Preview
+          </button>
           <button
             id='publish-button'
             onClick={this.context.deploy}

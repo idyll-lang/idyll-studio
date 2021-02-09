@@ -2,6 +2,7 @@ const { dialog, ipcMain, shell } = require('electron');
 const Menu = require('./menu');
 const fs = require('fs');
 const Idyll = require('idyll');
+const { createProject } = require('idyll/bin/cmds/create-project');
 const p = require('path');
 const readdir = require('recursive-readdir');
 const request = require('request-promise-native');
@@ -10,6 +11,19 @@ const IDYLL_PUB_API = 'https://api.idyll.pub';
 const IDYLL_PUB_URL = 'https://idyll.pub/post';
 const compile = require('idyll-compiler');
 const { getWorkingDirectory, getTokenPath } = require('./utils');
+
+function slugify(text) {
+  return text
+    .toString()
+    .split(/([A-Z][a-z]+)/)
+    .join('-')
+    .toLowerCase()
+    .replace(/\s+/g, '-') // Replace spaces with -
+    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+    .replace(/^-+/, '') // Trim - from start of text
+    .replace(/-+$/, ''); // Trim - from end of text
+}
 
 class Main {
   constructor(electronObjects) {
@@ -21,11 +35,23 @@ class Main {
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
     ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
+    ipcMain.on('client:createProject', this.handleCreateProject.bind(this));
 
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
     menu.on('toggle:sidebar', this.handleToggleSidebar.bind(this));
+    menu.on('toggle:devtools', this.handleToggleDevtools.bind(this));
+    menu.on('file:new', () => {
+      this.mainWindow.webContents.send('idyll:compile', {
+        ast: null
+      });
+    })
+
+    this.mainWindow.webContents.on('new-window', function(e, url) {
+      e.preventDefault();
+      shell.openExternal(url);
+    });
 
     // Deploy methods
     this.publish = this.publish.bind(this);
@@ -48,8 +74,41 @@ class Main {
           });
       }
     });
+    // import dataset
+    ipcMain.on('importDataset', (event, message) => {
+      fs.copyFileSync(message, `${this.workingDir}/data/${p.basename(message)}`);
+      this.mainWindow.webContents.send('data:import');
+    });
+
   }
 
+  async handleCreateProject(event, projectName) {
+    // Returns absolute path of file
+    try {
+      const dir = await dialog.showOpenDialog(this.mainWindow, {
+        properties: ['openDirectory']
+      });
+
+      // If no files, don't open
+      if (!dir || dir.canceled || !dir.filePaths.length) {
+        return;
+      }
+
+      // Gets full file path
+      const projectDir = dir.filePaths[0];
+      const slugName = slugify(projectName);
+      await createProject({
+        'package-name': `${slugName}`,
+        'template': 'article',
+        'post-dir': `${projectDir}/${slugName}`,
+        'installDependencies': true
+      })
+
+      this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);
+    } catch (err) {
+      console.log(err);
+    }
+  }
   async handleFileOpen() {
     // Returns absolute path of file
     try {
@@ -93,6 +152,9 @@ class Main {
 
   handleToggleSidebar() {
     this.mainWindow.webContents.send('toggleSidebar');
+  }
+  handleToggleDevtools() {
+    this.mainWindow.webContents.toggleDevTools();
   }
 
   async publish() {

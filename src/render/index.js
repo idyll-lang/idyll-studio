@@ -15,7 +15,7 @@ const p = require('path');
 
 const PUBLISHING_ERROR = 'Error occurred while publishing: ';
 const PUBLISHING = 'Publishing your project...';
-const PUBLISHED = 'Published!';
+const PUBLISHED = 'Published! It may take up to a minute for the latest changes to be reflected.';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -31,7 +31,10 @@ class App extends React.PureComponent {
       url: '',
       currentProcess: null,
       activeComponent: null,
-      onUpdateCallbacks: []
+      onUpdateCallbacks: [],
+      requestCreateProject: false,
+      isCreatingProject: false,
+      createProjectName: ''
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -43,12 +46,22 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
+
     // Load in datasets
     ipcRenderer.on(
       'idyll:compile',
       (event, { datasets, ast, components, path, url }) => {
+
+        if (!ast) {
+          this.setState({
+            ast
+          });
+          return;
+        }
+
         var componentProps = this.createComponentMap(components);
 
+        this._undoStash = copy(ast);
         this.setState({
           datasets: datasets,
           ast: ast,
@@ -58,13 +71,23 @@ class App extends React.PureComponent {
           layout: 'centered',
           theme: 'default',
           currentProcess: '',
-          url: url
+          url: url,
+          requestCreateProject: false,
+          isCreatingProject: false
         });
 
         // load up datasets in context
         this.handleDatasetLoading(ast, path);
       }
     );
+
+    // handle dataset import
+
+    ipcRenderer.on(
+      'data:import',
+      () => {
+        this._dataImportCb && this._dataImportCb();
+      })
 
     window.addEventListener(
       'keydown',
@@ -190,7 +213,8 @@ class App extends React.PureComponent {
       currentProcess,
       activeComponent,
       onUpdateCallbacks,
-      pathKey
+      pathKey,
+      showPreview
     } = this.state;
     return {
       context: context,
@@ -205,6 +229,13 @@ class App extends React.PureComponent {
       currentProcess: currentProcess,
       activeComponent: activeComponent,
       projectPath: p.dirname(pathKey),
+      showPreview: showPreview,
+      toggleShowPreview: () => {
+        console.log('toggling showPreview', this);
+        this.setState({
+          showPreview: !this.state.showPreview
+        })
+      },
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
       },
@@ -233,6 +264,10 @@ class App extends React.PureComponent {
       },
       deploy: () => {
         ipcRenderer.send('deploy', '');
+      },
+      importDataset: (path, cb) => {
+        ipcRenderer.send('importDataset', path);
+        this._dataImportCb = cb;
       },
       setActiveComponent: activeComponent => {
         this.setState({ activeComponent: { ...activeComponent } });
@@ -289,6 +324,36 @@ class App extends React.PureComponent {
     ipcRenderer.send('client:openProject');
   }
 
+  handleCreate() {
+    this.undoStack = [];
+    // const name = prompt('Project name', 'my-idyll-project');
+    ipcRenderer.send('client:createProject', this.state.createProjectName);
+    this.setState({
+      isCreatingProject: true,
+    })
+  }
+
+  handleCreateCancel() {
+    this.undoStack = [];
+
+    this.setState({
+      isCreatingProject: false,
+      requestCreateProject: false
+    })
+  }
+
+  requestCreateProject() {
+    this.setState({
+      requestCreateProject: true
+    })
+  }
+
+  handleChangeCreateProjectName(e) {
+    this.setState({
+      createProjectName: e.target.value
+    });
+  }
+
   render() {
     if (!this.state.ast) {
       return (
@@ -306,9 +371,36 @@ class App extends React.PureComponent {
               fontFamily: 'Helvetica',
               borderRadius: 0
             }}>
-            <button className='loader' onClick={this.handleLoad.bind(this)}>
-              Load a project
-            </button>
+              { this.state.requestCreateProject ? (
+                <div>
+                  { this.state.isCreatingProject ? (<div>
+                    Creating project. This may take a minute or two.
+                  </div>) : (
+                    <div>
+                      <div style={{fontWeight: 'bold'}}>Enter project name, and then choose a folder to put it:</div>
+                      <input style={{padding: '1em', display: 'block', width: '100%', marginTop: '1em', boxSizing: 'border-box'}} value={this.state.createProjectName} onChange={this.handleChangeCreateProjectName.bind(this)} placeholder={'My project'} />
+                      <button style={{display: 'block', width: '100%', padding: '1em', margin: '1em auto', height: 'auto', lineHeight: 'unset'}} onClick={this.handleCreate.bind(this)}>
+                        Select folder
+                      </button>
+
+                      <button style={{display: 'block', width: '100%', padding: '1em', margin: '1em auto', height: 'auto', lineHeight: 'unset'}} onClick={this.handleCreateCancel.bind(this)}>
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <button className='creator' onClick={this.requestCreateProject.bind(this)}>
+                    Create a project
+                  </button>
+                  <button className='loader' onClick={this.handleLoad.bind(this)}>
+                    Load a project
+                  </button>
+                </div>
+              )
+              }
+
           </div>
         </div>
       );

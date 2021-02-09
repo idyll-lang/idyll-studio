@@ -234,10 +234,10 @@ const VariableViewV2 = withContext(
         },
         {
           key: 'initialValue',
-          name: 'Initial value',
+          name: 'Initial',
           editable: row => row.type !== 'data'
         },
-        { key: 'currentValue', name: 'Current value', editable: true }
+        { key: 'currentValue', name: 'Current', editable: true }
       ];
 
       console.log(this.props.context.context.data(), this.props.context.ast)
@@ -251,6 +251,7 @@ const VariableViewV2 = withContext(
               rowsCount={rows.length}
               enableCellSelect={true}
               onGridRowsUpdated={this.handleGridUpdate}
+              minColumnWidth={10}
             />
           </div>
           <div className='add-variable-button'>

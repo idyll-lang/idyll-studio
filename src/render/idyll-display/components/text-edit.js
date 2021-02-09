@@ -4,7 +4,7 @@ import copy from 'fast-copy';
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
 
-const { getNodeById, deleteNodeById } = require('../utils');
+const { getNodeById, getRandomId, deleteNodeById, getParentNodeById } = require('../utils');
 
 class TextEdit extends React.PureComponent {
   static contextType = Context;
@@ -45,31 +45,53 @@ class TextEdit extends React.PureComponent {
       return;
     }
 
-    const markup = this._markupRef.textContent;
+    const markup = this._markupRef.innerText;
 
     if (markup.trim() === '') {
       // If it is empty, delete the existing node
       deleteNodeById(this.context.ast, this.props.idyllASTNode.id);
     } else {
-      // console.log(markup);
       const output = compile(markup, { async: false });
       let node = output.children[0];
 
-      // TODO - handle merging multiple nodes / paragraphs
       while (node.type === 'component' && node.name === 'TextContainer') {
-        node = node.children[0];
+        node = node.children;
       }
 
-      const targetNode = getNodeById(
-        this.context.ast,
-        this.props.idyllASTNode.id
-      );
-      Object.keys(node).forEach(key => {
-        if (key === 'id') {
+
+      if (node.length === 1) {
+        node = node[0];
+
+        const targetNode = getNodeById(
+          this.context.ast,
+          this.props.idyllASTNode.id
+        );
+
+        Object.keys(node).forEach(key => {
+          if (key === 'id') {
+            return;
+          }
+          targetNode[key] = node[key];
+        });
+      } else {
+        const parentNode = getParentNodeById(
+          this.context.ast,
+          this.props.idyllASTNode.id
+        );
+        if (!parentNode) {
+          console.warn('Could not identify parent node');
           return;
         }
-        targetNode[key] = node[key];
-      });
+
+        const childIdx = (parentNode.children || []).findIndex(c => c.id === this.props.idyllASTNode.id);
+
+        node.forEach((n) => {
+          n.id = getRandomId();
+        })
+
+        // parentNode.children.splice(childIdx, 0, ...node);
+        parentNode.children = parentNode.children.slice(0, childIdx).concat(node).concat(parentNode.children.slice(childIdx + 1));
+      }
     }
 
     this.context.setAst(this.context.ast);

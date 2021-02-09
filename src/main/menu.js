@@ -9,6 +9,13 @@ class IdyllDesktopMenu extends EventEmitter {
         label: 'File',
         submenu: [
           {
+            label: 'New...',
+            accelerator: 'CmdOrCtrl+N',
+            click: () => {
+              this.emit('file:new'); // tells index.js what to listen for
+            }
+          },
+          {
             label: 'Open File',
             accelerator: 'CmdOrCtrl+O',
             click: () => {
@@ -32,6 +39,12 @@ class IdyllDesktopMenu extends EventEmitter {
             accelerator: 'CmdOrCtrl+B',
             click: () => {
               this.emit('toggle:sidebar');
+            }
+          },
+          {
+            label: 'Toggle Devtools',
+            click: () => {
+              this.emit('toggle:devtools');
             }
           }
         ]

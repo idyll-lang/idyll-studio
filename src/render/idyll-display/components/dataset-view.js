@@ -45,16 +45,33 @@ class DatasetView extends React.PureComponent {
     });
   }
 
+  handleDrop(e) {
+    const { importDataset } = this.context;
+    if (e.dataTransfer.files.length) {
+      const f = e.dataTransfer.files[0]
+      importDataset(f.path, () => {
+        this.insertData({
+          name: f.name.replace('.csv', '').replace('.json', ''),
+          path: f.path
+        })
+      });
+    }
+  }
+
   render() {
     const { datasets } = this.context;
 
     return (
       <div className='dataset-view'>
-        <div className='label'>Datasets</div>
+        <h2 style={{marginBottom: 0}}>Datasets</h2>
+        <div style={{fontSize: 12, color: '#333'}}>Loaded data will appear in panel above.</div>
+        <div  onDrop={this.handleDrop.bind(this)} style={{width: '100%', border: 'solid 2px #999', borderRadius: 5, color: '#999', fontSize: 12, margin: '1em auto', display: 'flex', flexDirection: 'row', justifyContent: 'center', fontWeight: 'bold',  textAlign: 'center', padding: '2em 1em' }}>
+            Drag+and+drop to add a dataset <br/>(.csv or .json)
+        </div>
         <div className='dataset-container'>
           {datasets && datasets.length ? (
             <Select
-              placeholder='Select a dataset'
+              placeholder='Select an existing dataset'
               ref='select'
               // on change callback
               options={datasets.map(dataset => {
@@ -70,6 +87,7 @@ class DatasetView extends React.PureComponent {
             />
           ) : null}
         </div>
+
       </div>
     );
   }

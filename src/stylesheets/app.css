@@ -57,7 +57,7 @@ html {
   color: black;
 }
 
-button.loader {
+button.loader, button.creator {
   display: block;
   padding: 1em 2em;
   border-radius: 75px;
@@ -69,8 +69,12 @@ button.loader {
   outline: none;
   font-size: 48px;
   font-weight: bold;
+  line-height: unset;
+  border: none;
+  height: auto;
 }
-button.loader:hover {
+
+button.loader:hover, button.creator:hover {
   transform: scale(1.1) rotate(0.5deg);
 }
 
@@ -79,7 +83,7 @@ button.loader:hover {
   /* transition: background-color 0.3s ease-in; */
 }
 
-.author-view-container {
+.author-view-container{
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -91,6 +95,11 @@ button.loader:hover {
   bottom: 0;
   left: -50px;
 }
+.idyll-text-container .inline-author-view-container {
+  top: 25px;
+  left: 0;
+  position: absolute;
+}
 
 button {
   line-height: unset;
@@ -99,7 +108,7 @@ button {
   font-weight: 500;
 }
 
-.author-view-button {
+.author-view-button, .inline-author-view-button {
   position: static !important;
   color: white;
   margin-left: 10px;
@@ -119,19 +128,19 @@ button {
   line-height: initial;
 }
 
-.author-view-button svg {
+.author-view-button svg, .inline-author-view-button svg {
   display: block;
   margin: 0 auto;
 }
 
-.author-view-button:hover {
+.author-view-button:hover, .inline-author-view-button:hover {
   background: #ccc !important;
 }
-.author-view-button.selected {
+.author-view-button.selected, .inline-author-view-button.selected {
   background: #666 !important;
   color: #fff !important;
 }
-.author-view-button:focus {
+.author-view-button:focus, .inline-author-view-button:focus {
   outline: none;
 }
 
@@ -199,7 +208,7 @@ button {
   outline: none;
 }
 
-#publish-button {
+#publish-button, #preview-button  {
   border: none;
   background-color: #333;
   color: white;
@@ -209,6 +218,11 @@ button {
   line-height: unset;
   cursor: pointer;
   margin: 10px 0;
+}
+
+#preview-button{
+  background-color: #999;
+  color: #333;
 }
 
 #publish-button:disabled {
@@ -259,12 +273,17 @@ button {
   display: grid;
 }
 
-#publish-button {
+#publish-button, #preview-button {
   min-width: 150px;
   width: 100%;
   background-color: #333;
   font-weight: bold;
   text-align: center;
+}
+
+#preview-button  {
+  background-color: #999;
+  color: #333;
 }
 
 .publish-process {
@@ -472,4 +491,9 @@ input.prop-input[type="text"] {
 input[type='radio'] {
   margin-left: 1em;
   margin-right: 0.25em;
+}
+
+
+.add-variable-button button {
+  width: 100%;
 }
