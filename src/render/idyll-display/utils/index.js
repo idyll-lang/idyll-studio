@@ -24,7 +24,6 @@ const getNodeById = (node, id) => {
   return false;
 };
 
-
 const getParentNodeById = (node, id) => {
   if (!node.children || !node.children.length) {
     return false;
@@ -141,7 +140,12 @@ const formatString = value => {
  * @param {string} propertyName the property name to update
  * @param {string} propertyValue the property value
  */
-function getUpdatedPropertyList(node, propertyName, propertyValue, propertyType) {
+function getUpdatedPropertyList(
+  node,
+  propertyName,
+  propertyValue,
+  propertyType
+) {
   if (node && propertyName) {
     const propertiesCopy = {};
     let _hasUpdated = false;
@@ -162,7 +166,7 @@ function getUpdatedPropertyList(node, propertyName, propertyValue, propertyType)
       propertiesCopy[propertyName] = {
         type: propertyType || 'value',
         value: propertyValue
-      }
+      };
     }
 
     return propertiesCopy;
@@ -251,8 +255,9 @@ const formatInitialVariableValue = (node, rowData, projectPath) => {
   if (node.type === 'data') {
     if (!rowData) {
       const { source } = node.properties;
-      const filePath = path.isAbsolute(source.value) ? source.value :
-        path.join(projectPath, 'data', source.value);
+      const filePath = path.isAbsolute(source.value)
+        ? source.value
+        : path.join(projectPath, 'data', source.value);
       const fileContent = readFile(filePath).content;
       value = jsonParser(fileContent);
     } else {

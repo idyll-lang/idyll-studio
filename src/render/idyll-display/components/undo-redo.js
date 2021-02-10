@@ -10,7 +10,7 @@ export const WrappedUndoRedo = withContext(
 
     render() {
       const { canUndo, canRedo, undo, redo } = this.props.context;
-      const buttonStyles = (disabled) => {
+      const buttonStyles = disabled => {
         return {
           background: `rgba(0, 0, 0, ${disabled ? '0.3' : '0.8'})`,
           color: '#ffffff',
@@ -23,7 +23,7 @@ export const WrappedUndoRedo = withContext(
           cursor: 'pointer',
           height: 25
         };
-      }
+      };
 
       return (
         <div

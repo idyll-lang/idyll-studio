@@ -91,7 +91,7 @@ export const WrappedAuthorView = withContext(
     }
 
     renderInner() {
-      switch(this.state.selectedView) {
+      switch (this.state.selectedView) {
         case 'properties':
           return <Properties />;
         case 'code':
@@ -99,7 +99,7 @@ export const WrappedAuthorView = withContext(
         case 'style':
           return <Styles />;
         default:
-          return  null;
+          return null;
       }
     }
 
@@ -115,17 +115,49 @@ export const WrappedAuthorView = withContext(
               top: dimensions.top + 30,
               left: dimensions.left - 10
             }}>
-              <div className="author-view-overlay-header">
-                <div  style={{display: 'flex', justifyContent: 'space-between'}}>
-                  <div className={'author-view-overlay-header-button author-view-overlay-header-close-button'} onClick={() => { this.close() }}>×</div>
-                  <div className={`author-view-overlay-header-button ${selectedView === 'properties' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'properties' }) }}>Properties</div>
-                  <div className={`author-view-overlay-header-button ${selectedView === 'code' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'code' }) }}>Markup</div>
-                  <div className={`author-view-overlay-header-button ${selectedView === 'style' ? 'selected' : ''}`} onClick={() => { this.setState({ selectedView: 'style' }) }}>Styles</div>
+            <div className='author-view-overlay-header'>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div
+                  className={
+                    'author-view-overlay-header-button author-view-overlay-header-close-button'
+                  }
+                  onClick={() => {
+                    this.close();
+                  }}>
+                  ×
+                </div>
+                <div
+                  className={`author-view-overlay-header-button ${
+                    selectedView === 'properties' ? 'selected' : ''
+                  }`}
+                  onClick={() => {
+                    this.setState({ selectedView: 'properties' });
+                  }}>
+                  Properties
+                </div>
+                <div
+                  className={`author-view-overlay-header-button ${
+                    selectedView === 'code' ? 'selected' : ''
+                  }`}
+                  onClick={() => {
+                    this.setState({ selectedView: 'code' });
+                  }}>
+                  Markup
+                </div>
+                <div
+                  className={`author-view-overlay-header-button ${
+                    selectedView === 'style' ? 'selected' : ''
+                  }`}
+                  onClick={() => {
+                    this.setState({ selectedView: 'style' });
+                  }}>
+                  Styles
                 </div>
               </div>
-              <div style={{maxHeight: 200, overflowY: 'auto'}}>
-                {this.renderInner()}
-              </div>
+            </div>
+            <div style={{ maxHeight: 200, overflowY: 'auto' }}>
+              {this.renderInner()}
+            </div>
           </div>
         );
       }

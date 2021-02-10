@@ -87,16 +87,20 @@ class Deploy extends React.PureComponent {
           <div>Share Image {this.renderProps('shareImageUrl')}</div>
           {this.context.url ? (
             <div className='url-display'>
-              URL: <a href={this.context.url} style={{textTransform: 'none'}} target="_blank">{this.context.url}</a>
+              URL:{' '}
+              <a
+                href={this.context.url}
+                style={{ textTransform: 'none' }}
+                target='_blank'>
+                {this.context.url}
+              </a>
             </div>
           ) : null}
         </div>
 
         {/* Publish Button */}
         <div className='publish-button-container'>
-          <button
-            id='preview-button'
-            onClick={this.context.toggleShowPreview}>
+          <button id='preview-button' onClick={this.context.toggleShowPreview}>
             Preview
           </button>
           <button

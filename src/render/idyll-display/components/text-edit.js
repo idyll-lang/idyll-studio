@@ -4,7 +4,12 @@ import copy from 'fast-copy';
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
 
-const { getNodeById, getRandomId, deleteNodeById, getParentNodeById } = require('../utils');
+const {
+  getNodeById,
+  getRandomId,
+  deleteNodeById,
+  getParentNodeById
+} = require('../utils');
 
 class TextEdit extends React.PureComponent {
   static contextType = Context;
@@ -58,7 +63,6 @@ class TextEdit extends React.PureComponent {
         node = node.children;
       }
 
-
       if (node.length === 1) {
         node = node[0];
 
@@ -83,14 +87,19 @@ class TextEdit extends React.PureComponent {
           return;
         }
 
-        const childIdx = (parentNode.children || []).findIndex(c => c.id === this.props.idyllASTNode.id);
+        const childIdx = (parentNode.children || []).findIndex(
+          c => c.id === this.props.idyllASTNode.id
+        );
 
-        node.forEach((n) => {
+        node.forEach(n => {
           n.id = getRandomId();
-        })
+        });
 
         // parentNode.children.splice(childIdx, 0, ...node);
-        parentNode.children = parentNode.children.slice(0, childIdx).concat(node).concat(parentNode.children.slice(childIdx + 1));
+        parentNode.children = parentNode.children
+          .slice(0, childIdx)
+          .concat(node)
+          .concat(parentNode.children.slice(childIdx + 1));
       }
     }
 

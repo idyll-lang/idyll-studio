@@ -32,23 +32,32 @@ class IdyllDisplay extends React.PureComponent {
       <>
         <div
           className={
-            'grid ' + ((this.state.collapsed || this.context.showPreview) ? 'sidebar-collapse' : '')
+            'grid ' +
+            (this.state.collapsed || this.context.showPreview
+              ? 'sidebar-collapse'
+              : '')
           }>
           <Sidebar />
           <div className='output-container'>
             <Render />
-            {
-              this.context.showPreview ? null : <WrappedAuthorView />
-            }
-            {
-              this.context.showPreview ? null : <WrappedUndoRedo />
-            }
+            {this.context.showPreview ? null : <WrappedAuthorView />}
+            {this.context.showPreview ? null : <WrappedUndoRedo />}
 
-            {
-              this.context.showPreview ? <div style={{padding: '5px 10px', color: '#fff', background: '#333', position: 'fixed', bottom: '1em', right: '1em', cursor: 'pointer'}} onClick={this.context.toggleShowPreview}>
+            {this.context.showPreview ? (
+              <div
+                style={{
+                  padding: '5px 10px',
+                  color: '#fff',
+                  background: '#333',
+                  position: 'fixed',
+                  bottom: '1em',
+                  right: '1em',
+                  cursor: 'pointer'
+                }}
+                onClick={this.context.toggleShowPreview}>
                 ← Edit
-              </div> : null
-            }
+              </div>
+            ) : null}
           </div>
         </div>
       </>
