@@ -78,7 +78,7 @@ class Main {
     ipcMain.on('importDataset', (event, message) => {
       const filePath = `${this.workingDir}/data/${p.basename(message)}`;
 
-      if(filePath !== message) {
+      if (filePath !== message) {
         fs.copyFileSync(
           message,
           `${this.workingDir}/data/${p.basename(message)}`
