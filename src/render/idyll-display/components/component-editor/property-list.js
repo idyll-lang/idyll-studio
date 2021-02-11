@@ -34,9 +34,7 @@ class PropertyList extends React.PureComponent {
         {Object.keys(ASTNode.properties || {}).map(propertyName => {
           const propertyObject = ASTNode.properties[propertyName];
           return (
-            <div
-              key={propertyName}
-              style={{ padding: '0 0.25em' }}>
+            <div key={propertyName} style={{ padding: '0 0.25em' }}>
               <div
                 style={{
                   display: 'flex',

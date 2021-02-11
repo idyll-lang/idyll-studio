@@ -7,6 +7,7 @@ import {
   readFile,
   convertInputToIdyllValue
 } from '../utils';
+import copy from 'fast-copy';
 
 const compile = require('idyll-compiler');
 
@@ -25,7 +26,7 @@ class DatasetView extends React.PureComponent {
 
     // Handle the ast change
     compile(tag).then(datasetAST => {
-      const ast = JSON.parse(JSON.stringify(this.context.ast));
+      const ast = copy(this.context.ast);
       const datasetNode = datasetAST.children[0];
       datasetNode.id = getRandomId();
 
@@ -47,12 +48,12 @@ class DatasetView extends React.PureComponent {
   handleDrop(e) {
     const { importDataset } = this.context;
     if (e.dataTransfer.files.length) {
-      const f = e.dataTransfer.files[0]
+      const f = e.dataTransfer.files[0];
       importDataset(f.path, () => {
         this.insertData({
           name: f.name.replace('.csv', '').replace('.json', ''),
           path: f.path
-        })
+        });
       });
     }
   }
@@ -62,10 +63,28 @@ class DatasetView extends React.PureComponent {
 
     return (
       <div className='dataset-view'>
-        <h2 style={{marginBottom: 0}}>Datasets</h2>
-        <div style={{fontSize: 12, color: '#333'}}>Loaded data will appear in panel above.</div>
-        <div  onDrop={this.handleDrop.bind(this)} style={{width: '100%', border: 'solid 2px #999', borderRadius: 5, color: '#999', fontSize: 12, margin: '1em auto', display: 'flex', flexDirection: 'row', justifyContent: 'center', fontWeight: 'bold',  textAlign: 'center', padding: '2em 1em' }}>
-            Drag+and+drop to add a dataset <br/>(.csv or .json)
+        <h2 style={{ marginBottom: 0 }}>Datasets</h2>
+        <div style={{ fontSize: 12, color: '#333' }}>
+          Loaded data will appear in panel above.
+        </div>
+        <div
+          onDrop={this.handleDrop.bind(this)}
+          style={{
+            width: '100%',
+            border: 'solid 2px #999',
+            borderRadius: 5,
+            color: '#999',
+            fontSize: 12,
+            margin: '1em auto',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            textAlign: 'center',
+            padding: '2em 1em'
+          }}>
+          Drag+and+drop to add a dataset <br />
+          (.csv or .json)
         </div>
         <div className='dataset-container'>
           {datasets && datasets.length ? (
@@ -86,7 +105,6 @@ class DatasetView extends React.PureComponent {
             />
           ) : null}
         </div>
-
       </div>
     );
   }

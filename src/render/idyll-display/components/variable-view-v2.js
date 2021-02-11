@@ -21,16 +21,6 @@ const TYPE_OPTIONS = [
 
 const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
 
-/**
- * 1. quotes on strings, everything else expression - DONE
- * 2. initial value is state re-evalue current value - DONE
- * 3. delete derived variables
- * 4. null
- * 5. csv - DONE
- * 6. saved (on open do values persist) - DONE
- * 7. delete
- * 8. initial value error
- */
 const VariableViewV2 = withContext(
   class VariableView extends React.PureComponent {
     static contextType = Context;
@@ -49,7 +39,7 @@ const VariableViewV2 = withContext(
 
       props.context.onUpdate(() => {
         this.getRows();
-      })
+      });
     }
 
     componentDidMount() {
@@ -57,13 +47,21 @@ const VariableViewV2 = withContext(
     }
 
     componentDidUpdate(prevProps) {
+      const { context } = this.props;
+
+      const prevVarNodes = prevProps.context.ast.children.filter(node =>
+        ALLOWED_TYPES.includes(node.type)
+      );
+      const currVarNodes = context.ast.children.filter(node =>
+        ALLOWED_TYPES.includes(node.type)
+      );
+
       if (
-        prevProps.context.ast.children.length !==
-          this.props.context.ast.children.length ||
         JSON.stringify(prevProps.context.context.data()) !==
-          JSON.stringify(this.props.context.context.data())
+          JSON.stringify(context.context.data()) ||
+        JSON.stringify(prevVarNodes) !== JSON.stringify(currVarNodes)
       ) {
-        // when a var/data node is added or the context has changed
+        // when a var/data node is added, context.data() has changed, or variable data is different
         this.getRows();
       }
     }
@@ -121,13 +119,17 @@ const VariableViewV2 = withContext(
 
       const initialValue = formatInitialVariableValue(
         child,
-        this.state.rows.filter(row => row.name === name)[0] || null
+        this.state.rows.filter(row => row.name === name)[0] || null,
+        this.props.context.projectPath
       );
       let currentValue = formatCurrentVariableValue(currentData[name]);
 
       if (child.type === 'data') {
         if (initialValue && !currentValue) {
-          currentValue = initialValue;
+          currentValue =
+            typeof initialValue === 'string'
+              ? JSON.parse(initialValue)
+              : initialValue;
           this.props.context.context.update({
             [name]: currentValue
           });
@@ -208,7 +210,7 @@ const VariableViewV2 = withContext(
           update.fromRowData.type === 'derived') &&
         newValue !== 'data'
       ) {
-        const { ast } = this.props.context; // try copying it and then removing and re-adding node
+        const { ast } = this.props.context;
         const node = getNodeById(ast, update.fromRowId);
         const typeOfValue = newValue === 'var' ? 'value' : 'expression';
 

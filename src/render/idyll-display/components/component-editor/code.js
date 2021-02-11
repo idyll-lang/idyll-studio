@@ -1,7 +1,5 @@
-
-
 import * as React from 'react';
-import { getNodeById, getParentNodeById, getRandomId  } from '../../utils/';
+import { getNodeById, getParentNodeById, getRandomId } from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import EditableCodeCell from './code-cell';
 
@@ -32,11 +30,12 @@ export default withContext(
       this.updateAst(newMarkup);
     }
 
-    onBlur(newMarkup) {
-    }
+    onBlur(newMarkup) {}
 
     updateAst(newMarkup) {
-      const output = compile(newMarkup || this.getMarkup(this.props), { async: false });
+      const output = compile(newMarkup || this.getMarkup(this.props), {
+        async: false
+      });
       let node = output.children[0];
 
       while (node.type === 'component' && node.name === 'TextContainer') {
@@ -67,33 +66,54 @@ export default withContext(
           return;
         }
 
-        const childIdx = (parentNode.children || []).findIndex(c => c.id === this.props.context.activeComponent.id);
+        const childIdx = (parentNode.children || []).findIndex(
+          c => c.id === this.props.context.activeComponent.id
+        );
 
-        node.forEach((n) => {
+        node.forEach(n => {
           n.id = getRandomId();
-        })
+        });
 
         // parentNode.children.splice(childIdx, 0, ...node);
-        parentNode.children = parentNode.children.slice(0, childIdx).concat(node).concat(parentNode.children.slice(childIdx + 1));
+        parentNode.children = parentNode.children
+          .slice(0, childIdx)
+          .concat(node)
+          .concat(parentNode.children.slice(childIdx + 1));
       }
 
       this.props.context.setAst(this.props.context.ast);
     }
 
     render() {
-      return  (
+      return (
         <div className={'idyll-code-editor'}>
           <EditableCodeCell
             onExecute={this.onExecute.bind(this)}
             onBlur={this.onBlur.bind(this)}
             markup={this.getMarkup(this.props)}
           />
-          <div className={'code-instructions'} style={{color: '#ccc',  fontSize: 10, fontStyle: 'italic', margin: '5px 16px', display: 'flex', justifyContent: 'space-between'}}>
+          <div
+            className={'code-instructions'}
+            style={{
+              color: '#ccc',
+              fontSize: 10,
+              fontStyle: 'italic',
+              margin: '5px 16px',
+              display: 'flex',
+              justifyContent: 'space-between'
+            }}>
             <div>shift + enter to execute</div>
-            <div><a target="_blank" style={{color: '#ccc', textDecoration:  'underline'}} href={'https://idyll-lang.org/docs/syntax'}>Syntax Guide</a></div>
+            <div>
+              <a
+                target='_blank'
+                style={{ color: '#ccc', textDecoration: 'underline' }}
+                href={'https://idyll-lang.org/docs/syntax'}>
+                Syntax Guide
+              </a>
+            </div>
           </div>
         </div>
-      )
+      );
     }
   }
 );

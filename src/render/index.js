@@ -12,10 +12,10 @@ const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
 const p = require('path');
 
-
 const PUBLISHING_ERROR = 'Error occurred while publishing: ';
 const PUBLISHING = 'Publishing your project...';
-const PUBLISHED = 'Published! It may take up to a minute for the latest changes to be reflected.';
+const PUBLISHED =
+  'Published! It may take up to a minute for the latest changes to be reflected.';
 
 class App extends React.PureComponent {
   constructor(props) {
@@ -46,12 +46,10 @@ class App extends React.PureComponent {
   }
 
   componentDidMount() {
-
     // Load in datasets
     ipcRenderer.on(
       'idyll:compile',
       (event, { datasets, ast, components, path, url }) => {
-
         if (!ast) {
           this.setState({
             ast
@@ -83,11 +81,9 @@ class App extends React.PureComponent {
 
     // handle dataset import
 
-    ipcRenderer.on(
-      'data:import',
-      () => {
-        this._dataImportCb && this._dataImportCb();
-      })
+    ipcRenderer.on('data:import', () => {
+      this._dataImportCb && this._dataImportCb();
+    });
 
     window.addEventListener(
       'keydown',
@@ -143,15 +139,19 @@ class App extends React.PureComponent {
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
-
-      const relativeDataPaths = (ast) => {
+      const relativeDataPaths = ast => {
         const dataNodes = idyllAST.getNodesByType(ast, 'data');
-        dataNodes.forEach((node) => {
+        dataNodes.forEach(node => {
           node.properties.source.value = basename(node.properties.source.value);
-        })
+        });
         return ast;
       };
-      ipcRenderer.send('save', idyllAST.toMarkup(relativeDataPaths(this.state.ast), { insertFullWidth: true }));
+      ipcRenderer.send(
+        'save',
+        idyllAST.toMarkup(relativeDataPaths(this.state.ast), {
+          insertFullWidth: true
+        })
+      );
     });
   }
 
@@ -165,12 +165,12 @@ class App extends React.PureComponent {
         const { name, source } = node.properties;
 
         let datasetFilePath = source.value;
-        if(!p.isAbsolute(datasetFilePath)) {
+        if (!p.isAbsolute(datasetFilePath)) {
           datasetFilePath = `${workingDir}/data/${datasetFilePath}`;
         }
 
         const { content, error } = readFile(datasetFilePath);
-        if(content) {
+        if (content) {
           datasets[name.value] = jsonParser(content);
         }
       });
@@ -193,9 +193,10 @@ class App extends React.PureComponent {
     if (!this.undoStack.length) {
       return;
     }
+
     const popped = copy(this.undoStack.pop());
     this.redoStack.push(copy(this.state.ast));
-    this._undoStash = popped;
+    this._undoStash = copy(popped);
     this.setState({ ast: popped });
   }
 
@@ -213,6 +214,7 @@ class App extends React.PureComponent {
       currentProcess,
       activeComponent,
       onUpdateCallbacks,
+      pathKey,
       showPreview
     } = this.state;
     return {
@@ -227,12 +229,13 @@ class App extends React.PureComponent {
       url: url,
       currentProcess: currentProcess,
       activeComponent: activeComponent,
+      projectPath: p.dirname(pathKey),
       showPreview: showPreview,
       toggleShowPreview: () => {
         console.log('toggling showPreview', this);
         this.setState({
           showPreview: !this.state.showPreview
-        })
+        });
       },
       setSidebarNode: node => {
         this.setState({ currentSidebarNode: node });
@@ -251,13 +254,13 @@ class App extends React.PureComponent {
       },
       setContext: context => {
         this.setState({ context: context });
-        context.onUpdate((newData) => {
-          onUpdateCallbacks.forEach((cb) => {
+        context.onUpdate(newData => {
+          onUpdateCallbacks.forEach(cb => {
             cb(newData);
           });
-        })
+        });
       },
-      onUpdate: (cb) => {
+      onUpdate: cb => {
         onUpdateCallbacks.push(cb);
       },
       deploy: () => {
@@ -327,8 +330,8 @@ class App extends React.PureComponent {
     // const name = prompt('Project name', 'my-idyll-project');
     ipcRenderer.send('client:createProject', this.state.createProjectName);
     this.setState({
-      isCreatingProject: true,
-    })
+      isCreatingProject: true
+    });
   }
 
   handleCreateCancel() {
@@ -337,13 +340,13 @@ class App extends React.PureComponent {
     this.setState({
       isCreatingProject: false,
       requestCreateProject: false
-    })
+    });
   }
 
   requestCreateProject() {
     this.setState({
       requestCreateProject: true
-    })
+    });
   }
 
   handleChangeCreateProjectName(e) {
@@ -369,36 +372,67 @@ class App extends React.PureComponent {
               fontFamily: 'Helvetica',
               borderRadius: 0
             }}>
-              { this.state.requestCreateProject ? (
-                <div>
-                  { this.state.isCreatingProject ? (<div>
-                    Creating project. This may take a minute or two.
-                  </div>) : (
-                    <div>
-                      <div style={{fontWeight: 'bold'}}>Enter project name, and then choose a folder to put it:</div>
-                      <input style={{padding: '1em', display: 'block', width: '100%', marginTop: '1em', boxSizing: 'border-box'}} value={this.state.createProjectName} onChange={this.handleChangeCreateProjectName.bind(this)} placeholder={'My project'} />
-                      <button style={{display: 'block', width: '100%', padding: '1em', margin: '1em auto', height: 'auto', lineHeight: 'unset'}} onClick={this.handleCreate.bind(this)}>
-                        Select folder
-                      </button>
-
-                      <button style={{display: 'block', width: '100%', padding: '1em', margin: '1em auto', height: 'auto', lineHeight: 'unset'}} onClick={this.handleCreateCancel.bind(this)}>
-                        Cancel
-                      </button>
+            {this.state.requestCreateProject ? (
+              <div>
+                {this.state.isCreatingProject ? (
+                  <div>Creating project. This may take a minute or two.</div>
+                ) : (
+                  <div>
+                    <div style={{ fontWeight: 'bold' }}>
+                      Enter project name, and then choose a folder to put it:
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div>
-                  <button className='creator' onClick={this.requestCreateProject.bind(this)}>
-                    Create a project
-                  </button>
-                  <button className='loader' onClick={this.handleLoad.bind(this)}>
-                    Load a project
-                  </button>
-                </div>
-              )
-              }
+                    <input
+                      style={{
+                        padding: '1em',
+                        display: 'block',
+                        width: '100%',
+                        marginTop: '1em',
+                        boxSizing: 'border-box'
+                      }}
+                      value={this.state.createProjectName}
+                      onChange={this.handleChangeCreateProjectName.bind(this)}
+                      placeholder={'My project'}
+                    />
+                    <button
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        padding: '1em',
+                        margin: '1em auto',
+                        height: 'auto',
+                        lineHeight: 'unset'
+                      }}
+                      onClick={this.handleCreate.bind(this)}>
+                      Select folder
+                    </button>
 
+                    <button
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        padding: '1em',
+                        margin: '1em auto',
+                        height: 'auto',
+                        lineHeight: 'unset'
+                      }}
+                      onClick={this.handleCreateCancel.bind(this)}>
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div>
+                <button
+                  className='creator'
+                  onClick={this.requestCreateProject.bind(this)}>
+                  Create a project
+                </button>
+                <button className='loader' onClick={this.handleLoad.bind(this)}>
+                  Load a project
+                </button>
+              </div>
+            )}
           </div>
         </div>
       );

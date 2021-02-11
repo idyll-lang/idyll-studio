@@ -13,12 +13,14 @@ export const WrappedComponent = withContext(
       this._inputRef = React.createRef();
       this.state = {
         variableData: props.variableData
-      }
-      props.context && props.context.onUpdate && props.context.onUpdate((newData) => {
-        this.setState({
-          variableData: { ...this.props.context.context.data(), ...newData }
-        })
-      })
+      };
+      props.context &&
+        props.context.onUpdate &&
+        props.context.onUpdate(newData => {
+          this.setState({
+            variableData: { ...this.props.context.context.data(), ...newData }
+          });
+        });
     }
 
     componentDidMount() {
@@ -78,13 +80,13 @@ export const WrappedComponent = withContext(
     renderPropInput(key, propertyObject, nextType) {
       return (
         <div>
-            <input
-              className={'prop-input'}
-              style={{ fontFamily: 'monospace' }}
-              type='text'
-              ref={this._inputRef}
-              onChange={this.handleUpdateValue}
-            />
+          <input
+            className={'prop-input'}
+            style={{ fontFamily: 'monospace' }}
+            type='text'
+            ref={this._inputRef}
+            onChange={this.handleUpdateValue}
+          />
         </div>
       );
     }
@@ -100,18 +102,16 @@ export const WrappedComponent = withContext(
       }
     }
 
-    deleteProperty(key) {
-
-    }
+    deleteProperty(key) {}
 
     render() {
       const { name, propertyObject, isOver, dropTarget } = this.props;
       const { variableData } = this.state;
-      const  nextProps = {
+      const nextProps = {
         variable: 'value',
         value: 'expression',
-        expression: 'variable',
-      }
+        expression: 'variable'
+      };
       let ret;
       ret = (
         <div
@@ -121,12 +121,20 @@ export const WrappedComponent = withContext(
             width: '100%',
             marginBottom: '1em'
           }}>
-          <div style={{display:'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <div style={{display:'flex'}}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+            <div style={{ display: 'flex' }}>
               <div className='prop-name'>{name}</div>
               <div
                 className={'prop-type'}
-                onClick={this.updateNodeType(name, nextProps[propertyObject.type])}
+                onClick={this.updateNodeType(
+                  name,
+                  nextProps[propertyObject.type]
+                )}
                 style={{
                   color: this.getBackgroundColor(propertyObject.type)
                 }}>
@@ -135,49 +143,67 @@ export const WrappedComponent = withContext(
                   : propertyObject.type}
               </div>
               {propertyObject.type === 'variable' ? (
-                  <div className='current-value' style={{maxWidth: 100, fontSize: 12, fontFamily: 'monospace', marginLeft: 8, whiteSpace: 'nowrap', textOverflow:'ellipsis', overflow: 'hidden' }}>
-                    {stringify(variableData[propertyObject.value])}
-                  </div>
-                ) : (
-                  <></>
-                )}
+                <div
+                  className='current-value'
+                  style={{
+                    maxWidth: 100,
+                    fontSize: 12,
+                    fontFamily: 'monospace',
+                    marginLeft: 8,
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden'
+                  }}>
+                  {stringify(variableData[propertyObject.value])}
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
-            <div onClick={() => this.props.deleteProperty(name)} style={{cursor: 'pointer', color: '#999', fontSize: 12, fontWeight: 'bold'}}>
+            <div
+              onClick={() => this.props.deleteProperty(name)}
+              style={{
+                cursor: 'pointer',
+                color: '#999',
+                fontSize: 12,
+                fontWeight: 'bold'
+              }}>
               ×
             </div>
           </div>
-          <div style={{width: '100%'}}>{this.renderProp(name, propertyObject)}</div>
+          <div style={{ width: '100%' }}>
+            {this.renderProp(name, propertyObject)}
+          </div>
         </div>
       );
       return dropTarget(ret);
     }
   }
-)
+);
 
-  const variableTarget = {
-    drop(props, monitor, component) {
-      const name = monitor.getItem().name;
+const variableTarget = {
+  drop(props, monitor, component) {
+    const name = monitor.getItem().name;
 
-      updateNodeById(props.ast, props.node.id, {
-        properties: { [props.name]: { value: name, type: 'variable' } }
-      });
+    updateNodeById(props.ast, props.node.id, {
+      properties: { [props.name]: { value: name, type: 'variable' } }
+    });
 
-      const node = getNodeById(
-        props.ast,
-        props.node.id
-      );
+    const node = getNodeById(props.ast, props.node.id);
 
-      props.setAst({...props.ast});
-      props.setActiveComponent(node);
-    }
-  };
-
-  function collect(connect, monitor) {
-    return {
-      dropTarget: connect.dropTarget(),
-      isOver: monitor.isOver()
-    };
+    props.setAst({ ...props.ast });
+    props.setActiveComponent(node);
   }
+};
 
-export default DropTarget('VARIABLE', variableTarget, collect)(WrappedComponent);
+function collect(connect, monitor) {
+  return {
+    dropTarget: connect.dropTarget(),
+    isOver: monitor.isOver()
+  };
+}
+
+export default DropTarget('VARIABLE', variableTarget, collect)(
+  WrappedComponent
+);
 export { WrappedComponent as Property };

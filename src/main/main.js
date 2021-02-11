@@ -46,7 +46,7 @@ class Main {
       this.mainWindow.webContents.send('idyll:compile', {
         ast: null
       });
-    })
+    });
 
     this.mainWindow.webContents.on('new-window', function(e, url) {
       e.preventDefault();
@@ -76,10 +76,13 @@ class Main {
     });
     // import dataset
     ipcMain.on('importDataset', (event, message) => {
-      fs.copyFileSync(message, `${this.workingDir}/data/${p.basename(message)}`);
+      const filePath = `${this.workingDir}/data/${p.basename(message)}`;
+
+      if (filePath !== message) {
+        fs.copyFileSync(message, filePath);
+      }
       this.mainWindow.webContents.send('data:import');
     });
-
   }
 
   async handleCreateProject(event, projectName) {
@@ -99,10 +102,10 @@ class Main {
       const slugName = slugify(projectName);
       await createProject({
         'package-name': `${slugName}`,
-        'template': 'article',
+        template: 'article',
         'post-dir': `${projectDir}/${slugName}`,
-        'installDependencies': true
-      })
+        installDependencies: true
+      });
 
       this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);
     } catch (err) {
