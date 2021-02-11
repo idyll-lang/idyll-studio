@@ -79,10 +79,7 @@ class Main {
       const filePath = `${this.workingDir}/data/${p.basename(message)}`;
 
       if (filePath !== message) {
-        fs.copyFileSync(
-          message,
-          `${this.workingDir}/data/${p.basename(message)}`
-        );
+        fs.copyFileSync(message, filePath);
       }
       this.mainWindow.webContents.send('data:import');
     });
