@@ -76,10 +76,14 @@ class Main {
     });
     // import dataset
     ipcMain.on('importDataset', (event, message) => {
-      fs.copyFileSync(
-        message,
-        `${this.workingDir}/data/${p.basename(message)}`
-      );
+      const filePath = `${this.workingDir}/data/${p.basename(message)}`;
+
+      if(filePath !== message) {
+        fs.copyFileSync(
+          message,
+          `${this.workingDir}/data/${p.basename(message)}`
+        );
+      }
       this.mainWindow.webContents.send('data:import');
     });
   }
