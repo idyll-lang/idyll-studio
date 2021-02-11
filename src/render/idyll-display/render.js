@@ -27,7 +27,6 @@ const Renderer = withContext(
         JSON.stringify(prevProps.context.ast) !==
           JSON.stringify(this.props.context.ast)
       ) {
-        console.log('hi');
         this.setState({ error: null });
       }
     }
