@@ -3,16 +3,13 @@ import IdyllDocument from 'idyll-document';
 import AuthorToolButtons from './components/author-tool-buttons';
 import InlineAuthorToolButtons from './components/inline-author-tool-buttons';
 import TextEdit from './components/text-edit.js';
-import Context from '../context/context';
 import DropTarget from './components/drop-target';
 import { withContext } from '../context/with-context';
-import { readFile, jsonParser } from './utils';
 
 const p = require('path');
 
 const Renderer = withContext(
   class Renderer extends React.PureComponent {
-    static contextType = Context;
     constructor(props) {
       super(props);
       this.state = {};
@@ -119,7 +116,16 @@ const Renderer = withContext(
         );
       }
 
-      const { ast, components } = this.context;
+      const {
+        ast,
+        components,
+        showPreview,
+        layout,
+        theme,
+        setContext,
+        datasets,
+      } = this.props.context;
+
       if (!this.loadedComponents) {
         this.loadedComponents = {};
       }
@@ -137,24 +143,24 @@ const Renderer = withContext(
         <div className='renderer'>
           <div className='renderer-container' contentEditable={false}>
             <IdyllDocument
-              key={!this.context.showPreview}
+              key={!showPreview}
               ast={this.injectDropTargets(ast)}
               components={{
                 IdyllEditorDropTarget: DropTarget,
                 ...this.loadedComponents,
               }}
-              layout={this.context.layout}
-              theme={this.context.theme}
+              layout={layout}
+              theme={theme}
               context={(context) => {
-                this.context.setContext(context);
+                setContext(context);
               }}
-              datasets={{}}
+              datasets={datasets}
               injectThemeCSS={true}
               injectLayoutCSS={true}
               userViewComponent={AuthorToolButtons}
               userInlineViewComponent={InlineAuthorToolButtons}
-              textEditComponent={this.context.showPreview ? null : TextEdit}
-              authorView={!this.context.showPreview}
+              textEditComponent={showPreview ? null : TextEdit}
+              authorView={!showPreview}
             />
           </div>
         </div>

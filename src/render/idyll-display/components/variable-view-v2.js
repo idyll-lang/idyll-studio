@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { DragSource } from 'react-dnd';
+import copy from 'fast-copy';
 import { withContext } from '../../context/with-context';
 import Context from '../../context/context';
 import {
@@ -186,7 +187,7 @@ const VariableViewV2 = withContext(
     }
 
     handleNameUpdate(update, newValue) {
-      const { ast } = this.props.context;
+      const ast = copy(this.props.context.ast);
       const node = getNodeById(ast, update.fromRowId);
       node.properties.name.value = newValue;
 
@@ -202,7 +203,7 @@ const VariableViewV2 = withContext(
     }
 
     handleInitialValueUpdate(update, newValue, type) {
-      const { ast } = this.props.context;
+      const ast = copy(this.props.context.ast);
       const node = getNodeById(ast, update.fromRowId);
       node.properties.value.value = newValue;
       node.properties.value.type =
@@ -217,7 +218,7 @@ const VariableViewV2 = withContext(
           update.fromRowData.type === 'derived') &&
         newValue !== 'data'
       ) {
-        const { ast } = this.props.context;
+        const ast = copy(this.props.context.ast);
         const node = getNodeById(ast, update.fromRowId);
         const typeOfValue = newValue === 'var' ? 'value' : 'expression';
 
