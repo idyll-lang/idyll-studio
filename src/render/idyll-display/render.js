@@ -6,6 +6,9 @@ import TextEdit from './components/text-edit.js';
 import Context from '../context/context';
 import DropTarget from './components/drop-target';
 import { withContext } from '../context/with-context';
+import { readFile, jsonParser } from './utils';
+
+const p = require('path');
 
 const Renderer = withContext(
   class Renderer extends React.PureComponent {
@@ -17,24 +20,37 @@ const Renderer = withContext(
 
     componentDidCatch(e) {
       this.setState({
-        error: e
+        error: e,
       });
     }
 
     componentDidUpdate(prevProps) {
+      const { context } = this.props;
+
       if (
         this.state.error &&
-        JSON.stringify(prevProps.context.ast) !==
-          JSON.stringify(this.props.context.ast)
+        JSON.stringify(prevProps.context.ast) !== JSON.stringify(context.ast)
       ) {
         this.setState({ error: null });
+      } else if (this.hasUndefinedDatasets(context)) {
+        context.loadDatasets();
       }
+    }
+
+    hasUndefinedDatasets(context) {
+      for (let key in context.context.data()) {
+        if (context.context.data()[key] === undefined) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     injectDropTargets(ast) {
       // deep copy
       const astCopy = JSON.parse(JSON.stringify(ast));
-      astCopy.children = (astCopy.children || []).map(node => {
+      astCopy.children = (astCopy.children || []).map((node) => {
         if (node.type !== 'component') {
           return node;
         }
@@ -53,9 +69,9 @@ const Renderer = withContext(
                   properties: {
                     insertBefore: {
                       type: 'value',
-                      value: child.id
-                    }
-                  }
+                      value: child.id,
+                    },
+                  },
                 },
                 child,
                 {
@@ -65,10 +81,10 @@ const Renderer = withContext(
                   properties: {
                     insertAfter: {
                       type: 'value',
-                      value: child.id
-                    }
-                  }
-                }
+                      value: child.id,
+                    },
+                  },
+                },
               ];
             }
             return [
@@ -81,10 +97,10 @@ const Renderer = withContext(
                 properties: {
                   insertAfter: {
                     type: 'value',
-                    value: child.id
-                  }
-                }
-              }
+                    value: child.id,
+                  },
+                },
+              },
             ];
           }, []);
         }
@@ -125,11 +141,11 @@ const Renderer = withContext(
               ast={this.injectDropTargets(ast)}
               components={{
                 IdyllEditorDropTarget: DropTarget,
-                ...this.loadedComponents
+                ...this.loadedComponents,
               }}
               layout={this.context.layout}
               theme={this.context.theme}
-              context={context => {
+              context={(context) => {
                 this.context.setContext(context);
               }}
               datasets={{}}

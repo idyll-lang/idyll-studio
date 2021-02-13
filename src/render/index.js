@@ -34,7 +34,7 @@ class App extends React.PureComponent {
       onUpdateCallbacks: [],
       requestCreateProject: false,
       isCreatingProject: false,
-      createProjectName: ''
+      createProjectName: '',
     };
 
     this.createComponentMap = this.createComponentMap.bind(this);
@@ -52,7 +52,7 @@ class App extends React.PureComponent {
       (event, { datasets, ast, components, path, url }) => {
         if (!ast) {
           this.setState({
-            ast
+            ast,
           });
           return;
         }
@@ -71,7 +71,7 @@ class App extends React.PureComponent {
           currentProcess: '',
           url: url,
           requestCreateProject: false,
-          isCreatingProject: false
+          isCreatingProject: false,
         });
 
         // load up datasets in context
@@ -87,7 +87,7 @@ class App extends React.PureComponent {
 
     window.addEventListener(
       'keydown',
-      event => {
+      (event) => {
         if (
           event.shiftKey &&
           (event.ctrlKey || event.metaKey) &&
@@ -104,7 +104,7 @@ class App extends React.PureComponent {
     // Overwrite default copy/paste behavior so it
     // doesn't include any weird HTML/styles/linebreaks,
     // text only!
-    window.addEventListener('paste', function(e) {
+    window.addEventListener('paste', function (e) {
       // cancel paste
       e.preventDefault();
 
@@ -119,29 +119,29 @@ class App extends React.PureComponent {
 
     ipcRenderer.on('publishing', (event, message) => {
       this.setState({
-        currentProcess: PUBLISHING
+        currentProcess: PUBLISHING,
       });
     });
 
     ipcRenderer.on('pub-error', (event, message) => {
       this.setState({
-        currentProcess: PUBLISHING_ERROR + message
+        currentProcess: PUBLISHING_ERROR + message,
       });
     });
 
     ipcRenderer.on('published-url', (event, url) => {
       this.setState({
         url: url,
-        currentProcess: PUBLISHED
+        currentProcess: PUBLISHED,
       });
     });
 
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
-      const relativeDataPaths = ast => {
+      const relativeDataPaths = (ast) => {
         const dataNodes = idyllAST.getNodesByType(ast, 'data');
-        dataNodes.forEach(node => {
+        dataNodes.forEach((node) => {
           node.properties.source.value = basename(node.properties.source.value);
         });
         return ast;
@@ -149,24 +149,24 @@ class App extends React.PureComponent {
       ipcRenderer.send(
         'save',
         idyllAST.toMarkup(relativeDataPaths(this.state.ast), {
-          insertFullWidth: true
+          insertFullWidth: true,
         })
       );
     });
   }
 
   handleDatasetLoading(ast, projectPath) {
-    const dataNodes = ast.children.filter(child => child.type === 'data');
+    const dataNodes = ast.children.filter((child) => child.type === 'data');
     const workingDir = p.dirname(projectPath);
 
     if (dataNodes && dataNodes.length > 0) {
       const datasets = {};
-      dataNodes.forEach(node => {
+      dataNodes.forEach((node) => {
         const { name, source } = node.properties;
 
         let datasetFilePath = source.value;
         if (!p.isAbsolute(datasetFilePath)) {
-          datasetFilePath = `${workingDir}/data/${datasetFilePath}`;
+          datasetFilePath = p.join(workingDir, 'data', datasetFilePath);
         }
 
         const { content, error } = readFile(datasetFilePath);
@@ -215,7 +215,7 @@ class App extends React.PureComponent {
       activeComponent,
       onUpdateCallbacks,
       pathKey,
-      showPreview
+      showPreview,
     } = this.state;
     return {
       context: context,
@@ -234,33 +234,33 @@ class App extends React.PureComponent {
       toggleShowPreview: () => {
         console.log('toggling showPreview', this);
         this.setState({
-          showPreview: !this.state.showPreview
+          showPreview: !this.state.showPreview,
         });
       },
-      setSidebarNode: node => {
+      setSidebarNode: (node) => {
         this.setState({ currentSidebarNode: node });
       },
-      setTheme: theme => {
+      setTheme: (theme) => {
         this.setState({ theme: theme });
       },
-      setLayout: layout => {
+      setLayout: (layout) => {
         this.setState({ layout: layout });
       },
-      setAst: ast => {
+      setAst: (ast) => {
         this.redoStack = [];
         this.undoStack.push(this._undoStash);
         this._undoStash = copy(ast);
         this.setState({ ast: { ...ast } });
       },
-      setContext: context => {
+      setContext: (context) => {
         this.setState({ context: context });
-        context.onUpdate(newData => {
-          onUpdateCallbacks.forEach(cb => {
+        context.onUpdate((newData) => {
+          onUpdateCallbacks.forEach((cb) => {
             cb(newData);
           });
         });
       },
-      onUpdate: cb => {
+      onUpdate: (cb) => {
         onUpdateCallbacks.push(cb);
       },
       deploy: () => {
@@ -270,7 +270,7 @@ class App extends React.PureComponent {
         ipcRenderer.send('importDataset', path);
         this._dataImportCb = cb;
       },
-      setActiveComponent: activeComponent => {
+      setActiveComponent: (activeComponent) => {
         this.setState({ activeComponent: { ...activeComponent } });
       },
       canUndo: () => {
@@ -284,7 +284,10 @@ class App extends React.PureComponent {
       },
       redo: () => {
         this.handleRedo();
-      }
+      },
+      loadDatasets: () => {
+        this.handleDatasetLoading(ast, pathKey);
+      },
     };
   }
 
@@ -293,7 +296,7 @@ class App extends React.PureComponent {
   createComponentMap(components) {
     var componentProps = new Map();
 
-    components.forEach(component => {
+    components.forEach((component) => {
       var path;
       try {
         path = require(component.path);
@@ -312,7 +315,7 @@ class App extends React.PureComponent {
         componentProps.set(component.name, {
           name: component.name,
           tagType: 'closed',
-          props: []
+          props: [],
         });
       }
     });
@@ -330,7 +333,7 @@ class App extends React.PureComponent {
     // const name = prompt('Project name', 'my-idyll-project');
     ipcRenderer.send('client:createProject', this.state.createProjectName);
     this.setState({
-      isCreatingProject: true
+      isCreatingProject: true,
     });
   }
 
@@ -339,19 +342,19 @@ class App extends React.PureComponent {
 
     this.setState({
       isCreatingProject: false,
-      requestCreateProject: false
+      requestCreateProject: false,
     });
   }
 
   requestCreateProject() {
     this.setState({
-      requestCreateProject: true
+      requestCreateProject: true,
     });
   }
 
   handleChangeCreateProjectName(e) {
     this.setState({
-      createProjectName: e.target.value
+      createProjectName: e.target.value,
     });
   }
 
@@ -365,12 +368,12 @@ class App extends React.PureComponent {
             justifyContent: 'center',
             width: '100vw',
             height: '100vh',
-            background: '#efefef'
+            background: '#efefef',
           }}>
           <div
             style={{
               fontFamily: 'Helvetica',
-              borderRadius: 0
+              borderRadius: 0,
             }}>
             {this.state.requestCreateProject ? (
               <div>
@@ -387,7 +390,7 @@ class App extends React.PureComponent {
                         display: 'block',
                         width: '100%',
                         marginTop: '1em',
-                        boxSizing: 'border-box'
+                        boxSizing: 'border-box',
                       }}
                       value={this.state.createProjectName}
                       onChange={this.handleChangeCreateProjectName.bind(this)}
@@ -400,7 +403,7 @@ class App extends React.PureComponent {
                         padding: '1em',
                         margin: '1em auto',
                         height: 'auto',
-                        lineHeight: 'unset'
+                        lineHeight: 'unset',
                       }}
                       onClick={this.handleCreate.bind(this)}>
                       Select folder
@@ -413,7 +416,7 @@ class App extends React.PureComponent {
                         padding: '1em',
                         margin: '1em auto',
                         height: 'auto',
-                        lineHeight: 'unset'
+                        lineHeight: 'unset',
                       }}
                       onClick={this.handleCreateCancel.bind(this)}>
                       Cancel

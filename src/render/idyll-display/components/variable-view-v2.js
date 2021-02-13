@@ -10,16 +10,16 @@ import {
   formatInitialVariableValue,
   formatCurrentVariableValue,
   convertInputToIdyllValue,
-  getTextContainerIndex
+  getTextContainerIndex,
 } from '../utils';
 
 const TYPE_OPTIONS = [
   { id: 'var', value: 'var' },
   { id: 'data', value: 'data' },
-  { id: 'derived', value: 'derived' }
+  { id: 'derived', value: 'derived' },
 ];
 
-const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
+const ALLOWED_TYPES = TYPE_OPTIONS.map((type) => type.id);
 
 const VariableViewV2 = withContext(
   class VariableView extends React.PureComponent {
@@ -30,12 +30,13 @@ const VariableViewV2 = withContext(
 
       this.state = {
         rows: [],
-        error: null
+        error: null,
       };
 
       this.addVariable = this.addVariable.bind(this);
       this.getRows = this.getRows.bind(this);
       this.handleGridUpdate = this.handleGridUpdate.bind(this);
+      this._isMounted = false;
 
       props.context.onUpdate(() => {
         this.getRows();
@@ -44,21 +45,27 @@ const VariableViewV2 = withContext(
 
     componentDidMount() {
       this.getRows();
+      this._isMounted = true;
+    }
+
+    componentWillUnmount() {
+      this._isMounted = false;
     }
 
     componentDidUpdate(prevProps) {
       const { context } = this.props;
 
-      const prevVarNodes = prevProps.context.ast.children.filter(node =>
+      const prevVarNodes = prevProps.context.ast.children.filter((node) =>
         ALLOWED_TYPES.includes(node.type)
       );
-      const currVarNodes = context.ast.children.filter(node =>
+      const currVarNodes = context.ast.children.filter((node) =>
         ALLOWED_TYPES.includes(node.type)
       );
 
       if (
-        JSON.stringify(prevProps.context.context.data()) !==
-          JSON.stringify(context.context.data()) ||
+        (this._isMounted &&
+          JSON.stringify(prevProps.context.context.data()) !==
+            JSON.stringify(context.context.data())) ||
         JSON.stringify(prevVarNodes) !== JSON.stringify(currVarNodes)
       ) {
         // when a var/data node is added, context.data() has changed, or variable data is different
@@ -78,13 +85,13 @@ const VariableViewV2 = withContext(
         properties: {
           name: {
             type: 'value',
-            value: nameOfVar
+            value: nameOfVar,
           },
           value: {
             type: 'value',
-            value: 0
-          }
-        }
+            value: 0,
+          },
+        },
       };
 
       const ast = JSON.parse(JSON.stringify(this.props.context.ast));
@@ -101,7 +108,7 @@ const VariableViewV2 = withContext(
       const currentData = this.props.context.context.data();
 
       const rowsCopy = [];
-      currentChildren.map(child => {
+      currentChildren.map((child) => {
         if (ALLOWED_TYPES.includes(child.type)) {
           const childData = this.handleChild(child, currentData);
           if (childData) {
@@ -119,7 +126,7 @@ const VariableViewV2 = withContext(
 
       const initialValue = formatInitialVariableValue(
         child,
-        this.state.rows.filter(row => row.name === name)[0] || null,
+        this.state.rows.filter((row) => row.name === name)[0] || null,
         this.props.context.projectPath
       );
       let currentValue = formatCurrentVariableValue(currentData[name]);
@@ -131,7 +138,7 @@ const VariableViewV2 = withContext(
               ? JSON.parse(initialValue)
               : initialValue;
           this.props.context.context.update({
-            [name]: currentValue
+            [name]: currentValue,
           });
         } else if (!initialValue) {
           // file unable to load
@@ -144,13 +151,13 @@ const VariableViewV2 = withContext(
         name: name,
         initialValue: stringify(initialValue),
         currentValue: stringify(currentValue),
-        id: child.id
+        id: child.id,
       };
     }
 
     handleGridUpdate(update) {
       if (update.action === 'CELL_UPDATE') {
-        Object.keys(update.updated).forEach(key => {
+        Object.keys(update.updated).forEach((key) => {
           const { type, value } = convertInputToIdyllValue(update.updated[key]);
 
           switch (key) {
@@ -174,7 +181,7 @@ const VariableViewV2 = withContext(
 
     handleCurrentValueUpdate(update, newValue) {
       this.props.context.context.update({
-        [update.fromRowData.name]: newValue
+        [update.fromRowData.name]: newValue,
       });
     }
 
@@ -225,19 +232,19 @@ const VariableViewV2 = withContext(
     render() {
       const { error, rows } = this.state;
       const columns = [
-        { key: 'type', name: 'Type', editable: row => row.type !== 'data' },
+        { key: 'type', name: 'Type', editable: (row) => row.type !== 'data' },
         {
           key: 'name',
           name: 'Name',
           editable: true,
-          formatter: DraggableFormatter
+          formatter: DraggableFormatter,
         },
         {
           key: 'initialValue',
           name: 'Initial',
-          editable: row => row.type !== 'data'
+          editable: (row) => row.type !== 'data',
         },
-        { key: 'currentValue', name: 'Current', editable: true }
+        { key: 'currentValue', name: 'Current', editable: true },
       ];
 
       return (
@@ -245,7 +252,7 @@ const VariableViewV2 = withContext(
           <div className='variables-table-view'>
             <ReactDataGrid
               columns={columns}
-              rowGetter={i => rows[i]}
+              rowGetter={(i) => rows[i]}
               rowsCount={rows.length}
               enableCellSelect={true}
               onGridRowsUpdated={this.handleGridUpdate}
@@ -279,13 +286,13 @@ class VariableFormatter extends React.PureComponent {
  * Implement the drag source contract.
  */
 const variableSource = {
-  beginDrag: props => ({ name: props.value })
+  beginDrag: (props) => ({ name: props.value }),
 };
 
 function variableCollect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
   };
 }
 
