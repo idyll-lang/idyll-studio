@@ -45,8 +45,8 @@ const VariableViewV2 = withContext(
     }
 
     componentDidMount() {
-      this.getRows();
       this._isMounted = true;
+      this.getRows();
     }
 
     componentWillUnmount() {
@@ -54,23 +54,24 @@ const VariableViewV2 = withContext(
     }
 
     componentDidUpdate(prevProps) {
-      const { context } = this.props;
+      if (this._isMounted) {
+        const { context } = this.props;
 
-      const prevVarNodes = prevProps.context.ast.children.filter((node) =>
-        ALLOWED_TYPES.includes(node.type)
-      );
-      const currVarNodes = context.ast.children.filter((node) =>
-        ALLOWED_TYPES.includes(node.type)
-      );
+        const prevVarNodes = prevProps.context.ast.children.filter((node) =>
+          ALLOWED_TYPES.includes(node.type)
+        );
+        const currVarNodes = context.ast.children.filter((node) =>
+          ALLOWED_TYPES.includes(node.type)
+        );
 
-      if (
-        (this._isMounted &&
+        if (
           JSON.stringify(prevProps.context.context.data()) !==
-            JSON.stringify(context.context.data())) ||
-        JSON.stringify(prevVarNodes) !== JSON.stringify(currVarNodes)
-      ) {
-        // when a var/data node is added, context.data() has changed, or variable data is different
-        this.getRows();
+            JSON.stringify(context.context.data()) ||
+          JSON.stringify(prevVarNodes) !== JSON.stringify(currVarNodes)
+        ) {
+          // when a var/data node is added, context.data() has changed, or variable data is different
+          this.getRows();
+        }
       }
     }
 
@@ -95,7 +96,7 @@ const VariableViewV2 = withContext(
         },
       };
 
-      const ast = JSON.parse(JSON.stringify(this.props.context.ast));
+      const ast = copy(this.props.context.ast);
 
       const currentNodeIndex = getTextContainerIndex(ast);
       ast.children.splice(currentNodeIndex, 0, newVarNode);
@@ -105,20 +106,22 @@ const VariableViewV2 = withContext(
     }
 
     getRows() {
-      const currentChildren = this.props.context.ast.children;
-      const currentData = this.props.context.context.data();
+      if (this._isMounted) {
+        const currentChildren = this.props.context.ast.children;
+        const currentData = this.props.context.context.data();
 
-      const rowsCopy = [];
-      currentChildren.map((child) => {
-        if (ALLOWED_TYPES.includes(child.type)) {
-          const childData = this.handleChild(child, currentData);
-          if (childData) {
-            rowsCopy.push(childData);
+        const rowsCopy = [];
+        currentChildren.map((child) => {
+          if (ALLOWED_TYPES.includes(child.type)) {
+            const childData = this.handleChild(child, currentData);
+            if (childData) {
+              rowsCopy.push(childData);
+            }
           }
-        }
-      });
+        });
 
-      this.setState({ rows: rowsCopy });
+        this.setState({ rows: rowsCopy });
+      }
     }
 
     handleChild(child, currentData) {
