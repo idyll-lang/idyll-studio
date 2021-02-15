@@ -1,8 +1,11 @@
+const fixPath = require('fix-path');
+fixPath();
 const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
 const Main = require('./main/main.js');
 const DataStore = require('./main/data-store/data-store');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -19,7 +22,7 @@ function createWindow() {
     height: 1000,
     minWidth: 600,
     minHeight: 400,
-    title: 'Data Writer',
+    title: 'Idyll Studio',
     show: false
   });
 

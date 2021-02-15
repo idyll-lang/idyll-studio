@@ -8,7 +8,7 @@ on:
 jobs:
 
   build:
-    name: Build Data Writer
+    name: Build Idyll Studio
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
