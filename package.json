@@ -86,8 +86,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "static/icon.icns",
-        "name": "Idyll Studio"
+        "icon": "static/icon.icns"
       },
       "makers": [
         {
