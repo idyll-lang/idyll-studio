@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { getNodeById, throttle, getUpdatedPropertyList } from '../utils/';
 import { withContext } from '../../context/with-context';
-import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../constants';
 import Properties from './component-editor/properties';
 import Code from './component-editor/code';
 import Styles from './component-editor/styles';

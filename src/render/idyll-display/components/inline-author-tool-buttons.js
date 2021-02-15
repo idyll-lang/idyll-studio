@@ -45,9 +45,9 @@ class AuthorToolButtons extends React.PureComponent {
     const { dropTarget } = this.props;
 
     return dropTarget(
-      <div className='component-debug-view'>
-        <div ref={ref => (this._componentRef = ref)}>{props.component}</div>
-        <div className='inline-author-view-container' id={this.domId}>
+      <span className='component-debug-view-inline'>
+        <span ref={ref => (this._componentRef = ref)}>{props.component}</span>
+        <span className='inline-author-view-container' id={this.domId}>
           <button
             className={`inline-author-view-button`}
             onClick={this.handleClickProps.bind(this)}
@@ -65,8 +65,8 @@ class AuthorToolButtons extends React.PureComponent {
               />
             </svg>
           </button>
-        </div>
-      </div>
+        </span>
+      </span>
     );
   }
 }
