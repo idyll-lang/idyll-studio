@@ -2,11 +2,15 @@
   "name": "idyll-studio",
   "version": "0.1.0",
   "private": true,
+  "main": "src/index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development electron ./src/",
+    "start": "electron-forge start",
     "test": "jest",
     "test:watch": "npm run test -- --watch",
-    "start:watch": "cross-env NODE_ENV=development nodemon --exec electron ./src/"
+    "start:watch": "cross-env NODE_ENV=development nodemon --exec electron ./src/",
+    "import-forge": "electron-forge import",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "jest": {
     "transform": {
@@ -17,9 +21,17 @@
     ]
   },
   "dependencies": {
+    "@babel/core": "^7.12.10",
+    "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@babel/preset-env": "^7.12.16",
+    "@babel/preset-react": "^7.12.10",
+    "@babel/preset-stage-2": "^7.8.3",
+    "@babel/register": "^7.12.10",
+    "@electron-forge/plugin-webpack": "^6.0.0-beta.54",
     "csv-parse": "^4.15.0",
     "draft-js": "^0.11.7",
-    "electron": "^11.1.1",
+    "electron-squirrel-startup": "^1.0.0",
     "fast-copy": "^2.1.1",
     "idyll": "^5.2.2",
     "idyll-ast": "^2.2.1",
@@ -37,24 +49,53 @@
     "react-select": "^3.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-class-properties": "^7.12.1",
-    "@babel/plugin-transform-runtime": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/preset-react": "^7.12.10",
-    "@babel/preset-stage-2": "^7.8.3",
-    "@babel/register": "^7.12.10",
+    "@babel/cli": "^7.12.16",
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "acorn": "^7.4.1",
     "cross-env": "^7.0.3",
+    "electron": "^11.2.3",
     "electron-connect": "*",
     "electron-devtools-installer": "^2.2.4",
-    "electron-packager": "^14.2.1",
     "electron-react-devtools": "^0.5.3",
     "electron-reload": "^1.5.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
+    "esm": "^3.2.25",
     "expect": "^25.5.0",
     "jest": "^25.5.4",
     "nodemon": "^2.0.6"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "static/icon.png"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "Idyll Studio"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
