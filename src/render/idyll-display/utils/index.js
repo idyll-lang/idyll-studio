@@ -45,7 +45,7 @@ const getParentNodeById = (node, id) => {
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
 
-  Object.keys(newProps).forEach(key => {
+  Object.keys(newProps).forEach((key) => {
     if (key === 'id') {
       return;
     }
@@ -90,7 +90,7 @@ const isChildOf = (node, parent) => {
   return false;
 };
 
-const getTextContainerIndex = node => {
+const getTextContainerIndex = (node) => {
   let currentNodeIndex = 0;
   while (
     node.children[currentNodeIndex].type === 'data' ||
@@ -116,7 +116,7 @@ const isDifferentActiveNode = (node1, node2) =>
  * that replaces '-' with spaces and capitalizes every word
  * @param {string} value the string to format
  */
-const formatString = value => {
+const formatString = (value) => {
   if (!value || typeof value !== 'string') {
     return '';
   }
@@ -124,7 +124,7 @@ const formatString = value => {
   return value
     .split(/[\s-]+/g)
     .map(
-      word =>
+      (word) =>
         word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()
     )
     .join(' ');
@@ -149,14 +149,14 @@ function getUpdatedPropertyList(
   if (node && propertyName) {
     const propertiesCopy = {};
     let _hasUpdated = false;
-    Object.keys(node.properties).forEach(property => {
+    Object.keys(node.properties).forEach((property) => {
       const propertyObject = node.properties[property];
 
       if (property === propertyName) {
         _hasUpdated = true;
         propertiesCopy[propertyName] = {
           ...propertyObject,
-          value: propertyValue
+          value: propertyValue,
         };
       } else {
         propertiesCopy[property] = { ...propertyObject };
@@ -165,7 +165,7 @@ function getUpdatedPropertyList(
     if (!_hasUpdated) {
       propertiesCopy[propertyName] = {
         type: propertyType || 'value',
-        value: propertyValue
+        value: propertyValue,
       };
     }
 
@@ -205,11 +205,16 @@ const debounce = (func, waitTime) => {
 
 /**
  * Takes in an object and returns the string
- * version of it.
+ * version of it. Returns null if object is null or undefined
  * @param {any} object the object to turn into a string
  */
-const stringify = object =>
-  typeof object === 'string' ? object : JSON.stringify(object);
+const stringify = (object) => {
+  if (object === null) {
+    return null;
+  }
+
+  return typeof object === 'string' ? object : JSON.stringify(object);
+};
 
 /**
  * Takes in a value and returns it as a number
@@ -217,13 +222,13 @@ const stringify = object =>
  * returns the original value as is
  * @param {any} originalValue the value to turn into a number
  */
-const numberfy = originalValue => {
+const numberfy = (originalValue) => {
   if (originalValue === undefined || originalValue === null) {
     return originalValue;
   }
 
   let value = stringify(originalValue);
-  if (value.trim() !== '') {
+  if (value.trim() !== '' && typeof originalValue !== 'object') {
     value = Number(originalValue);
   }
 
@@ -245,9 +250,13 @@ const numberfy = originalValue => {
  * encase in double quotes. If the node is undefined or null,
  * returns null
  * @param {IdyllAstNode} node the var/data/derived node
+ * @param {Object} rowData the metadata associated with a dataset's table row;
+ *                         if not null or undefined, returns the rowData's existing value;
+ *                         otherwise, reads the dataset from the file system
+ * @param {string} projectPath the directory of the project
  */
 const formatInitialVariableValue = (node, rowData, projectPath) => {
-  if (!node) {
+  if (!node || Object.keys(node).length === 0) {
     return null;
   }
 
@@ -287,7 +296,7 @@ const formatInitialVariableValue = (node, rowData, projectPath) => {
  * displayed as is
  * @param {any} value the current value of a variable
  */
-const formatCurrentVariableValue = value => {
+const formatCurrentVariableValue = (value) => {
   if (typeof value === 'string') {
     return wrapValue(value, '"');
   } else {
@@ -305,10 +314,8 @@ const formatCurrentVariableValue = value => {
 const wrapValue = (value, wrapper) => {
   if (!wrapper) {
     return value;
-  } else if (wrapper && value) {
-    return wrapper + value + wrapper;
   } else {
-    return '';
+    return `${wrapper}${stringify(value)}${wrapper}`;
   }
 };
 
@@ -317,7 +324,7 @@ const wrapValue = (value, wrapper) => {
  * If the value cannot be parsed, returns the value as is
  * @param {any} value the value to parse
  */
-const jsonParser = value => {
+const jsonParser = (value) => {
   try {
     return JSON.parse(value);
   } catch (err) {
@@ -330,10 +337,10 @@ const jsonParser = value => {
  * returns an object with keys [type, value] where
  * type is the type of user input (number, string, expression),
  * and value is the converted user input into the correct type.
- * Essentially, VariableView display -> Idyll value
+ * Essentially, VariableView display value -> Idyll node value
  * @param {any} value the user input
  */
-const convertInputToIdyllValue = value => {
+const convertInputToIdyllValue = (value) => {
   if (!value) {
     return { type: 'string', value: '' };
   }
@@ -358,12 +365,8 @@ const convertInputToIdyllValue = value => {
     return { type: 'string', value: value };
   }
 
-  try {
-    return { type: 'expression', value: JSON.parse(value) };
-  } catch (e) {
-    // an expression
-    return { type: 'expression', value: trimVariableValue(value, '`') };
-  }
+  // an expression
+  return { type: 'expression', value: trimVariableValue(value, '`') };
 };
 
 /**
@@ -388,7 +391,7 @@ const trimVariableValue = (value, wrapper) => {
  * and its error.
  * @param {string} source the path to the file
  */
-const readFile = source => {
+const readFile = (source) => {
   if (!source) {
     return null;
   }
@@ -408,7 +411,7 @@ const readFile = source => {
       parse(data, {
         columns: true,
         skip_empty_lines: true,
-        cast: true
+        cast: true,
       })
     );
   }
@@ -434,5 +437,5 @@ module.exports = {
   formatCurrentVariableValue,
   convertInputToIdyllValue,
   readFile,
-  jsonParser
+  jsonParser,
 };
