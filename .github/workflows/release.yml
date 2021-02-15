@@ -33,9 +33,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            out/**/*.zip
-            out/**/*.deb
-            out/**/*.rpm
-            out/**/*.exe
+            out/**/idyll-studio*.zip
+            out/**/idyll-studio*.deb
+            out/**/idyll-studio*.rpm
+            out/**/idyll-studio*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
