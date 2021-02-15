@@ -21,6 +21,8 @@
     "start:watch": "cross-env NODE_ENV=development nodemon --exec electron ./src/",
     "import-forge": "electron-forge import",
     "package": "electron-forge package",
+    "make-linux": "electron-forge make --platform linux",
+    "make-windows": "electron-forge make --platform win32",
     "make": "electron-forge make"
   },
   "jest": {

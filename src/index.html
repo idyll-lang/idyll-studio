@@ -16,6 +16,7 @@
 
 		// running a bundled electron app
 		if (process.cwd() === '/') {
+			process.env.NODE_ENV = 'production';
 			process.cwd = () => path.resolve(`${__dirname}/..`);
 		}
 
