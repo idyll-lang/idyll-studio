@@ -85,7 +85,7 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "static/icon.png"
+        "icon": "static/icon.icns"
       },
       "makers": [
         {
