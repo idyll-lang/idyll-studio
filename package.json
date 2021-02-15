@@ -6,6 +6,11 @@
   "private": true,
   "main": "src/index.js",
   "author": "Matthew Conlen <mc@mathisonian.com> (https://mathisonian.com)",
+  "contributors": [{
+    "name": "Megan Vo"
+  }, {
+    "name": "Alan Tan"
+  }],
   "scripts": {
     "start": "electron-forge start",
     "test": "jest",
