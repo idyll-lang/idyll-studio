@@ -184,6 +184,12 @@ const VariableViewV2 = withContext(
     }
 
     handleCurrentValueUpdate(update, newValue) {
+      try {
+        newValue = JSON.parse(newValue);
+      } catch (e) {
+        newValue = newValue;
+      }
+
       this.props.context.context.update({
         [update.fromRowData.name]: newValue,
       });
