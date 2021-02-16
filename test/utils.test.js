@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { InvalidParameterError } from '../src/error';
 import {
   isDifferentActiveNode,
@@ -6,9 +7,28 @@ import {
   getUpdatedPropertyList,
   stringify,
   numberfy,
-  formatInitialVariableValue,
+  boolify,
+  readFile,
+  jsonParser,
 } from '../src/render/idyll-display/utils';
+import { JSON_CONTENT, CSV_CONTENT, CSV_CONTENT_AS_JSON } from './utils';
+
 const expect = require('expect');
+const p = require('path');
+
+jest.mock('fs');
+fs.readFileSync = (fpath, opts) => {
+  if (p.basename(fpath) === 'empty.json') {
+    return '';
+  }
+
+  const extension = p.extname(fpath);
+  if (extension === '.json') {
+    return JSON_CONTENT;
+  } else if (extension === '.csv') {
+    return CSV_CONTENT;
+  }
+};
 
 describe('isDifferentActiveNode tests', () => {
   it('should return true with just first node null', () => {
@@ -114,7 +134,7 @@ describe('debounce tests', () => {
 
 describe('stringify tests', () => {
   it('should return null', () => {
-    expect(stringify(null)).toBeNull();
+    expect(stringify(null)).toBe('null');
     expect(stringify(undefined)).toBeUndefined();
   });
 
@@ -159,10 +179,6 @@ describe('numberfy tests', () => {
     expect(numberfy(0)).toBe(0);
     expect(numberfy(55.66)).toBe(55.66);
     expect(numberfy(-10)).toBe(-10);
-
-    // booleans
-    expect(numberfy(true)).toBe(1);
-    expect(numberfy(false)).toBe(0);
   });
 
   it('should return the original value', () => {
@@ -170,212 +186,81 @@ describe('numberfy tests', () => {
     expect(numberfy('')).toBe('');
     expect(numberfy('2abc1')).toBe('2abc1');
     expect(numberfy('   ')).toBe('   ');
+
+    // booleans
+    expect(numberfy(true)).toBe(true);
+    expect(numberfy(false)).toBe(false);
   });
 });
 
-describe('formatInitialVariableValue test', () => {
+describe('boolify tests', () => {
+  it('should return back a boolean', () => {
+    expect(boolify(true)).toBeTruthy();
+    expect(boolify('true')).toBeTruthy();
+    expect(boolify(false)).toBeFalsy();
+    expect(boolify('false')).toBeFalsy();
+  });
+
+  it('should return back the original value', () => {
+    expect(boolify('')).toBe('');
+    expect(boolify(null)).toBe(null);
+    expect(boolify(undefined)).toBe(undefined);
+    expect(boolify('hello')).toBe('hello');
+    expect(boolify('3')).toBe('3');
+    expect(boolify(3)).toBe(3);
+    expect(boolify('True')).toBe('True');
+  });
+});
+
+describe('readFile test', () => {
   it('should return null', () => {
-    expect(
-      formatInitialVariableValue(null, { initialValue: 3 }, '/absolutePath/')
-    ).toBe(null);
-
-    expect(
-      formatInitialVariableValue(
-        undefined,
-        { initialValue: 3 },
-        '/absolutePath/'
-      )
-    ).toBe(null);
-
-    expect(
-      formatInitialVariableValue(false, { initialValue: 3 }, '/absolutePath/')
-    ).toBe(null);
-
-    expect(
-      formatInitialVariableValue(0, { initialValue: 3 }, '/absolutePath/')
-    ).toBe(null);
-
-    expect(
-      formatInitialVariableValue({}, { initialValue: 3 }, '/absolutePath/')
-    ).toBe(null);
+    expect(readFile(null)).toStrictEqual({
+      content: null,
+      error: 'Source file is invalid. Cannot read file',
+    });
+    expect(readFile(undefined)).toStrictEqual({
+      content: null,
+      error: 'Source file is invalid. Cannot read file',
+    });
+    expect(readFile('')).toStrictEqual({
+      content: null,
+      error: 'Source file is invalid. Cannot read file',
+    });
+    expect(readFile([1, 2, 3])).toStrictEqual({
+      content: null,
+      error: 'Source file is invalid. Cannot read file',
+    });
   });
 
-  it('var nodes with type value', () => {
-    // regular strings
-    let node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'value', value: 'deirdre' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '"deirdre"'
-    );
-
-    // number
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'value', value: -3.456 },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(-3.456);
-
-    // quotes in quotes
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'value', value: '""' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe('""""');
-
-    // empty
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'value', value: '' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe('""');
+  it('should return json contents', () => {
+    expect(readFile('/stuff.json')).toStrictEqual({
+      content: JSON_CONTENT,
+      error: null,
+    });
   });
 
-  it('var nodes with type expression', () => {
-    // regular
-    let node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: '3 * 3' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`3 * 3`'
-    );
-
-    // variable
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: 'newVar' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`newVar`'
-    );
-
-    // object
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: '[]' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe('`[]`');
-
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: '{"hi": "goodbye"}' },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`{"hi": "goodbye"}`'
-    );
+  it('should return csv contents in json format', () => {
+    expect(readFile('/stuff.csv')).toStrictEqual({
+      content: JSON.stringify(CSV_CONTENT_AS_JSON),
+      error: null,
+    });
   });
-
-  it('nodes with null or undefined values', () => {
-    // null
-    let node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: null },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`null`'
-    );
-
-    // undefined
-    node = {
-      id: 1,
-      type: 'var',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: undefined },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`undefined`'
-    );
-  });
-
-  it('derived nodes with type expression', () => {
-    // regular
-    let node = {
-      id: 1,
-      type: 'derived',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: `otherVar * 3` },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`otherVar * 3`'
-    );
-
-    // null
-    node = {
-      id: 1,
-      type: 'derived',
-      properties: {
-        name: { type: 'value', value: 'state' },
-        value: { type: 'expression', value: `null` },
-      },
-    };
-
-    expect(formatInitialVariableValue(node, {}, '/projectPath/')).toBe(
-      '`null`'
-    );
-  });
-
-  it('data nodes with rowData already existing', () => {});
-
-  it('data nodes with rowData not existing', () => {});
 });
 
-describe('formatCurrentVariableValue test', () => {});
+describe('jsonParser test', () => {
+  it('should parse the json as expected', () => {
+    expect(jsonParser('[]')).toStrictEqual([]);
+    expect(jsonParser('{}')).toStrictEqual({});
+    expect(jsonParser(JSON.stringify(CSV_CONTENT_AS_JSON))).toStrictEqual(
+      CSV_CONTENT_AS_JSON
+    );
+    expect(jsonParser('"hi"')).toStrictEqual('hi');
+    expect(jsonParser(null)).toStrictEqual(null);
+  });
 
-describe('convertInputToIdyllValue test', () => {});
-
-describe('readFile test', () => {});
-
-describe('jsonParser test', () => {});
+  it('should return the original value', () => {
+    expect(jsonParser(undefined)).toBeUndefined();
+    expect(jsonParser(3)).toBe(3);
+    expect(jsonParser('hello')).toBe('hello');
+  });
+});

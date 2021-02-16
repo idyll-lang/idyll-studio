@@ -8,11 +8,13 @@ import {
   stringify,
   getRandomId,
   getNodeById,
+  getTextContainerIndex,
+} from '../utils';
+import {
   formatInitialVariableValue,
   formatCurrentVariableValue,
   convertInputToIdyllValue,
-  getTextContainerIndex,
-} from '../utils';
+} from '../utils/variable-viewer-utils';
 
 const TYPE_OPTIONS = [
   { id: 'var', value: 'var' },
@@ -141,6 +143,7 @@ const VariableViewV2 = withContext(
             typeof initialValue === 'string'
               ? JSON.parse(initialValue)
               : initialValue;
+
           this.props.context.context.update({
             [name]: currentValue,
           });
@@ -185,7 +188,7 @@ const VariableViewV2 = withContext(
 
     handleCurrentValueUpdate(update, newValue) {
       try {
-        newValue = JSON.parse(newValue);
+        newValue = newValue === 'undefined' ? undefined : JSON.parse(newValue);
       } catch (e) {
         newValue = newValue;
       }
