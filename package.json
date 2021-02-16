@@ -92,7 +92,9 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "idyll_studio"
+            "name": "idyll_studio",
+            "setupIcon": "static/icon.ico",
+            "iconUrl": "https://static/icon.png"
           }
         },
         {
