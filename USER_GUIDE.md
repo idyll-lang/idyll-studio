@@ -6,16 +6,20 @@ This project is a work in progress. Use at risk of frustration.
 
 *...install it?* 
 
-Clone the repo and install the dependencies. [More details.](./CONTRIBUTING.md).
+To install the latest release, navigate to the [releases](https://github.com/idyll-lang/idyll-studio/releases) page, and install the application for your operating system. If you are on a Mac, choose the one with "darwin" in the name. Currently Mac, Windows, and Linux (.deb and .rpm) are supported. 
+
+If you wish to install from source, clone the repo and install the dependencies. [More details](./CONTRIBUTING.md).
 
 *...run it?* 
 
-Run `yarn start` (or `npm start`).
+Click the app icon to start the application. 
+
+If you are using the command line version, run `yarn start` (or `npm start`).
 
 
 *...make a new project?* 
 
-At this point you can't. You have to use the command line [idyll](https://github.com/idyll-lang/idyll) tool to generate one, and then load it via this project.
+From the app home screen, choose "create new project." If you have an existing project open already, choose "File -> New" from the application menu. 
 
 *...load a project?* 
 
@@ -29,13 +33,9 @@ Hit the "select" button on the loading page. Navigate to an idyll project, and s
 
 Navigate to the `Component` panel. Drag and drop a component onto the article. A black rectangle will appear when it is in a valid location. [<span color="red">Not all components function in thir default configuration currently.</span>]
 
-*...modify a component's property?* 
+*...modify a component's properties?* 
 
-Click the component's properties button. Click the property. Use the text input field to change the property. [<span color="red">Bug in the current release.</span>]
-
-*...add a property to a component?* 
-
-Use code button to modify the Idyll code representing the component direction. Edit the idyll markup. Click the code button again for the change to take effect.
+Click the component's properties button (gear icon). Click the property. Use the text input field to change the property.
 
 *...create a variable?* 
 
