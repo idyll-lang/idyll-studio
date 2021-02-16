@@ -1,6 +1,6 @@
 # Idyll Studio
 
-Towards an integrated interactive publishing engine.
+Toward an integrated interactive publishing engine.
 
 # USAGE GUIDE
 See [USER_GUIDE.md](./USER_GUIDE.md)
