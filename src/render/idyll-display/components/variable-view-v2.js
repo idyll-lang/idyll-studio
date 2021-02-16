@@ -1,25 +1,28 @@
 import React from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { DragSource } from 'react-dnd';
+import copy from 'fast-copy';
 import { withContext } from '../../context/with-context';
 import Context from '../../context/context';
 import {
   stringify,
   getRandomId,
   getNodeById,
+  getTextContainerIndex,
+} from '../utils';
+import {
   formatInitialVariableValue,
   formatCurrentVariableValue,
   convertInputToIdyllValue,
-  getTextContainerIndex
-} from '../utils';
+} from '../utils/variable-viewer-utils';
 
 const TYPE_OPTIONS = [
   { id: 'var', value: 'var' },
   { id: 'data', value: 'data' },
-  { id: 'derived', value: 'derived' }
+  { id: 'derived', value: 'derived' },
 ];
 
-const ALLOWED_TYPES = TYPE_OPTIONS.map(type => type.id);
+const ALLOWED_TYPES = TYPE_OPTIONS.map((type) => type.id);
 
 const VariableViewV2 = withContext(
   class VariableView extends React.PureComponent {
@@ -30,12 +33,13 @@ const VariableViewV2 = withContext(
 
       this.state = {
         rows: [],
-        error: null
+        error: null,
       };
 
       this.addVariable = this.addVariable.bind(this);
       this.getRows = this.getRows.bind(this);
       this.handleGridUpdate = this.handleGridUpdate.bind(this);
+      this._isMounted = false;
 
       props.context.onUpdate(() => {
         this.getRows();
@@ -43,26 +47,33 @@ const VariableViewV2 = withContext(
     }
 
     componentDidMount() {
+      this._isMounted = true;
       this.getRows();
     }
 
+    componentWillUnmount() {
+      this._isMounted = false;
+    }
+
     componentDidUpdate(prevProps) {
-      const { context } = this.props;
+      if (this._isMounted) {
+        const { context } = this.props;
 
-      const prevVarNodes = prevProps.context.ast.children.filter(node =>
-        ALLOWED_TYPES.includes(node.type)
-      );
-      const currVarNodes = context.ast.children.filter(node =>
-        ALLOWED_TYPES.includes(node.type)
-      );
+        const prevVarNodes = prevProps.context.ast.children.filter((node) =>
+          ALLOWED_TYPES.includes(node.type)
+        );
+        const currVarNodes = context.ast.children.filter((node) =>
+          ALLOWED_TYPES.includes(node.type)
+        );
 
-      if (
-        JSON.stringify(prevProps.context.context.data()) !==
-          JSON.stringify(context.context.data()) ||
-        JSON.stringify(prevVarNodes) !== JSON.stringify(currVarNodes)
-      ) {
-        // when a var/data node is added, context.data() has changed, or variable data is different
-        this.getRows();
+        if (
+          JSON.stringify(prevProps.context.context.data()) !==
+            JSON.stringify(context.context.data()) ||
+          JSON.stringify(prevVarNodes) !== JSON.stringify(currVarNodes)
+        ) {
+          // when a var/data node is added, context.data() has changed, or variable data is different
+          this.getRows();
+        }
       }
     }
 
@@ -78,16 +89,16 @@ const VariableViewV2 = withContext(
         properties: {
           name: {
             type: 'value',
-            value: nameOfVar
+            value: nameOfVar,
           },
           value: {
             type: 'value',
-            value: 0
-          }
-        }
+            value: 0,
+          },
+        },
       };
 
-      const ast = JSON.parse(JSON.stringify(this.props.context.ast));
+      const ast = copy(this.props.context.ast);
 
       const currentNodeIndex = getTextContainerIndex(ast);
       ast.children.splice(currentNodeIndex, 0, newVarNode);
@@ -97,20 +108,22 @@ const VariableViewV2 = withContext(
     }
 
     getRows() {
-      const currentChildren = this.props.context.ast.children;
-      const currentData = this.props.context.context.data();
+      if (this._isMounted) {
+        const currentChildren = this.props.context.ast.children;
+        const currentData = this.props.context.context.data();
 
-      const rowsCopy = [];
-      currentChildren.map(child => {
-        if (ALLOWED_TYPES.includes(child.type)) {
-          const childData = this.handleChild(child, currentData);
-          if (childData) {
-            rowsCopy.push(childData);
+        const rowsCopy = [];
+        currentChildren.map((child) => {
+          if (ALLOWED_TYPES.includes(child.type)) {
+            const childData = this.handleChild(child, currentData);
+            if (childData) {
+              rowsCopy.push(childData);
+            }
           }
-        }
-      });
+        });
 
-      this.setState({ rows: rowsCopy });
+        this.setState({ rows: rowsCopy });
+      }
     }
 
     handleChild(child, currentData) {
@@ -119,7 +132,7 @@ const VariableViewV2 = withContext(
 
       const initialValue = formatInitialVariableValue(
         child,
-        this.state.rows.filter(row => row.name === name)[0] || null,
+        this.state.rows.filter((row) => row.name === name)[0] || null,
         this.props.context.projectPath
       );
       let currentValue = formatCurrentVariableValue(currentData[name]);
@@ -130,8 +143,9 @@ const VariableViewV2 = withContext(
             typeof initialValue === 'string'
               ? JSON.parse(initialValue)
               : initialValue;
+
           this.props.context.context.update({
-            [name]: currentValue
+            [name]: currentValue,
           });
         } else if (!initialValue) {
           // file unable to load
@@ -144,13 +158,13 @@ const VariableViewV2 = withContext(
         name: name,
         initialValue: stringify(initialValue),
         currentValue: stringify(currentValue),
-        id: child.id
+        id: child.id,
       };
     }
 
     handleGridUpdate(update) {
       if (update.action === 'CELL_UPDATE') {
-        Object.keys(update.updated).forEach(key => {
+        Object.keys(update.updated).forEach((key) => {
           const { type, value } = convertInputToIdyllValue(update.updated[key]);
 
           switch (key) {
@@ -173,13 +187,19 @@ const VariableViewV2 = withContext(
     }
 
     handleCurrentValueUpdate(update, newValue) {
+      try {
+        newValue = newValue === 'undefined' ? undefined : JSON.parse(newValue);
+      } catch (e) {
+        newValue = newValue;
+      }
+
       this.props.context.context.update({
-        [update.fromRowData.name]: newValue
+        [update.fromRowData.name]: newValue,
       });
     }
 
     handleNameUpdate(update, newValue) {
-      const { ast } = this.props.context;
+      const ast = copy(this.props.context.ast);
       const node = getNodeById(ast, update.fromRowId);
       node.properties.name.value = newValue;
 
@@ -195,7 +215,7 @@ const VariableViewV2 = withContext(
     }
 
     handleInitialValueUpdate(update, newValue, type) {
-      const { ast } = this.props.context;
+      const ast = copy(this.props.context.ast);
       const node = getNodeById(ast, update.fromRowId);
       node.properties.value.value = newValue;
       node.properties.value.type =
@@ -210,7 +230,7 @@ const VariableViewV2 = withContext(
           update.fromRowData.type === 'derived') &&
         newValue !== 'data'
       ) {
-        const { ast } = this.props.context;
+        const ast = copy(this.props.context.ast);
         const node = getNodeById(ast, update.fromRowId);
         const typeOfValue = newValue === 'var' ? 'value' : 'expression';
 
@@ -225,19 +245,19 @@ const VariableViewV2 = withContext(
     render() {
       const { error, rows } = this.state;
       const columns = [
-        { key: 'type', name: 'Type', editable: row => row.type !== 'data' },
+        { key: 'type', name: 'Type', editable: (row) => row.type !== 'data' },
         {
           key: 'name',
           name: 'Name',
           editable: true,
-          formatter: DraggableFormatter
+          formatter: DraggableFormatter,
         },
         {
           key: 'initialValue',
           name: 'Initial',
-          editable: row => row.type !== 'data'
+          editable: (row) => row.type !== 'data',
         },
-        { key: 'currentValue', name: 'Current', editable: true }
+        { key: 'currentValue', name: 'Current', editable: true },
       ];
 
       return (
@@ -245,7 +265,7 @@ const VariableViewV2 = withContext(
           <div className='variables-table-view'>
             <ReactDataGrid
               columns={columns}
-              rowGetter={i => rows[i]}
+              rowGetter={(i) => rows[i]}
               rowsCount={rows.length}
               enableCellSelect={true}
               onGridRowsUpdated={this.handleGridUpdate}
@@ -279,13 +299,13 @@ class VariableFormatter extends React.PureComponent {
  * Implement the drag source contract.
  */
 const variableSource = {
-  beginDrag: props => ({ name: props.value })
+  beginDrag: (props) => ({ name: props.value }),
 };
 
 function variableCollect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
   };
 }
 

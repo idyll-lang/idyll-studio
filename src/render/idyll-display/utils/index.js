@@ -45,7 +45,7 @@ const getParentNodeById = (node, id) => {
 const updateNodeById = (ast, id, newProps) => {
   const targetNode = getNodeById(ast, id);
 
-  Object.keys(newProps).forEach(key => {
+  Object.keys(newProps).forEach((key) => {
     if (key === 'id') {
       return;
     }
@@ -90,7 +90,7 @@ const isChildOf = (node, parent) => {
   return false;
 };
 
-const getTextContainerIndex = node => {
+const getTextContainerIndex = (node) => {
   let currentNodeIndex = 0;
   while (
     node.children[currentNodeIndex].type === 'data' ||
@@ -116,7 +116,7 @@ const isDifferentActiveNode = (node1, node2) =>
  * that replaces '-' with spaces and capitalizes every word
  * @param {string} value the string to format
  */
-const formatString = value => {
+const formatString = (value) => {
   if (!value || typeof value !== 'string') {
     return '';
   }
@@ -124,7 +124,7 @@ const formatString = value => {
   return value
     .split(/[\s-]+/g)
     .map(
-      word =>
+      (word) =>
         word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase()
     )
     .join(' ');
@@ -149,14 +149,14 @@ function getUpdatedPropertyList(
   if (node && propertyName) {
     const propertiesCopy = {};
     let _hasUpdated = false;
-    Object.keys(node.properties).forEach(property => {
+    Object.keys(node.properties).forEach((property) => {
       const propertyObject = node.properties[property];
 
       if (property === propertyName) {
         _hasUpdated = true;
         propertiesCopy[propertyName] = {
           ...propertyObject,
-          value: propertyValue
+          value: propertyValue,
         };
       } else {
         propertiesCopy[property] = { ...propertyObject };
@@ -165,7 +165,7 @@ function getUpdatedPropertyList(
     if (!_hasUpdated) {
       propertiesCopy[propertyName] = {
         type: propertyType || 'value',
-        value: propertyValue
+        value: propertyValue,
       };
     }
 
@@ -205,11 +205,13 @@ const debounce = (func, waitTime) => {
 
 /**
  * Takes in an object and returns the string
- * version of it.
+ * version of it. Returns "null" if object is null and
+ * undefined if object is undefined
  * @param {any} object the object to turn into a string
  */
-const stringify = object =>
-  typeof object === 'string' ? object : JSON.stringify(object);
+const stringify = (object) => {
+  return typeof object === 'string' ? object : JSON.stringify(object);
+};
 
 /**
  * Takes in a value and returns it as a number
@@ -217,13 +219,17 @@ const stringify = object =>
  * returns the original value as is
  * @param {any} originalValue the value to turn into a number
  */
-const numberfy = originalValue => {
+const numberfy = (originalValue) => {
   if (originalValue === undefined || originalValue === null) {
     return originalValue;
   }
 
   let value = stringify(originalValue);
-  if (value.trim() !== '') {
+  if (
+    value.trim() !== '' &&
+    typeof originalValue !== 'object' &&
+    typeof originalValue !== 'boolean'
+  ) {
     value = Number(originalValue);
   }
 
@@ -235,80 +241,15 @@ const numberfy = originalValue => {
 };
 
 /**
- * Given an idyll ast node, formats and returns the node's
- * value to its corresponding variable-view display
- * value. If the value is an expression, it will wrap it
- * in backticks (`). If the value is a string, it will
- * wrap it in double quotes ("). Otherwise, will treat the
- * value as a number. If the node type is 'data', it will try
- * to parse the data into a JSON object. Otherwise, it will
- * encase in double quotes. If the node is undefined or null,
- * returns null
- * @param {IdyllAstNode} node the var/data/derived node
+ * If the value passed in is "true" or "false" returns
+ * true or false booleans. Otherwise, returns the original value
+ * @param {any} originalValue the value passed in
  */
-const formatInitialVariableValue = (node, rowData, projectPath) => {
-  if (!node) {
-    return null;
-  }
-
-  let value;
-  if (node.type === 'data') {
-    if (!rowData) {
-      const { source } = node.properties;
-      const filePath = path.isAbsolute(source.value)
-        ? source.value
-        : path.join(projectPath, 'data', source.value);
-      const fileContent = readFile(filePath).content;
-      value = jsonParser(fileContent);
-    } else {
-      value = rowData.initialValue;
-    }
+const boolify = (originalValue) => {
+  if (originalValue === 'true' || originalValue === 'false') {
+    return originalValue === 'true' ? true : false;
   } else {
-    value = numberfy(node.properties.value.value);
-    if (typeof value !== 'number') {
-      let wrapper = '"';
-
-      if (node.properties.value.type === 'expression') {
-        wrapper = '`';
-      }
-
-      value = wrapValue(value, wrapper);
-    }
-  }
-
-  return value;
-};
-
-/**
- * Given the current value of a variable,
- * returns its corresponding variable-view display
- * value. If the value is a string, it will wrap it
- * in double quotes ("). Otherwise, the value will be
- * displayed as is
- * @param {any} value the current value of a variable
- */
-const formatCurrentVariableValue = value => {
-  if (typeof value === 'string') {
-    return wrapValue(value, '"');
-  } else {
-    return value;
-  }
-};
-
-/**
- * Given a value, wraps the value with the given
- * character wrapper and returns it. If no wrapper is
- * given, returns the value
- * @param {any} value the value to wrap
- * @param {string} wrapper a quote wrapper (`, "", '')
- */
-const wrapValue = (value, wrapper) => {
-  if (!wrapper) {
-    return value;
-  } else if (wrapper && value) {
-    return wrapper + value + wrapper;
-  } else {
-    return '';
+    return originalValue;
   }
 };
 
@@ -317,7 +258,7 @@ const wrapValue = (value, wrapper) => {
  * If the value cannot be parsed, returns the value as is
  * @param {any} value the value to parse
  */
-const jsonParser = value => {
+const jsonParser = (value) => {
   try {
     return JSON.parse(value);
   } catch (err) {
@@ -326,71 +267,16 @@ const jsonParser = value => {
 };
 
 /**
- * Given a user input value for a variable,
- * returns an object with keys [type, value] where
- * type is the type of user input (number, string, expression),
- * and value is the converted user input into the correct type.
- * Essentially, VariableView display -> Idyll value
- * @param {any} value the user input
- */
-const convertInputToIdyllValue = value => {
-  if (!value) {
-    return { type: 'string', value: '' };
-  }
-
-  const quotes = ["'", '"'];
-
-  value = numberfy(value);
-  if (typeof value === 'number') {
-    return { type: 'number', value: value };
-  } else if (
-    quotes.includes(value.charAt(0)) &&
-    quotes.includes(value.charAt(value.length - 1)) &&
-    value.charAt(0) === value.charAt(value.length - 1)
-  ) {
-    let trimmed = trimVariableValue(value, '"');
-    if (trimmed !== value) {
-      value = trimmed;
-    } else {
-      value = trimVariableValue(value, "'");
-    }
-
-    return { type: 'string', value: value };
-  }
-
-  try {
-    return { type: 'expression', value: JSON.parse(value) };
-  } catch (e) {
-    // an expression
-    return { type: 'expression', value: trimVariableValue(value, '`') };
-  }
-};
-
-/**
- * Trims the wrapper character off the start and end
- * of the given value and returns it
- * @param {string} value the string value to trim
- * @param {string} wrapper a quote wrapper to exclude
- *                         from start and end (', ", `)
- */
-const trimVariableValue = (value, wrapper) => {
-  if (value && value.startsWith(wrapper) && value.endsWith(wrapper)) {
-    return value.substring(1, value.length - 1);
-  } else {
-    return value;
-  }
-};
-
-/**
  * Given a path source, tries to synchronously read
- * the file and return an object with its contents.
+ * the file and return an object with its contents as a string.
+ * If the file is a csv, returns its contents in JSON format
  * If an error occurs, returns an object with null content
  * and its error.
  * @param {string} source the path to the file
  */
-const readFile = source => {
-  if (!source) {
-    return null;
+const readFile = (source) => {
+  if (!source || typeof source !== 'string') {
+    return { content: null, error: 'Source file is invalid. Cannot read file' };
   }
 
   const fileType = path.extname(source);
@@ -408,7 +294,7 @@ const readFile = source => {
       parse(data, {
         columns: true,
         skip_empty_lines: true,
-        cast: true
+        cast: true,
       })
     );
   }
@@ -430,9 +316,7 @@ module.exports = {
   throttle,
   stringify,
   numberfy,
-  formatInitialVariableValue,
-  formatCurrentVariableValue,
-  convertInputToIdyllValue,
   readFile,
-  jsonParser
+  jsonParser,
+  boolify,
 };

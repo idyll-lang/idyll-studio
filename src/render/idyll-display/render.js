@@ -3,13 +3,13 @@ import IdyllDocument from 'idyll-document';
 import AuthorToolButtons from './components/author-tool-buttons';
 import InlineAuthorToolButtons from './components/inline-author-tool-buttons';
 import TextEdit from './components/text-edit.js';
-import Context from '../context/context';
 import DropTarget from './components/drop-target';
 import { withContext } from '../context/with-context';
 
+const p = require('path');
+
 const Renderer = withContext(
   class Renderer extends React.PureComponent {
-    static contextType = Context;
     constructor(props) {
       super(props);
       this.state = {};
@@ -17,24 +17,37 @@ const Renderer = withContext(
 
     componentDidCatch(e) {
       this.setState({
-        error: e
+        error: e,
       });
     }
 
     componentDidUpdate(prevProps) {
+      const { context } = this.props;
+
       if (
         this.state.error &&
-        JSON.stringify(prevProps.context.ast) !==
-          JSON.stringify(this.props.context.ast)
+        JSON.stringify(prevProps.context.ast) !== JSON.stringify(context.ast)
       ) {
         this.setState({ error: null });
+      } else if (this.hasUndefinedDatasets(context)) {
+        context.loadDatasets();
       }
+    }
+
+    hasUndefinedDatasets(context) {
+      for (let key in context.context.data()) {
+        if (context.context.data()[key] === undefined) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     injectDropTargets(ast) {
       // deep copy
       const astCopy = JSON.parse(JSON.stringify(ast));
-      astCopy.children = (astCopy.children || []).map(node => {
+      astCopy.children = (astCopy.children || []).map((node) => {
         if (node.type !== 'component') {
           return node;
         }
@@ -53,9 +66,9 @@ const Renderer = withContext(
                   properties: {
                     insertBefore: {
                       type: 'value',
-                      value: child.id
-                    }
-                  }
+                      value: child.id,
+                    },
+                  },
                 },
                 child,
                 {
@@ -65,10 +78,10 @@ const Renderer = withContext(
                   properties: {
                     insertAfter: {
                       type: 'value',
-                      value: child.id
-                    }
-                  }
-                }
+                      value: child.id,
+                    },
+                  },
+                },
               ];
             }
             return [
@@ -81,10 +94,10 @@ const Renderer = withContext(
                 properties: {
                   insertAfter: {
                     type: 'value',
-                    value: child.id
-                  }
-                }
-              }
+                    value: child.id,
+                  },
+                },
+              },
             ];
           }, []);
         }
@@ -103,7 +116,16 @@ const Renderer = withContext(
         );
       }
 
-      const { ast, components } = this.context;
+      const {
+        ast,
+        components,
+        showPreview,
+        layout,
+        theme,
+        setContext,
+        datasets,
+      } = this.props.context;
+
       if (!this.loadedComponents) {
         this.loadedComponents = {};
       }
@@ -121,24 +143,24 @@ const Renderer = withContext(
         <div className='renderer'>
           <div className='renderer-container' contentEditable={false}>
             <IdyllDocument
-              key={!this.context.showPreview}
+              key={!showPreview}
               ast={this.injectDropTargets(ast)}
               components={{
                 IdyllEditorDropTarget: DropTarget,
-                ...this.loadedComponents
+                ...this.loadedComponents,
               }}
-              layout={this.context.layout}
-              theme={this.context.theme}
-              context={context => {
-                this.context.setContext(context);
+              layout={layout}
+              theme={theme}
+              context={(context) => {
+                setContext(context);
               }}
-              datasets={{}}
+              datasets={datasets}
               injectThemeCSS={true}
               injectLayoutCSS={true}
               userViewComponent={AuthorToolButtons}
               userInlineViewComponent={InlineAuthorToolButtons}
-              textEditComponent={this.context.showPreview ? null : TextEdit}
-              authorView={!this.context.showPreview}
+              textEditComponent={showPreview ? null : TextEdit}
+              authorView={!showPreview}
             />
           </div>
         </div>

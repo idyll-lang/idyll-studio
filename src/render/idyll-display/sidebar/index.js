@@ -13,7 +13,7 @@ import VariableViewV2 from '../components/variable-view-v2.js';
 const tabs = {
   DOCUMENT: 'document',
   VARIABLES: 'variables',
-  COMPONENTS: 'components'
+  COMPONENTS: 'components',
 };
 
 class Sidebar extends React.PureComponent {
@@ -25,7 +25,7 @@ class Sidebar extends React.PureComponent {
     this.assignNewVarValue = this.assignNewVarValue.bind(this);
 
     this.state = {
-      selectedTab: tabs.DOCUMENT
+      selectedTab: tabs.DOCUMENT,
     };
   }
 
@@ -45,8 +45,8 @@ class Sidebar extends React.PureComponent {
             onChange={this.handleThemeChange.bind(this)}
             value={this.context.theme}>
             {Object.keys(themes)
-              .filter(d => !['__esModule', 'none'].includes(d))
-              .map(themeName => {
+              .filter((d) => !['__esModule', 'none'].includes(d))
+              .map((themeName) => {
                 return (
                   <option key={themeName} value={themeName}>
                     {themeName}
@@ -61,8 +61,8 @@ class Sidebar extends React.PureComponent {
             onChange={this.handleLayoutChange.bind(this)}
             value={this.context.layout}>
             {Object.keys(layouts)
-              .filter(d => !['__esModule', 'none'].includes(d))
-              .map(layoutName => {
+              .filter((d) => !['__esModule', 'none'].includes(d))
+              .map((layoutName) => {
                 return (
                   <option key={layoutName} value={layoutName}>
                     {layoutName}
@@ -77,7 +77,7 @@ class Sidebar extends React.PureComponent {
 
   modifyAST() {
     const currentAST = this.context.ast;
-    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', node => {
+    const h2Nodes = AST.modifyNodesByName(currentAST, 'h2', (node) => {
       node.children[0].value = 'alan took over';
       return node;
     });
@@ -86,7 +86,7 @@ class Sidebar extends React.PureComponent {
 
   // Returns a list of all variables made in this ast
   getAllVariables() {
-    return AST.getNodesByType(this.context.ast, 'var').map(variable => {
+    return AST.getNodesByType(this.context.ast, 'var').map((variable) => {
       const props = variable.properties;
       const name = props.name.value;
       const value = props.value.value;
