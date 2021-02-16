@@ -170,7 +170,7 @@ class Main {
       let files = await readdir(buildDir);
 
       let formData = files.reduce((acc, f) => {
-        acc[p.relative(buildDir, f)] = fs.createReadStream(f);
+        acc[p.relative(buildDir, f).replace(/\\/g, '/')] = fs.createReadStream(f);
         return acc;
       }, {});
       formData['token'] = token;
