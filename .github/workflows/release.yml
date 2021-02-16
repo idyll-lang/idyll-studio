@@ -36,6 +36,6 @@ jobs:
             out/**/idyll-studio*.zip
             out/**/idyll-studio*.deb
             out/**/idyll-studio*.rpm
-            out/**/idyll-studio*.exe
+            out/**/idyll-studio*Setup.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
