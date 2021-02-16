@@ -242,7 +242,8 @@ class Main {
     // filter to catch all requests to static folder
     this.mainWindow.webContents.session.webRequest.onBeforeRequest(
       (details, callback) => {
-        const { url } = details;
+        let { url } = details;
+        url = decodeURI(url);
         if (url.indexOf(`${this.electronWorkingDir}/static/`) > -1) {
           const localURL = url.replace(
             this.electronWorkingDir,
