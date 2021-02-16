@@ -66,6 +66,7 @@ export default class EditableCodeCell extends React.Component {
             ref={this._cellCodeRef}
             contentEditable={editing}
             suppressContentEditableWarning={true}
+            style={{minHeight: '1.33em'}}
             onKeyDown={this.handleKeyDown}
             onBlur={this.onBlur}>
             {this.props.markup}
