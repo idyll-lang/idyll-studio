@@ -83,6 +83,10 @@ button.loader:hover, button.creator:hover {
   /* transition: background-color 0.3s ease-in; */
 }
 
+.component-debug-view-inline {
+  position: relative;
+}
+
 .author-view-container{
   position: absolute;
   bottom: 10px;

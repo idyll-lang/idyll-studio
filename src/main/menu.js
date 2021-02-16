@@ -1,5 +1,6 @@
 const { app, Menu, ipcMain } = require('electron');
 const EventEmitter = require('events');
+const isMac = process.platform === 'darwin'
 
 class IdyllDesktopMenu extends EventEmitter {
   constructor(electronObjects) {
@@ -28,7 +29,8 @@ class IdyllDesktopMenu extends EventEmitter {
             click: () => {
               this.emit('file:save');
             }
-          }
+          },
+          { role: isMac ? 'close' : 'quit' }
         ]
       },
       {
@@ -67,7 +69,18 @@ class IdyllDesktopMenu extends EventEmitter {
     // For macs make the first label the app name
     if (process.platform === 'darwin') {
       template.unshift({
-        label: app.name
+        label: app.name,
+        submenu: [
+          { role: 'about' },
+          { type: 'separator' },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideothers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' }
+        ]
       });
     }
 

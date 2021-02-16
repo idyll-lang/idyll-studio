@@ -1,0 +1,41 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+
+  build:
+    name: Build Idyll Studio
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+
+      - uses: actions/checkout@v2
+
+      - name: Setup NodeJs
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Build
+        run: npm run make
+
+      - name: Upload builds to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            out/**/idyll-studio*.zip
+            out/**/idyll-studio*.deb
+            out/**/idyll-studio*.rpm
+            out/**/idyll-studio*Setup.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

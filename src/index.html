@@ -11,13 +11,32 @@
 <body>
 	<div id="app"></div>
 	<script>
+
+		const path = require('path');
+		const isDev = require('electron-is-dev');
+
+		const _cwd = process.cwd;
+		if (!isDev) {
+			process.env.NODE_ENV = 'production';
+			// running a bundled electron app
+			if (process.cwd() === '/') {
+				process.cwd = () => path.resolve(`${__dirname}/..`);
+			} else if (process.cwd().indexOf('\\')) {
+				// windows
+				process.cwd = () => path.resolve(`${__dirname}\\resource\\app`);
+			}
+		}
+
 		// install babel hooks in the renderer process
 		require('@babel/register')({
 			presets: [ "@babel/preset-env", "@babel/preset-react" ],
 			plugins: ["@babel/plugin-proposal-class-properties"],
 			ignore: [(path) => path.indexOf('node_modules') > -1]
 		});
+		process.cwd = _cwd;
 		require('./render/index.js');
+
+
 	</script>
 </body>
 </html>

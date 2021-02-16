@@ -1,8 +1,11 @@
+const fixPath = require('fix-path');
+fixPath();
 const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
 const Main = require('./main/main.js');
 const DataStore = require('./main/data-store/data-store');
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -13,13 +16,14 @@ function createWindow() {
   win = new BrowserWindow({
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true
     },
     width: 1300,
     height: 1000,
     minWidth: 600,
     minHeight: 400,
-    title: 'Data Writer',
+    title: 'Idyll Studio',
     show: false
   });
 
@@ -70,6 +74,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+if(require('electron-squirrel-startup')) return;
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
