@@ -8,7 +8,7 @@ This project is a work in progress. Use at risk of frustration.
 
 To install the latest release, navigate to the [releases](https://github.com/idyll-lang/idyll-studio/releases) page, and install the application for your operating system. If you are on a Mac, choose the one with "darwin" in the name. Currently Mac, Windows, and Linux (.deb and .rpm) are supported. 
 
-If you wish to install from source, clone the repo and install the dependencies. [More details.](./CONTRIBUTING.md).
+If you wish to install from source, clone the repo and install the dependencies. [More details](./CONTRIBUTING.md).
 
 *...run it?* 
 
