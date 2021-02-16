@@ -44,6 +44,7 @@
     "@electron-forge/plugin-webpack": "^6.0.0-beta.54",
     "csv-parse": "^4.15.0",
     "draft-js": "^0.11.7",
+    "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "fast-copy": "^2.1.1",
     "fix-path": "^3.0.0",

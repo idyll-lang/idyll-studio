@@ -13,12 +13,18 @@
 	<script>
 
 		const path = require('path');
+		const isDev = require('electron-is-dev');
 
-		// running a bundled electron app
 		const _cwd = process.cwd;
-		if (process.cwd() === '/') {
+		if (!isDev) {
 			process.env.NODE_ENV = 'production';
-			process.cwd = () => path.resolve(`${__dirname}/..`);
+			// running a bundled electron app
+			if (process.cwd() === '/') {
+				process.cwd = () => path.resolve(`${__dirname}/..`);
+			} else if (process.cwd().indexOf('\\')) {
+				// windows
+				process.cwd = () => path.resolve(`${__dirname}\\resource\\app`);
+			}
 		}
 
 		// install babel hooks in the renderer process
