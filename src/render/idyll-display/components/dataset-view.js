@@ -5,7 +5,7 @@ import {
   getRandomId,
   getTextContainerIndex,
   readFile,
-  convertInputToIdyllValue
+  jsonParser,
 } from '../utils';
 import copy from 'fast-copy';
 
@@ -25,7 +25,7 @@ class DatasetView extends React.PureComponent {
     var tag = `[data name:'${dataset.name}' source:'${dataset.path}' /]`;
 
     // Handle the ast change
-    compile(tag).then(datasetAST => {
+    compile(tag).then((datasetAST) => {
       const ast = copy(this.context.ast);
       const datasetNode = datasetAST.children[0];
       datasetNode.id = getRandomId();
@@ -39,7 +39,7 @@ class DatasetView extends React.PureComponent {
       const { content } = readFile(dataset.path);
 
       context.update({
-        [dataset.name]: convertInputToIdyllValue(content).value
+        [dataset.name]: jsonParser(content),
       });
       setAst(ast); // must pass info up level
     });
@@ -52,7 +52,7 @@ class DatasetView extends React.PureComponent {
       importDataset(f.path, () => {
         this.insertData({
           name: f.name.replace('.csv', '').replace('.json', ''),
-          path: f.path
+          path: f.path,
         });
       });
     }
@@ -81,7 +81,7 @@ class DatasetView extends React.PureComponent {
             justifyContent: 'center',
             fontWeight: 'bold',
             textAlign: 'center',
-            padding: '2em 1em'
+            padding: '2em 1em',
           }}>
           Drag+and+drop to add a dataset <br />
           (.csv or .json)
@@ -92,7 +92,7 @@ class DatasetView extends React.PureComponent {
               placeholder='Select an existing dataset'
               ref='select'
               // on change callback
-              options={datasets.map(dataset => {
+              options={datasets.map((dataset) => {
                 return { value: dataset, label: dataset.name };
               })}
               onChange={({ value }) => {
