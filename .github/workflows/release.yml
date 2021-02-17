@@ -22,6 +22,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+          
+      - name: Add MacOS certs
+        if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
+        run: chmod +x add-osx-cert.sh && ./add-osx-cert.sh
+        env:
+          CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
+          CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
 
       - name: Install dependencies
         run: npm i
