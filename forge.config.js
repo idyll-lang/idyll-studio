@@ -1,7 +1,6 @@
 module.exports = {
   "packagerConfig": {
     "icon": "static/icon.icns",
-    "name": "Idyll Studio",
     "osxSign": {
       "entitlements": "static/entitlements.plist",
       "entitlements-inherit": "static/entitlements.plist",
