@@ -35,6 +35,9 @@ jobs:
 
       - name: Build
         run: npm run make
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
 
       - name: Upload builds to release
         uses: softprops/action-gh-release@v1
