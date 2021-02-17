@@ -82,36 +82,5 @@
     "expect": "^25.5.0",
     "jest": "^25.5.4",
     "nodemon": "^2.0.6"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "static/icon.icns"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "idyll_studio",
-            "setupIcon": "static/icon.ico",
-            "iconUrl": "https://static/icon.png"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
   }
 }
