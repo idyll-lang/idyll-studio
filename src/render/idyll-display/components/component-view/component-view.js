@@ -6,6 +6,7 @@ import {
   LAYOUT,
   LOGIC,
   PRESENTATION,
+  TEXT,
   HELPERS,
   EXCLUDED_COMPONENTS
 } from '../../../../constants';
@@ -27,11 +28,12 @@ export const WrappedComponentView = withContext(
       };
 
       this.categoriesMap = {
+        [TEXT]: [],
         [INPUT]: [],
+        [PRESENTATION]: [],
         [LAYOUT]: [],
         [LOGIC]: [],
-        [PRESENTATION]: [],
-        [HELPERS]: [],
+        // [HELPERS]: [],
         Custom: []
       };
 
@@ -39,12 +41,14 @@ export const WrappedComponentView = withContext(
         this.props.context.components &&
         this.props.context.components.length > 0
       ) {
-        this.props.context.components.map(component => {
+        this.props.context.components.filter(component => {
+          return !EXCLUDED_COMPONENTS.includes(component.name);
+        }).map(component => {
           if (COMPONENTS_CATEGORY_MAP.has(component.name)) {
             this.categoriesMap[
               COMPONENTS_CATEGORY_MAP.get(component.name)
             ].push(component);
-          } else if (!EXCLUDED_COMPONENTS.includes(component.name)) {
+          } else {
             this.categoriesMap.Custom.push(component);
           }
         });
@@ -57,7 +61,7 @@ export const WrappedComponentView = withContext(
       const filteredResults = this.props.context.components.filter(
         component => {
           const name = formatString(component.name).toLowerCase();
-          return name.startsWith(value.toLowerCase());
+          return name.includes(value.toLowerCase());
         }
       );
 
