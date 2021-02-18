@@ -1,19 +1,25 @@
 
-if (process.platform !== "win32") {
-  const shellPath = require('shell-path');
-  process.env.PATH = shellPath.sync() || [
-    './node_modules/.bin',
-    '/.nodebrew/current/bin',
-    '/usr/local/bin',
-    process.env.PATH
-  ].join(':');
-}
 
 const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
 const Main = require('./main/main.js');
 const DataStore = require('./main/data-store/data-store');
+const isDev = require('electron-is-dev');
+
+if (!isDev && process.platform !== "win32") {
+  if (process.platform === 'darwin') {
+    const fixPaths = require('fix-paths');
+    fixPaths();
+  } else {
+    process.env.PATH = shellPath.sync() || [
+      './node_modules/.bin',
+      '/.nodebrew/current/bin',
+      '/usr/local/bin',
+      process.env.PATH
+    ].join(':');
+  }
+}
 
 
 // Keep a global reference of the window object, if you don't, the window will
