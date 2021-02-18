@@ -21,17 +21,17 @@ class App extends React.PureComponent {
   constructor(props) {
     super(props);
 
+    this.onUpdateCallbacks = [];
+
     this.state = {
       pathKey: '',
       components: [],
       componentPropMap: new Map(),
       ast: undefined,
       datasets: undefined,
-      currentSidebarNode: null,
       url: '',
       currentProcess: null,
       activeComponent: null,
-      onUpdateCallbacks: [],
       requestCreateProject: false,
       isCreatingProject: false,
       createProjectName: '',
@@ -208,12 +208,10 @@ class App extends React.PureComponent {
       theme,
       layout,
       componentPropMap,
-      currentSidebarNode,
       components,
       url,
       currentProcess,
       activeComponent,
-      onUpdateCallbacks,
       pathKey,
       showPreview,
     } = this.state;
@@ -225,7 +223,6 @@ class App extends React.PureComponent {
       ast: ast,
       propsMap: componentPropMap,
       datasets: datasets,
-      currentSidebarNode: currentSidebarNode,
       url: url,
       currentProcess: currentProcess,
       activeComponent: activeComponent,
@@ -236,9 +233,6 @@ class App extends React.PureComponent {
         this.setState({
           showPreview: !this.state.showPreview,
         });
-      },
-      setSidebarNode: (node) => {
-        this.setState({ currentSidebarNode: node });
       },
       setTheme: (theme) => {
         this.setState({ theme: theme });
@@ -255,13 +249,16 @@ class App extends React.PureComponent {
       setContext: (context) => {
         this.setState({ context: context });
         context.onUpdate((newData) => {
-          onUpdateCallbacks.forEach((cb) => {
+          this.onUpdateCallbacks.forEach((cb) => {
             cb(newData);
           });
         });
       },
       onUpdate: (cb) => {
-        onUpdateCallbacks.push(cb);
+        this.onUpdateCallbacks.push(cb);
+      },
+      offUpdate: (cb) => {
+        this.onUpdateCallbacks = this.onUpdateCallbacks.filter(_cb => _cb !== cb);
       },
       deploy: () => {
         ipcRenderer.send('deploy', '');
