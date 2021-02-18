@@ -113,14 +113,9 @@ class ComponentDropTarget extends React.PureComponent {
     const { canDrop, isOver, dropTarget } = this.props;
     return dropTarget(
       <div
-        style={{
-          width: '100%',
-          height: isOver ? 65 : canDrop ? 30 : 10,
-          border: isOver ? '#999999' : 'none',
-          borderWidth: isOver ? 2 : 0,
-          background: isOver ? '#999' : canDrop ? '#ccc' : 'none',
-          transition: 'all 0.5s',
-        }}
+        className={`idyll-studio-drop-target ${isOver ? 'is-over' : ''} ${
+          canDrop ? 'is-dragging' : ''
+        }`}
       />
     );
   }

@@ -41,9 +41,10 @@ const VariableViewV2 = withContext(
       this.handleGridUpdate = this.handleGridUpdate.bind(this);
       this._isMounted = false;
 
-      props.context.onUpdate(() => {
+      this._updateCB = () => {
         this.getRows();
-      });
+      }
+      props.context.onUpdate(this._updateCB);
     }
 
     componentDidMount() {
@@ -53,6 +54,7 @@ const VariableViewV2 = withContext(
 
     componentWillUnmount() {
       this._isMounted = false;
+      this.props.context && this.props.context.offUpdate && this.props.context.offUpdate(this._updateCB);
     }
 
     componentDidUpdate(prevProps) {

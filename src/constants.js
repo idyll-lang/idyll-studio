@@ -1,9 +1,10 @@
 export const EXECUTE_KEY = 'Enter';
 
+export const TEXT = 'Text';
 export const INPUT = 'Input';
 export const LAYOUT = 'Layout';
 export const LOGIC = 'Logic';
-export const PRESENTATION = 'Presentation';
+export const PRESENTATION = 'Display';
 export const HELPERS = 'Helpers';
 
 export const COMPONENTS_CATEGORY_MAP = new Map([
@@ -24,7 +25,7 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
   ['stepper', LAYOUT],
   ['step', LAYOUT],
   ['stepper-control', LAYOUT],
-  ['text-container', LAYOUT],
+  ['text-container', TEXT],
   ['conditional', LOGIC],
   ['loop', LOGIC],
   ['switch', LOGIC],
@@ -38,13 +39,13 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
   ['gist', PRESENTATION],
   ['graphic', PRESENTATION],
   ['header', PRESENTATION],
-  ['h1', PRESENTATION],
-  ['h2', PRESENTATION],
-  ['h3', PRESENTATION],
-  ['h4', PRESENTATION],
-  ['h5', PRESENTATION],
-  ['h6', PRESENTATION],
-  ['link', PRESENTATION],
+  ['h1', TEXT],
+  ['h2', TEXT],
+  ['h3', TEXT],
+  ['h4', TEXT],
+  ['h5', TEXT],
+  ['h6', TEXT],
+  ['link', TEXT],
   ['svg', PRESENTATION],
   ['table', PRESENTATION],
   ['tweet', PRESENTATION],
@@ -55,6 +56,7 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
   ['preload', HELPERS]
 ]);
 
-export const EXCLUDED_COMPONENTS = ['generateHeaders'];
+
+export const EXCLUDED_COMPONENTS = ['generateHeaders', 'fixed', 'inline', 'scroller', 'step', 'stepper-control', 'case', 'default', 'graphic', 'analytics', 'meta', 'preload'];
 
 export const DEBOUNCE_PROPERTY_MILLISECONDS = 250;

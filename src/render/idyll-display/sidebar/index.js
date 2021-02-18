@@ -3,7 +3,6 @@ import AST from 'idyll-ast';
 import WrappedComponentView from '../components/component-view/component-view.js';
 import DatasetView from '../components/dataset-view.js';
 import Deployment from '../components/deploy.js';
-import ComponentDetails from './component.js';
 import Context from '../../context/context';
 
 import * as layouts from 'idyll-layouts';
@@ -43,6 +42,7 @@ class Sidebar extends React.PureComponent {
           Theme
           <select
             onChange={this.handleThemeChange.bind(this)}
+            disabled={true}
             value={this.context.theme}>
             {Object.keys(themes)
               .filter((d) => !['__esModule', 'none'].includes(d))
@@ -58,6 +58,7 @@ class Sidebar extends React.PureComponent {
         <div className='layout-container'>
           Layout
           <select
+            disabled={true}
             onChange={this.handleLayoutChange.bind(this)}
             value={this.context.layout}>
             {Object.keys(layouts)
@@ -142,7 +143,7 @@ class Sidebar extends React.PureComponent {
   }
 
   render() {
-    const { ast, currentSidebarNode } = this.context;
+    const { ast } = this.context;
 
     if (!ast) {
       return (
@@ -154,42 +155,38 @@ class Sidebar extends React.PureComponent {
 
     return (
       <div className='sidebar-information'>
-        {currentSidebarNode ? (
-          <ComponentDetails />
-        ) : (
-          <div>
-            <div className='sidebar-tab-container'>
-              <div
-                className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
-                }`}
-                onClick={() => {
-                  this.setState({ selectedTab: tabs.DOCUMENT });
-                }}>
-                Document
-              </div>
-              <div
-                className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
-                }`}
-                onClick={() => {
-                  this.setState({ selectedTab: tabs.COMPONENTS });
-                }}>
-                Components
-              </div>
-              <div
-                className={`sidebar-tab ${
-                  this.state.selectedTab === tabs.VARIABLES ? 'selected' : ''
-                }`}
-                onClick={() => {
-                  this.setState({ selectedTab: tabs.VARIABLES });
-                }}>
-                Variables
-              </div>
+        <div>
+          <div className='sidebar-tab-container'>
+            <div
+              className={`sidebar-tab ${
+                this.state.selectedTab === tabs.DOCUMENT ? 'selected' : ''
+              }`}
+              onClick={() => {
+                this.setState({ selectedTab: tabs.DOCUMENT });
+              }}>
+              Document
             </div>
-            <div className='sidebar-inner'>{this.renderInner()}</div>
+            <div
+              className={`sidebar-tab ${
+                this.state.selectedTab === tabs.COMPONENTS ? 'selected' : ''
+              }`}
+              onClick={() => {
+                this.setState({ selectedTab: tabs.COMPONENTS });
+              }}>
+              Components
+            </div>
+            <div
+              className={`sidebar-tab ${
+                this.state.selectedTab === tabs.VARIABLES ? 'selected' : ''
+              }`}
+              onClick={() => {
+                this.setState({ selectedTab: tabs.VARIABLES });
+              }}>
+              Variables
+            </div>
           </div>
-        )}
+          <div className='sidebar-inner'>{this.renderInner()}</div>
+        </div>
       </div>
     );
   }

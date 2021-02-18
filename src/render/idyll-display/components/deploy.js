@@ -85,17 +85,7 @@ class Deploy extends React.PureComponent {
           <div>Title {this.renderProps('title')}</div>
           <div>Description {this.renderProps('description')}</div>
           <div>Share Image {this.renderProps('shareImageUrl')}</div>
-          {this.context.url ? (
-            <div className='url-display'>
-              URL:{' '}
-              <a
-                href={this.context.url}
-                style={{ textTransform: 'none' }}
-                target='_blank'>
-                {this.context.url}
-              </a>
-            </div>
-          ) : null}
+
         </div>
 
         {/* Publish Button */}
@@ -109,7 +99,18 @@ class Deploy extends React.PureComponent {
             disabled={this.context.currentProcess === 'publishing'}>
             Publish
           </button>
-          <div>{this.context.currentProcess}</div>
+          <div className={'deploy-process-output'}>{this.context.currentProcess}</div>
+          {this.context.url ? (
+            <div className='url-display'>
+              URL:{' '}
+              <a
+                href={this.context.url}
+                style={{ textTransform: 'none' }}
+                target='_blank'>
+                {this.context.url}
+              </a>
+            </div>
+          ) : null}
         </div>
       </div>
     );

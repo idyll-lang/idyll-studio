@@ -14,20 +14,27 @@ export const WrappedComponent = withContext(
       this.state = {
         variableData: props.variableData,
       };
-      props.context &&
-        props.context.onUpdate &&
-        props.context.onUpdate((newData) => {
-          this.setState({
-            variableData: { ...this.props.context.context.data(), ...newData },
-          });
+
+      this._updateCB = (newData) => {
+        this.setState({
+          variableData: { ...this.props.context.context.data(), ...newData },
         });
+      };
+    }
+
+    componentWillUnmount() {
+      this.props.context &&
+        this.props.context.offUpdate &&
+        this.props.context.offUpdate(this._updateCB);
     }
 
     componentDidMount() {
-      const { propertyObject } = this.props;
+      const { propertyObject, context } = this.props;
 
       const input = this._inputRef.current;
       input.value = propertyObject.value;
+
+      context && context.onUpdate && context.onUpdate(this._updateCB);
     }
 
     handleUpdateValue = () => {
