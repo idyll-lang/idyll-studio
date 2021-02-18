@@ -2,7 +2,6 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { updateNodeById, getNodeById } from '../../utils';
 import { stringify, numberfy } from '../../utils';
-
 import { withContext } from '../../../context/with-context';
 
 export const WrappedComponent = withContext(
