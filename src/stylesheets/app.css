@@ -86,7 +86,6 @@ html {
   height: 55px;
   border: solid 0.5px #999;
   top: -10px;
-  /* margin-top: calc(0.5em + 10px); */
 }
 
 button.loader, button.creator {
