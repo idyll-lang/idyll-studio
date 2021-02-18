@@ -17,7 +17,7 @@ html {
   /* transition: grid-template-colums 0.5s; */
   /* grid-template-rows: 100px calc(100vh - 100px); */
   /* grid-gap: 1em; */
-  transition: transform 0.5s linear, width 0.5s linear;
+  /* transition: transform 0.5s linear, width 0.5s linear; */
   width: 100vw;
   transform: translateX(0);
 }
