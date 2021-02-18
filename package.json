@@ -43,11 +43,9 @@
     "@babel/register": "^7.12.10",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.54",
     "csv-parse": "^4.15.0",
-    "draft-js": "^0.11.7",
     "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "fast-copy": "^2.1.1",
-    "fix-path": "^3.0.0",
     "idyll": "^5.2.6",
     "idyll-ast": "^2.2.1",
     "idyll-compiler": "^4.0.20",
@@ -61,7 +59,8 @@
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-dom": "^16.14.0",
-    "react-select": "^3.1.1"
+    "react-select": "^3.1.1",
+    "shell-path": "^2.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",

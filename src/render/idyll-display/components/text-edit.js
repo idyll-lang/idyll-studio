@@ -114,7 +114,7 @@ class TextEdit extends React.PureComponent {
     if (this.state.showMarkup) {
       return (
         <div
-          ref={ref => (this._markupRef = ref)}
+          ref={ref => { this._markupRef = ref; ref && ref.focus() }}
           style={{
             whiteSpace: 'pre-wrap',
             marginLeft: -10,
