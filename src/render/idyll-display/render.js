@@ -150,7 +150,6 @@ const Renderer = withContext(
         }
       });
 
-      console.log('rendering with key', `${!showPreview}-${this.state.componentUpdates}`);
       return (
         <div className='renderer'>
           <div className='renderer-container' contentEditable={false}>
