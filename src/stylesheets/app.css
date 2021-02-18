@@ -5,6 +5,11 @@ html {
   background: #fff;
 }
 
+#app {
+  height: 100vh;
+  overflow: hidden;
+}
+
 .grid {
   display: grid;
   height: 100vh;
@@ -27,6 +32,7 @@ html {
   /* grid-column: 1 / 2; */
   overflow-y: auto;
   padding: 0;
+  padding-bottom: 300px;
 }
 
 .sidebar-information {
@@ -55,6 +61,31 @@ html {
 .component-container {
   /* overflow-x: scroll; */
   color: black;
+}
+
+
+
+.idyll-studio-drop-target {
+    width: 100%;
+    background: none;
+    height: 0;
+    border-radius: 10px;
+    transition: all 0.25s;
+    box-sizing: border-box;
+    position: relative;
+    top: 0;
+}
+
+.idyll-studio-drop-target.is-dragging {
+  height: 35px;
+  background: #ccc;
+  margin: 0.5em 0;
+}
+
+.idyll-studio-drop-target.is-dragging.is-over {
+  height: 55px;
+  border: solid 0.5px #999;
+  top: -10px;
 }
 
 button.loader, button.creator {

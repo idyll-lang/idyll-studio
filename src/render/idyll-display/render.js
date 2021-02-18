@@ -144,7 +144,7 @@ const Renderer = withContext(
           <div className='renderer-container' contentEditable={false}>
             <IdyllDocument
               key={!showPreview}
-              ast={this.injectDropTargets(ast)}
+              ast={showPreview ? ast : this.injectDropTargets(ast)}
               components={{
                 IdyllEditorDropTarget: DropTarget,
                 ...this.loadedComponents,
