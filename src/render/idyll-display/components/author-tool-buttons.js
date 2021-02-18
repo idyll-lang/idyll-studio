@@ -25,7 +25,7 @@ class AuthorToolButtons extends React.PureComponent {
 
   onBlur(newMarkup) {
     this.setState({
-      markup: newMarkup
+      markup: newMarkup,
     });
   }
 
@@ -46,7 +46,7 @@ class AuthorToolButtons extends React.PureComponent {
 
     return dropTarget(
       <div className='component-debug-view'>
-        <div ref={ref => (this._componentRef = ref)}>{props.component}</div>
+        <div ref={(ref) => (this._componentRef = ref)}>{props.component}</div>
         <div className='author-view-container' id={this.domId}>
           <button
             className={`author-view-button`}
@@ -74,16 +74,18 @@ class AuthorToolButtons extends React.PureComponent {
 const variableTarget = {
   drop(props, monitor, component) {
     // component.insertComponent(monitor.getItem().component);
-  }
+  },
 };
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
+    isOver: monitor.isOver(),
   };
 }
 
-export default DropTarget('VARIABLE', variableTarget, collect)(
-  AuthorToolButtons
-);
+export default DropTarget(
+  'VARIABLE',
+  variableTarget,
+  collect
+)(AuthorToolButtons);

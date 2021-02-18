@@ -17,7 +17,7 @@ export const WrappedAuthorView = withContext(
       this.state = {
         activeDomNode: null,
         dimensions: null,
-        selectedView: 'properties'
+        selectedView: 'properties',
       };
     }
 
@@ -44,8 +44,8 @@ export const WrappedAuthorView = withContext(
 
       // update which dom node represents the "active" component being worked on
       if (
-        prevProps.context.activeComponent != context.activeComponent &&
-        isValidActiveComponent
+        isValidActiveComponent &&
+        prevProps.context.activeComponent !== context.activeComponent
       ) {
         const activeComponentDomNode = document.getElementById(
           context.activeComponent.name + '-' + context.activeComponent.id
@@ -54,18 +54,18 @@ export const WrappedAuthorView = withContext(
         if (activeComponentDomNode) {
           this.setState({
             activeDomNode: activeComponentDomNode,
-            dimensions: activeComponentDomNode.getClientRects()[0]
+            dimensions: activeComponentDomNode.getClientRects()[0],
           });
         } else {
           this.setState({
             activeDomNode: null,
-            dimensions: null
+            dimensions: null,
           });
         }
       } else if (!isValidActiveComponent && prevProps.context.activeComponent) {
         this.setState({
           activeDomNode: null,
-          dimensions: null
+          dimensions: null,
         });
       }
     }
@@ -79,7 +79,7 @@ export const WrappedAuthorView = withContext(
         const activeComponentDimensions = this.state.activeDomNode.getClientRects();
 
         this.setState({
-          dimensions: activeComponentDimensions[0]
+          dimensions: activeComponentDimensions[0],
         });
       }
     };
@@ -111,7 +111,7 @@ export const WrappedAuthorView = withContext(
             className='author-view-overlay'
             style={{
               top: dimensions.top + 30,
-              left: dimensions.left - 10
+              left: dimensions.left - 10,
             }}>
             <div className='author-view-overlay-header'>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>

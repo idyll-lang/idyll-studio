@@ -4,7 +4,7 @@ import {
   getNodeById,
   throttle,
   getUpdatedPropertyList,
-  deleteNodeById
+  deleteNodeById,
 } from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../../constants';
@@ -23,7 +23,7 @@ export default withContext(
       this.state = {
         newProp: '',
         variableData: props.context.context.data(),
-        deleteConfirm: false
+        deleteConfirm: false,
       };
     }
 
@@ -87,19 +87,19 @@ export default withContext(
 
     handleClickAddProp() {
       this.setState({
-        newProp: ''
+        newProp: '',
       });
     }
 
     handleDeleteComponent() {
       if (!this.state.deleteConfirm) {
         this.setState({
-          deleteConfirm: true
+          deleteConfirm: true,
         });
         return;
       } else {
         this.setState({
-          deleteConfirm: false
+          deleteConfirm: false,
         });
       }
       deleteNodeById(
@@ -121,7 +121,7 @@ export default withContext(
       this.props.context.setAst(this.props.context.ast);
       this.props.context.setActiveComponent(node);
       this.setState({
-        newProp: ''
+        newProp: '',
       });
     }
 
@@ -137,7 +137,7 @@ export default withContext(
 
     handleUpdateNewPropName(event) {
       this.setState({
-        newProp: event.target.value
+        newProp: event.target.value,
       });
     }
 
@@ -147,8 +147,9 @@ export default withContext(
         activeComponent,
         setAst,
         setActiveComponent,
-        context
+        context,
       } = this.props.context;
+
       return (
         <div style={{ margin: '0 1em' }}>
           <div
@@ -156,7 +157,7 @@ export default withContext(
               margin: '0 5px 1em 0',
               fontSize: 14,
               display: 'flex',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}>
             <div>{activeComponent.name} component</div>
             <div>
@@ -189,7 +190,7 @@ export default withContext(
                 display: 'flex',
                 alignItems: 'center',
                 marginBottom: '1em',
-                fontSize: 12
+                fontSize: 12,
               }}>
               <input
                 style={{
@@ -197,7 +198,7 @@ export default withContext(
                   fontSize: 12,
                   paddingLeft: 10,
                   width: '100%',
-                  height: 38
+                  height: 38,
                 }}
                 placeholder={'Enter name'}
                 value={this.state.newProp}
@@ -214,7 +215,7 @@ export default withContext(
                   padding: 0,
                   height: 38,
                   lineHeight: '38px',
-                  border: 'none'
+                  border: 'none',
                 }}
                 onClick={this.handleSubmitProp.bind(this)}>
                 Submit
@@ -227,7 +228,7 @@ export default withContext(
                 display: 'flex',
                 alignItems: 'center',
                 marginBottom: '1em',
-                fontSize: 12
+                fontSize: 12,
               }}>
               <button
                 style={{
@@ -241,7 +242,7 @@ export default withContext(
                   color: 'white',
                   lineHeight: 'unset',
                   width: '100%',
-                  border: 'none'
+                  border: 'none',
                 }}
                 onClick={this.handleDeleteComponent.bind(this)}>
                 {this.state.deleteConfirm

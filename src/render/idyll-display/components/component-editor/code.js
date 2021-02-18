@@ -1,7 +1,13 @@
 import * as React from 'react';
-import { getNodeById, getParentNodeById, getRandomId } from '../../utils/';
+import {
+  getNodeById,
+  getParentNodeById,
+  getRandomId,
+  reassignNodeIds,
+} from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import EditableCodeCell from './code-cell';
+import copy from 'fast-copy';
 
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
@@ -22,7 +28,7 @@ export default withContext(
         id: -1,
         type: 'component',
         name: 'div',
-        children: [props.context.activeComponent]
+        children: [props.context.activeComponent],
       });
     }
 
@@ -33,55 +39,53 @@ export default withContext(
     onBlur(newMarkup) {}
 
     updateAst(newMarkup) {
+      const { context } = this.props;
+
       const output = compile(newMarkup || this.getMarkup(this.props), {
-        async: false
+        async: false,
       });
-      let node = output.children[0];
 
-      while (node.type === 'component' && node.name === 'TextContainer') {
-        node = node.children;
-      }
+      let topNode = output.children[0]; // text container or actual component
+      let nodesToUpdate;
 
-      if (node.length === 1) {
-        node = node[0];
-
-        const targetNode = getNodeById(
-          this.props.context.ast,
-          this.props.context.activeComponent.id
-        );
-
-        Object.keys(node).forEach(key => {
-          if (key === 'id') {
-            return;
-          }
-          targetNode[key] = node[key];
-        });
+      if (topNode.type === 'component' && topNode.name === 'TextContainer') {
+        nodesToUpdate = topNode.children; // get all nodes that need to update
       } else {
-        const parentNode = getParentNodeById(
-          this.props.context.ast,
-          this.props.context.activeComponent.id
-        );
-        if (!parentNode) {
-          console.warn('Could not identify parent node');
-          return;
-        }
-
-        const childIdx = (parentNode.children || []).findIndex(
-          c => c.id === this.props.context.activeComponent.id
-        );
-
-        node.forEach(n => {
-          n.id = getRandomId();
-        });
-
-        // parentNode.children.splice(childIdx, 0, ...node);
-        parentNode.children = parentNode.children
-          .slice(0, childIdx)
-          .concat(node)
-          .concat(parentNode.children.slice(childIdx + 1));
+        nodesToUpdate = [topNode];
       }
 
-      this.props.context.setAst(this.props.context.ast);
+      const astCopy = copy(context.ast);
+      const parentNode = getParentNodeById(astCopy, context.activeComponent.id);
+
+      if (!parentNode) {
+        console.warn('Could not identify parent node');
+        return;
+      }
+
+      // get the index to insert the updated/new nodes into
+      const childIdx = (parentNode.children || []).findIndex(
+        (c) => c.id === context.activeComponent.id
+      );
+
+      const reassignedNodes = [];
+      nodesToUpdate.forEach((node) => {
+        reassignedNodes.push(reassignNodeIds(node));
+      });
+
+      parentNode.children = parentNode.children
+        .slice(0, childIdx)
+        .concat(reassignedNodes)
+        .concat(parentNode.children.slice(childIdx + 1));
+
+      let updatedActiveNode; // find the updated active node in array
+      if (nodesToUpdate.length === 1) {
+        updatedActiveNode = reassignedNodes[0];
+      } else {
+        updatedActiveNode = null; // user added extra components to markup, so reset active component for now
+      }
+
+      context.setAst(astCopy);
+      context.setActiveComponent(updatedActiveNode);
     }
 
     render() {
@@ -100,7 +104,7 @@ export default withContext(
               fontStyle: 'italic',
               margin: '5px 16px',
               display: 'flex',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}>
             <div>shift + enter to execute</div>
             <div>

@@ -3,6 +3,7 @@ import throttle from 'lodash.throttle';
 import fs from 'fs';
 import path from 'path';
 import parse from 'csv-parse/lib/sync';
+import copy from 'fast-copy';
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -100,6 +101,23 @@ const getTextContainerIndex = (node) => {
   }
 
   return currentNodeIndex;
+};
+
+const reassignNodeIds = (node) => {
+  const copyNode = copy(node);
+  reassignNodeIdsHelper(copyNode);
+
+  return copyNode;
+};
+
+const reassignNodeIdsHelper = (node) => {
+  if (node) {
+    node.id = getRandomId();
+
+    (node.children || []).forEach((child) => {
+      reassignNodeIdsHelper(child);
+    });
+  }
 };
 
 /**
@@ -319,4 +337,5 @@ module.exports = {
   readFile,
   jsonParser,
   boolify,
+  reassignNodeIds,
 };
