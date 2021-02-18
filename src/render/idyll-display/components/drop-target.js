@@ -19,7 +19,7 @@ class ComponentDropTarget extends React.PureComponent {
   // Generates the tag associated with the given component name
   insertComponent(name) {
     var tagInfo = this.context.propsMap.get(name);
-    console.log(tagInfo, tagInfo.children);
+
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
       tagInfo.props.forEach(prop => {

@@ -131,6 +131,7 @@ button.loader:hover, button.creator:hover {
   top: 25px;
   left: 0;
   position: absolute;
+  z-index: 99;
 }
 
 button {
