@@ -97,6 +97,8 @@ class Main {
         return;
       }
 
+      this.mainWindow.webContents.send('project-create-folder-selected');
+
       // Gets full file path
       const projectDir = dir.filePaths[0];
       const slugName = slugify(projectName);

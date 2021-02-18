@@ -7,6 +7,7 @@ import { readFile, jsonParser } from './idyll-display/utils';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { basename } from 'path';
+import Loader from "react-loader-spinner";
 
 const { ipcRenderer } = require('electron');
 const idyllAST = require('idyll-ast');
@@ -115,6 +116,12 @@ class App extends React.PureComponent {
 
       // insert text manually
       document.execCommand('insertHTML', false, text);
+    });
+
+    ipcRenderer.on('project-create-folder-selected', (event, message) => {
+      this.setState({
+        isCreatingProject: true,
+      });
     });
 
     ipcRenderer.on('publishing', (event, message) => {
@@ -329,9 +336,6 @@ class App extends React.PureComponent {
     this.undoStack = [];
     // const name = prompt('Project name', 'my-idyll-project');
     ipcRenderer.send('client:createProject', this.state.createProjectName);
-    this.setState({
-      isCreatingProject: true,
-    });
   }
 
   handleCreateCancel() {
@@ -357,82 +361,96 @@ class App extends React.PureComponent {
 
   render() {
     if (!this.state.ast) {
+
+      if (this.state.requestCreateProject) {
+        return (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100vh',
+            width: '100vw',
+            fontFamily: 'Helvetica',
+          }}>
+            {this.state.isCreatingProject ? (
+              <div style={{maxWidth: 600, textAlign: 'center', margin: '0 auto'}}>
+                <Loader
+                  type="Oval"
+                  color="#6122fb"
+                  height={75}
+                  width={75}
+                />
+                <div style={{fontSize: 36, fontWeight: 300, maxWidth: 500, textAlign: 'center', margin: '0 auto'}}>Creating project... this may take a minute or two.</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ fontWeight: 'bold' }}>
+                  Enter project name, and then a folder in which to put it (e.g. Documents):
+                </div>
+                <input
+                  style={{
+                    padding: '1em',
+                    display: 'block',
+                    width: '100%',
+                    marginTop: '1em',
+                    boxSizing: 'border-box',
+                  }}
+                  value={this.state.createProjectName}
+                  onChange={this.handleChangeCreateProjectName.bind(this)}
+                  placeholder={'My project'}
+                />
+                <button
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '1em',
+                    margin: '1em auto',
+                    height: 'auto',
+                    lineHeight: 'unset',
+                  }}
+                  onClick={this.handleCreate.bind(this)}>
+                  Select folder
+                </button>
+
+                <button
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '1em',
+                    margin: '1em auto',
+                    height: 'auto',
+                    lineHeight: 'unset',
+                  }}
+                  onClick={this.handleCreateCancel.bind(this)}>
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+        )
+      }
       return (
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             width: '100vw',
             height: '100vh',
             background: '#efefef',
+            fontFamily: 'Helvetica',
+            borderRadius: 0,
+            padding: 50
           }}>
-          <div
-            style={{
-              fontFamily: 'Helvetica',
-              borderRadius: 0,
-            }}>
-            {this.state.requestCreateProject ? (
-              <div>
-                {this.state.isCreatingProject ? (
-                  <div>Creating project. This may take a minute or two.</div>
-                ) : (
-                  <div>
-                    <div style={{ fontWeight: 'bold' }}>
-                      Enter project name, and then choose a folder to put it:
-                    </div>
-                    <input
-                      style={{
-                        padding: '1em',
-                        display: 'block',
-                        width: '100%',
-                        marginTop: '1em',
-                        boxSizing: 'border-box',
-                      }}
-                      value={this.state.createProjectName}
-                      onChange={this.handleChangeCreateProjectName.bind(this)}
-                      placeholder={'My project'}
-                    />
-                    <button
-                      style={{
-                        display: 'block',
-                        width: '100%',
-                        padding: '1em',
-                        margin: '1em auto',
-                        height: 'auto',
-                        lineHeight: 'unset',
-                      }}
-                      onClick={this.handleCreate.bind(this)}>
-                      Select folder
-                    </button>
-
-                    <button
-                      style={{
-                        display: 'block',
-                        width: '100%',
-                        padding: '1em',
-                        margin: '1em auto',
-                        height: 'auto',
-                        lineHeight: 'unset',
-                      }}
-                      onClick={this.handleCreateCancel.bind(this)}>
-                      Cancel
-                    </button>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div>
-                <button
-                  className='creator'
-                  onClick={this.requestCreateProject.bind(this)}>
-                  Create a project
-                </button>
-                <button className='loader' onClick={this.handleLoad.bind(this)}>
-                  Load a project
-                </button>
-              </div>
-            )}
+          <div>
+            <button
+              className='creator'
+              onClick={this.requestCreateProject.bind(this)}>
+              Create a project
+            </button>
+          </div>
+          <div>
+            <button className='loader' onClick={this.handleLoad.bind(this)}>
+              Load a project
+            </button>
           </div>
         </div>
       );

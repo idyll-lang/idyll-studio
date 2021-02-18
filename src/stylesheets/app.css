@@ -87,23 +87,37 @@ html {
 
 button.loader, button.creator {
   display: block;
-  padding: 1em 2em;
-  border-radius: 75px;
+  box-sizing: border-box;
+  padding: 3em 1em;
+  border-radius: 15px;
   background: #6122fb;
   color: white;
-  margin: 1em auto;
   cursor: pointer;
   transition: all 0.5s;
   outline: none;
-  font-size: 48px;
+  font-size: 36px;
   font-weight: bold;
   line-height: unset;
   border: none;
+  line-height: 1.1;
+  border: none;
   height: auto;
+  width: 300px;
+  white-space: unset;
+}
+
+button.loader {
+  margin-left: 25px;
+  background: #ccc;
+  color: #333;
 }
 
 button.loader:hover, button.creator:hover {
-  transform: scale(1.1) rotate(0.5deg);
+  transform: scale(1.025);
+  color: white;
+}
+button.loader:hover {
+  color: #333;
 }
 
 .component-debug-view {
