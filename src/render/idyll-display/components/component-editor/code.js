@@ -2,6 +2,7 @@ import * as React from 'react';
 import { getNodeById, getParentNodeById, getRandomId } from '../../utils/';
 import { withContext } from '../../../context/with-context';
 import EditableCodeCell from './code-cell';
+import copy from 'fast-copy';
 
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
@@ -22,7 +23,7 @@ export default withContext(
         id: -1,
         type: 'component',
         name: 'div',
-        children: [props.context.activeComponent]
+        children: [props.context.activeComponent],
       });
     }
 
@@ -33,24 +34,23 @@ export default withContext(
     onBlur(newMarkup) {}
 
     updateAst(newMarkup) {
-      const output = compile(newMarkup || this.getMarkup(this.props), {
-        async: false
-      });
-      let node = output.children[0];
+      const { context } = this.props;
 
-      while (node.type === 'component' && node.name === 'TextContainer') {
-        node = node.children;
+      const output = compile(newMarkup || this.getMarkup(this.props), {
+        async: false,
+      });
+
+      let node = output.children[0]; // text container or actual component
+      if (node.type === 'component' && node.name === 'TextContainer') {
+        node = node.children[0];
       }
 
-      if (node.length === 1) {
-        node = node[0];
+      node.id = context.activeComponent.id;
+      const astCopy = copy(context.ast);
+      if (!node.children || node.children.length === 0) {
+        const targetNode = getNodeById(astCopy, context.activeComponent.id);
 
-        const targetNode = getNodeById(
-          this.props.context.ast,
-          this.props.context.activeComponent.id
-        );
-
-        Object.keys(node).forEach(key => {
+        Object.keys(node).forEach((key) => {
           if (key === 'id') {
             return;
           }
@@ -58,8 +58,8 @@ export default withContext(
         });
       } else {
         const parentNode = getParentNodeById(
-          this.props.context.ast,
-          this.props.context.activeComponent.id
+          astCopy,
+          context.activeComponent.id
         );
         if (!parentNode) {
           console.warn('Could not identify parent node');
@@ -67,12 +67,12 @@ export default withContext(
         }
 
         const childIdx = (parentNode.children || []).findIndex(
-          c => c.id === this.props.context.activeComponent.id
+          (c) => c.id === context.activeComponent.id
         );
 
-        node.forEach(n => {
-          n.id = getRandomId();
-        });
+        for (let i = 0; i < node.children.length; i++) {
+          node.children[i].id = context.activeComponent.children[i].id;
+        }
 
         // parentNode.children.splice(childIdx, 0, ...node);
         parentNode.children = parentNode.children
@@ -81,7 +81,8 @@ export default withContext(
           .concat(parentNode.children.slice(childIdx + 1));
       }
 
-      this.props.context.setAst(this.props.context.ast);
+      context.setAst(astCopy);
+      context.setActiveComponent(node);
     }
 
     render() {
@@ -100,7 +101,7 @@ export default withContext(
               fontStyle: 'italic',
               margin: '5px 16px',
               display: 'flex',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}>
             <div>shift + enter to execute</div>
             <div>

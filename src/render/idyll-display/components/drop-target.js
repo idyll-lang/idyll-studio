@@ -19,10 +19,10 @@ class ComponentDropTarget extends React.PureComponent {
   // Generates the tag associated with the given component name
   insertComponent(name) {
     var tagInfo = this.context.propsMap.get(name);
-    console.log(tagInfo, tagInfo.children);
+
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
-      tagInfo.props.forEach(prop => {
+      tagInfo.props.forEach((prop) => {
         tag += prop.name + ':' + prop.example + ' ';
       });
     }
@@ -51,19 +51,24 @@ class ComponentDropTarget extends React.PureComponent {
       position = 'AFTER';
     }
 
-    compile(componentMarkup).then(componentAST => {
+    compile(componentMarkup).then((componentAST) => {
       let componentNode = componentAST.children[0];
       while (componentNode.name === 'TextContainer') {
         componentNode = componentNode.children[0];
       }
       componentNode.id = getRandomId();
 
-      const handleNode = node => {
+      (componentNode.children || []).forEach((child) => {
+        child.id = getRandomId();
+      });
+
+      const handleNode = (node) => {
         let foundMatch = false;
         let matchIndex = -1;
         if (!node.children || !node.children.length) {
           return false;
         }
+
         for (var i = 0; i < node.children.length; i++) {
           const child = node.children[i];
           if (child.id === targetNode) {
@@ -114,7 +119,7 @@ class ComponentDropTarget extends React.PureComponent {
           border: isOver ? '#999999' : 'none',
           borderWidth: isOver ? 2 : 0,
           background: isOver ? '#999' : canDrop ? '#ccc' : 'none',
-          transition: 'all 0.5s'
+          transition: 'all 0.5s',
         }}
       />
     );
@@ -124,17 +129,19 @@ class ComponentDropTarget extends React.PureComponent {
 const componentBlockTarget = {
   drop(props, monitor, component) {
     component.insertComponent(monitor.getItem().component);
-  }
+  },
 };
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-    canDrop: monitor.canDrop()
+    canDrop: monitor.canDrop(),
   };
 }
 
-export default DropTarget('COMPONENT', componentBlockTarget, collect)(
-  ComponentDropTarget
-);
+export default DropTarget(
+  'COMPONENT',
+  componentBlockTarget,
+  collect
+)(ComponentDropTarget);

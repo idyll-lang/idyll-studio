@@ -12,13 +12,13 @@ export const WrappedComponent = withContext(
 
       this._inputRef = React.createRef();
       this.state = {
-        variableData: props.variableData
+        variableData: props.variableData,
       };
       props.context &&
         props.context.onUpdate &&
-        props.context.onUpdate(newData => {
+        props.context.onUpdate((newData) => {
           this.setState({
-            variableData: { ...this.props.context.context.data(), ...newData }
+            variableData: { ...this.props.context.context.data(), ...newData },
           });
         });
     }
@@ -65,7 +65,7 @@ export const WrappedComponent = withContext(
      * @param {string} type the next type of the prop
      */
     updateNodeType(propertyName, type) {
-      return e => {
+      return (e) => {
         this.props.updateNodeType(propertyName, type);
       };
     }
@@ -77,7 +77,7 @@ export const WrappedComponent = withContext(
      * @param {string} prop the prop value
      * @param {string} nextType the next prop type
      */
-    renderPropInput(key, propertyObject, nextType) {
+    renderPropInput() {
       return (
         <div>
           <input
@@ -105,13 +105,18 @@ export const WrappedComponent = withContext(
     deleteProperty(key) {}
 
     render() {
-      const { name, propertyObject, isOver, dropTarget } = this.props;
+      const { name, propertyObject, isOver, dropTarget, didDrop } = this.props;
       const { variableData } = this.state;
       const nextProps = {
         variable: 'value',
         value: 'expression',
-        expression: 'variable'
+        expression: 'variable',
       };
+
+      if (didDrop && this._inputRef.current) {
+        this._inputRef.current.value = propertyObject.value;
+      }
+
       let ret;
       ret = (
         <div
@@ -119,13 +124,13 @@ export const WrappedComponent = withContext(
             marginLeft: 0,
             border: isOver ? 'solid 2px green' : undefined,
             width: '100%',
-            marginBottom: '1em'
+            marginBottom: '1em',
           }}>
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
             }}>
             <div style={{ display: 'flex' }}>
               <div className='prop-name'>{name}</div>
@@ -136,7 +141,7 @@ export const WrappedComponent = withContext(
                   nextProps[propertyObject.type]
                 )}
                 style={{
-                  color: this.getBackgroundColor(propertyObject.type)
+                  color: this.getBackgroundColor(propertyObject.type),
                 }}>
                 {propertyObject.type === 'value'
                   ? typeof propertyObject.value
@@ -152,7 +157,7 @@ export const WrappedComponent = withContext(
                     marginLeft: 8,
                     whiteSpace: 'nowrap',
                     textOverflow: 'ellipsis',
-                    overflow: 'hidden'
+                    overflow: 'hidden',
                   }}>
                   {stringify(variableData[propertyObject.value])}
                 </div>
@@ -166,7 +171,7 @@ export const WrappedComponent = withContext(
                 cursor: 'pointer',
                 color: '#999',
                 fontSize: 12,
-                fontWeight: 'bold'
+                fontWeight: 'bold',
               }}>
               ×
             </div>
@@ -186,24 +191,27 @@ const variableTarget = {
     const name = monitor.getItem().name;
 
     updateNodeById(props.ast, props.node.id, {
-      properties: { [props.name]: { value: name, type: 'variable' } }
+      properties: { [props.name]: { value: name, type: 'variable' } },
     });
 
     const node = getNodeById(props.ast, props.node.id);
 
     props.setAst({ ...props.ast });
     props.setActiveComponent(node);
-  }
+  },
 };
 
 function collect(connect, monitor) {
   return {
     dropTarget: connect.dropTarget(),
-    isOver: monitor.isOver()
+    isOver: monitor.isOver(),
+    didDrop: monitor.didDrop(),
   };
 }
 
-export default DropTarget('VARIABLE', variableTarget, collect)(
-  WrappedComponent
-);
+export default DropTarget(
+  'VARIABLE',
+  variableTarget,
+  collect
+)(WrappedComponent);
 export { WrappedComponent as Property };

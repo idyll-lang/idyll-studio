@@ -8,7 +8,7 @@ class PropertyList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      newPropertyName: ''
+      newPropertyName: '',
     };
   }
 
@@ -21,7 +21,7 @@ class PropertyList extends React.PureComponent {
     node.properties = node.properties || {};
     node.properties[this.state.newPropertyName] = {
       type: 'value',
-      value: ''
+      value: '',
     };
 
     this.setState({ newPropertyName: '' });
@@ -31,7 +31,7 @@ class PropertyList extends React.PureComponent {
     const ASTNode = this.props.node;
     return (
       <div className='property-list'>
-        {Object.keys(ASTNode.properties || {}).map(propertyName => {
+        {Object.keys(ASTNode.properties || {}).map((propertyName) => {
           const propertyObject = ASTNode.properties[propertyName];
           return (
             <div key={propertyName} style={{ padding: '0 0.25em' }}>
@@ -39,7 +39,7 @@ class PropertyList extends React.PureComponent {
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
-                  justifyContent: 'space-between'
+                  justifyContent: 'space-between',
                 }}>
                 <Property
                   updateProperty={this.props.updateNodeWithNewProperties}
