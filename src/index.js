@@ -1,5 +1,14 @@
-const fixPath = require('fix-path');
-fixPath();
+
+if (process.platform !== "win32") {
+  const shellPath = require('shell-path');
+  process.env.PATH = shellPath.sync() || [
+    './node_modules/.bin',
+    '/.nodebrew/current/bin',
+    '/usr/local/bin',
+    process.env.PATH
+  ].join(':');
+}
+
 const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
