@@ -11,6 +11,8 @@ const IDYLL_PUB_API = 'https://api.idyll.pub';
 const IDYLL_PUB_URL = 'https://idyll.pub/post';
 const compile = require('idyll-compiler');
 const { getWorkingDirectory, getTokenPath } = require('./utils');
+const open = require('open');
+const chokidar = require('chokidar');
 
 function slugify(text) {
   return text
@@ -34,12 +36,18 @@ class Main {
 
     this.electronWorkingDir = require('path').dirname(require.main.filename);
 
+    this.componentWatchMap = {};
+
     ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
     ipcMain.on('client:createProject', this.handleCreateProject.bind(this));
+    ipcMain.on('client:editComponent', this.handleEditComponent.bind(this))
+
+
 
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
+    menu.on('working-dir:open', this.handleOpenProject.bind(this));
     menu.on('toggle:sidebar', this.handleToggleSidebar.bind(this));
     menu.on('toggle:devtools', this.handleToggleDevtools.bind(this));
     menu.on('file:new', () => {
@@ -83,6 +91,16 @@ class Main {
       }
       this.mainWindow.webContents.send('data:import');
     });
+  }
+
+  handleEditComponent(event, component) {
+    open(component.path);
+    if (!this.componentWatchMap[component.path]) {
+      chokidar.watch(component.path).on('all', (event, path) => {
+        this.mainWindow.webContents.send('components:update', component);
+      });
+      this.componentWatchMap[component.path] = true;
+    }
   }
 
   async handleCreateProject(event, projectName) {
@@ -139,6 +157,15 @@ class Main {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  // Opens current project folder in system viewer
+  handleOpenProject() {
+    if (!this.workingDir) {
+      return;
+    }
+
+    open(this.workingDir);
   }
 
   // Saves current markup to open idyll project

@@ -380,7 +380,7 @@ class App extends React.PureComponent {
                   height={75}
                   width={75}
                 />
-                <div style={{fontSize: 36, fontWeight: 300, maxWidth: 500, textAlign: 'center', margin: '0 auto'}}>Creating project... this may take a minute or two.</div>
+                <div style={{fontSize: 28, fontWeight: 300, maxWidth: 350, textAlign: 'center', margin: '0 auto'}}>Creating project... this may take a minute or two.</div>
               </div>
             ) : (
               <div>
@@ -408,6 +408,7 @@ class App extends React.PureComponent {
                     height: 'auto',
                     lineHeight: 'unset',
                   }}
+                  disabled={!this.state.createProjectName || this.state.createProjectName.trim() === ''}
                   onClick={this.handleCreate.bind(this)}>
                   Select folder
                 </button>
