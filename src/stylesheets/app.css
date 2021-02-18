@@ -72,8 +72,6 @@ html {
     border-radius: 10px;
     transition: all 0.25s;
     box-sizing: border-box;
-    position: relative;
-    top: 0;
 }
 
 .idyll-studio-drop-target.is-dragging {
@@ -85,7 +83,6 @@ html {
 .idyll-studio-drop-target.is-dragging.is-over {
   height: 55px;
   border: solid 0.5px #999;
-  top: -10px;
 }
 
 button.loader, button.creator {
@@ -264,7 +261,9 @@ button {
   cursor: auto;
 }
 
-.meta-container {
+.meta-container,
+.deploy-view,
+.deploy-process-output {
   /* text-align: right;
   width: 90%;
   display: grid;
@@ -276,7 +275,9 @@ button {
 }
 .meta-container > div,
 .theme-container,
-.layout-container {
+.layout-container,
+.deploy-view .url-display,
+.deploy-process-output {
   margin-bottom: 1em;
   font-weight: 300;
   font-size: 0.8em;
@@ -300,7 +301,7 @@ button {
   text-align: left;
 }
 
-.meta-container .url-display {
+.deploy-view .url-display {
   font-family: monospace;
 }
 
@@ -365,6 +366,10 @@ input.prop-input[type="text"] {
   background-color: #666666;
   margin: 0 1em;
   padding: 0.66em 0.66em;
+}
+
+.editable-text {
+  margin-bottom: 16px;
 }
 
 .editable-text:hover {
