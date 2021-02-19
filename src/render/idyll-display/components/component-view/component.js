@@ -3,11 +3,6 @@ import { DragSource } from 'react-dnd';
 import { formatString } from '../../utils';
 const { ipcRenderer } = require('electron');
 
-
-
-
-
-
 const nameMap = {
   'text container': 'Paragraph',
   'display': 'Display Value'
@@ -24,7 +19,7 @@ class Component extends React.PureComponent {
   }
   handleDuplicateClick() {
     const { component } = this.props;
-    // open(component.path);
+    ipcRenderer.send('client:duplicateComponent', component);
   }
 
   render() {
@@ -53,14 +48,14 @@ class Component extends React.PureComponent {
             {name.toLowerCase ? (nameMap[name.toLowerCase()] || name) : name}
           </div>
           {
-            (isDragging || !isCustom) ? null : (
+            isDragging ? null : (
               <div>
-                <div className="component-edit" onClick={this.handleEditClick.bind(this)}>
+                { isCustom ? <div className="component-edit" onClick={this.handleEditClick.bind(this)}>
                   Edit
-                </div>
-                {/* <div className="component-duplicate" onClick={this.handleEditClick.bind(this)}>
+                </div> : null}
+                <div className="component-duplicate" onClick={this.handleDuplicateClick.bind(this)}>
                   Duplicate
-                </div> */}
+                </div>
               </div>
             )
           }

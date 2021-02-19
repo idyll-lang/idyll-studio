@@ -25,9 +25,14 @@ export const WrappedComponentView = withContext(
 
       this.state = {
         searchValue: '',
-        filteredComponents: []
+        filteredComponents: [],
+        componentMaps: this.buildComponentMaps()
       };
 
+
+    }
+
+    buildComponentMaps () {
       this.categoriesMap = {
         [TEXT]: [],
         [INPUT]: [],
@@ -55,6 +60,8 @@ export const WrappedComponentView = withContext(
           }
         });
       }
+
+      return this.categoriesMap;
     }
 
     searchComponents = e => {
@@ -86,7 +93,7 @@ export const WrappedComponentView = withContext(
           <ComponentAccordion
             category={category}
             isCustom={category === 'Custom'}
-            key={'component_category:' + i}
+            key={'component_category:' + category}
             components={this.categoriesMap[category]}
           />
         );
@@ -103,7 +110,7 @@ export const WrappedComponentView = withContext(
               id='filtered-search-results'
               key={'component-container:' + i}>
               <Component
-                key={i}
+                key={component.name}
                 component={component}
                 isCustom={this.categoriesMap.Custom.includes(component)}
                 searchValue={this.state.searchValue}
@@ -114,9 +121,18 @@ export const WrappedComponentView = withContext(
       }
     };
 
+    componentDidUpdate (prevProps) {
+      if (this.props.context.components.length !== prevProps.context.components.length) {
+        this.setState({
+          componentMaps: this.buildComponentMaps()
+        })
+      }
+    }
+
     render() {
       return (
         <div className='component-view'>
+          <div style={{color: '#999', fontSize: 11, fontWeight: 'bold', marginBottom: 18, lineHeight: 1.2}}>Drag-and-drop components onto the document.</div>
           <SearchBarInput
             placeholder='Search Components'
             onChange={this.searchComponents}

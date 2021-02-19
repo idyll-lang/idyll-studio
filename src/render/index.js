@@ -58,6 +58,8 @@ class App extends React.PureComponent {
           return;
         }
 
+        components = components.filter(c => c.name.toLowerCase() !== '.ds_store');
+
         var componentProps = this.createComponentMap(components);
 
         this._undoStash = copy(ast);
@@ -84,6 +86,16 @@ class App extends React.PureComponent {
 
     ipcRenderer.on('data:import', () => {
       this._dataImportCb && this._dataImportCb();
+    });
+
+    ipcRenderer.on('components:add', (event, component) => {
+      const newComponents = [...this.state.components, component];
+      const componentPropMap = this.createComponentMap(newComponents);
+
+      this.setState({
+        components: newComponents,
+        componentPropMap: componentPropMap
+      });
     });
 
     window.addEventListener(

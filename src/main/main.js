@@ -40,7 +40,8 @@ class Main {
 
     ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
     ipcMain.on('client:createProject', this.handleCreateProject.bind(this));
-    ipcMain.on('client:editComponent', this.handleEditComponent.bind(this))
+    ipcMain.on('client:editComponent', this.handleEditComponent.bind(this));
+    ipcMain.on('client:duplicateComponent', this.handleDuplicateComponent.bind(this));
 
 
 
@@ -101,6 +102,24 @@ class Main {
       });
       this.componentWatchMap[component.path] = true;
     }
+  }
+
+  handleDuplicateComponent(event, component) {
+    let copyIncrementer = 0;
+    let copyPath;
+
+    const componentPath = component.path.includes('node_modules/idyll-components/dist/') ? component.path.replace(/node_modules\/idyll\-components\/dist\/(es|cjs)\//g, 'node_modules/idyll-components/src/') : component.path;
+
+    do {
+      copyIncrementer += 1;
+      copyPath = `${this.workingDir}/components/${p.basename(componentPath).replace(/(\-\d+)?\.jsx?/g, '')}-${copyIncrementer}.js`;
+    } while (fs.existsSync(copyPath))
+
+    fs.copyFileSync(componentPath, copyPath);
+    const newComponent = { path: copyPath, name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}` };
+
+    this.mainWindow.webContents.send('components:add', newComponent);
+    this.mainWindow.webContents.send('components:update', newComponent);
   }
 
   async handleCreateProject(event, projectName) {
