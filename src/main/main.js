@@ -73,17 +73,17 @@ class Main {
         // Send to render process the url
         this.mainWindow.webContents.send('publishing');
 
-        fs.writeFileSync(this.filePath, content);
-
-        this.idyll
-          .build(this.workingDir)
-          .on('update', () => {
-            this.publish();
-          })
-          .on('error', err => {
-            console.log(err);
-            this.mainWindow.webContents.send('pub-error', err.message);
-          });
+        fs.writeFile(this.filePath, content, () => {
+          this.idyll
+            .build(this.workingDir)
+            .on('update', () => {
+              this.publish();
+            })
+            .on('error', err => {
+              console.log(err);
+              this.mainWindow.webContents.send('pub-error', err.message);
+            });
+        });
       }
     });
     // import dataset
