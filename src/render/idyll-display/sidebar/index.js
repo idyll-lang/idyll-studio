@@ -58,7 +58,7 @@ class Sidebar extends React.PureComponent {
         <div className='layout-container'>
           Layout
           <select
-            disabled={true}
+            disabled={false}
             onChange={this.handleLayoutChange.bind(this)}
             value={this.context.layout}>
             {Object.keys(layouts)
@@ -66,7 +66,7 @@ class Sidebar extends React.PureComponent {
               .map((layoutName) => {
                 return (
                   <option key={layoutName} value={layoutName}>
-                    {layoutName}
+                    {layoutName === 'blog' ? 'left' : layoutName}
                   </option>
                 );
               })}

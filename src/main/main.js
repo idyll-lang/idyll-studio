@@ -122,7 +122,6 @@ class Main {
     const newComponent = { path: copyPath, name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}` };
 
     this.mainWindow.webContents.send('components:add', newComponent);
-    this.mainWindow.webContents.send('components:update', newComponent);
   }
 
   async handleCreateProject(event, projectName) {

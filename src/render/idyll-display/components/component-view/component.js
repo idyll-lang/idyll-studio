@@ -5,7 +5,9 @@ const { ipcRenderer } = require('electron');
 
 const nameMap = {
   'text container': 'Paragraph',
-  'display': 'Display Value'
+  'display': 'Show Value',
+  'desmos': 'Graphing Calculator',
+  'gist': 'GitHub Gist'
 }
 
 class Component extends React.PureComponent {
