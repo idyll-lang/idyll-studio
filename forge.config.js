@@ -26,7 +26,10 @@ module.exports = {
       "name": "@electron-forge/maker-zip",
       "platforms": [
         "darwin"
-      ]
+      ],
+      "config": {
+        "name": "Idyll Studio"
+      }
     },
     {
       "name": "@electron-forge/maker-deb",

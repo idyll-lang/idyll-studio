@@ -18,6 +18,15 @@ const PUBLISHING = 'Publishing your project...';
 const PUBLISHED =
   'Published! It may take up to a minute for the latest changes to be reflected.';
 
+
+  const relativeDataPaths = (ast) => {
+    const dataNodes = idyllAST.getNodesByType(ast, 'data');
+    dataNodes.forEach((node) => {
+      node.properties.source.value = basename(node.properties.source.value);
+    });
+    return ast;
+  };
+
 class App extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -158,13 +167,6 @@ class App extends React.PureComponent {
     // When main wants to save, print "Saved!" to console
     // and sends the saved markup
     ipcRenderer.on('idyll:save', (event, message) => {
-      const relativeDataPaths = (ast) => {
-        const dataNodes = idyllAST.getNodesByType(ast, 'data');
-        dataNodes.forEach((node) => {
-          node.properties.source.value = basename(node.properties.source.value);
-        });
-        return ast;
-      };
       ipcRenderer.send(
         'save',
         idyllAST.toMarkup(relativeDataPaths(this.state.ast), {
@@ -280,7 +282,9 @@ class App extends React.PureComponent {
         this.onUpdateCallbacks = this.onUpdateCallbacks.filter(_cb => _cb !== cb);
       },
       deploy: () => {
-        ipcRenderer.send('deploy', '');
+        ipcRenderer.send('deploy', idyllAST.toMarkup(relativeDataPaths(this.state.ast), {
+          insertFullWidth: true
+        }));
       },
       importDataset: (path, cb) => {
         ipcRenderer.send('importDataset', path);

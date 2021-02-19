@@ -68,10 +68,13 @@ class Main {
 
     // Set up deploy connection
     // Deploying command
-    ipcMain.on('deploy', (event, message) => {
+    ipcMain.on('deploy', (event, content) => {
       if (this.idyll) {
         // Send to render process the url
         this.mainWindow.webContents.send('publishing');
+
+        fs.writeFileSync(this.filePath, content);
+
         this.idyll
           .build(this.workingDir)
           .on('update', () => {
