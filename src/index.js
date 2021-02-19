@@ -9,8 +9,8 @@ const isDev = require('electron-is-dev');
 
 if (!isDev && process.platform !== "win32") {
   if (process.platform === 'darwin') {
-    const fixPaths = require('fix-paths');
-    fixPaths();
+    const fixPath = require('fix-path');
+    fixPath();
   } else {
     process.env.PATH = shellPath.sync() || [
       './node_modules/.bin',
