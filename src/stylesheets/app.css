@@ -446,6 +446,7 @@ input.prop-input[type="text"] {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  white-space: nowrap;
 }
 
 .component-edit, .component-duplicate {

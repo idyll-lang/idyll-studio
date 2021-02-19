@@ -2,7 +2,7 @@ import * as React from 'react';
 import Component from './component';
 import { Arrow } from './icons/arrow';
 
-class ComponentAccordion extends React.PureComponent {
+class ComponentAccordion extends React.Component {
   constructor(props) {
     super(props);
 
@@ -25,9 +25,33 @@ class ComponentAccordion extends React.PureComponent {
     });
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.components.length !== this.props.components.length) {
+      const scrollHeight = this._panelRef.current.scrollHeight;
+
+      this.setState({
+        maxHeight: this.state.maxHeight === '0px' ? '0px' : `${scrollHeight}px`
+      });
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.components.length !== nextProps.components.length) {
+      return true;
+    }
+    else if (nextState.isClosed !== this.state.isClosed || nextState.maxHeight !== this.state.maxHeight) {
+      return true;
+    }
+    return false;
+  }
+
   render() {
     const { category, components, isCustom } = this.props;
     const { isClosed } = this.state;
+
+    components.sort((a, b) => {
+      return a.name - b.name;
+    })
 
     return (
       <div className='component-category'>
@@ -49,7 +73,7 @@ class ComponentAccordion extends React.PureComponent {
 
           <div className='accordion-component'>
             {(components || []).map((component, i) => {
-              return <Component key={i} component={component} isCustom={isCustom} />;
+              return <Component key={component.name} component={component} isCustom={isCustom} />;
             })}
           </div>
         </div>
