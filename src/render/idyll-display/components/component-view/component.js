@@ -44,7 +44,7 @@ class Component extends React.PureComponent {
           opacity: isDragging ? 0.5 : 1
         }}
         className='component'>
-          <div>
+          <div className='component-name'>
             {name.toLowerCase ? (nameMap[name.toLowerCase()] || name) : name}
           </div>
           {

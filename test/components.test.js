@@ -296,7 +296,7 @@ describe('<ComponentAccordion />', () => {
     button.simulate('click');
     expect(component.find(Arrow).props().isClosed).toBeFalsy();
 
-    const componentContents = component.find('div.component');
+    const componentContents = component.find('div.component-name');
     expect(componentContents).toHaveLength(3);
     expect(componentContents.at(0).text()).toBe('A');
     expect(componentContents.at(1).text()).toBe('B');
@@ -314,7 +314,7 @@ describe('<Component />', () => {
       </DndProvider>
     );
 
-    const componentName = component.find('div.component');
+    const componentName = component.find('div.component-name');
     expect(componentName.text()).toBe('Abc');
   });
 
@@ -328,7 +328,7 @@ describe('<Component />', () => {
     const componentBold = component.find('strong');
     expect(componentBold.text()).toBe('A');
 
-    const componentName = component.find('div.component');
+    const componentName = component.find('div.component-name');
     expect(componentName.text()).toBe('Abc');
   });
 });
