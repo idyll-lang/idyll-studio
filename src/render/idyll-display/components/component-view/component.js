@@ -1,15 +1,34 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
 import { formatString } from '../../utils';
+const { ipcRenderer } = require('electron');
+
+
+
+
+
+
+const nameMap = {
+  'text container': 'Paragraph',
+  'display': 'Display Value'
+}
 
 class Component extends React.PureComponent {
   constructor(props) {
     super(props);
   }
 
-  render() {
-    const { component, isDragging, dragSource, searchValue } = this.props;
+  handleEditClick() {
+    const { component } = this.props;
+    ipcRenderer.send('client:editComponent', component);
+  }
+  handleDuplicateClick() {
+    const { component } = this.props;
+    // open(component.path);
+  }
 
+  render() {
+    const { component, isDragging, dragSource, searchValue, isCustom } = this.props;
     let name = formatString(component.name);
 
     if (searchValue && searchValue.length > 0) {
@@ -30,7 +49,21 @@ class Component extends React.PureComponent {
           opacity: isDragging ? 0.5 : 1
         }}
         className='component'>
-        {name.toLowerCase ? (name.toLowerCase() === 'text container' ? 'Paragraph' : name) : name}
+          <div>
+            {name.toLowerCase ? (nameMap[name.toLowerCase()] || name) : name}
+          </div>
+          {
+            (isDragging || !isCustom) ? null : (
+              <div>
+                <div className="component-edit" onClick={this.handleEditClick.bind(this)}>
+                  Edit
+                </div>
+                {/* <div className="component-duplicate" onClick={this.handleEditClick.bind(this)}>
+                  Duplicate
+                </div> */}
+              </div>
+            )
+          }
       </div>
     );
   }

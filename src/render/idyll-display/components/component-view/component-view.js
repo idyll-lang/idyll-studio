@@ -7,6 +7,7 @@ import {
   LOGIC,
   PRESENTATION,
   TEXT,
+  MEDIA,
   HELPERS,
   EXCLUDED_COMPONENTS
 } from '../../../../constants';
@@ -30,6 +31,7 @@ export const WrappedComponentView = withContext(
       this.categoriesMap = {
         [TEXT]: [],
         [INPUT]: [],
+        [MEDIA]: [],
         [PRESENTATION]: [],
         [LAYOUT]: [],
         [LOGIC]: [],
@@ -83,6 +85,7 @@ export const WrappedComponentView = withContext(
         return (
           <ComponentAccordion
             category={category}
+            isCustom={category === 'Custom'}
             key={'component_category:' + i}
             components={this.categoriesMap[category]}
           />
@@ -102,6 +105,7 @@ export const WrappedComponentView = withContext(
               <Component
                 key={i}
                 component={component}
+                isCustom={this.categoriesMap.Custom.includes(component)}
                 searchValue={this.state.searchValue}
               />
             </div>

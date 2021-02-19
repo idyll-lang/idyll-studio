@@ -6,13 +6,16 @@ import TextEdit from './components/text-edit.js';
 import DropTarget from './components/drop-target';
 import { withContext } from '../context/with-context';
 
+const { ipcRenderer } = require('electron');
 const p = require('path');
 
 const Renderer = withContext(
   class Renderer extends React.PureComponent {
     constructor(props) {
       super(props);
-      this.state = {};
+      this.state = {
+        componentUpdates: 0
+      };
     }
 
     componentDidCatch(e) {
@@ -107,6 +110,14 @@ const Renderer = withContext(
       return astCopy;
     }
 
+    componentDidMount() {
+      ipcRenderer.on('components:update', (event, component) => {
+        delete require.cache[require.resolve(component.path)];
+        this.loadedComponents[component.name] = require(component.path);
+        this.setState({ componentUpdates: this.state.componentUpdates + 1 });
+      });
+    }
+
     render() {
       if (this.state.error) {
         return (
@@ -143,7 +154,7 @@ const Renderer = withContext(
         <div className='renderer'>
           <div className='renderer-container' contentEditable={false}>
             <IdyllDocument
-              key={!showPreview}
+              key={`${!showPreview}-${this.state.componentUpdates}`}
               ast={showPreview ? ast : this.injectDropTargets(ast)}
               components={{
                 IdyllEditorDropTarget: DropTarget,

@@ -26,7 +26,7 @@ class ComponentAccordion extends React.PureComponent {
   };
 
   render() {
-    const { category, components } = this.props;
+    const { category, components, isCustom } = this.props;
     const { isClosed } = this.state;
 
     return (
@@ -49,7 +49,7 @@ class ComponentAccordion extends React.PureComponent {
 
           <div className='accordion-component'>
             {(components || []).map((component, i) => {
-              return <Component key={i} component={component} />;
+              return <Component key={i} component={component} isCustom={isCustom} />;
             })}
           </div>
         </div>

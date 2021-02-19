@@ -30,6 +30,14 @@ class IdyllDesktopMenu extends EventEmitter {
               this.emit('file:save');
             }
           },
+          { type: 'separator' },
+          {
+            label: 'Reveal Project Folder',
+            click: () => {
+              this.emit('working-dir:open'); // tells index.js what to listen for
+            }
+          },
+          { type: 'separator' },
           { role: isMac ? 'close' : 'quit' }
         ]
       },
@@ -44,7 +52,7 @@ class IdyllDesktopMenu extends EventEmitter {
             }
           },
           {
-            label: 'Toggle Devtools',
+            label: 'Toggle Developer Tools',
             click: () => {
               this.emit('toggle:devtools');
             }
