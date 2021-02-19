@@ -49,6 +49,10 @@ class ComponentAccordion extends React.Component {
     const { category, components, isCustom } = this.props;
     const { isClosed } = this.state;
 
+    components.sort((a, b) => {
+      return a.name - b.name;
+    })
+
     return (
       <div className='component-category'>
         <button onClick={this.handleClick} className='accordion-category'>

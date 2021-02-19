@@ -116,6 +116,9 @@ class Main {
     } while (fs.existsSync(copyPath))
 
     fs.copyFileSync(componentPath, copyPath);
+    const infile = fs.readFileSync(componentPath, 'utf-8').toString();
+    const outfile = infile.replace(/from '\.\//g, "from 'idyll-components/dist/cjs/").replace(/from "\.\//g, "from \"idyll-components/dist/cjs/").replace(/require\('\.\//g, "require('idyll-components/dist/cjs/").replace(/require\("\.\//g, "require(\"idyll-components/dist/cjs/");
+    fs.writeFileSync(copyPath, outfile);
     const newComponent = { path: copyPath, name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}` };
 
     this.mainWindow.webContents.send('components:add', newComponent);
