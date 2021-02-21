@@ -134,7 +134,7 @@ const Renderer = withContext(
         layout,
         theme,
         setContext,
-        datasets,
+        datasets
       } = this.props.context;
 
       if (!this.loadedComponents) {
@@ -152,7 +152,7 @@ const Renderer = withContext(
 
       return (
         <div className='renderer'>
-          <div className='renderer-container' contentEditable={false}>
+          <div className={`renderer-container`} contentEditable={false}>
             <IdyllDocument
               key={`${!showPreview}-${this.state.componentUpdates}`}
               ast={showPreview ? ast : this.injectDropTargets(ast)}

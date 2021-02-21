@@ -1,4 +1,4 @@
-const { dialog, ipcMain, shell } = require('electron');
+const { dialog, ipcMain, shell, Notification } = require('electron');
 const Menu = require('./menu');
 const fs = require('fs');
 const Idyll = require('idyll');
@@ -208,9 +208,19 @@ class Main {
     });
     installer.on('close', code => {
       if (code !== 0) {
+        const notification = {
+          title: 'Installation failed',
+          body: 'Could not install project dependencies.'
+        }
+        new Notification(notification).show()
         console.log('Could not install Idyll dependencies.');
         return;
       }
+      const notification = {
+        title: 'Installation finished',
+        body: 'Project dependencies installed successfully.'
+      }
+      new Notification(notification).show()
       console.log('Project dependencies installed successfully.');
     });
   }

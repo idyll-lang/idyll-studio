@@ -234,7 +234,7 @@ class App extends React.PureComponent {
       currentProcess,
       activeComponent,
       pathKey,
-      showPreview,
+      showPreview
     } = this.state;
     return {
       context: context,
@@ -250,9 +250,8 @@ class App extends React.PureComponent {
       projectPath: p.dirname(pathKey),
       showPreview: showPreview,
       toggleShowPreview: () => {
-        console.log('toggling showPreview', this);
         this.setState({
-          showPreview: !this.state.showPreview,
+          showPreview: !this.state.showPreview
         });
       },
       setTheme: (theme) => {
