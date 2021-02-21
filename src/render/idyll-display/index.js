@@ -51,7 +51,7 @@ class IdyllDisplay extends React.PureComponent {
                   background: '#333',
                   position: 'fixed',
                   bottom: '1em',
-                  right: '1em',
+                  left: 'calc(300px + 1em)',
                   cursor: 'pointer'
                 }}
                 onClick={this.context.toggleShowPreview}>

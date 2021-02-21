@@ -13,6 +13,7 @@ const compile = require('idyll-compiler');
 const { getWorkingDirectory, getTokenPath } = require('./utils');
 const open = require('open');
 const chokidar = require('chokidar');
+const spawn = require('cross-spawn');
 
 function slugify(text) {
   return text
@@ -49,6 +50,7 @@ class Main {
     menu.on('file:open', this.handleFileOpen.bind(this));
     menu.on('file:save', this.handleFileSave.bind(this));
     menu.on('working-dir:open', this.handleOpenProject.bind(this));
+    menu.on('working-dir:install', this.handleInstallProject.bind(this));
     menu.on('toggle:sidebar', this.handleToggleSidebar.bind(this));
     menu.on('toggle:devtools', this.handleToggleDevtools.bind(this));
     menu.on('file:new', () => {
@@ -190,6 +192,27 @@ class Main {
     }
 
     open(this.workingDir);
+  }
+
+
+  // Run npm install in the current project
+  handleInstallProject() {
+    if (!this.workingDir) {
+      return;
+    }
+
+    console.log('Running npm install in directory', this.workingDir);
+    let installer = spawn('npm', ['install'], {
+      cwd: this.workingDir,
+      stdio: 'ignore'
+    });
+    installer.on('close', code => {
+      if (code !== 0) {
+        console.log('Could not install Idyll dependencies.');
+        return;
+      }
+      console.log('Project dependencies installed successfully.');
+    });
   }
 
   // Saves current markup to open idyll project
