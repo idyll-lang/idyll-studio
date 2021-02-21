@@ -46,16 +46,21 @@ class IdyllDisplay extends React.PureComponent {
             {this.context.showPreview ? (
               <div
                 style={{
-                  padding: '5px 10px',
-                  color: '#fff',
-                  background: '#333',
                   position: 'fixed',
                   bottom: '1em',
-                  right: '1em',
-                  cursor: 'pointer'
-                }}
-                onClick={this.context.toggleShowPreview}>
-                ← Edit
+                  left: 'calc(300px + 1em)',
+                  display: 'flex'
+                }}>
+                  <div style={{
+                    padding: '5px 10px',
+                    color: '#fff',
+                    background: '#333',
+                    cursor: 'pointer'
+                  }}
+                    onClick={this.context.toggleShowPreview}
+                  >
+                    ← Edit
+                  </div>
               </div>
             ) : null}
           </div>

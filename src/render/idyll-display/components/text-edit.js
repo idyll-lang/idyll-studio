@@ -121,6 +121,7 @@ class TextEdit extends React.PureComponent {
             paddingLeft: 10,
             borderLeft: 'solid 2px #222'
           }}
+          tabIndex={0}
           contentEditable='true'
           suppressContentEditableWarning={true}
           onBlur={this.toggleMarkup.bind(this)}>

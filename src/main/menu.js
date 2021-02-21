@@ -37,6 +37,12 @@ class IdyllDesktopMenu extends EventEmitter {
               this.emit('working-dir:open'); // tells index.js what to listen for
             }
           },
+          {
+            label: 'Install project dependencies',
+            click: () => {
+              this.emit('working-dir:install'); // tells index.js what to listen for
+            }
+          },
           { type: 'separator' },
           { role: isMac ? 'close' : 'quit' }
         ]
