@@ -269,7 +269,7 @@ button {
 
 #preview-button{
   background-color: #999;
-  color: #333;
+  color: #fff;
 }
 
 #publish-button:disabled {

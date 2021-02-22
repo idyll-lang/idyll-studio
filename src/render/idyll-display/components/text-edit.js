@@ -119,7 +119,8 @@ class TextEdit extends React.PureComponent {
             whiteSpace: 'pre-wrap',
             marginLeft: -10,
             paddingLeft: 10,
-            borderLeft: 'solid 2px #222'
+            borderLeft: 'solid 2px #222',
+            marginBottom: 18
           }}
           tabIndex={0}
           contentEditable='true'

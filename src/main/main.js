@@ -148,7 +148,8 @@ class Main {
       const slugName = slugify(projectName);
       await createProject({
         'package-name': `${slugName}`,
-        template: 'article',
+        template: p.resolve(`${__dirname}/../../project-template/`),
+        customTemplate: true,
         'post-dir': `${projectDir}/${slugName}`,
         installDependencies: true
       });

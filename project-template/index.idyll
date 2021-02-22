@@ -1,0 +1,113 @@
+[var name:"x" value:0 /]
+[var name:"state" value:0 /]
+[var name:"exampleVar" value:5 /]
+[var name:"isPlaying" value:0 /]
+[data name:"exampleData" source:"example-data.json" /]
+
+
+[meta
+  title:"My Newwww Projected"
+  description:"Short description of your project" /]
+
+[Header
+  title:"{{title}}"
+  subtitle:"Welcome to the interactive editor."
+  author:"Your Name Here"
+  authorLink:"https://idyll-lang.org"
+  date:"{{date}}"
+  fullWidth:true /]
+
+
+## Editing text
+
+Any block of text that you see on this page can be edited. To edit it, move your mouse over a paragraph of text and click. You should see a black border appear on the left, indicating that the text is now being edited. Make the changes that you desire, then click anywhere else on the page to exit editing mode and apply your changes.
+
+
+Text is written in a markup language based on something called Markdown. Markdown is a syntax that is meant to make it easy to add common styles to your text.
+
+
+For example you can use this syntax to create **bold** ( `**bold**` ) and *italic* ( `*italic*` ) styles. Or use three backticks to create code blocks:
+
+
+```
+* lists
+* of
+* items,
+```
+
+
+For more information on the syntax check out [a href:"https://idyll-lang.org/docs/syntax"]https://idyll-lang.org/docs/syntax[/a] .
+
+## Components
+#### Adding components
+
+To add a component to the article, first select the `Components` tab on the sidebar. The components there are categorized according to functionality, e.g. components in the `Input` category involve receiving input from users (buttons, sliders, checkboxes, and so on).
+
+
+To add a component to the page, drag it from the panel on the left into your document. As you drag, gray drop targets will appear between existing content, indicating a valid place for you to add the new component.
+
+#### Editing components
+
+Once the component has been added, a small “gear” icon will appear. Click the gear icon to call up the component properties editor.
+
+
+The component properties editor has several tabs, each of which offers a different way to edit the component. Most of the functionality can be accessed through the `Properties` tab, but more advanced uses may require going into the `Markup` or `Styles` tab.
+
+
+The properties tab enables you to edit properties which drive component behavior. For example the `Header` component accepts a `title` property which is displayed as the article’s headline. You can write text or numbers directly in these properties boxes, but may also use `variables` and `expressions` to add interactivity (more on this later).
+
+#### Editing source code
+
+If you want to get fancy and write your own component, check out the `Custom` panel. It contains several components by default, and if you hover over these components an `Edit` button will appear. Clicking this will open their source code in your system’s text editor. Every time you edit and save the source code, the component will be reloaded in the document and your changes will be instantly available.
+
+
+If you would like to create a new custom component based on an existing one, use the `Duplicate` button. This will cause a copy of the component to be added to the `Custom` section.
+
+## Interactivity
+
+To add interactivity, you need to use variables. Click the `Variables` tab in the sidebar to see the variables that exist in their document, along with their current and initial values.
+
+
+The slider below has its value “bound” to the variable `x` . Notice that when you move the slider, `x` ’s current value in the sidebar updates.
+
+[Range min:0 max:10 value:x /]
+
+To bind a variable to a property, you can edit the property directly to refer to the name of the variable. Make sure that the property type (e.g. `number` , `string` . `expression` ) is set to `variable` . You can change the type by clicking on it.
+
+
+Alternatively you can drag and drop the variable from the sidebar onto the property to which you want to bind it. To do so, click on the variable’s name in the variables panel and drag until it is over the relevant component. The properties panel should open automatically, revealing the list of properties. Place your cursor over the one that you want to bind and a green box should appear. Release your mouse button and the variable will be bound.
+
+
+Here’s another example of binding a variable. This `Display Value` component has also been bound to `x` . Notice that when you manipulate the slider above, the value below changes as well:
+
+[Display value:x /]
+## Datasets
+
+The Idyll editor also includes functionality for importing datasets. Currently CSV and JSON files are supported.
+
+
+To import a dataset, first open the `Variables` panel in the sidebar on the left. Then drag-and-drop your data file on the drop target near the bottom. When you do this a copy of your data will be imported into the project, and it will appear as a new row in the variables table.
+
+
+Once a dataset is loaded it can be used just like any other variable, and can be used to drive component properties. For example, this table is showing a dataset which was imported using the method described:
+
+[Table
+  data:exampleData
+  defaultPageSize:10
+  showPagination:false
+  showPageSizeOptions:false
+  showPageJump:false /]
+## Publishing
+
+Open the `Document` panel on the left, then click the `Publish` button. This will create a new URL for your document if one doesn’t already exist, or will update one that does.
+
+
+Use the fields in the `Social Media Metadata` section above the publish button to set the title and descriptions that will appear in social media share cards, search engine results, etc. Note that the `Share Image` field needs to be a fully qualified URL.
+
+
+To see what your post will look like with the editing functionality turned off, you can use the `Preview` button directly above `Publish` .
+
+## Learn more
+
+To learn more see the documentation at [a href:"https://idyll-lang.org/docs/"]https://idyll-lang.org/docs/[/a] ,
+join our [a href:"https://gitter.im/idyll-lang/Lobby"]chatroom[/a] , or see the project on [a href:"https://github.com/idyll-lang/idyll"]GitHub[/a] .

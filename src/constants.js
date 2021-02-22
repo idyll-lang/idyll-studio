@@ -59,6 +59,16 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
 ]);
 
 
+
+export const COMPONENT_NAME_MAP = {
+  'text container': 'Paragraph',
+  'display': 'Show Value',
+  'desmos': 'Graphing Calculator',
+  'gist': 'GitHub Gist',
+  'range': 'Slider',
+  'boolean': 'Checkbox'
+}
+
 export const EXCLUDED_COMPONENTS = ['generateHeaders', 'fixed', 'inline', 'scroller', 'step', 'stepper-control', 'case', 'default', 'graphic', 'analytics', 'meta', 'preload', 'stepper'];
 
 export const DEBOUNCE_PROPERTY_MILLISECONDS = 250;
