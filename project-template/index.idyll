@@ -6,7 +6,7 @@
 
 
 [meta
-  title:"My Newwww Projected"
+  title:"{{title}}"
   description:"Short description of your project" /]
 
 [Header
@@ -20,7 +20,7 @@
 
 ## Editing text
 
-Any block of text that you see on this page can be edited. To edit it, move your mouse over a paragraph of text and click. You should see a black border appear on the left, indicating that the text is now being edited. Make the changes that you desire, then click anywhere else on the page to exit editing mode and apply your changes.
+Any block of text that you see on this page can be edited. To edit it, move your mouse over a paragraph of text and click. You should see a black border appear on the left, indicating that the text is now being edited. Make the changes that you desire, then click anywhere else on the page to stop editing and apply your changes.
 
 
 Text is written in a markup language based on something called Markdown. Markdown is a syntax that is meant to make it easy to add common styles to your text.

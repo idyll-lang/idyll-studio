@@ -9,7 +9,6 @@
     "authorView": false
   },
   "dependencies": {
-    "idyll": "^4.0.0",
     "idyll-d3-component": "^2.0.0",
     "d3": "^4.0.0",
     "react-vega": "^7.4.2",

@@ -9,6 +9,9 @@ import { withContext } from '../context/with-context';
 const { ipcRenderer } = require('electron');
 const p = require('path');
 
+// const _NODE_PATH = process.env.NODE_PATH;
+// process.env.NODE_PATH += ':' + __dirname;
+
 const Renderer = withContext(
   class Renderer extends React.PureComponent {
     constructor(props) {
@@ -112,12 +115,12 @@ const Renderer = withContext(
 
     componentDidMount() {
       ipcRenderer.on('components:update', (event, component) => {
-        const _NODE_PATH = process.env.NODE_PATH;
-        process.env.NODE_PATH += ':' + __dirname;
+        // const _NODE_PATH = process.env.NODE_PATH;
+        // process.env.NODE_PATH += ':' + __dirname;
         delete require.cache[require.resolve(component.path)];
         this.loadedComponents[component.name] = require(require.resolve(component.path, { paths: [ component.path, __dirname ]}));
         this.setState({ componentUpdates: this.state.componentUpdates + 1 });
-        process.env.NODE_PATH = _NODE_PATH;
+        // process.env.NODE_PATH = _NODE_PATH;
       });
     }
 
@@ -143,8 +146,8 @@ const Renderer = withContext(
       if (!this.loadedComponents) {
         this.loadedComponents = {};
       }
-      const _NODE_PATH = process.env.NODE_PATH;
-      process.env.NODE_PATH += ':' + __dirname;
+      // const _NODE_PATH = process.env.NODE_PATH;
+      // process.env.NODE_PATH += ':' + __dirname;
       components.forEach(({ name, path }) => {
         if (!this.loadedComponents[name]) {
           try {
@@ -153,8 +156,8 @@ const Renderer = withContext(
             console.log('Error loading component', name);
           }
         }
-        process.env.NODE_PATH = _NODE_PATH;
       });
+      // process.env.NODE_PATH = _NODE_PATH;
 
       return (
         <div className='renderer'>

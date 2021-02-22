@@ -151,7 +151,7 @@ class Main {
         template: p.resolve(`${__dirname}/../../project-template/`),
         customTemplate: true,
         'post-dir': `${projectDir}/${slugName}`,
-        installDependencies: false
+        installDependencies: true
       });
 
       this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);
@@ -361,7 +361,6 @@ class Main {
       .then(async ast => {
         // Get project URL if it exists
         const tokenPath = getTokenPath(p, this.workingDir);
-
         const url = await requestUrl(tokenPath, this.store);
 
         // send ast and contents over to renderer
@@ -399,7 +398,7 @@ const requestUrl = async (tokenPath, store) => {
       store.addTokenUrlPair(url, token);
     }
   } catch (error) {
-    console.log(error, 'Token does not exist yet.');
+    console.log('Publish token does not exist yet.');
   }
   return url;
 };
