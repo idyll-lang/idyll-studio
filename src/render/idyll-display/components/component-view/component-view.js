@@ -9,7 +9,8 @@ import {
   TEXT,
   MEDIA,
   HELPERS,
-  EXCLUDED_COMPONENTS
+  EXCLUDED_COMPONENTS,
+  COMPONENT_NAME_MAP
 } from '../../../../constants';
 import ComponentAccordion from './component-accordion';
 import { withContext } from '../../../context/with-context';
@@ -69,8 +70,9 @@ export const WrappedComponentView = withContext(
 
       const filteredResults = this.props.context.components.filter(
         component => {
-          const name = formatString(component.name).toLowerCase();
-          return name.includes(value.toLowerCase());
+          let name = formatString(component.name).toLowerCase();
+          name = COMPONENT_NAME_MAP[name] || name;
+          return name.toLowerCase().includes(value.toLowerCase());
         }
       );
 

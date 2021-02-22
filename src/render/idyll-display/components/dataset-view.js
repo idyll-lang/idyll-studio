@@ -83,7 +83,7 @@ class DatasetView extends React.PureComponent {
             textAlign: 'center',
             padding: '2em 1em',
           }}>
-          Drag+and+drop to add a dataset <br />
+          Drag-and-drop to add a dataset <br />
           (.csv or .json)
         </div>
         <div className='dataset-container'>
