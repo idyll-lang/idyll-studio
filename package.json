@@ -2,7 +2,7 @@
   "name": "idyll-studio",
   "description": "A graphical editor for creating Idyll documents.",
   "license": "MIT",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "private": true,
   "main": "src/index.js",
   "author": "Matthew Conlen <mc@mathisonian.com> (https://mathisonian.com)",
