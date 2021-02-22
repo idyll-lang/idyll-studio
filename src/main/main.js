@@ -151,7 +151,7 @@ class Main {
         template: p.resolve(`${__dirname}/../../project-template/`),
         customTemplate: true,
         'post-dir': `${projectDir}/${slugName}`,
-        installDependencies: true
+        installDependencies: false
       });
 
       this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);

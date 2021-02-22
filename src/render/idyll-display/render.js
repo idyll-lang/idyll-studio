@@ -113,7 +113,7 @@ const Renderer = withContext(
     componentDidMount() {
       ipcRenderer.on('components:update', (event, component) => {
         delete require.cache[require.resolve(component.path)];
-        this.loadedComponents[component.name] = require(component.path);
+        this.loadedComponents[component.name] = require(require.resolve(component.path, { paths: [ component.path, __dirname ]}));
         this.setState({ componentUpdates: this.state.componentUpdates + 1 });
       });
     }
@@ -143,7 +143,7 @@ const Renderer = withContext(
       components.forEach(({ name, path }) => {
         if (!this.loadedComponents[name]) {
           try {
-            this.loadedComponents[name] = require(path);
+            this.loadedComponents[name] = require(require.resolve(path, { paths: [ path, __dirname ]}));
           } catch (e) {
             console.log('Error loading component', name);
           }

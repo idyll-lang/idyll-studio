@@ -38,7 +38,7 @@ class IdyllDesktopMenu extends EventEmitter {
             }
           },
           {
-            label: 'Install project dependencies',
+            label: 'Install Project Dependencies',
             click: () => {
               this.emit('working-dir:install'); // tells index.js what to listen for
             }
