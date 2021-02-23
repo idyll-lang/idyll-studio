@@ -569,3 +569,9 @@ input[type='radio'] {
 .add-variable-button button {
   width: 100%;
 }
+
+
+
+.vega-embed {
+  width: 100%;
+}
