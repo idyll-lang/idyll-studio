@@ -329,17 +329,17 @@ class App extends React.PureComponent {
 
         componentProps.set(component.name, {
           ...props,
-          name: component.name
+          name: component.name === 'text-container' ? 'TextContainer' : component.name
         });
 
       } else if (path._idyll) {
         componentProps.set(component.name, {
           ...path._idyll,
-          name: component.name
+          name: component.name === 'text-container' ? 'TextContainer' : component.name
         });
       } else if (typeof path === 'function') {
         componentProps.set(component.name, {
-          name: component.name,
+          name: component.name === 'text-container' ? 'TextContainer' : component.name,
           tagType: 'closed',
           props: [],
         });

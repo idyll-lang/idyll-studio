@@ -3,6 +3,7 @@ import Context from '../../context/context';
 import copy from 'fast-copy';
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
+import { DropTarget } from 'react-dnd';
 
 const {
   getNodeById,
@@ -10,6 +11,44 @@ const {
   deleteNodeById,
   getParentNodeById
 } = require('../utils');
+
+class InlineDropTarget extends  React.PureComponent {
+  static contextType = Context;
+
+  insertComponent(name) {
+    console.log('inserting component ', name);
+    this.props.update(name)
+  }
+
+  render() {
+    const { isOver, dropTarget } = this.props;
+    return dropTarget(
+      <span style={{width: isOver ? 60 : 30, height: '1.2em', display: 'inline-block', position: 'relative', top: '.1em', borderRadius: 3, margin: '0 6px', background: isOver  ? '#999' : '#ccc'}}></span>
+    );
+  }
+}
+
+
+const componentInlineTargetSpan = {
+  drop(props, monitor, component) {
+    component.insertComponent(monitor.getItem().component);
+  },
+};
+
+function collectSpan(connect, monitor) {
+  return {
+    dropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
+  };
+}
+
+const InlineDropTargetWrapped = DropTarget(
+  'COMPONENT',
+  componentInlineTargetSpan,
+  collectSpan
+)(InlineDropTarget);
+
 
 class TextEdit extends React.PureComponent {
   static contextType = Context;
@@ -20,6 +59,40 @@ class TextEdit extends React.PureComponent {
       showMarkup: false
     };
     this._markup = this.getMarkup(props);
+  }
+
+  // Generates the tag associated with the given component name
+  insertComponent(name) {
+    console.log('insert component into text', name);
+  }
+
+  getTag(name) {
+    var tagInfo = this.context.propsMap.get(name);
+
+    var tag = '[' + tagInfo.name + ' ';
+    if (tagInfo.props !== undefined) {
+      tagInfo.props.filter(prop => prop.example !== undefined).forEach((prop) => {
+        tag += prop.name + ':' + prop.example + ' ';
+      });
+    }
+    if (tagInfo.tagType === 'closed') {
+      tag += ' /]';
+    } else {
+      var children = tagInfo.children !== undefined ? tagInfo.children[0] : '';
+      tag += ']' + children + '[/' + tagInfo.name + ']';
+    }
+
+    return tag;
+  }
+
+  insertBefore(name) {
+    console.log('inserting component before', name);
+    return this.updateASTWithMarkup(`${this.getTag(name)} ${this.getMarkup(this.props)}`)
+  }
+
+  insertAfter(name) {
+    console.log('inserting component after', name);
+    return this.updateASTWithMarkup(`${this.getMarkup(this.props)} ${this.getTag(name)}`)
   }
 
   getMarkup(props) {
@@ -34,6 +107,12 @@ class TextEdit extends React.PureComponent {
     });
   }
 
+  getASTWithDropTargets() {
+    if (props.idyllASTNode.name === 'p') {
+      return this.props.idyllASTNode
+    }
+  }
+
   toggleMarkup() {
     if (this.state.showMarkup) {
       this.updateAST();
@@ -42,6 +121,59 @@ class TextEdit extends React.PureComponent {
 
     this.setState({
       showMarkup: !this.state.showMarkup
+    });
+  }
+
+  updateASTWithMarkup(markup)  {
+    const output = compile(markup, { async: false });
+    let node = output.children[0];
+
+    while (node.type === 'component' && (node.name === 'TextContainer'  || node.name === 'text-container')) {
+      node = node.children;
+    }
+
+    if (node.length === 1) {
+      node = node[0];
+
+      const targetNode = getNodeById(
+        this.context.ast,
+        this.props.idyllASTNode.id
+      );
+
+      Object.keys(node).forEach(key => {
+        if (key === 'id') {
+          return;
+        }
+        targetNode[key] = node[key];
+      });
+    } else {
+      const parentNode = getParentNodeById(
+        this.context.ast,
+        this.props.idyllASTNode.id
+      );
+      if (!parentNode) {
+        console.warn('Could not identify parent node');
+        return;
+      }
+
+      const childIdx = (parentNode.children || []).findIndex(
+        c => c.id === this.props.idyllASTNode.id
+      );
+
+      node.forEach(n => {
+        n.id = getRandomId();
+      });
+
+      // parentNode.children.splice(childIdx, 0, ...node);
+      parentNode.children = parentNode.children
+        .slice(0, childIdx)
+        .concat(node)
+        .concat(parentNode.children.slice(childIdx + 1));
+    }
+
+    this.context.setAst(this.context.ast);
+    this.setState({
+      showMarkup: false
     });
   }
 
@@ -55,63 +187,20 @@ class TextEdit extends React.PureComponent {
     if (markup.trim() === '') {
       // If it is empty, delete the existing node
       deleteNodeById(this.context.ast, this.props.idyllASTNode.id);
+      this.context.setAst(this.context.ast);
+      this.setState({
+        showMarkup: false
+      });
     } else {
-      const output = compile(markup, { async: false });
-      let node = output.children[0];
-
-      while (node.type === 'component' && node.name === 'TextContainer') {
-        node = node.children;
-      }
-
-      if (node.length === 1) {
-        node = node[0];
-
-        const targetNode = getNodeById(
-          this.context.ast,
-          this.props.idyllASTNode.id
-        );
-
-        Object.keys(node).forEach(key => {
-          if (key === 'id') {
-            return;
-          }
-          targetNode[key] = node[key];
-        });
-      } else {
-        const parentNode = getParentNodeById(
-          this.context.ast,
-          this.props.idyllASTNode.id
-        );
-        if (!parentNode) {
-          console.warn('Could not identify parent node');
-          return;
-        }
-
-        const childIdx = (parentNode.children || []).findIndex(
-          c => c.id === this.props.idyllASTNode.id
-        );
-
-        node.forEach(n => {
-          n.id = getRandomId();
-        });
-
-        // parentNode.children.splice(childIdx, 0, ...node);
-        parentNode.children = parentNode.children
-          .slice(0, childIdx)
-          .concat(node)
-          .concat(parentNode.children.slice(childIdx + 1));
-      }
+      this.updateASTWithMarkup(markup)
     }
 
-    this.context.setAst(this.context.ast);
-    this.setState({
-      showMarkup: false
-    });
   }
 
   render() {
-    const { idyll, updateProps, hasError, ...props } = this.props;
-    if (this.state.showMarkup) {
+    const { idyll, updateProps, hasError, dropTarget,...props } = this.props;
+
+    if (this.state.showMarkup && !props.canDrop) {
       return (
         <div
           ref={ref => { this._markupRef = ref; ref && ref.focus() }}
@@ -130,7 +219,14 @@ class TextEdit extends React.PureComponent {
         </div>
       );
     }
-    return (
+
+    if (props.isOver) {
+      if (props.idyllASTNode.name === 'p') {
+        return dropTarget(<div><p><InlineDropTargetWrapped update={this.insertBefore.bind(this)} />{props.children[0].props.children}<InlineDropTargetWrapped  update={this.insertAfter.bind(this)} /></p></div>);
+      }
+    }
+
+    return dropTarget(
       <div className='editable-text' onClick={this.toggleMarkup.bind(this)}>
         {props.children}
       </div>
@@ -138,4 +234,24 @@ class TextEdit extends React.PureComponent {
   }
 }
 
-export default TextEdit;
+const componentInlineTarget = {
+  drop(props, monitor, component) {
+    component.insertComponent(monitor.getItem().component);
+  },
+};
+
+function collect(connect, monitor) {
+  return {
+    dropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop(),
+  };
+}
+
+
+export default DropTarget(
+  'COMPONENT',
+  componentInlineTarget,
+  collect
+)(TextEdit);
+

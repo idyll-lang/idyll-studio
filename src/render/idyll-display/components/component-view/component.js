@@ -1,9 +1,14 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
 import { formatString } from '../../utils';
-import { COMPONENT_NAME_MAP } from '../../../../constants';
 const { ipcRenderer } = require('electron');
 
+const nameMap = {
+  'text container': 'Paragraph',
+  'display': 'Show Value',
+  'desmos': 'Graphing Calculator',
+  'gist': 'GitHub Gist'
+}
 
 class Component extends React.PureComponent {
   constructor(props) {
@@ -20,18 +25,17 @@ class Component extends React.PureComponent {
   }
 
   render() {
-    const { component, isDragging, dragSource, searchValue, isCustom } = this.props;
+    const { component, isDragging, dragSource, dragPreview, searchValue, isCustom } = this.props;
     let name = formatString(component.name);
-    name = COMPONENT_NAME_MAP[name.toLowerCase()] || name;
 
     if (searchValue && searchValue.length > 0) {
       let boldIndex =
-        name.toLowerCase().indexOf(searchValue.toLowerCase())
+        name.toLowerCase().indexOf(searchValue.toLowerCase()) +
+        searchValue.length;
       name = (
         <>
-          {name.substring(0, boldIndex)}
-          <strong>{name.substring(boldIndex, boldIndex + searchValue.length)}</strong>
-          {name.substring(boldIndex + searchValue.length)}
+          <strong>{name.substring(0, boldIndex)}</strong>
+          {name.substring(boldIndex)}
         </>
       );
     }
@@ -42,9 +46,9 @@ class Component extends React.PureComponent {
           opacity: isDragging ? 0.5 : 1
         }}
         className='component'>
-          <div className='component-name'>
-            {name.toLowerCase ? (COMPONENT_NAME_MAP[name.toLowerCase()] || name) : name}
-          </div>
+          {dragPreview(<div className='component-name'>
+            {name.toLowerCase ? (nameMap[name.toLowerCase()] || name) : name}
+          </div>)}
           {
             isDragging ? null : (
               <div>
@@ -72,6 +76,7 @@ const cardSource = {
 function collect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
+    dragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging()
   };
 }

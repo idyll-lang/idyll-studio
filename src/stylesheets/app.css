@@ -75,14 +75,15 @@ html {
 }
 
 .idyll-studio-drop-target.is-dragging {
-  height: 35px;
+  height: 45px;
   background: #ccc;
   margin: 0.5em 0;
 }
 
 .idyll-studio-drop-target.is-dragging.is-over {
-  height: 55px;
-  border: solid 0.5px #999;
+  /* height: 55px; */
+  /* border: solid 0.5px #999; */
+  background: #999;
 }
 
 button.loader, button.creator {
@@ -125,6 +126,10 @@ button.loader:hover {
   /* transition: background-color 0.3s ease-in; */
 }
 
+p .component-debug-view {
+  display: inline-block;
+}
+
 .component-debug-view-inline {
   position: relative;
 }
@@ -141,7 +146,8 @@ button.loader:hover {
   bottom: 0;
   left: -50px;
 }
-.idyll-text-container .inline-author-view-container {
+.idyll-text-container .inline-author-view-container,
+.idyll-text-container p .author-view-container {
   top: 25px;
   left: 0;
   position: absolute;
@@ -178,6 +184,7 @@ button {
 .author-view-button svg, .inline-author-view-button svg {
   display: block;
   margin: 0 auto;
+  height: 20px;
 }
 
 .author-view-button:hover, .inline-author-view-button:hover {
