@@ -1,24 +1,31 @@
 const React = require('react');
+const D3Component = require('idyll-d3-component');
+const d3 = require('d3');
 
-class CustomComponent extends React.Component {
-  render() {
-    const { hasError, idyll, updateProps, ...props } = this.props;
-    return (
-      <div {...props}>
-        <svg
-          width={300}
-          height={50}
-          style={{ display: 'block', margin: '20px auto', background: 'white' }}
-        >
-          <rect width={50} height={50} y={0} x={25} fill={'#ddd'} />
-          <circle cx={50} cy={25} r={15} x={25} fill={'#000'} />
-          <rect width={50} height={50} y={0} x={125} fill={'#ddd'} />
-          <circle cx={150} cy={25} r={15} x={25} fill={'#000'} />
-          <rect width={50} height={50} y={0} x={225} fill={'#ddd'} />
-          <circle cx={250} cy={25} r={15} x={25} fill={'#000'} />
-        </svg>
-      </div>
-    );
+const size = 600;
+
+class CustomComponent extends D3Component {
+  initialize(node, props) {
+    const svg = (this.svg = d3.select(node).append('svg'));
+    svg
+      .attr('viewBox', `0 0 ${size} ${size}`)
+      .style('width', '100%')
+      .style('height', 'auto');
+
+    svg
+      .append('circle')
+      .attr('r', 20)
+      .attr('cx', Math.random() * size)
+      .attr('cy', Math.random() * size);
+  }
+
+  update(props, oldProps) {
+    this.svg
+      .selectAll('circle')
+      .transition()
+      .duration(750)
+      .attr('cx', Math.random() * size)
+      .attr('cy', Math.random() * size);
   }
 }
 

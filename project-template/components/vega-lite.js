@@ -62,5 +62,4 @@ VegaLite._idyll = {
 };
 
 
-module.exports = VegaLite
-;
+module.exports = VegaLite;
