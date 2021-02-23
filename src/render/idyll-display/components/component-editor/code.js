@@ -55,6 +55,7 @@ export default withContext(
       }
 
       const astCopy = copy(context.ast);
+
       const parentNode = getParentNodeById(astCopy, context.activeComponent.id);
 
       if (!parentNode) {

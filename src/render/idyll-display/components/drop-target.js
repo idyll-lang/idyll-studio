@@ -22,7 +22,7 @@ class ComponentDropTarget extends React.PureComponent {
 
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
-      tagInfo.props.forEach((prop) => {
+      tagInfo.props.filter(prop => prop.example !== undefined).forEach((prop) => {
         tag += prop.name + ':' + prop.example + ' ';
       });
     }

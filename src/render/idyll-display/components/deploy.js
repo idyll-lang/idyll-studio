@@ -90,6 +90,7 @@ class Deploy extends React.PureComponent {
 
         {/* Publish Button */}
         <div className='publish-button-container'>
+        <h4>Publish to the web</h4>
           <button id='preview-button' onClick={this.context.toggleShowPreview}>
             Preview
           </button>

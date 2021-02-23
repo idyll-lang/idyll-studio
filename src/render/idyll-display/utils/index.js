@@ -313,6 +313,8 @@ const readFile = (source) => {
         columns: true,
         skip_empty_lines: true,
         cast: true,
+        ltrim:true,
+        rtrim:true
       })
     );
   }

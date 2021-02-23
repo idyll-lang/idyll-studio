@@ -60,6 +60,7 @@ export default withContext(
           propertyName,
           propertyValue
         );
+
         node.properties = newPropList;
         this.props.context.setAst(this.props.context.ast);
         this.props.context.setActiveComponent(node);

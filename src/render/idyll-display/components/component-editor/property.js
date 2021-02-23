@@ -40,7 +40,6 @@ export const WrappedComponent = withContext(
       const propertyName = this.props.name;
 
       const value = numberfy(this._inputRef.current.value);
-
       this.props.updateProperty(propertyName, value);
     };
 
