@@ -267,7 +267,7 @@ button {
   margin: 10px 0;
 }
 
-#preview-button{
+#preview-button {
   background-color: #999;
   color: #fff;
 }
@@ -334,7 +334,7 @@ button {
 
 #preview-button  {
   background-color: #999;
-  color: #333;
+  color: #fff;
 }
 
 .publish-process {

@@ -5,6 +5,8 @@ import InlineAuthorToolButtons from './components/inline-author-tool-buttons';
 import TextEdit from './components/text-edit.js';
 import DropTarget from './components/drop-target';
 import { withContext } from '../context/with-context';
+import copy from 'fast-copy';
+import  { modifyNodesByName } from 'idyll-ast';
 
 const { ipcRenderer } = require('electron');
 const p = require('path');
@@ -50,9 +52,21 @@ const Renderer = withContext(
       return false;
     }
 
+    transformATags(ast) {
+      const astCopy = copy(ast);
+      return modifyNodesByName(astCopy, 'a', (node) => {
+        node.properties = node.properties || {};
+        node.properties.target = {
+          value: '_blank',
+          type: 'value'
+        }
+        return node;
+      })
+    }
+
     injectDropTargets(ast) {
       // deep copy
-      const astCopy = JSON.parse(JSON.stringify(ast));
+      const astCopy = copy(ast);
       astCopy.children = (astCopy.children || []).map((node) => {
         if (node.type !== 'component') {
           return node;
@@ -164,7 +178,7 @@ const Renderer = withContext(
           <div className={`renderer-container`} contentEditable={false}>
             <IdyllDocument
               key={`${!showPreview}-${this.state.componentUpdates}`}
-              ast={showPreview ? ast : this.injectDropTargets(ast)}
+              ast={showPreview ? this.transformATags(ast) : this.injectDropTargets(this.transformATags(ast))}
               components={{
                 IdyllEditorDropTarget: DropTarget,
                 ...this.loadedComponents,

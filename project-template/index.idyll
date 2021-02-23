@@ -97,9 +97,15 @@ Once a dataset is loaded it can be used just like any other variable, and can be
   showPagination:false
   showPageSizeOptions:false
   showPageJump:false /]
+
+
+## Saving
+
+To save your changes use the keyboard shortcut `Ctrl+S` (`Cmd+S` on Macs) or select `File -> Save` from the menu.
+
 ## Publishing
 
-Open the `Document` panel on the left, then click the `Publish` button. This will create a new URL for your document if one doesn’t already exist, or will update one that does.
+Open the `Document` panel on the left, then click the `Publish` button. This will create a new URL for your document if one doesn’t already exist, or will update one that does. The document will automatically be saved upon hitting publish.
 
 
 Use the fields in the `Social Media Metadata` section above the publish button to set the title and descriptions that will appear in social media share cards, search engine results, etc. Note that the `Share Image` field needs to be a fully qualified URL.
