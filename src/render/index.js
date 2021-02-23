@@ -327,9 +327,16 @@ class App extends React.PureComponent {
       if (typeof path === 'object' && path.default !== undefined) {
         var props = path.default._idyll;
 
-        componentProps.set(component.name, props);
+        componentProps.set(component.name, {
+          ...props,
+          name: component.name
+        });
+
       } else if (path._idyll) {
-        componentProps.set(component.name, path._idyll);
+        componentProps.set(component.name, {
+          ...path._idyll,
+          name: component.name
+        });
       } else if (typeof path === 'function') {
         componentProps.set(component.name, {
           name: component.name,
