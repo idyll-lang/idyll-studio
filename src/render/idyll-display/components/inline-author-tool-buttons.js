@@ -9,6 +9,8 @@ class AuthorToolButtons extends React.PureComponent {
     super(props);
 
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
+    this.state = {
+    }
   }
 
   handleClickProps(e) {
@@ -37,6 +39,14 @@ class AuthorToolButtons extends React.PureComponent {
     }
   }
 
+
+  componentDidCatch(e) {
+    this.setState({
+      hasError: true,
+      error: e
+    })
+  }
+
   // Returns an entire author view, including the component itself,
   // a quill icon to indicate whether we're hovering in the component,
   // and debugging information when the icon is pressed
@@ -46,7 +56,7 @@ class AuthorToolButtons extends React.PureComponent {
 
     return dropTarget(
       <span className='component-debug-view-inline'>
-        <span ref={ref => (this._componentRef = ref)}>{props.component}</span>
+        <span ref={ref => (this._componentRef = ref)}>{this.state.hasError ? <span class="error-container">{this.state.error.toString()}</span> : props.component}</span>
         <span className='inline-author-view-container' id={this.domId}>
           <button
             className={`inline-author-view-button`}

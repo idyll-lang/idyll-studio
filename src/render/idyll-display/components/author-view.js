@@ -36,6 +36,13 @@ export const WrappedAuthorView = withContext(
       parent.addEventListener('scroll', this.handleWindowEvent);
     }
 
+    componentDidCatch(e) {
+      this.setState({
+        hasError: true,
+        error: e
+      })
+    }
+
     componentDidUpdate(prevProps) {
       const { context } = this.props;
       const isValidActiveComponent =
@@ -59,13 +66,13 @@ export const WrappedAuthorView = withContext(
         } else {
           this.setState({
             activeDomNode: null,
-            dimensions: null,
+            dimensions: this.state.dimensions || null,
           });
         }
       } else if (!isValidActiveComponent && prevProps.context.activeComponent) {
         this.setState({
           activeDomNode: null,
-          dimensions: null,
+          dimensions: this.state.dimensions || null,
         });
       }
     }
@@ -105,7 +112,8 @@ export const WrappedAuthorView = withContext(
       const { activeComponent } = this.props.context;
       const { dimensions, selectedView } = this.state;
 
-      if (activeComponent && dimensions) {
+
+      if (activeComponent && activeComponent.id && dimensions) {
         return (
           <div
             className='author-view-overlay'

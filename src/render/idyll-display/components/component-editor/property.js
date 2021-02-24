@@ -3,6 +3,7 @@ import { DropTarget } from 'react-dnd';
 import { updateNodeById, getNodeById } from '../../utils';
 import { stringify, numberfy } from '../../utils';
 import { withContext } from '../../../context/with-context';
+import EditableCodeCell from './code-cell';
 
 export const WrappedComponent = withContext(
   class Component extends React.PureComponent {
@@ -30,16 +31,25 @@ export const WrappedComponent = withContext(
     componentDidMount() {
       const { propertyObject, context } = this.props;
 
-      const input = this._inputRef.current;
-      input.value = propertyObject.value;
+      if (!this._inputRef || !this._inputRef.current) {
+        // return;
+      }  else {
+        const input = this._inputRef.current;
+        input.value = propertyObject.value;
+      }
 
       context && context.onUpdate && context.onUpdate(this._updateCB);
     }
 
-    handleUpdateValue = () => {
+    handleUpdateValue = (value, propType) => {
+      if (value === undefined) {
+        value = this._inputRef.current.value;
+      }
       const propertyName = this.props.name;
 
-      const value = numberfy(this._inputRef.current.value);
+      if (propType !== 'expression') {
+        value = numberfy(value);
+      }
       this.props.updateProperty(propertyName, value);
     };
 
@@ -82,7 +92,45 @@ export const WrappedComponent = withContext(
      * @param {string} prop the prop value
      * @param {string} nextType the next prop type
      */
-    renderPropInput() {
+    renderPropInput(key, prop,  nextType) {
+
+      if (prop.type  ===  'expression') {
+        return (
+          <div className={'idyll-property-editor'}>
+            <EditableCodeCell
+              onExecute={(newString) => this.handleUpdateValue(newString, prop.type)}
+              markup={prop.value}
+              />
+            <div
+              className={'code-instructions'}
+              style={{
+                color: '#ccc',
+                fontSize: 10,
+                fontStyle: 'italic',
+                margin: '5px 0',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}>
+              <div>shift + enter to update</div>
+            </div>
+          </div>
+        )
+      } else if (prop.type  === 'variable') {
+        return (<div>
+          <select
+            className={'prop-input'}
+            style={{ fontFamily: 'monospace' }}
+            onChange={(e) => this.handleUpdateValue(e.target.value)}
+            value={this.state.variableData[prop.value] !== undefined ? prop.value : ''}
+         >
+          <option value="" disabled>Select a variable</option>
+           {Object.keys(this.state.variableData).map(v => {
+             return <option key={v} value={v}>{v}</option>;
+           })}
+        </select>
+        </div>
+        )
+      }
       return (
         <div>
           <input
@@ -90,7 +138,7 @@ export const WrappedComponent = withContext(
             style={{ fontFamily: 'monospace' }}
             type='text'
             ref={this._inputRef}
-            onChange={this.handleUpdateValue}
+            onChange={(e) => this.handleUpdateValue(e.target.value)}
           />
         </div>
       );

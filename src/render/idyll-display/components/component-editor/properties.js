@@ -10,6 +10,11 @@ import { withContext } from '../../../context/with-context';
 import { DEBOUNCE_PROPERTY_MILLISECONDS } from '../../../../constants';
 import * as IdyllComponents from 'idyll-components';
 
+Object.keys(IdyllComponents).forEach(k => {
+  if (k && k.toLowerCase) {
+    IdyllComponents[k.toLowerCase()] = IdyllComponents[k];
+  }
+})
 /**
  * An AuthorView is associated with an active component.
  * If a component is registered as active, renders
@@ -162,7 +167,7 @@ export default withContext(
             }}>
             <div>{activeComponent.name} component</div>
             <div>
-              {IdyllComponents[activeComponent.name] ? (
+              {activeComponent.name && IdyllComponents[activeComponent.name.toLowerCase()] ? (
                 <a
                   target='_blank'
                   style={{ color: '#ccc', textDecoration: 'underline' }}

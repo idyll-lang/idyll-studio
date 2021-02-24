@@ -45,7 +45,7 @@ export default class EditableCodeCell extends React.Component {
   // Updates markup on blur
   onBlur = e => {
     this.toggleEdit(e);
-    this.props.onBlur(this._cellCodeRef.current.innerText);
+    this.props.onBlur && this.props.onBlur(this._cellCodeRef.current.innerText);
   };
 
   handleKeyDown = e => {
@@ -66,7 +66,7 @@ export default class EditableCodeCell extends React.Component {
             ref={this._cellCodeRef}
             contentEditable={editing}
             suppressContentEditableWarning={true}
-            style={{minHeight: '1.33em'}}
+            style={{minHeight: '1.33em', ...this.props.style}}
             onKeyDown={this.handleKeyDown}
             onBlur={this.onBlur}>
             {this.props.markup}

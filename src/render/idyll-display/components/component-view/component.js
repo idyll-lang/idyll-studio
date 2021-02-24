@@ -3,12 +3,7 @@ import { DragSource } from 'react-dnd';
 import { formatString } from '../../utils';
 const { ipcRenderer } = require('electron');
 
-const nameMap = {
-  'text container': 'Paragraph',
-  'display': 'Show Value',
-  'desmos': 'Graphing Calculator',
-  'gist': 'GitHub Gist'
-}
+import { COMPONENT_NAME_MAP } from '../../../../constants';
 
 class Component extends React.PureComponent {
   constructor(props) {
@@ -47,7 +42,7 @@ class Component extends React.PureComponent {
         }}
         className='component'>
           {dragPreview(<div className='component-name'>
-            {name.toLowerCase ? (nameMap[name.toLowerCase()] || name) : name}
+            {name.toLowerCase ? (COMPONENT_NAME_MAP[name.toLowerCase()] || name) : name}
           </div>)}
           {
             isDragging ? null : (
