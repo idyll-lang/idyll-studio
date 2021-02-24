@@ -98,7 +98,7 @@ export const WrappedComponent = withContext(
         return (
           <div className={'idyll-property-editor'}>
             <EditableCodeCell
-              onExecute={(newString) => this.handleUpdateValue(newString, prop.type)}
+              onExecute={(newString) => this.handleUpdateValue((newString || '').trim(), prop.type)}
               markup={prop.value}
               />
             <div

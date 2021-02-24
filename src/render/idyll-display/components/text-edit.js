@@ -16,7 +16,6 @@ class InlineDropTarget extends  React.PureComponent {
   static contextType = Context;
 
   insertComponent(name) {
-    console.log('inserting component ', name);
     this.props.update(name)
   }
 
@@ -63,7 +62,7 @@ class TextEdit extends React.PureComponent {
 
   // Generates the tag associated with the given component name
   insertComponent(name) {
-    console.log('insert component into text', name);
+    // console.log('insert component into text', name);
   }
 
   getTag(name) {
@@ -126,10 +125,9 @@ class TextEdit extends React.PureComponent {
 
   updateASTWithMarkup(markup)  {
     const output = compile(markup, { async: false });
-    let node = output.children[0];
-
-    while (node.type === 'component' && (node.name === 'TextContainer'  || node.name === 'text-container')) {
-      node = node.children;
+    let node = output.children ? output.children : output;
+    while (node &&  node.length && node[0].type === 'component' && (node[0].name === 'TextContainer'  || node[0].name === 'text-container')) {
+      node = node[0].children;
     }
 
     if (node.length === 1) {
@@ -139,6 +137,10 @@ class TextEdit extends React.PureComponent {
         this.context.ast,
         this.props.idyllASTNode.id
       );
+
+      node.children.forEach(n => {
+        n.id = getRandomId();
+      });
 
       Object.keys(node).forEach(key => {
         if (key === 'id') {

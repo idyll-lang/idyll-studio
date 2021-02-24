@@ -56,7 +56,7 @@ class AuthorToolButtons extends React.PureComponent {
 
     return dropTarget(
       <span className='component-debug-view-inline'>
-        <span ref={ref => (this._componentRef = ref)}>{this.state.hasError ? <span class="error-container">{this.state.error.toString()}</span> : props.component}</span>
+        <span ref={ref => (this._componentRef = ref)}>{this.state.hasError ? <span className="error-container">{this.state.error.toString()}</span> : props.component}</span>
         <span className='inline-author-view-container' id={this.domId}>
           <button
             className={`inline-author-view-button`}
