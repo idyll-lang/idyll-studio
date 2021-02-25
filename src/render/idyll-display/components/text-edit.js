@@ -85,12 +85,10 @@ class TextEdit extends React.PureComponent {
   }
 
   insertBefore(name) {
-    console.log('inserting component before', name);
     return this.updateASTWithMarkup(`${this.getTag(name)} ${this.getMarkup(this.props)}`)
   }
 
   insertAfter(name) {
-    console.log('inserting component after', name);
     return this.updateASTWithMarkup(`${this.getMarkup(this.props)} ${this.getTag(name)}`)
   }
 
@@ -173,10 +171,10 @@ class TextEdit extends React.PureComponent {
         .concat(parentNode.children.slice(childIdx + 1));
     }
 
-    this.context.setAst(this.context.ast);
     this.setState({
       showMarkup: false
     });
+    this.context.setAst(this.context.ast);
   }
 
   updateAST() {
@@ -203,7 +201,7 @@ class TextEdit extends React.PureComponent {
     const { idyll, updateProps, hasError, dropTarget,...props } = this.props;
 
     if (this.state.showMarkup && !props.canDrop) {
-      return (
+      return dropTarget((
         <div
           ref={ref => { this._markupRef = ref; ref && ref.focus() }}
           style={{
@@ -219,7 +217,7 @@ class TextEdit extends React.PureComponent {
           onBlur={this.toggleMarkup.bind(this)}>
           {this.getMarkup(this.props)}
         </div>
-      );
+      ));
     }
 
     if (props.isOver) {
