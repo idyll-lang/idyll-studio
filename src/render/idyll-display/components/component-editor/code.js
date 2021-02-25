@@ -48,7 +48,7 @@ export default withContext(
       let topNode = output.children[0]; // text container or actual component
       let nodesToUpdate;
 
-      if (topNode.type === 'component' && topNode.name === 'TextContainer') {
+      if (topNode.type === 'component' && (topNode.name === 'TextContainer' || topNode.name === 'text-container')) {
         nodesToUpdate = topNode.children; // get all nodes that need to update
       } else {
         nodesToUpdate = [topNode];

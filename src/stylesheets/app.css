@@ -81,8 +81,9 @@ html {
 }
 
 .idyll-studio-drop-target.is-dragging.is-over {
-  height: 55px;
-  border: solid 0.5px #999;
+  /* height: 55px; */
+  /* border: solid 0.5px #999; */
+  background: #999;
 }
 
 button.loader, button.creator {
@@ -125,6 +126,10 @@ button.loader:hover {
   /* transition: background-color 0.3s ease-in; */
 }
 
+p .component-debug-view {
+  display: inline-block;
+}
+
 .component-debug-view-inline {
   position: relative;
 }
@@ -141,7 +146,8 @@ button.loader:hover {
   bottom: 0;
   left: -50px;
 }
-.idyll-text-container .inline-author-view-container {
+.idyll-text-container .inline-author-view-container,
+.idyll-text-container p .author-view-container {
   top: 25px;
   left: 0;
   position: absolute;
@@ -178,6 +184,7 @@ button {
 .author-view-button svg, .inline-author-view-button svg {
   display: block;
   margin: 0 auto;
+  height: 20px;
 }
 
 .author-view-button:hover, .inline-author-view-button:hover {
@@ -360,6 +367,21 @@ input.prop-input[type="text"] {
   margin-top: 0.25em;
 }
 
+select.prop-input {
+  font-size: 12px;
+  margin: 0;
+  width: 100%;
+  border: solid 1px #ddd;
+  padding: 5px 0.5em;
+  background: #666;
+  border: 0;
+  box-shadow: none;
+  color: #fff;
+  border-radius: 5px;
+  height: auto;
+  margin-top: 0.25em;
+}
+
 .prop-type {
   font-size: 12px;
   margin-left: 1em;
@@ -376,11 +398,20 @@ input.prop-input[type="text"] {
   margin: 0 auto;
 }
 
-.idyll-code-editor pre {
+.idyll-code-editor pre,
+.idyll-property-editor pre {
   /* border: solid 0.5px #666; */
   background-color: #666666;
   margin: 0 1em;
   padding: 0.66em 0.66em;
+}
+
+.idyll-property-editor pre  {
+  margin: 0;
+  font-size: 12px;
+  padding: 5px 0.5em;
+  border-radius: 5px;
+  margin-top: 0.25em;
 }
 
 .editable-text {
@@ -574,4 +605,11 @@ input[type='radio'] {
 
 .vega-embed {
   width: 100%;
+}
+
+.error-container  {
+  /* border: solid  1px #cc0000; */
+  background: #ffcccc;
+  padding: 3px 5px;
+  border-radius: 5px;
 }

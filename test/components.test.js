@@ -53,7 +53,7 @@ describe('<Property /> with props', () => {
       <Property
         updateProperty={updateProperty}
         name={'author'}
-        propertyObject={{type:'variable', value:'state'}}
+        propertyObject={{type:'value', value:10}}
         updateNodeType={updateNodeType}
         variableData={{}}
         dropTarget={dropTarget}
@@ -63,11 +63,11 @@ describe('<Property /> with props', () => {
     expect(component.find('div.prop-name').text()).toBe('author');
 
     const typeDiv = component.find('div.prop-type');
-    expect(typeDiv.text()).toBe('variable');
-    expect(typeDiv.props().style.color).toBe('#50E3C2');
+    expect(typeDiv.text()).toBe('number');
+    expect(typeDiv.props().style.color).toBe('#4A90E2');
 
     const input = component.find('input');
-    expect(input.instance().value).toBe('state');
+    expect(input.instance().value).toBe("10");
 
     expect(updateProperty).toHaveBeenCalledTimes(0);
     input.simulate('change', { target: { value: 'abc' } });
@@ -79,7 +79,7 @@ describe('<Property /> with props', () => {
       <Property
         updateProperty={updateProperty}
         name={'date'}
-        propertyObject={{type:'expression', value:'new Date()'}}
+        propertyObject={{type:'value', value:'"abcde"'}}
         updateNodeType={updateNodeType}
         variableData={{}}
         dropTarget={dropTarget}
@@ -89,8 +89,8 @@ describe('<Property /> with props', () => {
     expect(component.find('div.prop-name').text()).toBe('date');
 
     const typeDiv = component.find('div.prop-type');
-    expect(typeDiv.text()).toBe('expression');
-    expect(typeDiv.props().style.color).toBe('#B8E986');
+    expect(typeDiv.text()).toBe('string');
+    expect(typeDiv.props().style.color).toBe('#4A90E2');
 
     // on click
     expect(updateNodeType).toHaveBeenCalledTimes(0);
@@ -98,7 +98,7 @@ describe('<Property /> with props', () => {
     expect(updateNodeType).toHaveBeenCalledTimes(1);
 
     const input = component.find('input');
-    expect(input.instance().value).toBe('new Date()');
+    expect(input.instance().value).toBe('"abcde"');
   })
 });
 
