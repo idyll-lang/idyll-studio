@@ -191,7 +191,7 @@ export default withContext(
             deleteProperty={this.deleteProperty.bind(this)}
           />
           <div>
-            <div className='prop-name'>Add new property</div>
+            <div className='prop-name'>New property</div>
             <div
               style={{
                 display: 'flex',
