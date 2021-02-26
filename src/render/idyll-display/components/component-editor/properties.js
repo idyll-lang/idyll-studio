@@ -225,7 +225,7 @@ export default withContext(
                   border: 'none',
                 }}
                 onClick={this.handleSubmitProp.bind(this)}>
-                Submit
+                Add
               </div>
             </div>
           </div>
