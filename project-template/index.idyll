@@ -1,4 +1,6 @@
 [var name:"x" value:0 /]
+[data name:"exampleData" source:"example-data.json" /]
+
 
 [meta
   title:"{{title}}"
