@@ -5,6 +5,7 @@ import { ipcRenderer } from 'electron';
 import { WrappedAuthorView } from './components/author-view';
 import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
+import { RENDER_WINDOW_NAME } from '../../constants.js';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -13,7 +14,7 @@ class IdyllDisplay extends React.PureComponent {
     super(props);
     this.state = {
       // TODO - get these values from the project config!
-      collapsed: false
+      collapsed: false,
     };
   }
 
@@ -23,7 +24,7 @@ class IdyllDisplay extends React.PureComponent {
 
   handleToggle() {
     this.setState({
-      collapsed: !this.state.collapsed
+      collapsed: !this.state.collapsed,
     });
   }
 
@@ -38,7 +39,7 @@ class IdyllDisplay extends React.PureComponent {
               : '')
           }>
           <Sidebar />
-          <div className='output-container'>
+          <div className={RENDER_WINDOW_NAME}>
             <Render />
             {this.context.showPreview ? null : <WrappedAuthorView />}
             {this.context.showPreview ? null : <WrappedUndoRedo />}
@@ -49,18 +50,18 @@ class IdyllDisplay extends React.PureComponent {
                   position: 'fixed',
                   bottom: '1em',
                   left: 'calc(300px + 1em)',
-                  display: 'flex'
+                  display: 'flex',
                 }}>
-                  <div style={{
+                <div
+                  style={{
                     padding: '5px 10px',
                     color: '#fff',
                     background: '#333',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
                   }}
-                    onClick={this.context.toggleShowPreview}
-                  >
-                    ← Edit
-                  </div>
+                  onClick={this.context.toggleShowPreview}>
+                  ← Edit
+                </div>
               </div>
             ) : null}
           </div>

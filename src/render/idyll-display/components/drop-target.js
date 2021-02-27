@@ -1,5 +1,6 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
+import { RENDER_WINDOW_NAME } from '../../../constants';
 import Context from '../../context/context';
 const compile = require('idyll-compiler');
 const idyllAST = require('idyll-ast');
@@ -12,8 +13,35 @@ class ComponentDropTarget extends React.PureComponent {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      isIntersecting: false,
+    };
+
     this.insertComponent = this.insertComponent.bind(this);
     this.handleASTChange = this.handleASTChange.bind(this);
+
+    this._ref = React.createRef();
+  }
+
+  componentDidMount() {
+    const viewport = document.querySelector(`.${RENDER_WINDOW_NAME}`);
+    const options = {
+      root: null,
+      threshold: 0.1,
+    };
+
+    this.observer = new IntersectionObserver(([entry]) => {
+      console.log(entry.isIntersecting);
+      this.setState({
+        isIntersecting: entry.isIntersecting,
+      });
+    }, options);
+    this.observer.observe(this._ref.current);
+  }
+
+  componentWillUnmount() {
+    this.observer.disconnect();
   }
 
   // Generates the tag associated with the given component name
@@ -110,12 +138,15 @@ class ComponentDropTarget extends React.PureComponent {
   }
 
   render() {
+    const { isIntersecting } = this.state;
     const { canDrop, isOver, dropTarget } = this.props;
+
     return dropTarget(
       <div
         className={`idyll-studio-drop-target ${isOver ? 'is-over' : ''} ${
-          canDrop ? 'is-dragging' : ''
+          canDrop && isIntersecting ? 'is-dragging' : ''
         }`}
+        ref={this._ref}
       />
     );
   }
