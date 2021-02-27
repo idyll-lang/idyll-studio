@@ -28,6 +28,17 @@ class IdyllDisplay extends React.PureComponent {
     });
   }
 
+  handleDrop(element) {
+    if (element) {
+      const top = element.getBoundingClientRect().top;
+
+      if (top < 0 || top > window.innerHeight) {
+        console.log(top, element);
+        element.scrollIntoView();
+      }
+    }
+  }
+
   render() {
     return (
       <>
@@ -40,7 +51,7 @@ class IdyllDisplay extends React.PureComponent {
           }>
           <Sidebar />
           <div className={RENDER_WINDOW_NAME}>
-            <Render />
+            <Render handleDrop={this.handleDrop.bind(this)} />
             {this.context.showPreview ? null : <WrappedAuthorView />}
             {this.context.showPreview ? null : <WrappedUndoRedo />}
 

@@ -1,13 +1,21 @@
 import React from 'react';
 import { DropTarget } from 'react-dnd';
-import { RENDER_WINDOW_NAME } from '../../../constants';
 import Context from '../../context/context';
+import { getRandomId } from '../utils';
 const compile = require('idyll-compiler');
-const idyllAST = require('idyll-ast');
 
-const getRandomId = () => {
-  return Math.floor(Math.random() * 10000000000) + 100000000;
+export const withDropListener = (Component, callback) => {
+  return class WrappedDropTarget extends React.PureComponent {
+    constructor(props) {
+      super(props);
+    }
+
+    render() {
+      return <Component {...this.props} handleDrop={callback} />;
+    }
+  };
 };
+
 class ComponentDropTarget extends React.PureComponent {
   static contextType = Context;
 
@@ -25,14 +33,13 @@ class ComponentDropTarget extends React.PureComponent {
   }
 
   componentDidMount() {
-    const viewport = document.querySelector(`.${RENDER_WINDOW_NAME}`);
+    // const viewport = document.querySelector(`.${RENDER_WINDOW_NAME}`);
     const options = {
       root: null,
       threshold: 0.1,
     };
 
     this.observer = new IntersectionObserver(([entry]) => {
-      console.log(entry.isIntersecting);
       this.setState({
         isIntersecting: entry.isIntersecting,
       });
@@ -133,6 +140,9 @@ class ComponentDropTarget extends React.PureComponent {
         }
       }
 
+      if (this.props.handleDrop) {
+        this.props.handleDrop(this._ref.current);
+      }
       this.context.setAst(ast); // must pass info up level
     });
   }
