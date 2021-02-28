@@ -1,6 +1,7 @@
 import React from 'react';
 import Context from '../../context/context';
 import { DropTarget } from 'react-dnd';
+import { getComponentDomId } from '../utils';
 
 class AuthorToolButtons extends React.PureComponent {
   static contextType = Context;
@@ -8,7 +9,10 @@ class AuthorToolButtons extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
+    this.domId = getComponentDomId(
+      props.idyllASTNode.name,
+      props.idyllASTNode.id
+    );
   }
 
   handleClickProps(e) {

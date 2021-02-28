@@ -140,10 +140,10 @@ class ComponentDropTarget extends React.PureComponent {
         }
       }
 
-      if (this.props.handleDrop) {
-        this.props.handleDrop(this._ref.current);
-      }
       this.context.setAst(ast); // must pass info up level
+      if (this.props.handleDrop) {
+        this.props.handleDrop(componentNode);
+      }
     });
   }
 

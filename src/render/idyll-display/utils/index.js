@@ -319,6 +319,8 @@ const readFile = (source) => {
   return { content: data, error: null };
 };
 
+const getComponentDomId = (name, id) => `${name}-${id}`;
+
 module.exports = {
   getNodeById,
   getParentNodeById,
@@ -338,4 +340,5 @@ module.exports = {
   jsonParser,
   boolify,
   reassignNodeIds,
+  getComponentDomId,
 };

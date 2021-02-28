@@ -6,6 +6,7 @@ import { WrappedAuthorView } from './components/author-view';
 import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
 import { RENDER_WINDOW_NAME } from '../../constants.js';
+import { getComponentDomId } from './utils';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -28,13 +29,16 @@ class IdyllDisplay extends React.PureComponent {
     });
   }
 
-  handleDrop(element) {
-    if (element) {
-      const top = element.getBoundingClientRect().top;
+  handleDrop(component) {
+    const componentDom = document.getElementById(
+      getComponentDomId(component.name, component.id)
+    );
+
+    if (componentDom) {
+      const top = componentDom.getBoundingClientRect().top;
 
       if (top < 0 || top > window.innerHeight) {
-        console.log(top, element);
-        element.scrollIntoView();
+        componentDom.scrollIntoView({ block: 'center' });
       }
     }
   }
