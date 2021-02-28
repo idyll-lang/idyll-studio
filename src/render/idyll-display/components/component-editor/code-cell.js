@@ -53,7 +53,7 @@ export default class EditableCodeCell extends React.Component {
     const { editing, referenceMarkup, currentMarkup } = this.state;
 
     return (
-      <pre style={{border: referenceMarkup === currentMarkup ? 'solid 1px #666' : 'solid 1px #cccc00'}}>
+      <pre style={{border: referenceMarkup === currentMarkup ? 'solid 1px #666' : 'solid 1px #cccc00', transition: 'border 0.25s'}}>
         <code>
           <div
             ref={this._cellCodeRef}
