@@ -72,7 +72,7 @@ const Renderer = withContext(
           return node;
         }
 
-        if (node.name === 'TextContainer') {
+        if (node.name === 'TextContainer' ||  node.name === 'text-container') {
           if (node.children.length === 1 && node.children[0].type === 'meta') {
             return node;
           }

@@ -40,27 +40,36 @@ VegaLite._idyll = {
       name: 'spec',
       type: 'expression',
       example: `\`{
-        mark: "line",
-        encoding: {
-          x: {
-            field: "x",
-            type: "quantitative"
-          },
-          y: {
-            field: "y",
-            type: "quantitative"
-          }
-        }
-      }\``
+  mark: "line",
+  encoding: {
+    x: {
+      field: "x",
+      type: "quantitative"
+    },
+    y: {
+      field: "y",
+      type: "quantitative"
+    }
+  }
+}\``
     },
     {
       name: 'data',
       type: 'expression',
       example: `\`[{x: 0, y: 0}, {x: 1, y: 1}]\``
+    },
+    {
+      name: 'width',
+      type: 'value',
+      example: `"container"`
+    },
+    {
+      name: 'height',
+      type: 'number',
+      example: `300`
     }
   ]
 };
 
 
-module.exports = VegaLite
-;
+module.exports = VegaLite;

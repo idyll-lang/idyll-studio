@@ -124,7 +124,13 @@ class Main {
     const infile = fs.readFileSync(componentPath, 'utf-8').toString();
     const outfile = infile.replace(/from '\.\//g, "from 'idyll-components/dist/cjs/").replace(/from "\.\//g, "from \"idyll-components/dist/cjs/").replace(/require\('\.\//g, "require('idyll-components/dist/cjs/").replace(/require\("\.\//g, "require(\"idyll-components/dist/cjs/");
     fs.writeFileSync(copyPath, outfile);
+
     const newComponent = { path: copyPath, name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}` };
+    const notification = {
+      title: 'Component duplicated',
+      body: `A copy of ${component.name} has been added to the custom components shelf. Click edit to modify the source code.`
+    }
+    new Notification(notification).show();
 
     this.mainWindow.webContents.send('components:add', newComponent);
   }

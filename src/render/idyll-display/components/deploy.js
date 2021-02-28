@@ -32,7 +32,7 @@ class Deploy extends React.PureComponent {
             this.setState({ metaNode: metaAST.children[0].children[0] }); // meta
             this.state.metaNode.id = getRandomId();
 
-            if (lastChild.name === 'TextContainer') {
+            if (lastChild.name === 'TextContainer' ||  lastChild.name === 'text-container') {
               // push just meta tag
               lastChild.children.push(metaAST.children[0].children[0]);
             } else {
@@ -90,6 +90,7 @@ class Deploy extends React.PureComponent {
 
         {/* Publish Button */}
         <div className='publish-button-container'>
+        <h4>Publish to the web</h4>
           <button id='preview-button' onClick={this.context.toggleShowPreview}>
             Preview
           </button>

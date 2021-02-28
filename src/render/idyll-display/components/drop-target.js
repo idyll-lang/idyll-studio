@@ -57,7 +57,7 @@ class ComponentDropTarget extends React.PureComponent {
 
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
-      tagInfo.props.forEach((prop) => {
+      tagInfo.props.filter(prop => prop.example !== undefined).forEach((prop) => {
         tag += prop.name + ':' + prop.example + ' ';
       });
     }
@@ -88,9 +88,16 @@ class ComponentDropTarget extends React.PureComponent {
 
     compile(componentMarkup).then((componentAST) => {
       let componentNode = componentAST.children[0];
-      while (componentNode.name === 'TextContainer') {
+      while (componentNode.name && (componentNode.name.toLowerCase() === 'textcontainer' || componentNode.name.toLowerCase() === 'text-container')) {
         componentNode = componentNode.children[0];
       }
+      // componentNode = {
+      //   ...componentNode,
+      //   name: "p",
+      //   properties: {},
+      //   id: getRandomId(),
+      //   children: [componentNode]
+      // }
       componentNode.id = getRandomId();
 
       (componentNode.children || []).forEach((child) => {
@@ -181,3 +188,4 @@ export default DropTarget(
   componentBlockTarget,
   collect
 )(ComponentDropTarget);
+
