@@ -50,7 +50,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "fast-copy": "^2.1.1",
     "fix-path": "^3.0.0",
-    "idyll": "^5.2.17",
+    "idyll": "^5.3.1",
     "idyll-ast": "^2.2.1",
     "idyll-compiler": "^4.0.20",
     "idyll-components": "^4.1.9",
