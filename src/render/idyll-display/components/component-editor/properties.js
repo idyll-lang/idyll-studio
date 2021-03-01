@@ -49,7 +49,6 @@ export default withContext(
         this.props.context.ast,
         this.props.context.activeComponent.id
         );
-      console.log('updating node with properties', node, this.props.context.ast, this.props.context.activeComponent.id);
 
       this.debouncedSetAst(node, propertyName, propertyValue);
     }
