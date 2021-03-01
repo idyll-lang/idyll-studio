@@ -6,7 +6,6 @@ import { WrappedAuthorView } from './components/author-view';
 import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
 import { RENDER_WINDOW_NAME } from '../../constants.js';
-import { getComponentDomId } from './utils';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -36,7 +35,7 @@ class IdyllDisplay extends React.PureComponent {
 
     setTimeout(() => {
       outputContainer.scrollTo(0, scrollPosition - height);
-    }, 800);
+    }, 900);
   }
 
   render() {
