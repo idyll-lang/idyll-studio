@@ -12,6 +12,7 @@ if (!isDev && process.platform !== "win32") {
     const fixPath = require('fix-path');
     fixPath();
   } else {
+    const shellPath = require('shell-path');
     process.env.PATH = shellPath.sync() || [
       './node_modules/.bin',
       '/.nodebrew/current/bin',
