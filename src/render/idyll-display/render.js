@@ -3,7 +3,7 @@ import IdyllDocument from 'idyll-document';
 import AuthorToolButtons from './components/author-tool-buttons';
 import InlineAuthorToolButtons from './components/inline-author-tool-buttons';
 import TextEdit from './components/text-edit.js';
-import DropTarget, { withDropListener } from './components/drop-target';
+import { WrappedDropTarget } from './components/drop-target';
 import { withContext } from '../context/with-context';
 import copy from 'fast-copy';
 import { modifyNodesByName } from 'idyll-ast';
@@ -72,7 +72,7 @@ const Renderer = withContext(
           return node;
         }
 
-        if (node.name === 'TextContainer' ||  node.name === 'text-container') {
+        if (node.name === 'TextContainer' || node.name === 'text-container') {
           if (node.children.length === 1 && node.children[0].type === 'meta') {
             return node;
           }
@@ -191,10 +191,7 @@ const Renderer = withContext(
                   : this.injectDropTargets(this.transformATags(ast))
               }
               components={{
-                IdyllEditorDropTarget: withDropListener(
-                  DropTarget,
-                  this.props.handleDrop
-                ),
+                IdyllEditorDropTarget: WrappedDropTarget(this.props.handleDrop),
                 ...this.loadedComponents,
               }}
               layout={layout}
