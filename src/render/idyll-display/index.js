@@ -15,7 +15,6 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       // TODO - get these values from the project config!
       collapsed: false,
-      isLoading: false,
     };
   }
 
@@ -34,10 +33,8 @@ class IdyllDisplay extends React.PureComponent {
       RENDER_WINDOW_NAME
     )[0];
 
-    this.setState({ isLoading: true });
     setTimeout(() => {
       outputContainer.scrollTo(0, scrollPosition - height);
-      this.setState({ isLoading: false });
     }, 1500);
 
     console.log(this.context.ast);
@@ -55,7 +52,6 @@ class IdyllDisplay extends React.PureComponent {
           }>
           <Sidebar />
           <div className={RENDER_WINDOW_NAME}>
-            {this.state.isLoading ? <div className='drop-overlay' /> : <></>}
             <Render handleDrop={this.handleDrop.bind(this)} />
             {this.context.showPreview ? null : <WrappedAuthorView />}
             {this.context.showPreview ? null : <WrappedUndoRedo />}
