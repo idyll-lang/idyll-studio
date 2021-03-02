@@ -6,6 +6,8 @@ import { WrappedAuthorView } from './components/author-view';
 import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
 import { RENDER_WINDOW_NAME } from '../../constants.js';
+import { IS_VISIBLE } from './components/drop-target.js';
+import { getDistance } from './utils';
 
 class IdyllDisplay extends React.PureComponent {
   static contextType = Context;
@@ -15,11 +17,31 @@ class IdyllDisplay extends React.PureComponent {
     this.state = {
       // TODO - get these values from the project config!
       collapsed: false,
+      mouseCoordinates: { x: 0, y: 0 },
+      trackMouse: false,
     };
+
+    this.nearestDropTarget = null;
   }
 
   componentDidMount() {
     ipcRenderer.on('toggleSidebar', () => this.handleToggle());
+
+    this.outputContainer = document.getElementsByClassName(
+      RENDER_WINDOW_NAME
+    )[0];
+
+    this.outputContainer.addEventListener(
+      'dragover',
+      this.trackMouse.bind(this)
+    );
+  }
+
+  componentWillUnmount() {
+    this.outputContainer.removeEventListener(
+      'dragover',
+      this.trackMouse.bind(this)
+    );
   }
 
   handleToggle() {
@@ -28,16 +50,57 @@ class IdyllDisplay extends React.PureComponent {
     });
   }
 
-  handleDrop(scrollPosition, height) {
-    const outputContainer = document.getElementsByClassName(
-      RENDER_WINDOW_NAME
-    )[0];
-
+  handleDrop(scrollPosition) {
     setTimeout(() => {
-      outputContainer.scrollTo(0, scrollPosition - height);
+      this.outputContainer.scrollTo(0, scrollPosition);
     }, 1500);
 
-    console.log(this.context.ast);
+    this.setState({
+      trackMouse: false,
+    });
+  }
+
+  trackMouse(e) {
+    if (this.state.trackMouse) {
+      const coordinates = { x: e.pageX, y: e.pageY };
+
+      const dropTargets = [...document.querySelectorAll(`.${IS_VISIBLE}`)];
+
+      const nearest = dropTargets.reduce((prev, current) => {
+        const prevCoordinates = prev.getBoundingClientRect();
+        const prevDistance = getDistance(coordinates, {
+          x: prevCoordinates.x,
+          y: prevCoordinates.y,
+        });
+
+        const currentCoordinates = current.getBoundingClientRect();
+        const currentDistance = getDistance(coordinates, {
+          x: currentCoordinates.x,
+          y: currentCoordinates.y,
+        });
+
+        return prevDistance < currentDistance ? prev : current;
+      });
+
+      if (nearest !== this.nearestDropTarget) {
+        if (this.nearestDropTarget !== null) {
+          this.nearestDropTarget.classList.remove('is-dragging');
+        }
+        this.nearestDropTarget = nearest;
+      }
+
+      nearest.classList.add('is-dragging');
+    }
+  }
+
+  trackComponentDrag(isDragging) {
+    this.setState({
+      trackMouse: isDragging,
+    });
+
+    if (!isDragging) {
+      this.nearestDropTarget.classList.remove('is-dragging');
+    }
   }
 
   render() {
@@ -50,9 +113,12 @@ class IdyllDisplay extends React.PureComponent {
               ? 'sidebar-collapse'
               : '')
           }>
-          <Sidebar />
+          <Sidebar handleDrag={this.trackComponentDrag.bind(this)} />
           <div className={RENDER_WINDOW_NAME}>
-            <Render handleDrop={this.handleDrop.bind(this)} />
+            <Render
+              handleDrop={this.handleDrop.bind(this)}
+              coordinates={this.state.mouseCoordinates}
+            />
             {this.context.showPreview ? null : <WrappedAuthorView />}
             {this.context.showPreview ? null : <WrappedUndoRedo />}
 

@@ -135,7 +135,7 @@ class Sidebar extends React.PureComponent {
           <div>
             <div className='components-and-datasets'>
               <h2>Components</h2>
-              <WrappedComponentView />
+              <WrappedComponentView handleDrag={this.props.handleDrag} />
             </div>
           </div>
         );

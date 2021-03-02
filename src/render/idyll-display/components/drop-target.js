@@ -5,6 +5,7 @@ import Context from '../../context/context';
 import { getRandomId } from '../utils';
 const compile = require('idyll-compiler');
 
+export const IS_VISIBLE = 'is-visible-drop-target';
 const BASE_CLASS_NAME = 'idyll-studio-drop-target';
 
 const componentBlockTarget = {
@@ -21,12 +22,6 @@ function collect(connect, monitor) {
     canDrop: monitor.canDrop(),
   };
 }
-
-// export default DropTarget(
-//   'COMPONENT',
-//   componentBlockTarget,
-//   collect
-// )();
 
 const withDropListener = (callback) => {
   return class ComponentDropTarget extends React.PureComponent {
@@ -58,6 +53,10 @@ const withDropListener = (callback) => {
         });
       }, options);
       this.observer.observe(this._ref.current);
+
+      this.outputContainer = document.getElementsByClassName(
+        RENDER_WINDOW_NAME
+      )[0];
     }
 
     componentWillUnmount() {
@@ -161,18 +160,8 @@ const withDropListener = (callback) => {
           }
         }
 
-        let numBefore = 0;
-
-        visibleDropTargets.forEach((target, i) => {
-          if (target === this._ref.current) {
-            numBefore = i;
-          }
-        });
-
         const height = this._ref.current.getBoundingClientRect().height;
-        const scrollPosition = document.getElementsByClassName(
-          RENDER_WINDOW_NAME
-        )[0].scrollTop;
+        const scrollPosition = this.outputContainer.scrollTop;
 
         this.context.setAst(ast); // must pass info up level
         if (callback) {
@@ -187,8 +176,8 @@ const withDropListener = (callback) => {
 
       return dropTarget(
         <div
-          className={`${BASE_CLASS_NAME} ${isOver ? 'is-over' : ''} ${
-            canDrop && isIntersecting ? 'is-dragging' : ''
+          className={`${BASE_CLASS_NAME} ${isOver ? 'is-over' : ''}  ${
+            isIntersecting ? IS_VISIBLE : ''
           }`}
           ref={this._ref}
         />

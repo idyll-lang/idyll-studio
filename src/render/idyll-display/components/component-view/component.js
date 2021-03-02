@@ -20,7 +20,14 @@ class Component extends React.PureComponent {
   }
 
   render() {
-    const { component, isDragging, dragSource, dragPreview, searchValue, isCustom } = this.props;
+    const {
+      component,
+      isDragging,
+      dragSource,
+      dragPreview,
+      searchValue,
+      isCustom,
+    } = this.props;
     let name = formatString(component.name);
 
     if (searchValue && searchValue.length > 0) {
@@ -38,24 +45,32 @@ class Component extends React.PureComponent {
     return dragSource(
       <div
         style={{
-          opacity: isDragging ? 0.5 : 1
+          opacity: isDragging ? 0.5 : 1,
         }}
         className='component'>
-          {dragPreview(<div className='component-name'>
-            {name.toLowerCase ? (COMPONENT_NAME_MAP[name.toLowerCase()] || name) : name}
-          </div>)}
-          {
-            isDragging ? null : (
-              <div>
-                { isCustom ? <div className="component-edit" onClick={this.handleEditClick.bind(this)}>
-                  Edit
-                </div> : null}
-                <div className="component-duplicate" onClick={this.handleDuplicateClick.bind(this)}>
-                  Duplicate
-                </div>
+        {dragPreview(
+          <div className='component-name'>
+            {name.toLowerCase
+              ? COMPONENT_NAME_MAP[name.toLowerCase()] || name
+              : name}
+          </div>
+        )}
+        {isDragging ? null : (
+          <div>
+            {isCustom ? (
+              <div
+                className='component-edit'
+                onClick={this.handleEditClick.bind(this)}>
+                Edit
               </div>
-            )
-          }
+            ) : null}
+            <div
+              className='component-duplicate'
+              onClick={this.handleDuplicateClick.bind(this)}>
+              Duplicate
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -65,14 +80,20 @@ class Component extends React.PureComponent {
  * Implement the drag source contract.
  */
 const cardSource = {
-  beginDrag: props => ({ component: props.component.name })
+  beginDrag: (props, monitor, component) => {
+    props.handleDrag(true);
+    return { component: props.component.name };
+  },
+  endDrag: (props, monitor, component) => {
+    props.handleDrag(false);
+  },
 };
 
 function collect(connect, monitor) {
   return {
     dragSource: connect.dragSource(),
     dragPreview: connect.dragPreview(),
-    isDragging: monitor.isDragging()
+    isDragging: monitor.isDragging(),
   };
 }
 

@@ -11,7 +11,7 @@ import {
   MEDIA,
   HELPERS,
   EXCLUDED_COMPONENTS,
-  COMPONENT_NAME_MAP
+  COMPONENT_NAME_MAP,
 } from '../../../../constants';
 import ComponentAccordion from './component-accordion';
 import { withContext } from '../../../context/with-context';
@@ -28,13 +28,11 @@ export const WrappedComponentView = withContext(
       this.state = {
         searchValue: '',
         filteredComponents: [],
-        componentMaps: this.buildComponentMaps()
+        componentMaps: this.buildComponentMaps(),
       };
-
-
     }
 
-    buildComponentMaps () {
+    buildComponentMaps() {
       this.categoriesMap = {
         [TEXT]: [],
         [INPUT]: [],
@@ -44,34 +42,36 @@ export const WrappedComponentView = withContext(
         [LAYOUT]: [],
         [LOGIC]: [],
         // [HELPERS]: [],
-        Custom: []
+        Custom: [],
       };
 
       if (
         this.props.context.components &&
         this.props.context.components.length > 0
       ) {
-        this.props.context.components.filter(component => {
-          return !EXCLUDED_COMPONENTS.includes(component.name);
-        }).map(component => {
-          if (COMPONENTS_CATEGORY_MAP.has(component.name)) {
-            this.categoriesMap[
-              COMPONENTS_CATEGORY_MAP.get(component.name)
-            ].push(component);
-          } else {
-            this.categoriesMap.Custom.push(component);
-          }
-        });
+        this.props.context.components
+          .filter((component) => {
+            return !EXCLUDED_COMPONENTS.includes(component.name);
+          })
+          .map((component) => {
+            if (COMPONENTS_CATEGORY_MAP.has(component.name)) {
+              this.categoriesMap[
+                COMPONENTS_CATEGORY_MAP.get(component.name)
+              ].push(component);
+            } else {
+              this.categoriesMap.Custom.push(component);
+            }
+          });
       }
 
       return this.categoriesMap;
     }
 
-    searchComponents = e => {
+    searchComponents = (e) => {
       const value = e.target.value;
 
       const filteredResults = this.props.context.components.filter(
-        component => {
+        (component) => {
           let name = formatString(component.name).toLowerCase();
           name = COMPONENT_NAME_MAP[name] || name;
           return name.toLowerCase().includes(value.toLowerCase());
@@ -80,14 +80,14 @@ export const WrappedComponentView = withContext(
 
       this.setState({
         searchValue: value,
-        filteredComponents: filteredResults
+        filteredComponents: filteredResults,
       });
     };
 
     clearSearch = () => {
       this.setState({
         searchValue: '',
-        filteredComponents: []
+        filteredComponents: [],
       });
     };
 
@@ -99,6 +99,7 @@ export const WrappedComponentView = withContext(
             isCustom={category === 'Custom'}
             key={'component_category:' + category}
             components={this.categoriesMap[category]}
+            handleDrag={this.props.handleDrag}
           />
         );
       });
@@ -118,6 +119,7 @@ export const WrappedComponentView = withContext(
                 component={component}
                 isCustom={this.categoriesMap.Custom.includes(component)}
                 searchValue={this.state.searchValue}
+                handleDrag={this.props.handleDrag}
               />
             </div>
           );
@@ -125,18 +127,30 @@ export const WrappedComponentView = withContext(
       }
     };
 
-    componentDidUpdate (prevProps) {
-      if (this.props.context.components.length !== prevProps.context.components.length) {
+    componentDidUpdate(prevProps) {
+      if (
+        this.props.context.components.length !==
+        prevProps.context.components.length
+      ) {
         this.setState({
-          componentMaps: this.buildComponentMaps()
-        })
+          componentMaps: this.buildComponentMaps(),
+        });
       }
     }
 
     render() {
       return (
         <div className='component-view'>
-          <div style={{color: '#999', fontSize: 11, fontWeight: 'bold', marginBottom: 18, lineHeight: 1.2}}>Drag-and-drop components onto the document.</div>
+          <div
+            style={{
+              color: '#999',
+              fontSize: 11,
+              fontWeight: 'bold',
+              marginBottom: 18,
+              lineHeight: 1.2,
+            }}>
+            Drag-and-drop components onto the document.
+          </div>
           <SearchBarInput
             placeholder='Search Components'
             onChange={this.searchComponents}

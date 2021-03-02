@@ -8,7 +8,7 @@ class ComponentAccordion extends React.Component {
 
     this.state = {
       maxHeight: '0px',
-      isClosed: true
+      isClosed: true,
     };
 
     this._panelRef = React.createRef();
@@ -21,7 +21,7 @@ class ComponentAccordion extends React.Component {
     const scrollHeight = this._panelRef.current.scrollHeight;
     this.setState({
       maxHeight: this.state.maxHeight === '0px' ? `${scrollHeight}px` : '0px',
-      isClosed: !this.state.isClosed
+      isClosed: !this.state.isClosed,
     });
   };
 
@@ -30,7 +30,7 @@ class ComponentAccordion extends React.Component {
       const scrollHeight = this._panelRef.current.scrollHeight;
 
       this.setState({
-        maxHeight: this.state.maxHeight === '0px' ? '0px' : `${scrollHeight}px`
+        maxHeight: this.state.maxHeight === '0px' ? '0px' : `${scrollHeight}px`,
       });
     }
   }
@@ -38,8 +38,10 @@ class ComponentAccordion extends React.Component {
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.components.length !== nextProps.components.length) {
       return true;
-    }
-    else if (nextState.isClosed !== this.state.isClosed || nextState.maxHeight !== this.state.maxHeight) {
+    } else if (
+      nextState.isClosed !== this.state.isClosed ||
+      nextState.maxHeight !== this.state.maxHeight
+    ) {
       return true;
     }
     return false;
@@ -51,7 +53,7 @@ class ComponentAccordion extends React.Component {
 
     components.sort((a, b) => {
       return a.name - b.name;
-    })
+    });
 
     return (
       <div className='component-category'>
@@ -62,7 +64,7 @@ class ComponentAccordion extends React.Component {
 
         <div
           style={{
-            maxHeight: this.state.maxHeight
+            maxHeight: this.state.maxHeight,
           }}
           className='accordion-panel-container'
           ref={this._panelRef}>
@@ -73,7 +75,14 @@ class ComponentAccordion extends React.Component {
 
           <div className='accordion-component'>
             {(components || []).map((component, i) => {
-              return <Component key={component.name} component={component} isCustom={isCustom} />;
+              return (
+                <Component
+                  key={component.name}
+                  component={component}
+                  isCustom={isCustom}
+                  handleDrag={this.props.handleDrag}
+                />
+              );
             })}
           </div>
         </div>
