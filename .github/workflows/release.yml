@@ -42,7 +42,6 @@ jobs:
           sudo launchctl limit maxfiles 4194304 unlimited
 
       - name: Install dependencies
-        if: matrix.os != 'macos-latest'
         run: npm i
 
       - name: Prune node modules
