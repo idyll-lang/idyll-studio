@@ -41,6 +41,7 @@
     "@babel/preset-react": "^7.12.10",
     "@babel/preset-stage-2": "^7.8.3",
     "@babel/register": "^7.12.10",
+    "@electron-forge/maker-dmg": "^6.0.0-beta.54",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.54",
     "chokidar": "^3.5.1",
     "cross-spawn": "^7.0.3",

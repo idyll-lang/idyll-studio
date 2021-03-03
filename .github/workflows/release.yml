@@ -55,6 +55,7 @@ jobs:
         with:
           files: |
             out/**/idyll-studio*.zip
+            out/**/idyll-studio*.dmg
             out/**/idyll-studio*.deb
             out/**/idyll-studio*.rpm
             out/**/idyll-studio*Setup.exe
