@@ -45,7 +45,6 @@
     "chokidar": "^3.5.1",
     "cross-spawn": "^7.0.3",
     "csv-parse": "^4.15.0",
-    "d3": "^4.0.0",
     "electron-is-dev": "^1.2.0",
     "electron-squirrel-startup": "^1.0.0",
     "fast-copy": "^2.1.1",
@@ -54,7 +53,6 @@
     "idyll-ast": "^2.2.1",
     "idyll-compiler": "^4.0.20",
     "idyll-components": "^4.1.9",
-    "idyll-d3-component": "^2.0.0",
     "idyll-document": "^3.4.10",
     "lodash.throttle": "^4.1.1",
     "npm": "^7.6.0",
@@ -68,10 +66,7 @@
     "react-dom": "^16.14.0",
     "react-loader-spinner": "^4.0.0",
     "react-select": "^3.1.1",
-    "react-vega": "^7.4.2",
-    "shell-path": "^2.1.0",
-    "vega": "^5.17.0",
-    "vega-lite": "^4.17.0"
+    "shell-path": "^2.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.16",

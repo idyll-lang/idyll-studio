@@ -35,10 +35,12 @@ jobs:
         run: |
           echo kern.maxfiles=524288 | sudo tee -a /etc/sysctl.conf
           echo kern.maxfilesperproc=524288 | sudo tee -a /etc/sysctl.conf
+          echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
           sudo sysctl -w kern.maxfiles=524288
           sudo sysctl -w kern.maxfilesperproc=524288
           ulimit -n 524288
           sudo launchctl limit maxfiles 524288 unlimited
+          sudo sysctl -p
 
       - name: Install dependencies
         run: npm i
