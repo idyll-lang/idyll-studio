@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
 
@@ -42,10 +42,10 @@ jobs:
           sudo launchctl limit maxfiles 4194304 unlimited
 
       - name: Install dependencies
-        run: npm i
+        run: NODE_ENV=production npm i
 
       - name: Build
-        run: npm run make
+        run: NODE_ENV=production npm run make
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}

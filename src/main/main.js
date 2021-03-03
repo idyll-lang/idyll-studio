@@ -14,6 +14,7 @@ const { getWorkingDirectory, getTokenPath } = require('./utils');
 const open = require('open');
 const chokidar = require('chokidar');
 const spawn = require('cross-spawn');
+const runScript = require('@npmcli/run-script')
 
 function slugify(text) {
   return text
@@ -157,8 +158,24 @@ class Main {
         template: p.resolve(`${__dirname}/../../project-template/`),
         customTemplate: true,
         'post-dir': `${projectDir}/${slugName}`,
-        installDependencies: true
+        installDependencies: false
       });
+
+      try {
+        await runScript({
+          // required, the script to run
+          event: 'install',
+          path: `${projectDir}/${slugName}`,
+        }).then((a) => {
+          console.log('run script', a);
+        }).catch(e => {
+          console.log('err', e);
+        })
+      } catch(e) {
+        console.log(e);
+      }
+
+
 
       this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);
     } catch (err) {
