@@ -38,7 +38,7 @@ jobs:
           echo fs.inotify.max_user_watches=1048576 | sudo tee -a /etc/sysctl.conf
           sudo sysctl -w kern.maxfiles=1048576
           sudo sysctl -w kern.maxfilesperproc=1048576
-          ulimit -n 1048576
+          ulimit -n 524288
           sudo launchctl limit maxfiles 1048576 unlimited
 
       - name: Install dependencies
