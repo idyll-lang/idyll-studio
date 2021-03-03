@@ -18,7 +18,6 @@
     "start": "electron-forge start",
     "test": "jest",
     "test:watch": "npm run test -- --watch",
-    "start:watch": "cross-env NODE_ENV=development nodemon --exec electron ./src/",
     "import-forge": "electron-forge import",
     "package": "electron-forge package",
     "make-linux": "electron-forge make --platform linux",
@@ -76,8 +75,6 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "acorn": "^7.4.1",
-    "cross-env": "^7.0.3",
     "electron": "^11.2.3",
     "electron-connect": "*",
     "electron-devtools-installer": "^2.2.4",
@@ -86,7 +83,6 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "expect": "^25.5.0",
-    "jest": "^25.5.4",
-    "nodemon": "^2.0.6"
+    "jest": "^25.5.4"
   }
 }

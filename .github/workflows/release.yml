@@ -45,7 +45,7 @@ jobs:
         run: npm i
 
       - name: Build
-        run: NODE_ENV=production npm run make
+        run: npm run make
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
