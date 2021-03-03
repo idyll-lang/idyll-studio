@@ -40,7 +40,6 @@ jobs:
           sudo sysctl -w kern.maxfilesperproc=524288
           ulimit -n 524288
           sudo launchctl limit maxfiles 524288 unlimited
-          sudo sysctl -p
 
       - name: Install dependencies
         run: npm i
