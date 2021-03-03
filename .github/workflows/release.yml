@@ -42,7 +42,7 @@ jobs:
           sudo launchctl limit maxfiles 4194304 unlimited
 
       - name: Install dependencies
-        run: NODE_ENV=production npm i
+        run: npm i
 
       - name: Build
         run: NODE_ENV=production npm run make
