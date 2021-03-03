@@ -49,7 +49,7 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           NODE_ENV=production npm i
-          npm i @electron-forge/cli @electron-forge/maker-dmg
+          npm i @electron-forge/cli @electron-forge/maker-dmg electron
 
       - name: Build
         run: npm run make
