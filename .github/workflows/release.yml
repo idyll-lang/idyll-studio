@@ -33,13 +33,13 @@ jobs:
       - name: Increase file limits
         if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
         run: |
-          echo kern.maxfiles=1048576 | sudo tee -a /etc/sysctl.conf
-          echo kern.maxfilesperproc=1048576 | sudo tee -a /etc/sysctl.conf
-          echo fs.inotify.max_user_watches=1048576 | sudo tee -a /etc/sysctl.conf
-          sudo sysctl -w kern.maxfiles=1048576
-          sudo sysctl -w kern.maxfilesperproc=1048576
-          ulimit -n 524288
-          sudo launchctl limit maxfiles 1048576 unlimited
+          echo kern.maxfiles=2097152 | sudo tee -a /etc/sysctl.conf
+          echo kern.maxfilesperproc=2097152 | sudo tee -a /etc/sysctl.conf
+          echo fs.inotify.max_user_watches=2097152 | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -w kern.maxfiles=2097152
+          sudo sysctl -w kern.maxfilesperproc=2097152
+          ulimit -n 524288 unlimited
+          sudo launchctl limit maxfiles 2097152 unlimited
 
       - name: Install dependencies
         run: npm i
