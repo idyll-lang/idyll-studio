@@ -42,7 +42,14 @@ jobs:
           sudo launchctl limit maxfiles 4194304 unlimited
 
       - name: Install dependencies
+        if: matrix.os != 'macos-latest'
         run: npm i
+
+      - name: Install dependencies (macos)
+        if: matrix.os == 'macos-latest'
+        run: |
+          NODE_ENV=production npm i
+          npm i @electron-forge/cli @electron-forge/maker-dmg
 
       - name: Build
         run: npm run make
