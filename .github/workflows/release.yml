@@ -45,11 +45,8 @@ jobs:
         if: matrix.os != 'macos-latest'
         run: npm i
 
-      - name: Install dependencies (macos)
-        if: matrix.os == 'macos-latest'
-        run: |
-          NODE_ENV=production npm i
-          npm i @electron-forge/cli @electron-forge/maker-dmg electron
+      - name: Prune node modules
+        run: npm run clean-modules
 
       - name: Build
         run: npm run make

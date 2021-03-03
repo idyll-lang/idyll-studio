@@ -19,6 +19,7 @@
     "test": "jest",
     "test:watch": "npm run test -- --watch",
     "import-forge": "electron-forge import",
+    "clean-modules": "modclean --run",
     "package": "electron-forge package",
     "make-linux": "electron-forge make --platform linux",
     "make-windows": "electron-forge make --platform win32",
@@ -78,6 +79,7 @@
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.5",
     "expect": "^25.5.0",
-    "jest": "^25.5.4"
+    "jest": "^25.5.4",
+    "modclean": "^3.0.0-beta.1"
   }
 }
