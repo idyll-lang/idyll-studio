@@ -45,6 +45,7 @@ jobs:
         run: npm i
 
       - name: Prune node modules
+        if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
         run: npm run clean-modules
 
       - name: Build
