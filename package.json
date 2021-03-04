@@ -55,7 +55,7 @@
     "idyll-components": "^4.1.9",
     "idyll-document": "^3.4.10",
     "lodash.throttle": "^4.1.1",
-    "npm": "^7.6.0",
+    "npm": "^6.14.11",
     "open": "^7.4.2",
     "postcss": "^8.2.4",
     "postcss-js": "^3.0.3",
