@@ -69,7 +69,7 @@ jobs:
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
 
       - name: Build
-        if: matrix.os != 'linux-latest'
+        if: matrix.os == 'linux-latest'
         run: sudo npm run make
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
