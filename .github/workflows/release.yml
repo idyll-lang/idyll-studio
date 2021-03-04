@@ -38,45 +38,17 @@ jobs:
           echo fs.inotify.max_user_watches=4194304 | sudo tee -a /etc/sysctl.conf
           sudo sysctl -w kern.maxfiles=4194304
           sudo sysctl -w kern.maxfilesperproc=4194304
-          sudo ulimit -n 524288 unlimited
+          ulimit -n 524288 unlimited
           sudo launchctl limit maxfiles 4194304 unlimited
 
       - name: Install dependencies
-        if: matrix.os != 'windows-latest'
-        run: sudo npm i
-
-      - name: Install dependencies
-        if: matrix.os == 'windows-latest'
         run: npm i
 
       - name: Prune node modules
         if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
-        run: sudo npm run clean-modules
+        run: npm run clean-modules
 
       - name: Build
-        if: matrix.os == 'macos-latest'
-        run: |
-          echo kern.maxfiles=4194304 | sudo tee -a /etc/sysctl.conf
-          echo kern.maxfilesperproc=4194304 | sudo tee -a /etc/sysctl.conf
-          echo fs.inotify.max_user_watches=4194304 | sudo tee -a /etc/sysctl.conf
-          sudo sysctl -w kern.maxfiles=4194304
-          sudo sysctl -w kern.maxfilesperproc=4194304
-          sudo ulimit -n 524288 unlimited
-          sudo launchctl limit maxfiles 4194304 unlimited
-          sudo npm run make
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-
-      - name: Build
-        if: matrix.os == 'linux-latest'
-        run: sudo npm run make
-        env:
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
-
-      - name: Build
-        if: matrix.os == 'windows-latest'
         run: npm run make
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
