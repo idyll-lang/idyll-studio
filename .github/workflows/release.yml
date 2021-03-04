@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11.0, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
 
@@ -24,14 +24,14 @@ jobs:
           node-version: '12.x'
 
       - name: Add MacOS certs
-        if: matrix.os == 'macos-11.0' && startsWith(github.ref, 'refs/tags/')
+        if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
         run: chmod +x add-osx-cert.sh && ./add-osx-cert.sh
         env:
           CERTIFICATE_OSX_APPLICATION: ${{ secrets.CERTIFICATE_OSX_APPLICATION }}
           CERTIFICATE_PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
 
       - name: Increase file limits
-        if: matrix.os == 'macos-11.0' && startsWith(github.ref, 'refs/tags/')
+        if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
         run: |
           echo kern.maxfiles=4194304 | sudo tee -a /etc/sysctl.conf
           echo kern.maxfilesperproc=4194304 | sudo tee -a /etc/sysctl.conf
@@ -50,11 +50,11 @@ jobs:
         run: npm i
 
       - name: Prune node modules
-        if: matrix.os == 'macos-11.0' && startsWith(github.ref, 'refs/tags/')
+        if: matrix.os == 'macos-latest' && startsWith(github.ref, 'refs/tags/')
         run: sudo npm run clean-modules
 
       - name: Build
-        if: matrix.os == 'macos-11.0'
+        if: matrix.os == 'macos-latest'
         run: |
           echo kern.maxfiles=4194304 | sudo tee -a /etc/sysctl.conf
           echo kern.maxfilesperproc=4194304 | sudo tee -a /etc/sysctl.conf
