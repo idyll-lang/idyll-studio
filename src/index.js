@@ -22,6 +22,10 @@ if (!isDev && process.platform !== "win32") {
   }
 }
 
+// add local node_modules
+let pathSeparator = process.platform === "win32" ? ';' : ':';
+process.env.PATH = process.env.PATH.split(pathSeparator).concat([path.resolve(`${__dirname}/../node_modules/.bin`)]).join(pathSeparator);
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
