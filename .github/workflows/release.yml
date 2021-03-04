@@ -54,7 +54,22 @@ jobs:
         run: sudo npm run clean-modules
 
       - name: Build
-        if: matrix.os != 'windows-latest'
+        if: matrix.os == 'macos-latest'
+        run: |
+          echo kern.maxfiles=4194304 | sudo tee -a /etc/sysctl.conf
+          echo kern.maxfilesperproc=4194304 | sudo tee -a /etc/sysctl.conf
+          echo fs.inotify.max_user_watches=4194304 | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -w kern.maxfiles=4194304
+          sudo sysctl -w kern.maxfilesperproc=4194304
+          sudo ulimit -n 524288 unlimited
+          sudo launchctl limit maxfiles 4194304 unlimited
+          sudo npm run make
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+
+      - name: Build
+        if: matrix.os != 'linux-latest'
         run: sudo npm run make
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
