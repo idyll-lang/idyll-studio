@@ -163,7 +163,7 @@ class Main {
         installDependencies: true
       });
 
-      this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);
+      this.executeOnProjectOpen(p.resolve(projectDir, slugName, 'index.idyll'));
     } catch (err) {
       console.log(err);
     }
