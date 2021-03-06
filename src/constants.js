@@ -99,3 +99,5 @@ export const EXCLUDED_COMPONENTS = [
 export const DEBOUNCE_PROPERTY_MILLISECONDS = 250;
 
 export const RENDER_WINDOW_NAME = 'output-container';
+
+export const EDITABLE_TEXT = 'editable-text';

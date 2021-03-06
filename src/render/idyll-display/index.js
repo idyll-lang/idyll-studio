@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import { WrappedAuthorView } from './components/author-view';
 import { WrappedUndoRedo } from './components/undo-redo';
 import Context from '../context/context';
-import { RENDER_WINDOW_NAME } from '../../constants.js';
+import { EDITABLE_TEXT, RENDER_WINDOW_NAME } from '../../constants.js';
 import { IS_VISIBLE } from './components/drop-target.js';
 import { getDistance } from './utils';
 
@@ -65,11 +65,13 @@ class IdyllDisplay extends React.PureComponent {
 
       if (
         !hoveredElements.some((element) =>
-          element.classList.contains('editable-text')
+          element.classList.contains(EDITABLE_TEXT)
         )
       ) {
+        // only consider the drop targets in viewport
         const dropTargets = [...document.querySelectorAll(`.${IS_VISIBLE}`)];
 
+        // get nearest drop target and display
         const nearest = dropTargets.reduce((prev, current) => {
           const prevCoordinates = prev.getBoundingClientRect();
           const prevDistance = getDistance(coordinates, {

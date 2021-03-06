@@ -3,6 +3,7 @@ import Context from '../../context/context';
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
 import { DropTarget } from 'react-dnd';
+import { EDITABLE_TEXT } from '../../../constants';
 
 const {
   getNodeById,
@@ -243,7 +244,7 @@ class TextEdit extends React.PureComponent {
     if (props.isOver) {
       if (props.idyllASTNode.name === 'p') {
         return dropTarget(
-          <div className='editable-text'>
+          <div className={EDITABLE_TEXT}>
             <p>
               <InlineDropTargetWrapped update={this.insertBefore.bind(this)} />
               {props.children[0].props.children}
