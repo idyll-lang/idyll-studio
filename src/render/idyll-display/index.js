@@ -31,17 +31,11 @@ class IdyllDisplay extends React.PureComponent {
       RENDER_WINDOW_NAME
     )[0];
 
-    this.outputContainer.addEventListener(
-      'dragover',
-      this.trackMouse.bind(this)
-    );
+    document.addEventListener('dragover', this.trackMouse.bind(this));
   }
 
   componentWillUnmount() {
-    this.outputContainer.removeEventListener(
-      'dragover',
-      this.trackMouse.bind(this)
-    );
+    document.removeEventListener('dragover', this.trackMouse.bind(this));
   }
 
   handleToggle() {
@@ -100,7 +94,6 @@ class IdyllDisplay extends React.PureComponent {
         }
 
         nearest.classList.add('is-dragging');
-      } else {
       }
     }
   }
