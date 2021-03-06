@@ -64,32 +64,44 @@ class IdyllDisplay extends React.PureComponent {
     if (this.state.trackMouse) {
       const coordinates = { x: e.pageX, y: e.pageY };
 
-      const dropTargets = [...document.querySelectorAll(`.${IS_VISIBLE}`)];
+      const hoveredElements = document.elementsFromPoint(
+        coordinates.x,
+        coordinates.y
+      );
 
-      const nearest = dropTargets.reduce((prev, current) => {
-        const prevCoordinates = prev.getBoundingClientRect();
-        const prevDistance = getDistance(coordinates, {
-          x: prevCoordinates.x,
-          y: prevCoordinates.y,
+      if (
+        !hoveredElements.some((element) =>
+          element.classList.contains('editable-text')
+        )
+      ) {
+        const dropTargets = [...document.querySelectorAll(`.${IS_VISIBLE}`)];
+
+        const nearest = dropTargets.reduce((prev, current) => {
+          const prevCoordinates = prev.getBoundingClientRect();
+          const prevDistance = getDistance(coordinates, {
+            x: prevCoordinates.x,
+            y: prevCoordinates.y,
+          });
+
+          const currentCoordinates = current.getBoundingClientRect();
+          const currentDistance = getDistance(coordinates, {
+            x: currentCoordinates.x,
+            y: currentCoordinates.y,
+          });
+
+          return prevDistance < currentDistance ? prev : current;
         });
 
-        const currentCoordinates = current.getBoundingClientRect();
-        const currentDistance = getDistance(coordinates, {
-          x: currentCoordinates.x,
-          y: currentCoordinates.y,
-        });
-
-        return prevDistance < currentDistance ? prev : current;
-      });
-
-      if (nearest !== this.nearestDropTarget) {
-        if (this.nearestDropTarget !== null) {
-          this.nearestDropTarget.classList.remove('is-dragging');
+        if (nearest !== this.nearestDropTarget) {
+          if (this.nearestDropTarget !== null) {
+            this.nearestDropTarget.classList.remove('is-dragging');
+          }
+          this.nearestDropTarget = nearest;
         }
-        this.nearestDropTarget = nearest;
-      }
 
-      nearest.classList.add('is-dragging');
+        nearest.classList.add('is-dragging');
+      } else {
+      }
     }
   }
 

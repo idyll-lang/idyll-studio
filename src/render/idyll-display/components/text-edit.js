@@ -1,6 +1,5 @@
 import React from 'react';
 import Context from '../../context/context';
-import copy from 'fast-copy';
 const AST = require('idyll-ast');
 const compile = require('idyll-compiler');
 import { DropTarget } from 'react-dnd';
@@ -9,24 +8,33 @@ const {
   getNodeById,
   getRandomId,
   deleteNodeById,
-  getParentNodeById
+  getParentNodeById,
 } = require('../utils');
 
-class InlineDropTarget extends  React.PureComponent {
+class InlineDropTarget extends React.PureComponent {
   static contextType = Context;
 
   insertComponent(name) {
-    this.props.update(name)
+    this.props.update(name);
   }
 
   render() {
     const { isOver, dropTarget } = this.props;
     return dropTarget(
-      <span style={{width: isOver ? 60 : 30, height: '1.2em', display: 'inline-block', position: 'relative', top: '.1em', borderRadius: 3, margin: '0 6px', background: isOver  ? '#999' : '#ccc'}}></span>
+      <span
+        style={{
+          width: isOver ? 60 : 30,
+          height: '1.2em',
+          display: 'inline-block',
+          position: 'relative',
+          top: '.1em',
+          borderRadius: 3,
+          margin: '0 6px',
+          background: isOver ? '#999' : '#ccc',
+        }}></span>
     );
   }
 }
-
 
 const componentInlineTargetSpan = {
   drop(props, monitor, component) {
@@ -48,14 +56,13 @@ const InlineDropTargetWrapped = DropTarget(
   collectSpan
 )(InlineDropTarget);
 
-
 class TextEdit extends React.PureComponent {
   static contextType = Context;
 
   constructor(props) {
     super(props);
     this.state = {
-      showMarkup: false
+      showMarkup: false,
     };
     this._markup = this.getMarkup(props);
   }
@@ -70,9 +77,11 @@ class TextEdit extends React.PureComponent {
 
     var tag = '[' + tagInfo.name + ' ';
     if (tagInfo.props !== undefined) {
-      tagInfo.props.filter(prop => prop.example !== undefined).forEach((prop) => {
-        tag += prop.name + ':' + prop.example + ' ';
-      });
+      tagInfo.props
+        .filter((prop) => prop.example !== undefined)
+        .forEach((prop) => {
+          tag += prop.name + ':' + prop.example + ' ';
+        });
     }
     if (tagInfo.tagType === 'closed') {
       tag += ' /]';
@@ -85,11 +94,15 @@ class TextEdit extends React.PureComponent {
   }
 
   insertBefore(name) {
-    return this.updateASTWithMarkup(`${this.getTag(name)} ${this.getMarkup(this.props)}`)
+    return this.updateASTWithMarkup(
+      `${this.getTag(name)} ${this.getMarkup(this.props)}`
+    );
   }
 
   insertAfter(name) {
-    return this.updateASTWithMarkup(`${this.getMarkup(this.props)} ${this.getTag(name)}`)
+    return this.updateASTWithMarkup(
+      `${this.getMarkup(this.props)} ${this.getTag(name)}`
+    );
   }
 
   getMarkup(props) {
@@ -100,13 +113,13 @@ class TextEdit extends React.PureComponent {
       id: -1,
       type: 'component',
       name: 'div',
-      children: [props.idyllASTNode]
+      children: [props.idyllASTNode],
     });
   }
 
   getASTWithDropTargets() {
     if (props.idyllASTNode.name === 'p') {
-      return this.props.idyllASTNode
+      return this.props.idyllASTNode;
     }
   }
 
@@ -117,14 +130,19 @@ class TextEdit extends React.PureComponent {
     }
 
     this.setState({
-      showMarkup: !this.state.showMarkup
+      showMarkup: !this.state.showMarkup,
     });
   }
 
-  updateASTWithMarkup(markup)  {
+  updateASTWithMarkup(markup) {
     const output = compile(markup, { async: false });
     let node = output.children ? output.children : output;
-    while (node &&  node.length && node[0].type === 'component' && (node[0].name === 'TextContainer'  || node[0].name === 'text-container')) {
+    while (
+      node &&
+      node.length &&
+      node[0].type === 'component' &&
+      (node[0].name === 'TextContainer' || node[0].name === 'text-container')
+    ) {
       node = node[0].children;
     }
 
@@ -136,11 +154,11 @@ class TextEdit extends React.PureComponent {
         this.props.idyllASTNode.id
       );
 
-      node.children.forEach(n => {
+      node.children.forEach((n) => {
         n.id = getRandomId();
       });
 
-      Object.keys(node).forEach(key => {
+      Object.keys(node).forEach((key) => {
         if (key === 'id') {
           return;
         }
@@ -157,10 +175,10 @@ class TextEdit extends React.PureComponent {
       }
 
       const childIdx = (parentNode.children || []).findIndex(
-        c => c.id === this.props.idyllASTNode.id
+        (c) => c.id === this.props.idyllASTNode.id
       );
 
-      node.forEach(n => {
+      node.forEach((n) => {
         n.id = getRandomId();
       });
 
@@ -172,7 +190,7 @@ class TextEdit extends React.PureComponent {
     }
 
     this.setState({
-      showMarkup: false
+      showMarkup: false,
     });
     this.context.setAst(this.context.ast);
   }
@@ -189,27 +207,29 @@ class TextEdit extends React.PureComponent {
       deleteNodeById(this.context.ast, this.props.idyllASTNode.id);
       this.context.setAst(this.context.ast);
       this.setState({
-        showMarkup: false
+        showMarkup: false,
       });
     } else {
-      this.updateASTWithMarkup(markup)
+      this.updateASTWithMarkup(markup);
     }
-
   }
 
   render() {
-    const { idyll, updateProps, hasError, dropTarget,...props } = this.props;
+    const { idyll, updateProps, hasError, dropTarget, ...props } = this.props;
 
     if (this.state.showMarkup && !props.canDrop) {
-      return dropTarget((
+      return dropTarget(
         <div
-          ref={ref => { this._markupRef = ref; ref && ref.focus() }}
+          ref={(ref) => {
+            this._markupRef = ref;
+            ref && ref.focus();
+          }}
           style={{
             whiteSpace: 'pre-wrap',
             marginLeft: -10,
             paddingLeft: 10,
             borderLeft: 'solid 2px #222',
-            marginBottom: 18
+            marginBottom: 18,
           }}
           tabIndex={0}
           contentEditable='true'
@@ -217,12 +237,20 @@ class TextEdit extends React.PureComponent {
           onBlur={this.toggleMarkup.bind(this)}>
           {this.getMarkup(this.props)}
         </div>
-      ));
+      );
     }
 
     if (props.isOver) {
       if (props.idyllASTNode.name === 'p') {
-        return dropTarget(<div><p><InlineDropTargetWrapped update={this.insertBefore.bind(this)} />{props.children[0].props.children}<InlineDropTargetWrapped  update={this.insertAfter.bind(this)} /></p></div>);
+        return dropTarget(
+          <div className='editable-text'>
+            <p>
+              <InlineDropTargetWrapped update={this.insertBefore.bind(this)} />
+              {props.children[0].props.children}
+              <InlineDropTargetWrapped update={this.insertAfter.bind(this)} />
+            </p>
+          </div>
+        );
       }
     }
 
@@ -248,10 +276,8 @@ function collect(connect, monitor) {
   };
 }
 
-
 export default DropTarget(
   'COMPONENT',
   componentInlineTarget,
   collect
 )(TextEdit);
-
