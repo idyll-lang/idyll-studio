@@ -3,6 +3,8 @@ import { withContext } from '../../context/with-context';
 import Properties from './component-editor/properties';
 import Code from './component-editor/code';
 import Styles from './component-editor/styles';
+import { RENDER_WINDOW_NAME } from '../../../constants';
+import { getComponentDomId } from '../utils';
 
 /**
  * An AuthorView is associated with an active component.
@@ -25,14 +27,14 @@ export const WrappedAuthorView = withContext(
       this.props.context.setActiveComponent(null);
       window.removeEventListener('resize', this.handleWindowEvent);
 
-      const parent = document.getElementsByClassName('output-container')[0];
+      const parent = document.getElementsByClassName(RENDER_WINDOW_NAME)[0];
       parent.removeEventListener('scroll', this.handleWindowEvent);
     }
 
     componentDidMount() {
       window.addEventListener('resize', this.handleWindowEvent);
 
-      const parent = document.getElementsByClassName('output-container')[0];
+      const parent = document.getElementsByClassName(RENDER_WINDOW_NAME)[0];
       parent.addEventListener('scroll', this.handleWindowEvent);
     }
 
@@ -55,7 +57,10 @@ export const WrappedAuthorView = withContext(
         prevProps.context.activeComponent !== context.activeComponent
       ) {
         const activeComponentDomNode = document.getElementById(
-          context.activeComponent.name + '-' + context.activeComponent.id
+          getComponentDomId(
+            context.activeComponent.name,
+            context.activeComponent.id
+          )
         );
 
         if (activeComponentDomNode) {

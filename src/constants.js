@@ -57,24 +57,45 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
   ['analytics', HELPERS],
   ['meta', HELPERS],
   ['preload', HELPERS],
-  ['vega-lite', PRESENTATION]
+  ['vega-lite', PRESENTATION],
 ]);
-
-
 
 export const COMPONENT_NAME_MAP = {
   'text container': 'Paragraph',
-  'display': 'Display Value',
-  'desmos': 'Graphing Calculator',
-  'gist': 'GitHub Gist',
-  'range': 'Range Slider',
-  'boolean': 'Checkbox',
-  'radio': 'Multiple Choice',
+  display: 'Display Value',
+  desmos: 'Graphing Calculator',
+  gist: 'GitHub Gist',
+  range: 'Range Slider',
+  boolean: 'Checkbox',
+  radio: 'Multiple Choice',
   'text input': 'Text Input',
-  'select': 'Dropdown',
-  'vega lite': 'Chart (Vega-Lite)'
-}
+  select: 'Dropdown',
+  'vega lite': 'Chart (Vega-Lite)',
+};
 
-export const EXCLUDED_COMPONENTS = ['generateHeaders', 'fixed', 'inline', 'scroller', 'step', 'stepper-control', 'case', 'default', 'graphic', 'analytics', 'meta', 'preload', 'stepper', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'chart'];
+export const EXCLUDED_COMPONENTS = [
+  'generateHeaders',
+  'fixed',
+  'inline',
+  'scroller',
+  'step',
+  'stepper-control',
+  'case',
+  'default',
+  'graphic',
+  'analytics',
+  'meta',
+  'preload',
+  'stepper',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'chart',
+];
 
 export const DEBOUNCE_PROPERTY_MILLISECONDS = 250;
+
+export const RENDER_WINDOW_NAME = 'output-container';

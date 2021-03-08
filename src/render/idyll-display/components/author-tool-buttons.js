@@ -1,6 +1,7 @@
 import React from 'react';
 import Context from '../../context/context';
 import { DropTarget } from 'react-dnd';
+import { getComponentDomId } from '../utils';
 
 class AuthorToolButtons extends React.PureComponent {
   static contextType = Context;
@@ -8,7 +9,10 @@ class AuthorToolButtons extends React.PureComponent {
   constructor(props) {
     super(props);
 
-    this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
+    this.domId = getComponentDomId(
+      props.idyllASTNode.name,
+      props.idyllASTNode.id
+    );
     this.state = {
       isHovering: false
     };
@@ -40,12 +44,11 @@ class AuthorToolButtons extends React.PureComponent {
     }
   }
 
-
   componentDidCatch(e) {
     this.setState({
       hasError: true,
-      error: e
-    })
+      error: e,
+    });
   }
 
   // Returns an entire author view, including the component itself,
@@ -61,7 +64,15 @@ class AuthorToolButtons extends React.PureComponent {
 
     return dropTarget(
       <div className='component-debug-view'>
-        <div ref={(ref) => (this._componentRef = ref)} style={{outline: isActive || isHovering ? 'dashed 1px #999' : 'none'}}>{this.state.hasError ? <span className="error-container">{this.state.error.toString()}</span> : props.component}</div>
+        <div ref={(ref) => (this._componentRef = ref)} style={{outline: isActive || isHovering ? 'dashed 1px #999' : 'none'}}>
+          {this.state.hasError ? (
+            <span className='error-container'>
+              {this.state.error.toString()}
+            </span>
+          ) : (
+            props.component
+          )}
+        </div>
         <div className='author-view-container' id={this.domId} onMouseEnter={() => this.setState({ isHovering: true })} onMouseLeave={() => this.setState({ isHovering: false })}>
           <button
             className={`author-view-button`}

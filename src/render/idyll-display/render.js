@@ -3,10 +3,10 @@ import IdyllDocument from 'idyll-document';
 import AuthorToolButtons from './components/author-tool-buttons';
 import InlineAuthorToolButtons from './components/inline-author-tool-buttons';
 import TextEdit from './components/text-edit.js';
-import DropTarget from './components/drop-target';
+import { WrappedDropTarget } from './components/drop-target';
 import { withContext } from '../context/with-context';
 import copy from 'fast-copy';
-import  { modifyNodesByName } from 'idyll-ast';
+import { modifyNodesByName } from 'idyll-ast';
 
 const { ipcRenderer } = require('electron');
 const p = require('path');
@@ -19,7 +19,7 @@ const Renderer = withContext(
     constructor(props) {
       super(props);
       this.state = {
-        componentUpdates: 0
+        componentUpdates: 0,
       };
     }
 
@@ -58,10 +58,10 @@ const Renderer = withContext(
         node.properties = node.properties || {};
         node.properties.target = {
           value: '_blank',
-          type: 'value'
-        }
+          type: 'value',
+        };
         return node;
-      })
+      });
     }
 
     injectDropTargets(ast) {
@@ -72,7 +72,7 @@ const Renderer = withContext(
           return node;
         }
 
-        if (node.name === 'TextContainer' ||  node.name === 'text-container') {
+        if (node.name === 'TextContainer' || node.name === 'text-container') {
           if (node.children.length === 1 && node.children[0].type === 'meta') {
             return node;
           }
@@ -132,7 +132,12 @@ const Renderer = withContext(
         const _NODE_PATH = process.env.NODE_PATH;
         process.env.NODE_PATH += ':' + __dirname;
         delete require.cache[require.resolve(component.path)];
-        this.loadedComponents[component.name] = require(require.resolve(component.path, { paths: [ component.path, __dirname ]}));
+        this.loadedComponents[component.name] = require(require.resolve(
+          component.path,
+          {
+            paths: [component.path, __dirname],
+          }
+        ));
         this.setState({ componentUpdates: this.state.componentUpdates + 1 });
         process.env.NODE_PATH = _NODE_PATH;
       });
@@ -154,7 +159,7 @@ const Renderer = withContext(
         layout,
         theme,
         setContext,
-        datasets
+        datasets,
       } = this.props.context;
 
       if (!this.loadedComponents) {
@@ -165,7 +170,9 @@ const Renderer = withContext(
       components.forEach(({ name, path }) => {
         if (!this.loadedComponents[name]) {
           try {
-            this.loadedComponents[name] = require(require.resolve(path, { paths: [  path, __dirname ]}));
+            this.loadedComponents[name] = require(require.resolve(path, {
+              paths: [path, __dirname],
+            }));
           } catch (e) {
             console.log('Error loading component', name);
           }
@@ -178,9 +185,13 @@ const Renderer = withContext(
           <div className={`renderer-container`} contentEditable={false}>
             <IdyllDocument
               key={`${!showPreview}-${this.state.componentUpdates}`}
-              ast={showPreview ? this.transformATags(ast) : this.injectDropTargets(this.transformATags(ast))}
+              ast={
+                showPreview
+                  ? this.transformATags(ast)
+                  : this.injectDropTargets(this.transformATags(ast))
+              }
               components={{
-                IdyllEditorDropTarget: DropTarget,
+                IdyllEditorDropTarget: WrappedDropTarget(this.props.handleDrop),
                 ...this.loadedComponents,
               }}
               layout={layout}
