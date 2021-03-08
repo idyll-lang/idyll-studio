@@ -29,15 +29,15 @@ class IdyllDisplay extends React.PureComponent {
   }
 
   handleDrop(scrollPosition, height) {
-    const outputContainer = document.getElementsByClassName(
-      RENDER_WINDOW_NAME
-    )[0];
+    // const outputContainer = document.getElementsByClassName(
+    //   RENDER_WINDOW_NAME
+    // )[0];
 
-    setTimeout(() => {
-      outputContainer.scrollTo(0, scrollPosition - height);
-    }, 1500);
+    // setTimeout(() => {
+    //   outputContainer.scrollTo(0, scrollPosition - height);
+    // }, 1500);
 
-    console.log(this.context.ast);
+    // console.log(this.context.ast);
   }
 
   render() {
