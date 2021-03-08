@@ -193,7 +193,7 @@ describe('<EditableCodeCell />', () => {
 
     let div = component.find('div');
 
-    expect(div.props().contentEditable).toBeFalsy();
+    expect(div.props().contentEditable).toBeTruthy();
     const pre = component.find('pre');
     pre.simulate('click');
 

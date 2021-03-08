@@ -9,44 +9,37 @@ export default class EditableCodeCell extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editing: false
+      editing: true,
+      referenceMarkup: props.markup,
+      currentMarkup: props.markup
+
     };
 
     this._cellCodeRef = React.createRef();
   }
 
-  toggleEdit = e => {
-    e.stopPropagation();
-    if (this.state.editing) {
-      this.setState({
-        editing: false
-      });
-    } else {
-      this.edit();
-    }
-  };
-
-  edit = () => {
-    this.setState(
-      {
-        editing: true
-      },
-      () => {
-        this._cellCodeRef.current.focus();
-      }
-    );
-  };
-
   // Executes code change
   execute = () => {
-    this.props.onExecute(this._cellCodeRef.current.innerText);
+    this.setState({
+      referenceMarkup: this._cellCodeRef.current.innerText,
+      currentMarkup: this._cellCodeRef.current.innerText
+    }, () => {
+      this.props.onExecute(this._cellCodeRef.current.innerText);
+    })
+
   };
 
   // Updates markup on blur
   onBlur = e => {
-    this.toggleEdit(e);
     this.props.onBlur && this.props.onBlur(this._cellCodeRef.current.innerText);
   };
+
+  handleKeyUp = e => {
+    e.stopPropagation();
+    this.setState({
+      currentMarkup: this._cellCodeRef.current.innerText.trim()
+    })
+  }
 
   handleKeyDown = e => {
     e.stopPropagation();
@@ -57,10 +50,10 @@ export default class EditableCodeCell extends React.Component {
   };
 
   render() {
-    const { editing } = this.state;
+    const { editing, referenceMarkup, currentMarkup } = this.state;
 
     return (
-      <pre onClick={!editing ? this.toggleEdit : undefined}>
+      <pre style={{border: referenceMarkup === currentMarkup ? 'solid 1px #666' : 'solid 1px #cccc00', transition: 'border 0.25s'}}>
         <code>
           <div
             ref={this._cellCodeRef}
@@ -68,6 +61,7 @@ export default class EditableCodeCell extends React.Component {
             suppressContentEditableWarning={true}
             style={{minHeight: '1.33em', ...this.props.style}}
             onKeyDown={this.handleKeyDown}
+            onKeyUp={this.handleKeyUp}
             onBlur={this.onBlur}>
             {this.props.markup}
           </div>

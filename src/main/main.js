@@ -90,7 +90,7 @@ class Main {
     });
     // import dataset
     ipcMain.on('importDataset', (event, message) => {
-      const filePath = `${this.workingDir}/data/${p.basename(message)}`;
+      const filePath = p.resolve(this.workingDir, 'data', p.basename(message));
 
       if (filePath !== message) {
         fs.copyFileSync(message, filePath);
@@ -113,11 +113,14 @@ class Main {
     let copyIncrementer = 0;
     let copyPath;
 
-    const componentPath = component.path.includes('node_modules/idyll-components/dist/') ? component.path.replace(/node_modules\/idyll\-components\/dist\/(es|cjs)\//g, 'node_modules/idyll-components/src/') : component.path;
+    let componentPath = component.path.includes('node_modules/idyll-components/dist/') ? component.path.replace(/node_modules\/idyll\-components\/dist\/(es|cjs)\//g, 'node_modules/idyll-components/src/') : component.path;
+
+    // Windows fix
+    componentPath = componentPath.includes('node_modules\\idyll-components\\dist\\') ? componentPath.replace(/node_modules\\idyll\-components\\dist\\(es|cjs)\\/g, 'node_modules\\idyll-components\\src\\') : componentPath;
 
     do {
       copyIncrementer += 1;
-      copyPath = `${this.workingDir}/components/${p.basename(componentPath).replace(/(\-\d+)?\.jsx?/g, '')}-${copyIncrementer}.js`;
+      copyPath = p.resolve(this.workingDir, 'components', `${p.basename(componentPath).replace(/(\-\d+)?\.jsx?/g, '')}-${copyIncrementer}.js`);
     } while (fs.existsSync(copyPath))
 
     fs.copyFileSync(componentPath, copyPath);
@@ -160,7 +163,7 @@ class Main {
         installDependencies: true
       });
 
-      this.executeOnProjectOpen(`${projectDir}/${slugName}/index.idyll`);
+      this.executeOnProjectOpen(p.resolve(projectDir, slugName, 'index.idyll'));
     } catch (err) {
       console.log(err);
     }
