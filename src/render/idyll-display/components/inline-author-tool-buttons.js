@@ -10,6 +10,7 @@ class AuthorToolButtons extends React.PureComponent {
 
     this.domId = props.idyllASTNode.name + '-' + props.idyllASTNode.id;
     this.state = {
+      isHovering: false
     }
   }
 
@@ -53,11 +54,15 @@ class AuthorToolButtons extends React.PureComponent {
   render() {
     const { idyll, updateProps, idyllASTNode, hasError, ...props } = this.props;
     const { dropTarget } = this.props;
+    const { activeComponent } = this.context;
+    const { isHovering } = this.state;
+
+    const isActive = activeComponent && activeComponent.id === idyllASTNode.id;
 
     return dropTarget(
       <span className='component-debug-view-inline'>
-        <span ref={ref => (this._componentRef = ref)}>{this.state.hasError ? <span className="error-container">{this.state.error.toString()}</span> : props.component}</span>
-        <span className='inline-author-view-container' id={this.domId}>
+        <span ref={ref => (this._componentRef = ref)} style={{outline: isActive || isHovering ? 'dashed 1px #999' : 'none'}}>{this.state.hasError ? <span className="error-container">{this.state.error.toString()}</span> : props.component}</span>
+        <span className='inline-author-view-container' id={this.domId} onMouseEnter={() => this.setState({ isHovering: true })} onMouseLeave={() => this.setState({ isHovering: false })}>
           <button
             className={`inline-author-view-button`}
             onClick={this.handleClickProps.bind(this)}
