@@ -37,6 +37,11 @@ VegaLite._idyll = {
   tagType: 'closed',
   props: [
     {
+      name: 'data',
+      type: 'expression',
+      example: `\`[{x: 0, y: 0}, {x: 1, y: 1}]\``
+    },
+    {
       name: 'spec',
       type: 'expression',
       example: `\`{
@@ -52,11 +57,6 @@ VegaLite._idyll = {
     }
   }
 }\``
-    },
-    {
-      name: 'data',
-      type: 'expression',
-      example: `\`[{x: 0, y: 0}, {x: 1, y: 1}]\``
     },
     {
       name: 'width',

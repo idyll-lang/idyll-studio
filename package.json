@@ -33,6 +33,9 @@
       "<rootDir>/setupJest.js"
     ]
   },
+  "config": {
+    "forge": "./forge.config.js"
+  },
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
@@ -49,11 +52,11 @@
     "electron-squirrel-startup": "^1.0.0",
     "fast-copy": "^2.1.1",
     "fix-path": "^3.0.0",
-    "idyll": "^5.4.0",
-    "idyll-ast": "^2.2.1",
-    "idyll-compiler": "^4.0.22",
-    "idyll-components": "^4.1.11",
-    "idyll-document": "^3.4.12",
+    "idyll": "^5.4.2",
+    "idyll-ast": "^2.2.3",
+    "idyll-compiler": "^4.0.23",
+    "idyll-components": "^4.1.12",
+    "idyll-document": "^3.4.14",
     "lodash.throttle": "^4.1.1",
     "npm": "^7.6.1",
     "open": "^7.4.2",

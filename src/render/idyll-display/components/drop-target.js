@@ -112,11 +112,15 @@ const withDropListener = (callback) => {
           componentNode = componentNode.children[0];
         }
 
-        componentNode.id = getRandomId();
+        const randomizeIds = (node) => {
+          node.id = getRandomId();
+          (node.children || []).forEach((child) => {
+            // child.id = getRandomId();
+            randomizeIds(child);
+          });
+        }
 
-        (componentNode.children || []).forEach((child) => {
-          child.id = getRandomId();
-        });
+        randomizeIds(componentNode);
 
         const handleNode = (node) => {
           let foundMatch = false;
