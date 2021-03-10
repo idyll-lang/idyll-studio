@@ -26,7 +26,10 @@ export const WrappedComponent = withContext(
     componentDidUpdate() {
       const { context } = this.props.context;
       if (
-        equal(Object.keys(context.data()), Object.keys(this.state.variableData))
+        !equal(
+          Object.keys(context.data()),
+          Object.keys(this.state.variableData)
+        )
       ) {
         this.setState({
           variableData: context.data(),
