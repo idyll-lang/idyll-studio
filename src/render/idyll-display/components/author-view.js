@@ -41,8 +41,8 @@ export const WrappedAuthorView = withContext(
     componentDidCatch(e) {
       this.setState({
         hasError: true,
-        error: e
-      })
+        error: e,
+      });
     }
 
     componentDidUpdate(prevProps) {
@@ -116,7 +116,6 @@ export const WrappedAuthorView = withContext(
     render() {
       const { activeComponent } = this.props.context;
       const { dimensions, selectedView } = this.state;
-
 
       if (activeComponent && activeComponent.id && dimensions) {
         return (
