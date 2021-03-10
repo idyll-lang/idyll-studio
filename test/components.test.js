@@ -11,12 +11,20 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { Arrow } from '../src/render/idyll-display/components/component-view/icons/arrow';
 import Component from '../src/render/idyll-display/components/component-view/component';
 import WrappedComponentView from '../src/render/idyll-display/components/component-view/component-view';
+import Context from '../src/render/context/context';
 
 describe('<Property /> with props', () => {
   let component;
   let updateProperty;
 
   let updateNodeType;
+  const contextData = {
+    context: {
+      data: function () {
+        return { a: 0, b: 'hi' };
+      },
+    },
+  };
 
   const dropTarget = jest.fn((jsxElement) => jsxElement);
 
@@ -28,14 +36,15 @@ describe('<Property /> with props', () => {
 
   it('renders with property "value" input with initial value', () => {
     component = mount(
-      <Property
-        updateProperty={updateProperty}
-        name={'author'}
-        propertyObject={{type:'value', value:'Deirdre'}}
-        updateNodeType={updateNodeType}
-        variableData={{}}
-        dropTarget={dropTarget}
-      />
+      <Context.Provider value={contextData}>
+        <Property
+          updateProperty={updateProperty}
+          name={'author'}
+          propertyObject={{ type: 'value', value: 'Deirdre' }}
+          updateNodeType={updateNodeType}
+          dropTarget={dropTarget}
+        />
+      </Context.Provider>
     );
 
     expect(component.find('div.prop-name').text()).toBe('author');
@@ -50,14 +59,16 @@ describe('<Property /> with props', () => {
 
   it('should call props.updateProperty on input change', () => {
     component = mount(
-      <Property
-        updateProperty={updateProperty}
-        name={'author'}
-        propertyObject={{type:'value', value:10}}
-        updateNodeType={updateNodeType}
-        variableData={{}}
-        dropTarget={dropTarget}
-      />
+      <Context.Provider value={contextData}>
+        <Property
+          updateProperty={updateProperty}
+          name={'author'}
+          propertyObject={{ type: 'value', value: 10 }}
+          updateNodeType={updateNodeType}
+          dropTarget={dropTarget}
+          context={contextData}
+        />
+      </Context.Provider>
     );
 
     expect(component.find('div.prop-name').text()).toBe('author');
@@ -67,7 +78,7 @@ describe('<Property /> with props', () => {
     expect(typeDiv.props().style.color).toBe('#4A90E2');
 
     const input = component.find('input');
-    expect(input.instance().value).toBe("10");
+    expect(input.instance().value).toBe('10');
 
     expect(updateProperty).toHaveBeenCalledTimes(0);
     input.simulate('change', { target: { value: 'abc' } });
@@ -76,14 +87,16 @@ describe('<Property /> with props', () => {
 
   it('should call props.updateNodeType', () => {
     component = mount(
-      <Property
-        updateProperty={updateProperty}
-        name={'date'}
-        propertyObject={{type:'value', value:'"abcde"'}}
-        updateNodeType={updateNodeType}
-        variableData={{}}
-        dropTarget={dropTarget}
-      />
+      <Context.Provider value={contextData}>
+        <Property
+          updateProperty={updateProperty}
+          name={'date'}
+          propertyObject={{ type: 'value', value: '"abcde"' }}
+          updateNodeType={updateNodeType}
+          dropTarget={dropTarget}
+          context={contextData}
+        />
+      </Context.Provider>
     );
 
     expect(component.find('div.prop-name').text()).toBe('date');
@@ -99,14 +112,13 @@ describe('<Property /> with props', () => {
 
     const input = component.find('input');
     expect(input.instance().value).toBe('"abcde"');
-  })
+  });
 });
 
 describe('<PropertyList />', () => {
   let component;
   let updateNodeWithNewProperties;
   let updateNodeType;
-  let variableData = {};
 
   beforeEach(() => {
     updateNodeWithNewProperties = jest.fn();
@@ -119,7 +131,6 @@ describe('<PropertyList />', () => {
         node={{ properties: { author: 'my-cat-deirdre', link: 'link' } }}
         updateNodeWithNewProperties={updateNodeWithNewProperties}
         updateNodeType={updateNodeType}
-        variableData={variableData}
       />
     );
 
@@ -216,8 +227,8 @@ describe('<SearchBarInput />', () => {
     component = mount(
       <SearchBarInput
         onChange={onChange}
-        value="Input"
-        placeholder="Dummy Value"
+        value='Input'
+        placeholder='Dummy Value'
         onClick={onClick}
       />
     );
@@ -236,8 +247,8 @@ describe('<SearchBarInput />', () => {
     component = mount(
       <SearchBarInput
         onChange={onChange}
-        value="Input"
-        placeholder="Dummy Value"
+        value='Input'
+        placeholder='Dummy Value'
         onClick={onClick}
       />
     );
@@ -261,8 +272,8 @@ describe('<SearchBarInput />', () => {
     component = mount(
       <SearchBarInput
         onChange={onChange}
-        value=""
-        placeholder="Dummy Value"
+        value=''
+        placeholder='Dummy Value'
         onClick={onClick}
       />
     );
@@ -282,7 +293,7 @@ describe('<ComponentAccordion />', () => {
   it('should render an accordion with the given category and components', () => {
     component = mount(
       <DndProvider backend={HTML5Backend}>
-        <ComponentAccordion category="Category" components={components} />
+        <ComponentAccordion category='Category' components={components} />
       </DndProvider>
     );
 
@@ -310,7 +321,7 @@ describe('<Component />', () => {
   it('should render the component name', () => {
     component = mount(
       <DndProvider backend={HTML5Backend}>
-        <Component component={{ name: 'abc' }} searchValue="" />
+        <Component component={{ name: 'abc' }} searchValue='' />
       </DndProvider>
     );
 
@@ -321,7 +332,7 @@ describe('<Component />', () => {
   it('should render the component name with the stylings', () => {
     component = mount(
       <DndProvider backend={HTML5Backend}>
-        <Component component={{ name: 'abc' }} searchValue="a" />
+        <Component component={{ name: 'abc' }} searchValue='a' />
       </DndProvider>
     );
 

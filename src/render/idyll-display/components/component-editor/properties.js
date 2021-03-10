@@ -27,7 +27,6 @@ export default withContext(
 
       this.state = {
         newProp: '',
-        variableData: props.context.context.data(),
         deleteConfirm: false,
       };
     }
@@ -187,7 +186,6 @@ export default withContext(
             setAst={setAst}
             setActiveComponent={setActiveComponent}
             updateNodeType={this.updateNodeType.bind(this)}
-            variableData={this.state.variableData}
             deleteProperty={this.deleteProperty.bind(this)}
           />
           <div>
