@@ -338,8 +338,6 @@ class App extends React.PureComponent {
       }
     });
 
-    console.log(componentProps);
-
     return componentProps;
   }
 

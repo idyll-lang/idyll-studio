@@ -181,8 +181,7 @@ const Renderer = withContext(
           }
         }
       });
-      console.log('components', components)
-      console.log('loaded components', this.loadedComponents)
+
       process.env.NODE_PATH = _NODE_PATH;
 
       return (
