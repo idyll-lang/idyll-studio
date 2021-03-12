@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import parse from 'csv-parse/lib/sync';
 import copy from 'fast-copy';
+const AST = require('idyll-ast');
 
 const getRandomId = () => {
   return Math.floor(Math.random() * 10000000000) + 100000000;
@@ -323,6 +324,17 @@ const readFile = (source) => {
 
 const getComponentDomId = (name, id) => `${name}-${id}`;
 
+
+
+const relativeDataPaths = (ast) => {
+  const dataNodes = AST.getNodesByType(ast, 'data');
+  dataNodes.forEach((node) => {
+    node.properties.source.value = path.basename(node.properties.source.value);
+  });
+  return ast;
+};
+
+
 module.exports = {
   getNodeById,
   getParentNodeById,
@@ -343,4 +355,5 @@ module.exports = {
   boolify,
   reassignNodeIds,
   getComponentDomId,
+  relativeDataPaths
 };

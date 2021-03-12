@@ -63,13 +63,15 @@ html {
   color: black;
 }
 
+
+
 .idyll-studio-drop-target {
-  width: 100%;
-  background: none;
-  height: 0;
-  border-radius: 10px;
-  transition: all 0.25s;
-  box-sizing: border-box;
+    width: 100%;
+    background: none;
+    height: 0;
+    border-radius: 10px;
+    transition: all 0.25s;
+    box-sizing: border-box;
 }
 
 .idyll-studio-drop-target.is-dragging {
@@ -84,8 +86,7 @@ html {
   background: #999;
 }
 
-button.loader,
-button.creator {
+button.loader, button.creator {
   display: block;
   box-sizing: border-box;
   padding: 3em 1em;
@@ -112,8 +113,7 @@ button.loader {
   color: #333;
 }
 
-button.loader:hover,
-button.creator:hover {
+button.loader:hover, button.creator:hover {
   transform: scale(1.025);
   color: white;
 }
@@ -134,7 +134,7 @@ p .component-debug-view {
   position: relative;
 }
 
-.author-view-container {
+.author-view-container{
   position: absolute;
   bottom: 10px;
   left: 10px;
@@ -156,13 +156,12 @@ p .component-debug-view {
 
 button {
   line-height: unset;
-  height: auto;
+  height:  auto;
   letter-spacing: unset;
   font-weight: 500;
 }
 
-.author-view-button,
-.inline-author-view-button {
+.author-view-button, .inline-author-view-button {
   position: static !important;
   color: white;
   margin-left: 10px;
@@ -182,24 +181,20 @@ button {
   line-height: initial;
 }
 
-.author-view-button svg,
-.inline-author-view-button svg {
+.author-view-button svg, .inline-author-view-button svg {
   display: block;
   margin: 0 auto;
   height: 20px;
 }
 
-.author-view-button:hover,
-.inline-author-view-button:hover {
+.author-view-button:hover, .inline-author-view-button:hover {
   background: #ccc !important;
 }
-.author-view-button.selected,
-.inline-author-view-button.selected {
+.author-view-button.selected, .inline-author-view-button.selected {
   background: #666 !important;
   color: #fff !important;
 }
-.author-view-button:focus,
-.inline-author-view-button:focus {
+.author-view-button:focus, .inline-author-view-button:focus {
   outline: none;
 }
 
@@ -223,7 +218,7 @@ button {
 }
 
 .author-view-overlay-header-close-button {
-  color: #fff;
+  color:  #fff;
   font-weight: bold;
 }
 .author-view-overlay-header {
@@ -267,8 +262,7 @@ button {
   outline: none;
 }
 
-#publish-button,
-#preview-button {
+#publish-button, #preview-button  {
   border: none;
   background-color: #333;
   color: white;
@@ -337,8 +331,7 @@ button {
   display: grid;
 }
 
-#publish-button,
-#preview-button {
+#publish-button, #preview-button {
   min-width: 150px;
   width: 100%;
   background-color: #333;
@@ -346,7 +339,7 @@ button {
   text-align: center;
 }
 
-#preview-button {
+#preview-button  {
   background-color: #999;
   color: #fff;
 }
@@ -359,7 +352,7 @@ button {
   font-size: 12px;
   color: #fff;
 }
-input.prop-input[type='text'] {
+input.prop-input[type="text"] {
   font-size: 12px;
   margin: 0;
   width: 100%;
@@ -413,7 +406,7 @@ select.prop-input {
   padding: 0.66em 0.66em;
 }
 
-.idyll-property-editor pre {
+.idyll-property-editor pre  {
   margin: 0;
   font-size: 12px;
   padding: 5px 0.5em;
@@ -487,8 +480,7 @@ select.prop-input {
   white-space: nowrap;
 }
 
-.component-edit,
-.component-duplicate {
+.component-edit, .component-duplicate {
   color: #999999;
   display: none;
 }
@@ -500,8 +492,7 @@ select.prop-input {
   cursor: pointer;
 }
 
-.component-duplicate:hover,
-.component-edit:hover {
+.component-duplicate:hover, .component-edit:hover {
   font-weight: bold;
 }
 
@@ -610,11 +601,13 @@ input[type='radio'] {
   width: 100%;
 }
 
+
+
 .vega-embed {
   width: 100%;
 }
 
-.error-container {
+.error-container  {
   /* border: solid  1px #cc0000; */
   background: #ffcccc;
   padding: 3px 5px;
