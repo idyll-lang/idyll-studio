@@ -132,7 +132,9 @@ const Renderer = withContext(
         const _NODE_PATH = process.env.NODE_PATH;
         process.env.NODE_PATH += ':' + __dirname;
         delete require.cache[require.resolve(component.path)];
-        this.loadedComponents[component.name] = require(require.resolve(
+
+        const _name = component.name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+        this.loadedComponents[_name] = require(require.resolve(
           component.path,
           {
             paths: [component.path, __dirname],
@@ -168,9 +170,10 @@ const Renderer = withContext(
       const _NODE_PATH = process.env.NODE_PATH;
       process.env.NODE_PATH += ':' + __dirname;
       components.forEach(({ name, path }) => {
-        if (!this.loadedComponents[name]) {
+        const _name = name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+        if (!this.loadedComponents[_name]) {
           try {
-            this.loadedComponents[name] = require(require.resolve(path, {
+            this.loadedComponents[_name] = require(require.resolve(path, {
               paths: [path, __dirname],
             }));
           } catch (e) {
@@ -178,6 +181,7 @@ const Renderer = withContext(
           }
         }
       });
+
       process.env.NODE_PATH = _NODE_PATH;
 
       return (

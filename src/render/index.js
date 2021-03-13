@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import IdyllDisplay from './idyll-display';
 import Context from './context/context';
 import copy from 'fast-copy';
-import { readFile, jsonParser } from './idyll-display/utils';
+import { readFile, jsonParser, relativeDataPaths } from './idyll-display/utils';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { basename } from 'path';
@@ -18,14 +18,6 @@ const PUBLISHING = 'Publishing your project...';
 const PUBLISHED =
   'Published! It may take up to a minute for the latest changes to be reflected.';
 
-
-  const relativeDataPaths = (ast) => {
-    const dataNodes = idyllAST.getNodesByType(ast, 'data');
-    dataNodes.forEach((node) => {
-      node.properties.source.value = basename(node.properties.source.value);
-    });
-    return ast;
-  };
 
 class App extends React.PureComponent {
   constructor(props) {

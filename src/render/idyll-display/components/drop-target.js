@@ -2,8 +2,10 @@ import React from 'react';
 import { DropTarget } from 'react-dnd';
 import { RENDER_WINDOW_NAME } from '../../../constants';
 import Context from '../../context/context';
-import { getRandomId } from '../utils';
+import { getRandomId, relativeDataPaths } from '../utils';
 const compile = require('idyll-compiler');
+const AST = require('idyll-ast');
+
 
 const BASE_CLASS_NAME = 'idyll-studio-drop-target';
 
@@ -83,6 +85,7 @@ const withDropListener = (callback) => {
           tagInfo.children !== undefined ? tagInfo.children[0] : '';
         tag += ']' + children + '[/' + tagInfo.name + ']';
       }
+
       this.handleASTChange(tag, visibleDropTargets);
     }
 
@@ -90,7 +93,7 @@ const withDropListener = (callback) => {
     // and sends modified ast back up to top level
     handleASTChange(componentMarkup, visibleDropTargets) {
       const { insertBefore, insertAfter } = this.props;
-      const { ast } = this.context;
+      let { ast } = this.context;
 
       let targetNode;
       let position;
@@ -104,12 +107,21 @@ const withDropListener = (callback) => {
 
       compile(componentMarkup).then((componentAST) => {
         let componentNode = componentAST.children[0];
+        let loopCount = 0;
         while (
           componentNode.name &&
           (componentNode.name.toLowerCase() === 'textcontainer' ||
             componentNode.name.toLowerCase() === 'text-container')
         ) {
           componentNode = componentNode.children[0];
+          loopCount += 1;
+        }
+
+        // If the component is not wrapped in a text-container,
+        // then it is fullWidth
+        if (loopCount === 0) {
+          componentNode.properties = componentNode.properties || {};
+          componentNode.properties.fullWidth = { type: "value", value: true };
         }
 
         const randomizeIds = (node) => {
@@ -165,6 +177,8 @@ const withDropListener = (callback) => {
           }
         }
 
+
+
         let numBefore = 0;
 
         visibleDropTargets.forEach((target, i) => {
@@ -177,6 +191,11 @@ const withDropListener = (callback) => {
         const scrollPosition = document.getElementsByClassName(
           RENDER_WINDOW_NAME
         )[0].scrollTop;
+
+        if (componentNode.properties && componentNode.properties.fullWidth) {
+          const markup = AST.toMarkup(relativeDataPaths(ast), { insertFullWidth: true });
+          ast = compile(markup, { async: false });
+        }
 
         this.context.setAst(ast); // must pass info up level
         if (callback) {
