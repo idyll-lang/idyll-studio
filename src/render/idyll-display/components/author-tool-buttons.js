@@ -74,7 +74,7 @@ class AuthorToolButtons extends React.PureComponent {
           )}
         </div>
         <div className='author-view-container' id={this.domId} onMouseEnter={() => this.setState({ isHovering: true })} onMouseLeave={() => this.setState({ isHovering: false })}>
-          <button
+          {idyllASTNode.name.toLowerCase() === 'graphic' ? null : <button
             className={`author-view-button`}
             onClick={this.handleClickProps.bind(this)}
             data-tip
@@ -90,7 +90,7 @@ class AuthorToolButtons extends React.PureComponent {
                 fill='white'
               />
             </svg>
-          </button>
+          </button>}
         </div>
       </div>
     );

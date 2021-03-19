@@ -71,7 +71,6 @@ const withDropListener = (callback) => {
       var tagInfo = this.context.propsMap.get(name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')) || { name: name };
       var tagName = (tagInfo ? (tagInfo.name || name) : name).split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')
 
-
       var tag = '[' + tagName + ' ';
       if (tagInfo.props !== undefined) {
         tagInfo.props

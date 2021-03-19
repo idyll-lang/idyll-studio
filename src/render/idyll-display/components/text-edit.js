@@ -66,9 +66,10 @@ class TextEdit extends React.PureComponent {
   }
 
   getTag(name) {
-    var tagInfo = this.context.propsMap.get(name);
+    var tagInfo = this.context.propsMap.get(name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')) || { name: name };
+    var tagName = (tagInfo ? (tagInfo.name || name) : name).split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('')
 
-    var tag = '[' + tagInfo.name + ' ';
+    var tag = '[' + tagName + ' ';
     if (tagInfo.props !== undefined) {
       tagInfo.props.filter(prop => prop.example !== undefined).forEach((prop) => {
         tag += prop.name + ':' + prop.example + ' ';
@@ -78,7 +79,7 @@ class TextEdit extends React.PureComponent {
       tag += ' /]';
     } else {
       var children = tagInfo.children !== undefined ? tagInfo.children[0] : '';
-      tag += ']' + children + '[/' + tagInfo.name + ']';
+      tag += ']' + children + '[/' + tagName + ']';
     }
 
     return tag;
