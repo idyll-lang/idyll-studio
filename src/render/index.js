@@ -315,23 +315,26 @@ class App extends React.PureComponent {
         console.log(error);
         return; // skip next iteration
       }
+
+      let _name = component.name.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('');
+
       // Stores {component name: props }
       if (typeof path === 'object' && path.default !== undefined) {
         var props = path.default._idyll;
 
-        componentProps.set(component.name, {
+        componentProps.set(_name, {
           ...props,
-          name: component.name === 'text-container' ? 'TextContainer' : component.name
+          name: _name,
         });
 
       } else if (path._idyll) {
-        componentProps.set(component.name, {
+        componentProps.set(_name, {
           ...path._idyll,
-          name: component.name === 'text-container' ? 'TextContainer' : component.name
+          name: _name,
         });
       } else if (typeof path === 'function') {
-        componentProps.set(component.name, {
-          name: component.name === 'text-container' ? 'TextContainer' : component.name,
+        componentProps.set(_name, {
+          name: _name,
           tagType: 'closed',
           props: [],
         });

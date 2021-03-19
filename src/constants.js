@@ -75,7 +75,6 @@ export const COMPONENT_NAME_MAP = {
 
 export const EXCLUDED_COMPONENTS = [
   'generateHeaders',
-  'fixed',
   'inline',
   'step',
   'stepper-control',

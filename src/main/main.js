@@ -113,10 +113,12 @@ class Main {
     let copyIncrementer = 0;
     let copyPath;
 
-    let componentPath = component.path.includes('node_modules/idyll-components/dist/') ? component.path.replace(/node_modules\/idyll\-components\/dist\/(es|cjs)\//g, 'node_modules/idyll-components/src/') : component.path;
+    let isStdLibPath = component.path.includes('node_modules/idyll-components/dist/') || component.path.includes('node_modules\\idyll-components\\dist\\');
+
+    let componentPath = isStdLibPath ? component.path.replace(/node_modules\/idyll\-components\/dist\/(es|cjs)\//g, 'node_modules/idyll-components/src/') : component.path;
 
     // Windows fix
-    componentPath = componentPath.includes('node_modules\\idyll-components\\dist\\') ? componentPath.replace(/node_modules\\idyll\-components\\dist\\(es|cjs)\\/g, 'node_modules\\idyll-components\\src\\') : componentPath;
+    componentPath = isStdLibPath ? componentPath.replace(/node_modules\\idyll\-components\\dist\\(es|cjs)\\/g, 'node_modules\\idyll-components\\src\\') : componentPath;
 
     do {
       copyIncrementer += 1;
@@ -125,7 +127,11 @@ class Main {
 
     fs.copyFileSync(componentPath, copyPath);
     const infile = fs.readFileSync(componentPath, 'utf-8').toString();
-    const outfile = infile.replace(/from '\.\//g, "from 'idyll-components/dist/cjs/").replace(/from "\.\//g, "from \"idyll-components/dist/cjs/").replace(/require\('\.\//g, "require('idyll-components/dist/cjs/").replace(/require\("\.\//g, "require(\"idyll-components/dist/cjs/");
+
+    let outfile = infile;
+    if (isStdLibPath) {
+      outfile = outfile.replace(/from '\.\//g, "from 'idyll-components/dist/cjs/").replace(/from "\.\//g, "from \"idyll-components/dist/cjs/").replace(/require\('\.\//g, "require('idyll-components/dist/cjs/").replace(/require\("\.\//g, "require(\"idyll-components/dist/cjs/");
+    }
     fs.writeFileSync(copyPath, outfile);
 
     const newComponent = { path: copyPath, name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}` };
