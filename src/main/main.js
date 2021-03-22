@@ -42,9 +42,10 @@ class Main {
     ipcMain.on('client:openProject', this.handleFileOpen.bind(this));
     ipcMain.on('client:createProject', this.handleCreateProject.bind(this));
     ipcMain.on('client:editComponent', this.handleEditComponent.bind(this));
-    ipcMain.on('client:duplicateComponent', this.handleDuplicateComponent.bind(this));
-
-
+    ipcMain.on(
+      'client:duplicateComponent',
+      this.handleDuplicateComponent.bind(this)
+    );
 
     // Menu commands
     menu.on('file:open', this.handleFileOpen.bind(this));
@@ -55,11 +56,11 @@ class Main {
     menu.on('toggle:devtools', this.handleToggleDevtools.bind(this));
     menu.on('file:new', () => {
       this.mainWindow.webContents.send('idyll:compile', {
-        ast: null
+        ast: null,
       });
     });
 
-    this.mainWindow.webContents.on('new-window', function(e, url) {
+    this.mainWindow.webContents.on('new-window', function (e, url) {
       e.preventDefault();
       shell.openExternal(url);
     });
@@ -81,7 +82,7 @@ class Main {
             .on('update', () => {
               this.publish();
             })
-            .on('error', err => {
+            .on('error', (err) => {
               console.log(err);
               this.mainWindow.webContents.send('pub-error', err.message);
             });
@@ -113,32 +114,57 @@ class Main {
     let copyIncrementer = 0;
     let copyPath;
 
-    let isStdLibPath = component.path.includes('node_modules/idyll-components/dist/') || component.path.includes('node_modules\\idyll-components\\dist\\');
+    let isStdLibPath =
+      component.path.includes('node_modules/idyll-components/dist/') ||
+      component.path.includes('node_modules\\idyll-components\\dist\\');
 
-    let componentPath = isStdLibPath ? component.path.replace(/node_modules\/idyll\-components\/dist\/(es|cjs)\//g, 'node_modules/idyll-components/src/') : component.path;
+    let componentPath = isStdLibPath
+      ? component.path.replace(
+          /node_modules\/idyll\-components\/dist\/(es|cjs)\//g,
+          'node_modules/idyll-components/src/'
+        )
+      : component.path;
 
     // Windows fix
-    componentPath = isStdLibPath ? componentPath.replace(/node_modules\\idyll\-components\\dist\\(es|cjs)\\/g, 'node_modules\\idyll-components\\src\\') : componentPath;
+    componentPath = isStdLibPath
+      ? componentPath.replace(
+          /node_modules\\idyll\-components\\dist\\(es|cjs)\\/g,
+          'node_modules\\idyll-components\\src\\'
+        )
+      : componentPath;
 
     do {
       copyIncrementer += 1;
-      copyPath = p.resolve(this.workingDir, 'components', `${p.basename(componentPath).replace(/(\-\d+)?\.jsx?/g, '')}-${copyIncrementer}.js`);
-    } while (fs.existsSync(copyPath))
+      copyPath = p.resolve(
+        this.workingDir,
+        'components',
+        `${p
+          .basename(componentPath)
+          .replace(/(\-\d+)?\.jsx?/g, '')}-${copyIncrementer}.js`
+      );
+    } while (fs.existsSync(copyPath));
 
     fs.copyFileSync(componentPath, copyPath);
     const infile = fs.readFileSync(componentPath, 'utf-8').toString();
 
     let outfile = infile;
     if (isStdLibPath) {
-      outfile = outfile.replace(/from '\.\//g, "from 'idyll-components/dist/cjs/").replace(/from "\.\//g, "from \"idyll-components/dist/cjs/").replace(/require\('\.\//g, "require('idyll-components/dist/cjs/").replace(/require\("\.\//g, "require(\"idyll-components/dist/cjs/");
+      outfile = outfile
+        .replace(/from '\.\//g, "from 'idyll-components/dist/cjs/")
+        .replace(/from "\.\//g, 'from "idyll-components/dist/cjs/')
+        .replace(/require\('\.\//g, "require('idyll-components/dist/cjs/")
+        .replace(/require\("\.\//g, 'require("idyll-components/dist/cjs/');
     }
     fs.writeFileSync(copyPath, outfile);
 
-    const newComponent = { path: copyPath, name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}` };
+    const newComponent = {
+      path: copyPath,
+      name: `${p.basename(copyPath).replace(/\.jsx?/g, '')}`,
+    };
     const notification = {
       title: 'Component duplicated',
-      body: `A copy of ${component.name} has been added to the custom components shelf. Click edit to modify the source code.`
-    }
+      body: `A copy of ${component.name} has been added to the custom components shelf. Click edit to modify the source code.`,
+    };
     new Notification(notification).show();
 
     this.mainWindow.webContents.send('components:add', newComponent);
@@ -148,7 +174,7 @@ class Main {
     // Returns absolute path of file
     try {
       const dir = await dialog.showOpenDialog(this.mainWindow, {
-        properties: ['openDirectory']
+        properties: ['openDirectory'],
       });
 
       // If no files, don't open
@@ -166,7 +192,7 @@ class Main {
         template: p.resolve(`${__dirname}/../../project-template/`),
         customTemplate: true,
         'post-dir': `${projectDir}/${slugName}`,
-        installDependencies: true
+        installDependencies: true,
       });
 
       this.executeOnProjectOpen(p.resolve(projectDir, slugName, 'index.idyll'));
@@ -174,6 +200,7 @@ class Main {
       console.log(err);
     }
   }
+
   async handleFileOpen() {
     // Returns absolute path of file
     try {
@@ -183,9 +210,9 @@ class Main {
           {
             // Give a specific filter on acceptable file types
             name: 'Idyll',
-            extensions: ['idyll', 'idl']
-          }
-        ]
+            extensions: ['idyll', 'idl'],
+          },
+        ],
       });
 
       // If no files, don't open
@@ -210,7 +237,6 @@ class Main {
     open(this.workingDir);
   }
 
-
   // Run npm install in the current project
   handleInstallProject() {
     if (!this.workingDir) {
@@ -220,23 +246,23 @@ class Main {
     console.log('Running npm install in directory', this.workingDir);
     let installer = spawn('npm', ['install'], {
       cwd: this.workingDir,
-      stdio: 'ignore'
+      stdio: 'ignore',
     });
-    installer.on('close', code => {
+    installer.on('close', (code) => {
       if (code !== 0) {
         const notification = {
           title: 'Installation failed',
-          body: 'Could not install project dependencies.'
-        }
-        new Notification(notification).show()
+          body: 'Could not install project dependencies.',
+        };
+        new Notification(notification).show();
         console.log('Could not install Idyll dependencies.');
         return;
       }
       const notification = {
         title: 'Installation finished',
-        body: 'Project dependencies installed successfully.'
-      }
-      new Notification(notification).show()
+        body: 'Project dependencies installed successfully.',
+      };
+      new Notification(notification).show();
       console.log('Project dependencies installed successfully.');
     });
   }
@@ -248,7 +274,7 @@ class Main {
     // Saves markup to file
     if (this.filePath !== undefined) {
       ipcMain.on('save', (event, content) => {
-        fs.writeFile(this.filePath, content, err => {
+        fs.writeFile(this.filePath, content, (err) => {
           if (err) throw err;
         });
       });
@@ -272,7 +298,9 @@ class Main {
       let files = await readdir(buildDir);
 
       let formData = files.reduce((acc, f) => {
-        acc[p.relative(buildDir, f).replace(/\\/g, '/')] = fs.createReadStream(f);
+        acc[p.relative(buildDir, f).replace(/\\/g, '/')] = fs.createReadStream(
+          f
+        );
         return acc;
       }, {});
       formData['token'] = token;
@@ -281,7 +309,7 @@ class Main {
         url: urljoin(IDYLL_PUB_API, 'deploy'),
         formData: formData,
         json: true,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       const url = IDYLL_PUB_URL + `/${alias}/`;
@@ -289,7 +317,11 @@ class Main {
       // Send to render process the url
       this.mainWindow.webContents.send('published-url', url);
 
-      this.store.addTokenUrlPair(url, token);
+      this.store.updateFile({
+        filePath: this.filePath,
+        token: token,
+        url: url,
+      });
     } catch (err) {
       console.log(err);
       this.mainWindow.webContents.send('pub-error', err.message);
@@ -308,20 +340,22 @@ class Main {
       let deployment = await request.post({
         url: urljoin(IDYLL_PUB_API, 'create'),
         body: {
-          name: config.name
+          name: config.name,
         },
-        json: true
+        json: true,
       });
       token = deployment.token;
-      await fs.writeFile(tokenPath, token, { encoding: 'utf-8' }, function(
-        err,
-        data
-      ) {
-        if (err) {
-          console.log(err);
-          this.mainWindow.webContents.send('pub-error', err.message);
+      await fs.writeFile(
+        tokenPath,
+        token,
+        { encoding: 'utf-8' },
+        function (err, data) {
+          if (err) {
+            console.log(err);
+            this.mainWindow.webContents.send('pub-error', err.message);
+          }
         }
-      });
+      );
     }
     return token;
   }
@@ -338,7 +372,7 @@ class Main {
       componentFolder: this.workingDir + '/components/',
       dataFolder: this.workingDir + '/data',
       layout: 'centered',
-      theme: 'default'
+      theme: 'default',
     });
 
     // filter to catch all requests to static folder
@@ -353,11 +387,11 @@ class Main {
           );
           callback({
             cancel: false,
-            redirectURL: encodeURI(localURL)
+            redirectURL: encodeURI(localURL),
           });
         } else {
           callback({
-            cancel: false
+            cancel: false,
           });
         }
       }
@@ -373,10 +407,10 @@ class Main {
 
     // Compile contents
     compile(fileContent, {})
-      .then(async ast => {
+      .then(async (ast) => {
         // Get project URL if it exists
         const tokenPath = getTokenPath(p, this.workingDir);
-        const url = await requestUrl(tokenPath, this.store);
+        const url = await requestUrl(tokenPath, this.store, file);
 
         // send ast and contents over to renderer
         this.mainWindow.webContents.send('idyll:compile', {
@@ -384,18 +418,21 @@ class Main {
           path: this.filePath,
           components: this.idyll.getComponents(),
           datasets: this.idyll.getDatasets(),
-          url: url
+          url: url,
         });
 
-        this.store.updateLastOpenedProject(this.filePath);
+        this.store.updateFile({
+          filePath: this.filePath,
+          url: url,
+        });
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error, 'Could not open file: ' + this.filePath);
       });
   }
 }
 
-const requestUrl = async (tokenPath, store) => {
+const requestUrl = async (tokenPath, store, file) => {
   let url = '';
   try {
     const token = fs.readFileSync(tokenPath, { encoding: 'utf-8' });
@@ -404,13 +441,17 @@ const requestUrl = async (tokenPath, store) => {
       url = tokenUrl.url;
     } else {
       const res = await request.get({
-        url: `https://api.idyll.pub/lookup/${token}`
+        url: `https://api.idyll.pub/lookup/${token}`,
       });
 
       const alias = JSON.parse(res).alias;
 
       url = IDYLL_PUB_URL + `/${alias}/`;
-      store.addTokenUrlPair(url, token);
+      store.updateFile({
+        filePath: file,
+        token: token,
+        url: url,
+      });
     }
   } catch (error) {
     console.log('Publish token does not exist yet.');

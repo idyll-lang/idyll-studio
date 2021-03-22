@@ -1,5 +1,3 @@
-
-
 const { app, BrowserWindow, nativeTheme } = require('electron');
 const path = require('path');
 const url = require('url');
@@ -7,25 +5,31 @@ const Main = require('./main/main.js');
 const DataStore = require('./main/data-store/data-store');
 const isDev = require('electron-is-dev');
 
-if (!isDev && process.platform !== "win32") {
+if (!isDev && process.platform !== 'win32') {
   if (process.platform === 'darwin') {
     const fixPath = require('fix-path');
     fixPath();
   } else {
     const shellPath = require('shell-path');
-    process.env.PATH = shellPath.sync() || [
-      './node_modules/.bin',
-      '/.nodebrew/current/bin',
-      '/usr/local/bin',
-      process.env.PATH
-    ].join(':');
+    process.env.PATH =
+      shellPath.sync() ||
+      [
+        './node_modules/.bin',
+        '/.nodebrew/current/bin',
+        '/usr/local/bin',
+        process.env.PATH,
+      ].join(':');
   }
 }
 
 // add local node_modules
-let pathSeparator = process.platform === "win32" ? ';' : ':';
-process.env.PATH = process.env.PATH.split(pathSeparator).concat([path.resolve(`${__dirname}/../node_modules/.bin`), path.resolve(`${__dirname}/../node_modules/npm/bin`)]).join(pathSeparator);
-
+let pathSeparator = process.platform === 'win32' ? ';' : ':';
+process.env.PATH = process.env.PATH.split(pathSeparator)
+  .concat([
+    path.resolve(`${__dirname}/../node_modules/.bin`),
+    path.resolve(`${__dirname}/../node_modules/npm/bin`),
+  ])
+  .join(pathSeparator);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -37,14 +41,14 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true
+      enableRemoteModule: true,
     },
     width: 1300,
     height: 1000,
     minWidth: 600,
     minHeight: 400,
     title: 'Idyll Studio',
-    show: false
+    show: false,
   });
 
   const store = new DataStore();
@@ -53,10 +57,11 @@ function createWindow() {
 
   // When everything is ready to load, show window
   win.once('ready-to-show', () => {
-    const existingProjectPath = store.getLastSessionProjectPath();
-    if (existingProjectPath) {
-      main.executeOnProjectOpen(existingProjectPath);
-    }
+    // const existingProjectPath = store.getLastSessionProjectPath();
+    // if (existingProjectPath) {
+    //   main.executeOnProjectOpen(existingProjectPath);
+    // }
+    console.log(store.getTopNRecentFiles(2));
     win.show();
   });
 
@@ -66,7 +71,7 @@ function createWindow() {
       url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
-        slashes: true
+        slashes: true,
       })
     );
 
@@ -77,7 +82,7 @@ function createWindow() {
       url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
-        slashes: true
+        slashes: true,
       })
     );
   }
@@ -94,7 +99,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-if(require('electron-squirrel-startup')) return;
+if (require('electron-squirrel-startup')) return;
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
