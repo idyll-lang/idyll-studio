@@ -64,6 +64,74 @@ const Renderer = withContext(
       });
     }
 
+    injectInnerDropTargets(node) {
+      if (node.type !== 'component' || !node.name) {
+        return node;
+      }
+
+      if ([
+        'p',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'ul',
+        'ol',
+        'pre',
+        'codehighlight'
+      ].includes(node.name.toLowerCase())) {
+        return node;
+      }
+      node.children = node.children.reduce((memo, child, i, arr) => {
+        if (i === 0) {
+          return [
+            {
+              id: -1,
+              type: 'component',
+              name: 'IdyllEditorDropTarget',
+              properties: {
+                insertBefore: {
+                  type: 'value',
+                  value: child.id,
+                },
+              },
+            },
+            this.injectDropTargets(child),
+            {
+              id: -2,
+              type: 'component',
+              name: 'IdyllEditorDropTarget',
+              properties: {
+                insertAfter: {
+                  type: 'value',
+                  value: child.id,
+                },
+              },
+            },
+          ];
+        }
+        return [
+          ...memo,
+          child,
+          {
+            id: -(i + 2),
+            type: 'component',
+            name: 'IdyllEditorDropTarget',
+            properties: {
+              insertAfter: {
+                type: 'value',
+                value: child.id,
+              },
+            },
+          },
+        ];
+      }, []);
+
+      return node;
+    }
+
     injectDropTargets(ast) {
       // deep copy
       const astCopy = copy(ast);
@@ -90,7 +158,7 @@ const Renderer = withContext(
                     },
                   },
                 },
-                child,
+                this.injectInnerDropTargets(child),
                 {
                   id: -2,
                   type: 'component',
@@ -106,7 +174,7 @@ const Renderer = withContext(
             }
             return [
               ...memo,
-              child,
+              this.injectInnerDropTargets(child),
               {
                 id: -(i + 2),
                 type: 'component',
