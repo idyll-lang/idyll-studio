@@ -42,7 +42,7 @@ class Sidebar extends React.PureComponent {
           Theme
           <select
             onChange={this.handleThemeChange.bind(this)}
-            disabled={true}
+            disabled={false}
             value={this.context.theme}>
             {Object.keys(themes)
               .filter((d) => !['__esModule', 'none'].includes(d))

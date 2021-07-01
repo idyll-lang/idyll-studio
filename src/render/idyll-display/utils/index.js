@@ -168,7 +168,7 @@ function getUpdatedPropertyList(
   if (node && propertyName) {
     const propertiesCopy = {};
     let _hasUpdated = false;
-    Object.keys(node.properties).forEach((property) => {
+    Object.keys(node.properties || {}).forEach((property) => {
       const propertyObject = node.properties[property];
 
       if (property === propertyName) {

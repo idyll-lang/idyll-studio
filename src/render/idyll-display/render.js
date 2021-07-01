@@ -80,7 +80,8 @@ const Renderer = withContext(
         'ul',
         'ol',
         'pre',
-        'codehighlight'
+        'codehighlight',
+        'button'
       ].includes(node.name.toLowerCase())) {
         return node;
       }
@@ -256,7 +257,7 @@ const Renderer = withContext(
         <div className='renderer'>
           <div className={`renderer-container`} contentEditable={false}>
             <IdyllDocument
-              key={`${!showPreview}-${this.state.componentUpdates}`}
+              key={`${!showPreview}-${this.state.componentUpdates}-${theme}-${layout}`}
               ast={
                 showPreview
                   ? this.transformATags(ast)
