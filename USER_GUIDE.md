@@ -10,6 +10,8 @@ To install the latest release, navigate to the [releases](https://github.com/idy
 
 If you wish to install from source, clone the repo and install the dependencies. [More details](./CONTRIBUTING.md).
 
+**Note: currently the system will only run if you already have node/npm on your system! This requirement will be removed in the futre. Until then you can download node [here](https://nodejs.org/en/)**
+
 *...run it?* 
 
 Click the app icon to start the application. 
