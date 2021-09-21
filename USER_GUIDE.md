@@ -1,6 +1,6 @@
 
 
-This project is a work in progress. Use at risk of frustration.
+This project is a work in progress. Use at risk of frustration. _The editor does not currently autosave! Please save your work frequently by using `Cmd+S` or "File -> Save" in the menu._ 
 
 *How do you...*
 
