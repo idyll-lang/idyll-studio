@@ -167,10 +167,28 @@ class Main {
         template: p.resolve(`${__dirname}/../../project-template/`),
         customTemplate: true,
         'post-dir': `${projectDir}/${slugName}`,
-        installDependencies: true
+        installDependencies: false
       });
 
+      await npm.load();
+      npm.localPrefix = `${projectDir}/${slugName}`;
+
+      await new Promise((resolve, reject) => {
+        npm.commands.install([], function(err, data){
+          if (err) {
+            reject(err);
+          } else {
+            resolve()
+            console.log('Project dependencies installed successfully.');
+          }
+        });
+        npm.on("log", function (msg) {
+          console.log(msg + '');
+        });
+      })
+
       this.executeOnProjectOpen(p.resolve(projectDir, slugName, 'index.idyll'));
+
     } catch (err) {
       console.log(err);
     }
