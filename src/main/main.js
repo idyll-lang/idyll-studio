@@ -14,6 +14,7 @@ const { getWorkingDirectory, getTokenPath } = require('./utils');
 const open = require('open');
 const chokidar = require('chokidar');
 const spawn = require('cross-spawn');
+const npm = require('npm');
 
 function slugify(text) {
   return text
@@ -212,32 +213,34 @@ class Main {
 
 
   // Run npm install in the current project
-  handleInstallProject() {
+  async handleInstallProject() {
     if (!this.workingDir) {
       return;
     }
 
     console.log('Running npm install in directory', this.workingDir);
-    let installer = spawn('npm', ['install'], {
-      cwd: this.workingDir,
-      stdio: 'ignore'
-    });
-    installer.on('close', code => {
-      if (code !== 0) {
-        const notification = {
+
+    await npm.load();
+    npm.localPrefix = this.workingDir;
+    npm.commands.install([], function(err, data){
+      let notification;
+      if (err) {
+        notification = {
           title: 'Installation failed',
           body: 'Could not install project dependencies.'
         }
-        new Notification(notification).show()
-        console.log('Could not install Idyll dependencies.');
-        return;
-      }
-      const notification = {
-        title: 'Installation finished',
-        body: 'Project dependencies installed successfully.'
+      } else {
+        notification = {
+          title: 'Installation finished',
+          body: 'Project dependencies installed successfully.'
+        }
       }
       new Notification(notification).show()
       console.log('Project dependencies installed successfully.');
+
+    });
+    npm.on("log", function (msg) {
+      console.log(msg + '');
     });
   }
 
