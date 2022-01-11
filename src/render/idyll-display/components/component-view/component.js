@@ -42,7 +42,7 @@ class Component extends React.PureComponent {
         }}
         className='component'>
           {dragPreview(<div className='component-name'>
-            {name.toLowerCase ? (COMPONENT_NAME_MAP[name.toLowerCase()] || name) : name}
+            {('' + name).toLowerCase ? (COMPONENT_NAME_MAP[('' + name).toLowerCase()] || name) : name}
           </div>)}
           {
             isDragging ? null : (
