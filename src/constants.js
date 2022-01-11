@@ -63,6 +63,7 @@ export const COMPONENTS_CATEGORY_MAP = new Map([
 export const COMPONENT_NAME_MAP = {
   'text container': 'Paragraph',
   display: 'Display Value',
+  dynamic: 'Scrubbable Value',
   desmos: 'Graphing Calculator',
   gist: 'GitHub Gist',
   range: 'Range Slider',
