@@ -61,7 +61,7 @@
     "lodash.throttle": "^4.1.1",
     "npm": "^7.24.2",
     "open": "^7.4.2",
-    "postcss": "^8.2.10",
+    "postcss": "^8.2.13",
     "postcss-js": "^3.0.3",
     "react": "^16.14.0",
     "react-data-grid": "^6.1.0",
